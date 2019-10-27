@@ -118,9 +118,14 @@ package INFLECTIONS_PACKAGE is
           POS,       --  POSitive
           COMP,      --  COMParative
           SUPER      --  SUPERlative
-                           );   
-
-  package COMPARISON_TYPE_IO is new TEXT_IO.ENUMERATION_IO(COMPARISON_TYPE);
+          );  
+   
+   package COMPARISON_TYPE_IO is new TEXT_IO.ENUMERATION_IO(COMPARISON_TYPE);
+   
+   type GENERATED_TYPE is (
+           X,
+           ADJADV
+           );
 
   type STEM_KEY_TYPE is new NATURAL range 0..9;
     
@@ -314,7 +319,8 @@ type ADJECTIVE_RECORD is
     NUMBER      : NUMBER_TYPE := X;
     GENDER      : GENDER_TYPE := X;
     CO          : COMPARISON_TYPE := X;
-  end record;
+end record;
+
 
  package ADJECTIVE_RECORD_IO is
    DEFAULT_WIDTH : NATURAL;
@@ -349,8 +355,9 @@ type ADJECTIVE_RECORD is
   
 type ADVERB_RECORD is
   record
-    CO   : COMPARISON_TYPE := X;
-  end record;
+         CO   : COMPARISON_TYPE := X;
+   GENERATED  : GENERATED_TYPE := X;     -- Indicates record was created by ADJ VOC -> ADV conversion
+  end record;                                  -- (only matters for examples; unlike X and POS prints "~ly, ~ily")
 
  package ADVERB_RECORD_IO is
    DEFAULT_WIDTH : NATURAL;
@@ -524,7 +531,7 @@ type INTERJECTION_RECORD is
   end SUFFIX_RECORD_IO;  
  
 
-  type QUALITY_RECORD(POFS : PART_OF_SPEECH_TYPE := X) is
+  type QUALITY_RECORD(POFS : PART_OF_SPEECH_TYPE := X) is  -- SPR:  appears to a quality of the record's content, here the POFS type?
     record
       case POFS is
         when N =>
@@ -650,7 +657,7 @@ type INTERJECTION_RECORD is
 
   type INFLECTION_RECORD is
     record
-      QUAL   : QUALITY_RECORD   := NULL_QUALITY_RECORD;
+      QUAL   : QUALITY_RECORD   := NULL_QUALITY_RECORD;  
       KEY    : STEM_KEY_TYPE := 0;               
       ENDING : ENDING_RECORD := NULL_ENDING_RECORD;
       AGE    : AGE_TYPE      := X;

@@ -16,6 +16,9 @@ with PREFACE;
 with PUT_STAT;
 with ENGLISH_SUPPORT_PACKAGE; use ENGLISH_SUPPORT_PACKAGE;
 with SEARCH_ENGLISH;
+
+
+
 pragma Elaborate(WORD_PARAMETERS);
 procedure PARSE(COMMAND_LINE : STRING := "") is
   use INFLECTIONS_PACKAGE.INTEGER_IO;
@@ -37,6 +40,9 @@ procedure PARSE(COMMAND_LINE : STRING := "") is
   TRPA : PARSE_ARRAY(1..TRICKS_MAX) := (others => NULL_PARSE_RECORD);
   PA_LAST, SYPA_LAST, TRPA_LAST : INTEGER := 0;
 
+   ALL_ARABIC : Boolean;
+   
+
 
   procedure PARSE_LINE(INPUT_LINE : STRING) is
     L : INTEGER := TRIM(INPUT_LINE)'LAST;
@@ -45,37 +51,36 @@ procedure PARSE(COMMAND_LINE : STRING := "") is
   begin
     WORD_NUMBER := 0;
     LINE(1..L) := TRIM(INPUT_LINE);
- 
 
-  --  Someday I ought to be interested in punctuation and numbers, but not now
-  ELIMINATE_NOT_LETTERS:
+
+
+  ELIMINATE_NOT_LETTERS_OR_NUMBERS:
     begin
     for I in 1..L  loop
       if ((LINE(I) in 'A'..'Z')  or
-          (LINE(I) = '-')           or     --  For the comment 
+          (LINE(I) = '-')           or     --  For the comment [SPR: this and catching period are complicated; cant we replace with a case statement]
           (LINE(I) = '.')           or     --  Catch period later
-          (LINE(I) in 'a'..'z'))  then
-        null;
+            (LINE(I) in 'a'..'z')  or
+           (Line(I) in '0'..'9')) then   
+               null;
       else
         LINE(I) := ' ';
       end if;
-    end loop;
-    end ELIMINATE_NOT_LETTERS;
+         end loop;
+
+    end ELIMINATE_NOT_LETTERS_OR_NUMBERS;
 
 
-
+      --  Skip over leading and intervening blanks, looking for comments
+      --  Punctuation, numbers, and special characters were cleared above
     J := 1;
     K := 0;
     OVER_LINE:
     while J <= L  loop
-
-
-      
-      --  Skip over leading and intervening blanks, looking for comments
-      --  Punctuation, numbers, and special characters were cleared above
       for I in K+1..L  loop
         exit when LINE(J) in 'A'..'Z';
-        exit when LINE(J) in 'a'..'z';
+            exit when LINE(J) in 'a'..'z';
+            exit when Line(J) in '0'..'9';
         if I < L  and then
            LINE(I..I+1) = "--"   then
           exit OVER_LINE;      --  the rest of the line is comment
@@ -85,13 +90,11 @@ procedure PARSE(COMMAND_LINE : STRING := "") is
 
       exit when J > L;             --  Kludge
 
-      FOLLOWS_PERIOD := FALSE;
+      FOLLOWS_PERIOD := FALSE;      -- SPR:  This seems to be out of order.  Does this do anything?
       if FOLLOWED_BY_PERIOD  then
         FOLLOWED_BY_PERIOD := FALSE;
         FOLLOWS_PERIOD := TRUE;
       end if;
-
-
 
       CAPITALIZED := FALSE;
       ALL_CAPS := FALSE;
@@ -99,7 +102,7 @@ procedure PARSE(COMMAND_LINE : STRING := "") is
 
       --  Extract the word
       for I in J..L  loop
-
+       
 --  Although I have removed punctuation above, it may not always be so
         if LINE(I) = '.'  then
           FOLLOWED_BY_PERIOD := TRUE;
@@ -110,20 +113,39 @@ procedure PARSE(COMMAND_LINE : STRING := "") is
 --                or LINE(I) = '(' or LINE(I) = '[' or LINE(I) = '{' or LINE(I) = '<'
 --                or LINE(I) = ')' or LINE(I) = ']' or LINE(I) = '}' or LINE(I) = '>'
 --                or (CHARACTER'POS(LINE(I)) < 32)  or (CHARACTER'POS(LINE(I)) > 127) );
-          exit when ((LINE(I) not in 'A'..'Z') and (LINE(I) not in 'a'..'z'));
+
+              
+              exit when ((LINE(I) not in 'A'..'Z') and (LINE(I) not in 'a'..'z') and (LINE(I) not in '0'..'9'));
         W(I) := LINE(I);
         K := I;
 
-      end loop;
+end loop;
+             
+ CHECK_FOR_ALL_ARABIC:
+         begin
+        All_Arabic := True;
+        for I in J..K  loop
+        exit when All_Arabic = False;
+            if ((W(I) in '0'..'9')) then null;
+      else
+        All_Arabic := FALSE;
+      end if;
+        end loop;
+               
+         if All_Arabic = True then 
+            Text_IO.Put_Line("It's all Arabic to me");
+            end if;
+    end CHECK_FOR_ALL_ARABIC;
 
 
-
-          if W(J) in 'A'..'Z'  and then
-             K - J >= 1  and then
+         -- Determine whether all caps (a couple user options change behavior when there's a cap);
+ 
+         if W(J) in 'A'..'Z'  and then  
+             K - J >= 1  and then   
              W(J+1) in 'a'..'z'  then
         CAPITALIZED := TRUE;
       end if;
-
+         
       ALL_CAPS := TRUE;
       for I in J..K  loop
         if W(I) = LOWER_CASE(W(I))  then
@@ -135,10 +157,13 @@ procedure PARSE(COMMAND_LINE : STRING := "") is
       for I in J..K-1  loop               --  Kludge for QVAE
         if W(I) = 'Q'  and then W(I+1) = 'V'  then
           W(I+1) := 'U';
-        end if;
+            end if;
+         if W(I) = 'q'  and then W(I+1) = 'v'  then  -- SPR:  added lower case condition because 
+          W(I+1) := 'u';                             -- the above resulted in inconsistent output
+            end if;
       end loop;
+         
 
-      
 if LANGUAGE = ENGLISH_TO_LATIN  then
    
 PARSE_LINE_ENGLISH_TO_LATIN:  
@@ -167,9 +192,7 @@ exit OVER_LINE;
 
 end PARSE_LINE_ENGLISH_TO_LATIN;
 
-      
-      
-              
+                   
 elsif LANGUAGE = LATIN_TO_ENGLISH  then
   
 PARSE_WORD_LATIN_TO_ENGLISH:  
@@ -186,7 +209,7 @@ procedure PASS(INPUT_WORD : STRING);
 procedure ENCLITIC is
   SAVE_DO_FIXES  : BOOLEAN := WORDS_MODE(DO_FIXES);
   SAVE_DO_ONLY_FIXES  : BOOLEAN := WORDS_MDEV(DO_ONLY_FIXES);
-  ENCLITIC_LIMIT : INTEGER := 4;
+  ENCLITIC_LIMIT : INTEGER := 4;                        -- SPR:  Arbitrary?   Any situations or special words where we want to change the initial limit?
   TRY : constant STRING := LOWER_CASE(INPUT_WORD);
 begin
 --TEXT_IO.PUT_LINE("Entering ENCLITIC  HAVE DONE = " & BOOLEAN'IMAGE(HAVE_DONE_ENCLITIC));
@@ -225,7 +248,7 @@ if PA_LAST = 0  then
  end if;         
           
           --  Do not SYNCOPE if there is a verb TO_BE or compound already there
-         --  I do this here and below, it might be combined but it workd now
+         --  I do this here and below, it might be combined but it works now
         for I in 1..PA_LAST  loop
  --PARSE_RECORD_IO.PUT(PA(I)); TEXT_IO.NEW_LINE;
           if PA(I).IR.QUAL.POFS = V and then
@@ -315,10 +338,10 @@ procedure PASS(INPUT_WORD : STRING) is
   SAVE_DO_ONLY_FIXES  : BOOLEAN := WORDS_MDEV(DO_ONLY_FIXES);
   SAVE_DO_TRICKS : BOOLEAN := WORDS_MODE(DO_TRICKS);
 begin
---TEXT_IO.PUT_LINE("Entering PASS with >" & INPUT_WORD);
+-- TEXT_IO.PUT_LINE("Entering PASS with >" & INPUT_WORD);
   --  Do straight WORDS without FIXES/TRICKS, is the word in the dictionary
-  WORDS_MODE(DO_FIXES) := FALSE;
-  ROMAN_NUMERALS(INPUT_WORD, PA, PA_LAST);  
+  WORDS_MODE(DO_FIXES) := FALSE;          --"saves" initial value of DO_TRICKs then sets no to ensure first pass does 
+  ROMAN_NUMERALS(INPUT_WORD, PA, PA_LAST);  --  "restored" after calling tricks procedures
   WORD(INPUT_WORD, PA, PA_LAST);
   
 --TEXT_IO.PUT_LINE("SLURY-   PA_LAST = " & INTEGER'IMAGE(PA_LAST));
@@ -346,7 +369,7 @@ begin
 --  SAVE_PA_LAST := PA_LAST;
 --  --  BIG PROBLEM HERE
 --  --  If I do SLURY everytime, then each case where there is an aps- and abs- in dictionary 
---  --  will show up twice, straight and SLURY, in the ourout - For either input
+--  --  will show up twice, straight and SLURY, in the output - For either input
 --  --  But if I only do SLURY if there is no hit, then some incomplete pairs will not
 --  --  fully express (illuxit has two entries, inluxit has only one of them) (inritas)
 --  --  So I will do SLURY and if it produces only 2 more PR (XXX and GEN), kill it, otherwise use it only
@@ -607,6 +630,7 @@ declare
 
 begin
 
+
   --  Look ahead for sum                                           
 LOOK_AHEAD;
 if IS_SUM(NEXT_WORD)  then                 --  On NEXT_WORD = sum, esse, iri
@@ -778,7 +802,7 @@ elsif IS_ESSE(NEXT_WORD) or IS_FUISSE(NEXT_WORD)  then     --  On NEXT_WORD
             else   --  fuisse
               COMPOUND_TVM := (PERF, ACTIVE, INF);
      PPP_MEANING := HEAD(
-     "FUT ACT PPL+fuisse => PERF ACT INF Periphrastic - to have been about/going to",
+     "FUT ACT PPL + fuisse => PERF ACT INF Periphrastic - to have been about/going to",
                 MAX_MEANING_SIZE);
             end if;
 
@@ -904,17 +928,18 @@ end if;       --  On WORDS_MODE(DO_COMPOUNDS)
 --========================================================================
  end if;
 
---TEXT_IO.PUT_LINE("Before LISTing STEMS (PA_LAST > 0 to start) PA_LAST = " & 
---INTEGER'IMAGE(PA_LAST));
- 
+-- TEXT_IO.PUT_LINE("Before LISTing STEMS (PA_LAST > 0 to start) PA_LAST = " & 
+-- INTEGER'IMAGE(PA_LAST));
+
+               
           if  WORDS_MODE(WRITE_OUTPUT_TO_FILE)      then
             LIST_STEMS(OUTPUT, INPUT_WORD, INPUT_LINE, PA, PA_LAST);
           else
             LIST_STEMS(CURRENT_OUTPUT, INPUT_WORD, INPUT_LINE, PA, PA_LAST);
           end if;
 
---TEXT_IO.PUT_LINE("After LISTing STEMS (PA_LAST > 0 to start) PA_LAST = " & 
---INTEGER'IMAGE(PA_LAST));
+-- TEXT_IO.PUT_LINE("After LISTing STEMS (PA_LAST > 0 to start) PA_LAST = " & 
+-- INTEGER'IMAGE(PA_LAST));
           
           
       PA_LAST := 0;
@@ -968,7 +993,7 @@ exception
           INFLECTIONS_PACKAGE.INTEGER_IO.PUT(UNKNOWNS, WORD_NUMBER, 3);
           TEXT_IO.PUT_LINE(UNKNOWNS, "    ========   ERROR      ");
         end if;
-      PA_LAST := 0;
+         PA_LAST := 0;
 end PARSE_LINE;     
 
 
@@ -1011,11 +1036,13 @@ begin              --  PARSE
   else
 
   PREFACE.PUT_LINE(
-"Copyright (c) 1993-2006 - Free for any use - Version 1.97FC");
-  PREFACE.PUT_LINE(
-"For updates and latest version check http://www.erols.com/whitaker/words.htm");
-  PREFACE.PUT_LINE(
-"Comments? William Whitaker, Box 51225  Midland  TX  79710  USA - whitaker@erols.com");
+                   "Copyright (c) William Whitaker 1993-2006 - Free for any use");
+        PREFACE.PUT_LINE(
+"Modifications and additions [XXX]; see [SITE]."); -- SPR ADD
+--    PREFACE.PUT_LINE(
+--  "For updates and latest version check http://www.erols.com/whitaker/words.htm");
+--    PREFACE.PUT_LINE(
+--  "Comments? William Whitaker, Box 51225  Midland  TX  79710  USA - whitaker@erols.com");
   PREFACE.NEW_LINE;
   PREFACE.PUT_LINE(
 "Input a word or line of Latin and ENTER to get the forms and meanings");

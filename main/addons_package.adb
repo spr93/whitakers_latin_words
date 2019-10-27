@@ -212,7 +212,7 @@ package body ADDONS_PACKAGE is
 
         when SUFFIX  =>
         SUF := SUF + 1;
-        SUFFIXES(SUF).POFS:= POFS;
+        SUFFIXES(SUF).POFS := POFS;
 --TEXT_IO.PUT_LINE(S(1..LAST));
        EXTRACT_FIX(S(L+1..LAST), SUFFIXES(SUF).FIX, SUFFIXES(SUF).CONNECT);
 --TEXT_IO.PUT("@1");
@@ -238,7 +238,7 @@ package body ADDONS_PACKAGE is
         NUMBER_OF_SUFFIXES := SUF;
 
         when others  =>
-          TEXT_IO.PUT_LINE("Bad ADDON    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+          TEXT_IO.PUT_LINE("Bad ADDON");
           TEXT_IO.PUT_LINE(S(1..LAST));
           raise TEXT_IO.DATA_ERROR;
       end case;

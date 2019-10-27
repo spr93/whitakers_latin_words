@@ -185,7 +185,7 @@ DICT_IO.READ(DICT_FILE(GENERAL), DE, DICT_IO.COUNT(OUTPUT_ARRAY(I).N));
  --TEXT_IO.PUT_LINE("DUMP_OUTPUT TRIMMED"); 
                
       if TRIMMED  then
-         PUT_LINE(OUTPUT, "*");
+         PUT_LINE(OUTPUT, "[Output trimmed]");
        end if;
        
        end if;    --  On HITS = 0

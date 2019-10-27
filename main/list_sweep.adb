@@ -9,7 +9,7 @@
    procedure LIST_SWEEP(PA : in out PARSE_ARRAY; PA_LAST : in out INTEGER) is
    --  This procedure is supposed to process the output PARSE_ARRAY at PA level
    --  before it get turned into SIRAA and DMNPCA in LIST_PACKAGE
-   --  Since it does only PARSE_ARRAY it is just cheaking INFLECTIONS, not DICTIOARY
+   --  Since it does only PARSE_ARRAY it is just cheaking INFLECTIONS, not DICTIONARY
    
       use INFLECTION_RECORD_IO;
       use DICT_IO;
@@ -103,11 +103,7 @@
                end if;
          
          
-         
-         
-         
-         
-         
+
          --  VERB CHECKS
          
             when  V  =>  
@@ -267,11 +263,13 @@
       --     HAS_VERB_ABBREVIATION  : BOOLEAN := FALSE;
          NOT_ONLY_VOCATIVE : BOOLEAN := FALSE;
          NOT_ONLY_LOCATIVE : BOOLEAN := FALSE;
+       
       
          J : INTEGER := SL'FIRST;
       
          function DEPR (PR : PARSE_RECORD) return DICTIONARY_ENTRY is
-            DE : DICTIONARY_ENTRY;
+         DE : DICTIONARY_ENTRY;
+
          begin
 --TEXT_IO.PUT("DEPR  "); PARSE_RECORD_IO.PUT(PR); TEXT_IO.NEW_LINE;
             if PR.MNPC = NULL_MNPC  then
@@ -300,7 +298,8 @@
       begin
       
          if SL'LENGTH = 0              then
-            return;
+         DIFF_J := 0;  
+         return;
          end if;
       
       
@@ -535,92 +534,94 @@
 ----------------------------------------------------------------------------
 ----------------------------------------------------------------------------
 ----------------------------------------------------------------------------
-----Big problem.  This area has been generaing exceptions.
+----Big problem.  This area has been generating exceptions.
 ----At least one difficulty is that suffixes change POFS.
 ----So one has a N inflection (SL) but a V DE
 ----When the program checks for VOC, it wants a N
 ---- and then asks about KIND (P, N, T,...) 
 ---- But the DE (v) does not have those
----- The solution would be to fix ADD SUFFIX to do somethnig about passing the ADDON KIND
+---- The solution would be to fix ADD SUFFIX to do something about passing the ADDON KIND
 ----  I do not want to face that now
 ----  It is likely that all this VOC/LOC is worthless anyway.  Maybe lower FREQ in INFLECTS
 ----
-----  A further complication is the GANT and AO give different results (AO no exception)
-----  That is probably because the program is in error and the result threrfore unspecified
+----  A further complication is the GNAT and AO give different results (AO no exception)
+----  That is probably because the program is in error and the result therefore unspecified
 ----
 ----
-            
---
---            I := SL_LAST;
---TEXT_IO.PUT_LINE("Checking VOC/LOC    SL_LAST = " & INTEGER'IMAGE(SL_LAST));
---           while I >= SL'FIRST  loop
---            --  Check for Vocative being person/name and Locative a place/area
-----TEXT_IO.PUT_LINE("Looping down on I  I = " & INTEGER'IMAGE(I)); 
---               if (SL(I).IR.QUAL.POFS = N)  then 
---TEXT_IO.PUT_LINE("N found   I = " & INTEGER'IMAGE(I)); 
---PARSE_RECORD_IO.PUT(SL(I)); TEXT_IO.NEW_LINE;
---                 if NOT_ONLY_VOCATIVE    and then 
---                     (SL(I).IR.QUAL.N.CS = VOC) and then 
---                     ((DEPR(SL(I)).PART.N.KIND /= N) and 
---                      (DEPR(SL(I)).PART.N.KIND /= P)) then
-----TEXT_IO.PUT_LINE("N VOC not a P or N          I = " & INTEGER'IMAGE(I)); 
---                     SL(I..SL_LAST-1) := SL(I+1..SL_LAST);
---                     SL_LAST := SL_LAST - 1;
---                     TRIMMED := TRUE;
---                  elsif NOT_ONLY_LOCATIVE    and then 
---                     (SL(I).IR.QUAL.N.CS = LOC) and then 
---                     ((DEPR(SL(I)).PART.N.KIND /= L) and 
---                      (DEPR(SL(I)).PART.N.KIND /= W)) then
-----TEXT_IO.PUT_LINE("N LOC not a W or L           "); 
---                     SL(I..SL_LAST-1) := SL(I+1..SL_LAST);
---                     SL_LAST := SL_LAST - 1;
---                     TRIMMED := TRUE;
---                  end if;
---               end if;
---               I := I - 1;
---            end loop; 
-----TEXT_IO.PUT_LINE("Checked  VOC/LOC");
---         
---         
---              --  Cutting viciously here       
---            I := SL_LAST;
---            while I >= SL'FIRST  loop
---               if (SL(I).IR.QUAL.POFS = ADJ)  then 
---                  if NOT_ONLY_VOCATIVE    and then 
---                     (SL(I).IR.QUAL.ADJ.CS = VOC) then
---                     SL(I..SL_LAST-1) := SL(I+1..SL_LAST);
---                     SL_LAST := SL_LAST - 1;
---                     TRIMMED := TRUE;
---                  elsif NOT_ONLY_LOCATIVE    and then 
---                     (SL(I).IR.QUAL.ADJ.CS = LOC) then
---                     SL(I..SL_LAST-1) := SL(I+1..SL_LAST);
---                     SL_LAST := SL_LAST - 1;
---                     TRIMMED := TRUE;
---                  end if;
---               end if;
---               I := I - 1;
---            end loop; 
---         
---         
---         
---            I := SL_LAST;
---            while I >= SL'FIRST  loop
---               if (SL(I).IR.QUAL.POFS = VPAR)  then 
---                  if NOT_ONLY_VOCATIVE    and then 
---                     (SL(I).IR.QUAL.VPAR.CS = VOC) then
---                     SL(I..SL_LAST-1) := SL(I+1..SL_LAST);
---                     SL_LAST := SL_LAST - 1;
---                     TRIMMED := TRUE;
---                  elsif NOT_ONLY_LOCATIVE    and then 
---                     (SL(I).IR.QUAL.VPAR.CS = LOC) then
---                     SL(I..SL_LAST-1) := SL(I+1..SL_LAST);
---                     SL_LAST := SL_LAST - 1;
---                     TRIMMED := TRUE;
---                  end if;
---               end if;
---               I := I - 1;
---            end loop; 
---         
+           
+         
+         --  SPR:  No exceptions or warnings on modern GNAT; see no reason why this would raise an exception; reactivating for now
+         
+          I := SL_LAST;
+-- .PUT_LINE("Checking VOC/LOC    SL_LAST = " & INTEGER'IMAGE(SL_LAST));
+         while I >= SL'FIRST  loop
+          --  Check for Vocative being person/name and Locative a place/area
+-- TEXT_IO.PUT_LINE("Looping down on I  I = " & INTEGER'IMAGE(I)); 
+             if (SL(I).IR.QUAL.POFS = N)  then 
+-- TEXT_IO.PUT_LINE("N found   I = " & INTEGER'IMAGE(I)); 
+PARSE_RECORD_IO.PUT(SL(I)); TEXT_IO.NEW_LINE;
+               if NOT_ONLY_VOCATIVE    and then 
+                   (SL(I).IR.QUAL.N.CS = VOC) and then 
+                   ((DEPR(SL(I)).PART.N.KIND /= N) and 
+                    (DEPR(SL(I)).PART.N.KIND /= P)) then
+-- TEXT_IO.PUT_LINE("N VOC not a P or N          I = " & INTEGER'IMAGE(I)); 
+                   SL(I..SL_LAST-1) := SL(I+1..SL_LAST);
+                   SL_LAST := SL_LAST - 1;
+                   TRIMMED := TRUE;
+                elsif NOT_ONLY_LOCATIVE    and then 
+                   (SL(I).IR.QUAL.N.CS = LOC) and then 
+                   ((DEPR(SL(I)).PART.N.KIND /= L) and 
+                    (DEPR(SL(I)).PART.N.KIND /= W)) then
+-- TEXT_IO.PUT_LINE("N LOC not a W or L           "); 
+                   SL(I..SL_LAST-1) := SL(I+1..SL_LAST);
+                   SL_LAST := SL_LAST - 1;
+                   TRIMMED := TRUE;
+                end if;
+             end if;
+             I := I - 1;
+          end loop; 
+-- TEXT_IO.PUT_LINE("Checked  VOC/LOC");
+       
+       
+            --  Cutting viciously here       
+          I := SL_LAST;
+          while I >= SL'FIRST  loop
+             if (SL(I).IR.QUAL.POFS = ADJ)  then 
+                if NOT_ONLY_VOCATIVE    and then 
+                   (SL(I).IR.QUAL.ADJ.CS = VOC) then
+                   SL(I..SL_LAST-1) := SL(I+1..SL_LAST);
+                   SL_LAST := SL_LAST - 1;
+                   TRIMMED := TRUE;
+                elsif NOT_ONLY_LOCATIVE    and then 
+                   (SL(I).IR.QUAL.ADJ.CS = LOC) then
+                   SL(I..SL_LAST-1) := SL(I+1..SL_LAST);
+                   SL_LAST := SL_LAST - 1;
+                   TRIMMED := TRUE;
+                end if;
+             end if;
+             I := I - 1;
+          end loop; 
+       
+       
+       
+          I := SL_LAST;
+          while I >= SL'FIRST  loop
+             if (SL(I).IR.QUAL.POFS = VPAR)  then 
+                if NOT_ONLY_VOCATIVE    and then 
+                   (SL(I).IR.QUAL.VPAR.CS = VOC) then
+                   SL(I..SL_LAST-1) := SL(I+1..SL_LAST);
+                   SL_LAST := SL_LAST - 1;
+                   TRIMMED := TRUE;
+                elsif NOT_ONLY_LOCATIVE    and then 
+                   (SL(I).IR.QUAL.VPAR.CS = LOC) then
+                   SL(I..SL_LAST-1) := SL(I+1..SL_LAST);
+                   SL_LAST := SL_LAST - 1;
+                   TRIMMED := TRUE;
+                end if;
+             end if;
+             I := I - 1;
+          end loop; 
+       
          
          
          --  This is really working much too hard!
@@ -633,7 +634,7 @@
                   if (SL(I).IR.QUAL.POFS /= N) or
                      (   (SL(I).IR.QUAL /= (N,  ((9, 8), X, X, M)))  and  
                             ( TRIM(SL(I).STEM)'LENGTH = 1  and then
-                                 (SL(I).STEM(1) = 'A'  or
+                                 (SL(I).STEM(1) = 'A'  or        -- SPR:  What about V?
                                   SL(I).STEM(1) = 'C'  or
                                   SL(I).STEM(1) = 'D'  or
                                   --SL(I).STEM(1) = 'K'  or      --  No problem here
@@ -837,13 +838,14 @@
       loop
          exit when J > PA_LAST;
          PR := PA(J);
-         if PR /= OPR  then
+      if PR /= OPR  then
             SUPRESS_KEY_CHECK:
             declare
                function "<=" (A, B : PARSE_RECORD) return BOOLEAN is
-               begin                             --  !!!!!!!!!!!!!!!!!!!!!!!!!!
-                  if A.IR.QUAL = B.IR.QUAL  and
-                  A.MNPC    = B.MNPC     then
+            begin                             --  !!!!!!!!!!!!!!!!!!!!!!!!!!
+
+              if A.IR.QUAL = B.IR.QUAL  and
+                 A.MNPC    = B.MNPC     then
                      return TRUE;
                   else
                      return FALSE;
@@ -852,18 +854,28 @@
                function "<" (A, B : PARSE_RECORD) return BOOLEAN is
                begin                             --  !!!!!!!!!!!!!!!!!!!!!!!!!!
                   if A.IR.QUAL = B.IR.QUAL  and
-                  A.MNPC   /= B.MNPC     then
-                     return TRUE;
+                 A.MNPC   /= B.MNPC     then
+                  return TRUE;
+             
                   else
                      return FALSE;
                   end if;
                end "<";
             begin
                if ((PR.D_K /= XXX) and (PR.D_K /= YYY) and  (PR.D_K /= PPP)) then
-                  if PR <= OPR  then       --  Get rid of duplicates, if ORDER is OK
+               if (PR <= OPR) then       
                      PA(J.. PA_LAST-1) := PA(J+1..PA_LAST);  --  Shift PA down 1
                      PA_LAST := PA_LAST - 1;        --  because found key duplicate
-                  end if;
+               
+                -- SPR:  This elsif stops duplicative entries for suffixes with multiple stems
+                -- SPR:  (for example, 'ludica'); should also prevent other weird duplicate entries
+               elsif (J+1 <= PA_LAST) -- Must include range check or exceptions will be raised 
+                                      -- in some situations (e.g., 'fame')
+                 then if (PA(J) = PA(J+1))  then      --  to be extra conservative, add 'and PR.D_K = GENERAL'                                   
+                     PA(J.. PA_LAST-1) := PA(J+1..PA_LAST); 
+                     PA_LAST := PA_LAST - 1;       
+                                                    end if;
+               end if;
                else
                   J := J + 1;
                end if;
@@ -871,11 +883,13 @@
          else
             J := J + 1;
          
-         end if;
-         OPR := PR;
+      end if;
+
+      OPR := PR;
+      
       end loop COMPRESS_LOOP;
    
-   
+
    
       for I in 1..PA_LAST  loop
       --  Set to 0 the VAR for N            --  DON'T
@@ -885,12 +899,12 @@
       --  Destroy the artificial VAR for PRON 1 X
          if PA(I).IR.QUAL.POFS = PRON  and then
          PA(I).IR.QUAL.PRON.DECL.WHICH =1  then
-            PA(I).IR.QUAL.PRON.DECL.VAR := 0;
+         PA(I).IR.QUAL.PRON.DECL.VAR := 0;
          end if;
          if PA(I).IR.QUAL.POFS = V   then
             if PA(I).IR.QUAL.V.CON = (3, 4)  then
             --  Fix V 3 4 to be 4th conjugation
-               PA(I).IR.QUAL.V.CON := (4, 1);
+            PA(I).IR.QUAL.V.CON := (4, 1);
             --    else
             --    --  Set to 0 other VAR for V
             --      PA(I).IR.QUAL.V.CON.VAR := 0;
@@ -898,8 +912,10 @@
          end if;
       end loop;
    
-   
-   
+--                           for I in 1..PA_LAST  loop
+--         PARSE_RECORD_IO.PUT(PA(I)); TEXT_IO.NEW_LINE;
+--      end loop;
+
 --      TEXT_IO.PUT_LINE("PA after COMPRESS  almost leaving LIST_STEMS    PA_LAST = "  & INTEGER'IMAGE(PA_LAST));
 --      for I in 1..PA_LAST  loop
 --         PARSE_RECORD_IO.PUT(PA(I)); TEXT_IO.NEW_LINE;

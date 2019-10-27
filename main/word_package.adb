@@ -1093,7 +1093,7 @@ end CHANGE_LANGUAGE;
                                                              SL(I).IR.QUAL.ADJ.CS,
                                                              SL(I).IR.QUAL.ADJ.NUMBER,
                                                              SL(I).IR.QUAL.ADJ.GENDER,
-                                                             COM )  ),
+                                                              COM)  ),
                                               KEY => SL(I).IR.KEY,
                                               ENDING => SL(I).IR.ENDING,
                                               AGE => SL(I).IR.AGE,
@@ -1149,7 +1149,7 @@ end CHANGE_LANGUAGE;
                                               QUAL => (
                                                       POFS => ADV,
                                                       ADV => (
-                                                             CO => COM)  ),
+                                                             CO => COMP, GENERATED => ADJADV) ),
                                               KEY => SL(I).IR.KEY,
                                               ENDING => SL(I).IR.ENDING,
                                               AGE => SL(I).IR.AGE,

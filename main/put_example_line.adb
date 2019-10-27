@@ -266,16 +266,15 @@
                      TEXT_IO.PUT(OUTPUT, "~'s; of ~"); 
                      TEXT_IO.NEW_LINE(OUTPUT);
                   when ABL =>
-                     TEXT_IO.NEW_LINE(OUTPUT);      --  Info too much for same line
-                     TEXT_IO.SET_COL(OUTPUT, 6);
-                     TEXT_IO.PUT(OUTPUT, 
-                                 "from _ (separ); because of ~ (cause); than ~ (compar); of ~ (circumstance)");
+                  --  TEXT_IO.NEW_LINE(OUTPUT);      --  Info too much for same line  
+                                                     -- SPR:  Not too much; there are long strings output in under, e.g., VPAR; appears to be artifact from old code
+                   --  TEXT_IO.SET_COL(OUTPUT, 6);
+                     TEXT_IO.PUT(OUTPUT, "from _ (separ); because of ~ (cause); than ~ (compar); of ~ (circumstance)");
                      TEXT_IO.NEW_LINE(OUTPUT);
                   when DAT =>
-                     TEXT_IO.NEW_LINE(OUTPUT);      --  Info too much for same line
-                     TEXT_IO.SET_COL(OUTPUT, 6);
-                     TEXT_IO.PUT(OUTPUT, 
-                                 "for _ (purpose, reference); to ~ (w/adjectives); to ~ (double dative)");
+                 --    TEXT_IO.NEW_LINE(OUTPUT);      --  Info too much for same line
+                 --    TEXT_IO.SET_COL(OUTPUT, 6);
+                     TEXT_IO.PUT(OUTPUT, "for _ (purpose, reference); to ~ (w/adjectives); to ~ (double dative)");
                      TEXT_IO.NEW_LINE(OUTPUT);
                   when LOC =>
                      TEXT_IO.PUT(OUTPUT, "at ~ (place where)");
@@ -293,7 +292,8 @@
                   when SUPER => 
                      TEXT_IO.PUT(OUTPUT, "~est; most/very");
                      TEXT_IO.NEW_LINE(OUTPUT);
-                  when others  => 
+
+               when others  => 
                      null;
                --TEXT_IO.NEW_LINE(OUTPUT); 
                end case;
@@ -306,11 +306,21 @@
                   when SUPER => 
                      TEXT_IO.PUT(OUTPUT, "most/very ~(ly)");
                      TEXT_IO.NEW_LINE(OUTPUT);
+                 when POS =>
+                  case IR.QUAL.ADV.GENERATED  is
+                   when ADJADV =>
+                        TEXT_IO.PUT(OUTPUT, "~ily, ~ly");
+                        TEXT_IO.NEW_LINE(OUTPUT);
+                     when others =>
+                        null;
+                        end case;
+  
                   when others  => 
                      null;
                --TEXT_IO.NEW_LINE(OUTPUT); 
                end case;
-         
+               
+
             when V => 
             --TEXT_IO.NEW_LINE(OUTPUT);        --  Verb info too much for same line
                VK := DE.PART.V.KIND;
@@ -380,5 +390,7 @@
          null;
       --TEXT_IO.NEW_LINE(OUTPUT); 
       end if;
+   
+
    
    end PUT_EXAMPLE_LINE;  

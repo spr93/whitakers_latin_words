@@ -57,21 +57,23 @@ package body WORD_SUPPORT_PACKAGE is
                   D_K : DICTIONARY_FILE_KIND := DEFAULT_DICTIONARY_FILE_KIND)
                        return STEM_IO.COUNT is
     WD : constant STRING := TRIM(INPUT_WORD);  --  string may not start at 1
-  begin
+   begin
+       
     if D_K = LOCAL  then
       return DDLF(WD(WD'FIRST), 'a', D_K);
     elsif WD'LENGTH < 2 then
       return   0; --  BDLF(WD(WD'FIRST), ' ', D_K);
     else
       return DDLF(WD(WD'FIRST), WD(WD'FIRST+1), D_K);
-    end if;
+      end if;
+   
   end FIRST_INDEX;
 
   function  LAST_INDEX(INPUT_WORD : STRING;
                  D_K : DICTIONARY_FILE_KIND := DEFAULT_DICTIONARY_FILE_KIND)
                        return STEM_IO.COUNT is
     WD : constant STRING := TRIM(INPUT_WORD);
-  begin        --  remember the string may not start at 1
+   begin        --  remember the string may not start at 1
     if D_K = LOCAL  then
       return DDLL(WD(WD'FIRST), 'a', D_K);
     elsif WD'LENGTH < 2 then

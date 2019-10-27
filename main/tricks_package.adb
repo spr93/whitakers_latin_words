@@ -653,18 +653,19 @@
          --  will be called from a point where the first letter is established
             PA_SAVE : INTEGER := PA_LAST;
          begin
---TEXT_IO.PUT_LINE("FLIP_FLOP called    " & X1 & "  " & X2);
+-- TEXT_IO.PUT_LINE("FLIP_FLOP called    " & X1 & "  " & X2);
              if S'LENGTH >= X1'LENGTH+2  and then
               S(S'FIRST..S'FIRST+X1'LENGTH-1) = X1   then
                PA_LAST := PA_LAST + 1;
                PA(PA_LAST) := (HEAD("Word mod " & X1 & "/" & X2, MAX_STEM_SIZE),
                                  NULL_INFLECTION_RECORD,
-                                 XXX, NULL_MNPC);
+                               XXX, NULL_MNPC);
+ --TEXT_IO.PUT_LINE("INSERTED MODIFICATION");
  --TEXT_IO.PUT_LINE("Trying " & X2 & S(S'FIRST+X1'LENGTH..S'LAST));
                TWORD(X2 & S(S'FIRST+X1'LENGTH..S'LAST), PA, PA_LAST);
                if (PA_LAST > PA_SAVE + 1)   and then
                   (PA(PA_LAST-1).IR.QUAL.POFS /= TACKON)  then
- --TEXT_IO.PUT_LINE("FLIPF worked");
+ --TEXT_IO.PUT_LINE("FLIP_FLOP worked");
                   if EXPLANATION = ""  then
                      XXX_MEANING := HEAD(
                                         "An initial '" & X1 & "' may be rendered by '" & X2 & "'"
