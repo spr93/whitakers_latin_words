@@ -1,0 +1,24 @@
+project Words is
+
+   for Source_Dirs use ("main/**");
+   for Object_Dir use "obj";
+   for Main use ("words.adb");
+
+   package Ide is
+      for Vcs_Kind use "Auto";
+   end Ide;
+
+   package Builder is
+      for Switches ("ada") use ("-j4", "-g", "-C");
+   end Builder;
+
+   package Compiler is
+      for Switches ("ada") use ("-gnato", "-fstack-check", "-gnatE", "-gnatf", "-g");
+   end Compiler;
+
+   package Linker is
+      for Switches ("ada") use ("-g");
+   end Linker;
+
+end Words;
+
