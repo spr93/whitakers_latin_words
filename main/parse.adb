@@ -16,7 +16,7 @@ with PREFACE;
 with PUT_STAT;
 with ENGLISH_SUPPORT_PACKAGE; use ENGLISH_SUPPORT_PACKAGE;
 with SEARCH_ENGLISH;
-
+with Arabic2Roman;
 
 
 pragma Elaborate(WORD_PARAMETERS);
@@ -40,36 +40,37 @@ procedure PARSE(COMMAND_LINE : STRING := "") is
   TRPA : PARSE_ARRAY(1..TRICKS_MAX) := (others => NULL_PARSE_RECORD);
   PA_LAST, SYPA_LAST, TRPA_LAST : INTEGER := 0;
 
-   ALL_ARABIC : Boolean;
-   
-
+  
 
   procedure PARSE_LINE(INPUT_LINE : STRING) is
     L : INTEGER := TRIM(INPUT_LINE)'LAST;
-    --LINE : STRING(1..2500) := (others => ' ');
-    W : STRING(1..L) := (others => ' ');      
+    W : STRING(1..L) := (others => ' ');     
+    Arabic_String : String(1..2500) := (others => '|'); 
+    Arabic_Present : Boolean := False;
+    Arabic_J : Integer := 1;
+    Arabic_Process_All : Boolean := False;  
+    Last_J : Integer := 1;  
+
   begin
     WORD_NUMBER := 0;
     LINE(1..L) := TRIM(INPUT_LINE);
-
-
-
-  ELIMINATE_NOT_LETTERS_OR_NUMBERS:
+      
+  ELIMINATE_NOT_LETTERS:
     begin
-    for I in 1..L  loop
-      if ((LINE(I) in 'A'..'Z')  or
-          (LINE(I) = '-')           or     --  For the comment [SPR: this and catching period are complicated; cant we replace with a case statement]
-          (LINE(I) = '.')           or     --  Catch period later
-            (LINE(I) in 'a'..'z')  or
-           (Line(I) in '0'..'9')) then   
-               null;
-      else
-        LINE(I) := ' ';
-      end if;
+     for I in 1..L  loop
+         case Line(I) is   
+          when 'A'..'Z' => Arabic_String(I) := 'z';
+          when 'a'..'z' => Arabic_String(I) := 'z';     
+          when '-' => Arabic_String(I) := Line(I); 
+          when '.' => Null;     
+          when '0'..'9' =>  Arabic_String(I) := Line(I); Arabic_Present := True;
+          when '_' =>  Arabic_String(I) := Line(I); Line(I) := ' ';
+          when ',' =>   Arabic_String(I) := '_'; Line(I) := ' ';
+          when others => Line(I) := ' ';   
+         end case;
+         
          end loop;
-
-    end ELIMINATE_NOT_LETTERS_OR_NUMBERS;
-
+    end ELIMINATE_NOT_LETTERS;
 
       --  Skip over leading and intervening blanks, looking for comments
       --  Punctuation, numbers, and special characters were cleared above
@@ -80,16 +81,53 @@ procedure PARSE(COMMAND_LINE : STRING := "") is
       for I in K+1..L  loop
         exit when LINE(J) in 'A'..'Z';
             exit when LINE(J) in 'a'..'z';
-            exit when Line(J) in '0'..'9';
         if I < L  and then
            LINE(I..I+1) = "--"   then
           exit OVER_LINE;      --  the rest of the line is comment
         end if;
         J := I + 1;
-      end loop;
+       end loop;
+         
+         -- Intercept Arabic numerals here so we don't have to change the rest of the procedure
 
-      exit when J > L;             --  Kludge
+    if Arabic_Present then 
+                            if L > 2500 then L := 2500; -- line full; get last digit and to go out of bounds
+                            end if;
+              if J > L then
+               Arabic_Process_All := True;
+            end if;
+            
+            If  Arabic_J = 1 Then 
+                  case Arabic_String(Arabic_J) is
+                  when 'z' => null; -- Arabic_J := Arabic_J+1; -- we've got a word first
+                  when others => Arabic_Process_All := True; Put_Line(""); -- Arabic_J := Arabic_J+1;-- conform to Words standard format
+                  end case;
+            end if; 
+             
+            if Arabic_J >1 or Arabic_Process_All = True Then 
+                if J > L then
+                            case WORDS_MODE(WRITE_OUTPUT_TO_FILE) is
+                            when True => Arabic2Roman.Arabic2Roman(OUTPUT, Arabic_String((Last_J)..L), Arabic_Process_All);
+                            when False => Arabic2Roman.Arabic2Roman(CURRENT_OUTPUT, Arabic_String((Last_J)..L), Arabic_Process_All);
+                            Put_Line(OUTPUT,""); 
+                            end case;
+      
+                  else   
+                           case WORDS_MODE(WRITE_OUTPUT_TO_FILE) is
+                           when True => Arabic2Roman.Arabic2Roman(OUTPUT, Arabic_String((Arabic_J)..J), Arabic_Process_All);
+                           when False => Arabic2Roman.Arabic2Roman(CURRENT_OUTPUT, Arabic_String((Arabic_J)..J), Arabic_Process_All);
+                                       Put_Line(OUTPUT,"");
+                           end case; 
+                end if;
+         end if;    
+         
+    Arabic_J := Arabic_J + 1;
+  end if; 
+            
 
+      
+      exit when J > L;              --  Kludge
+         
       FOLLOWS_PERIOD := FALSE;      -- SPR:  This seems to be out of order.  Does this do anything?
       if FOLLOWED_BY_PERIOD  then
         FOLLOWED_BY_PERIOD := FALSE;
@@ -115,28 +153,12 @@ procedure PARSE(COMMAND_LINE : STRING := "") is
 --                or (CHARACTER'POS(LINE(I)) < 32)  or (CHARACTER'POS(LINE(I)) > 127) );
 
               
-              exit when ((LINE(I) not in 'A'..'Z') and (LINE(I) not in 'a'..'z') and (LINE(I) not in '0'..'9'));
+              exit when ((LINE(I) not in 'A'..'Z') and (LINE(I) not in 'a'..'z'));
         W(I) := LINE(I);
         K := I;
 
 end loop;
              
- CHECK_FOR_ALL_ARABIC:
-         begin
-        All_Arabic := True;
-        for I in J..K  loop
-        exit when All_Arabic = False;
-            if ((W(I) in '0'..'9')) then null;
-      else
-        All_Arabic := FALSE;
-      end if;
-        end loop;
-               
-         if All_Arabic = True then 
-            Text_IO.Put_Line("It's all Arabic to me");
-            end if;
-    end CHECK_FOR_ALL_ARABIC;
-
 
          -- Determine whether all caps (a couple user options change behavior when there's a cap);
  
@@ -312,7 +334,7 @@ if WORDS_MDEV(DO_SYNCOPE)  and not NO_SYNCOPE  then
                --SUBTRACT_TACKON(LOWER_CASE(INPUT_WORD), TACKONS(I));
                SUBTRACT_TACKON(TRY, TACKONS(I));
       begin
---TEXT_IO.PUT_LINE("In TRICKS_ENCLITIC     LESS/TACKON  = " & LESS & "/" & TACKONS(I).TACK); 
+-- TEXT_IO.PUT_LINE("In TRICKS_ENCLITIC     LESS/TACKON  = " & LESS & "/" & TACKONS(I).TACK); 
        if LESS  /= TRY  then       --  LESS is less
           --PASS(LESS);
           TRY_TRICKS(LESS, TRPA, TRPA_LAST, LINE_NUMBER, WORD_NUMBER);
@@ -931,12 +953,13 @@ end if;       --  On WORDS_MODE(DO_COMPOUNDS)
 -- TEXT_IO.PUT_LINE("Before LISTing STEMS (PA_LAST > 0 to start) PA_LAST = " & 
 -- INTEGER'IMAGE(PA_LAST));
 
-               
+
           if  WORDS_MODE(WRITE_OUTPUT_TO_FILE)      then
             LIST_STEMS(OUTPUT, INPUT_WORD, INPUT_LINE, PA, PA_LAST);
           else
             LIST_STEMS(CURRENT_OUTPUT, INPUT_WORD, INPUT_LINE, PA, PA_LAST);
-          end if;
+                  end if;
+   
 
 -- TEXT_IO.PUT_LINE("After LISTing STEMS (PA_LAST > 0 to start) PA_LAST = " & 
 -- INTEGER'IMAGE(PA_LAST));
