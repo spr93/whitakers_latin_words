@@ -324,7 +324,7 @@
                                     FREQ => A),
                               D_K => RRR,
                               MNPC => NULL_MNPC);
-            RRR_MEANING := HEAD(INTEGER'IMAGE(ROMAN_NUMBER_W) & "  as a ROMAN NUMERAL;", 
+            RRR_MEANING := HEAD(INTEGER'IMAGE(ROMAN_NUMBER_W) & " as a ROMAN NUMERAL;", 
                                 MAX_MEANING_SIZE); 
          else
             null;    --  Is not ROMAN NUMERAL, so go on and try something else
@@ -653,7 +653,7 @@
          --  will be called from a point where the first letter is established
             PA_SAVE : INTEGER := PA_LAST;
          begin
--- TEXT_IO.PUT_LINE("FLIP_FLOP called    " & X1 & "  " & X2);
+--TEXT_IO.PUT_LINE("FLIP_FLOP called    " & X1 & "  " & X2);
              if S'LENGTH >= X1'LENGTH+2  and then
               S(S'FIRST..S'FIRST+X1'LENGTH-1) = X1   then
                PA_LAST := PA_LAST + 1;
@@ -1378,7 +1378,14 @@
             FLIP_FLOP("subt",  "sust");   
             if PA_LAST > 0  then 
                return; end if;
-         
+            
+            FLIP_FLOP("subst",  "sust");   -- SPR: White (1880) 
+            if PA_LAST > 0  then 
+               return; end if;
+            
+           FLIP_FLOP("subr",  "surr");  -- SPR: White (1880)  
+            if PA_LAST > 0  then 
+               return; end if;
          
          when 't'  =>
          
@@ -1636,16 +1643,16 @@
       
       
       
-      --  It could be an improperly formed Roman Numeral
-         if ONLY_ROMAN_DIGITS(W)  then
+      --  May be additive Roman numeral; SPR:  Removed "ill formed" and bad for additive forms; see sources in Arabic2Roman.ads
+         if ONLY_ROMAN_DIGITS(W)  then   
          
          
-            PA_LAST := 1;
-            PA(1) := ("Bad Roman Numeral?", NULL_INFLECTION_RECORD,
+            PA_LAST := 1;   -- add 4 spaces because code assumes array length
+            PA(1) := ("Roman Numeral?    ", NULL_INFLECTION_RECORD,       
                         XXX, NULL_MNPC);
                 XXX_MEANING := NULL_MEANING_TYPE;
                 
-                RRR_MEANING := HEAD(INTEGER'IMAGE(BAD_ROMAN_NUMBER(W)) & "  as ill-formed ROMAN NUMERAL?;", 
+                RRR_MEANING := HEAD(INTEGER'IMAGE(BAD_ROMAN_NUMBER(W)) & " as a ROMAN NUMERAL?;", 
                                 MAX_MEANING_SIZE); 
                     PA_LAST := PA_LAST + 1;
             PA(PA_LAST) := ( STEM => HEAD(W, MAX_STEM_SIZE),
@@ -2069,13 +2076,18 @@
          
             SLUR("sub");
          
-         --FLIP_FLOP("subsc",  "susc");   if PA_LAST > 0  then return; end if;
-         --FLIP_FLOP("subsp",  "susp");   if PA_LAST > 0  then return; end if;
+         FLIP_FLOP("subsc",  "susc");   if PA_LAST > 0  then return; end if;
+         FLIP_FLOP("subsp",  "susp");   if PA_LAST > 0  then return; end if;
          
-         --FLIP_FLOP("subc",  "susc");   if PA_LAST > 0  then return; end if;
-         --FLIP_FLOP("succ",  "susc");   if PA_LAST > 0  then return; end if;
+         FLIP_FLOP("subc",  "susc");   if PA_LAST > 0  then return; end if;
+         FLIP_FLOP("succ",  "susc");   if PA_LAST > 0  then return; end if;
          
-         --FLIP_FLOP("subt",  "sust");   if PA_LAST > 0  then return; end if;
+         FLIP_FLOP("subt",  "sust");   if PA_LAST > 0  then return; end if;
+         
+         FLIP_FLOP("subr", "surr"); if PA_LAST > 0  then return; end if;     -- SPR: White (1880)
+         
+                           
+         FLIP_FLOP("subst",  "sust");  if PA_LAST > 0  then return; end if;  -- SPR: White (1880)
          
          
          --elsif S(S'FIRST) = 't'  then
