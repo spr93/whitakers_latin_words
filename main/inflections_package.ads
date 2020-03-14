@@ -1,6 +1,7 @@
 with TEXT_IO; 
 with DIRECT_IO;
 package INFLECTIONS_PACKAGE is
+   pragma Elaborate_Body;
   package INTEGER_IO is new TEXT_IO.INTEGER_IO(INTEGER);
   use TEXT_IO;
 

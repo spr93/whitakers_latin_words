@@ -634,12 +634,12 @@ PARSE_RECORD_IO.PUT(SL(I)); TEXT_IO.NEW_LINE;
                   if (SL(I).IR.QUAL.POFS /= N) or
                      (   (SL(I).IR.QUAL /= (N,  ((9, 8), X, X, M)))  and  
                             ( TRIM(SL(I).STEM)'LENGTH = 1  and then
-                                 (SL(I).STEM(1) = 'A'  or        -- SPR:  What about V?
+                                 (SL(I).STEM(1) = 'A'  or        -- (because 'a' is a lexical unit)
                                   SL(I).STEM(1) = 'C'  or
                                   SL(I).STEM(1) = 'D'  or
-                                  --SL(I).STEM(1) = 'K'  or      --  No problem here
+                                  --SL(I).STEM(1) = 'K'  or      -- What about V?
                                   SL(I).STEM(1) = 'L'  or
-                                  SL(I).STEM(1) = 'M'            --  or
+                                  SL(I).STEM(1) = 'M'            
                                  --SL(I).STEM(1) = 'N'  or
                                  --SL(I).STEM(1) = 'P'  or
                                  --SL(I).STEM(1) = 'Q'  or
@@ -861,26 +861,30 @@ PARSE_RECORD_IO.PUT(SL(I)); TEXT_IO.NEW_LINE;
                      return FALSE;
                   end if;
                end "<";
-            begin
-               if ((PR.D_K /= XXX) and (PR.D_K /= YYY) and  (PR.D_K /= PPP)) then
+         begin
+            
+         if ((PR.D_K /= XXX) and (PR.D_K /= YYY) and  (PR.D_K /= PPP)) then
                if (PR <= OPR) then       
                      PA(J.. PA_LAST-1) := PA(J+1..PA_LAST);  --  Shift PA down 1
                      PA_LAST := PA_LAST - 1;        --  because found key duplicate
                
-                -- SPR:  This elsif stops duplicative entries for suffixes with multiple stems
+                -- SPR:  The elsif that follows stops duplicative entries for suffixes with multiple stems
                 -- SPR:  (for example, 'ludica'); should also prevent other weird duplicate entries
-               elsif (J+1 <= PA_LAST) -- Must include range check or exceptions will be raised 
-                                      -- in some situations (e.g., 'fame')
-                 then if (PA(J) = PA(J+1))  then      --  to be extra conservative, add 'and PR.D_K = GENERAL'                                   
+                elsif (J+1 <= PA_LAST) -- Must include range check or exceptions will be raised 
+                                       -- in some situations (e.g., 'fame')
+                  then if (PA(J) = PA(J+1))  then      --  to be extra conservative, add 'and PR.D_K = GENERAL'                                   
                      PA(J.. PA_LAST-1) := PA(J+1..PA_LAST); 
                      PA_LAST := PA_LAST - 1;       
-                                                    end if;
+                  end if;
                end if;
+              
                else
                   J := J + 1;
-               end if;
-            end SUPRESS_KEY_CHECK;
-         else
+            end if;
+            
+            
+      end SUPRESS_KEY_CHECK;
+      else
             J := J + 1;
          
       end if;

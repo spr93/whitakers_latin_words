@@ -847,7 +847,7 @@ begin
   begin
   --  Read the MDEV file
     GET_MDEVS;
-    PREFACE.PUT_LINE("MDEV_FILE found - Using those MDEVs and parameters");
+    PREFACE.PUT_LINE("MDEV_FILE loaded");
   exception
   --  If there is any problem
   --  Put that the MDEV file is corrupted and the options are:

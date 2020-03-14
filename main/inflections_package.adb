@@ -2521,13 +2521,13 @@ end;
 
 begin
 
-  PREFACE.PUT("INFLECTION_ARRAY being loaded");
+  PREFACE.PUT("INFLECTION ARRAY loading");
   PREFACE.SET_COL(33);
   PREFACE.PUT("--  ");
   LOAD_LEL_INDEXES;                    --  Makes indexes from array
   PREFACE.PUT(NUMBER_OF_INFLECTIONS, 6);
   PREFACE.PUT(" entries");
-  PREFACE.SET_COL(55); PREFACE.PUT_LINE("--  Loaded correctly");
+  PREFACE.SET_COL(55); PREFACE.PUT_LINE("--  loaded correctly");
 
 exception
   when Text_IO.Name_Error  =>

@@ -368,7 +368,7 @@ package body LINE_STUFF is
     PREFACE.SET_COL(33); PREFACE.PUT("--  ");
     PREFACE.PUT(NUMBER_OF_DICTIONARY_ENTRIES, 6);
     PREFACE.PUT(" entries"); PREFACE.SET_COL(55);
-    PREFACE.PUT_LINE("--  Loaded correctly");
+    PREFACE.PUT_LINE("--  loaded correctly");
   exception
       when others   =>
         PREFACE.PUT_LINE("    LOAD_DICTIONARY exception        !!!!!!!!!!");
@@ -978,7 +978,7 @@ package body LINE_STUFF is
     PREFACE.SET_COL(33);
     PREFACE.PUT("--  "); PREFACE.PUT(NUMBER_OF_UNIQUES_ENTRIES, 6);
     PREFACE.PUT(" entries");
-    PREFACE.SET_COL(55); PREFACE.PUT_LINE("--  Loaded correctly");
+    PREFACE.SET_COL(55); PREFACE.PUT_LINE("--  loaded correctly");
   exception
     when TEXT_IO.NAME_ERROR  =>
       PREFACE.PUT_LINE("There is no UNIQUES file");

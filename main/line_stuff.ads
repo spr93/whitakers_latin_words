@@ -4,9 +4,9 @@ with DICTIONARY_PACKAGE; use DICTIONARY_PACKAGE;
 with ADDONS_PACKAGE; use ADDONS_PACKAGE;
 with UNIQUES_PACKAGE; use UNIQUES_PACKAGE;
 package LINE_STUFF is
+  pragma Elaborate_Body;
+   
   use TEXT_IO;
-
-
 
   type DICTIONARY_ITEM;
   type DICTIONARY_LIST is access DICTIONARY_ITEM;

@@ -41,7 +41,9 @@ package body WORD_PARAMETERS is
 
                       DO_EXAMPLES                 => FALSE,
                       DO_ONLY_MEANINGS            => FALSE,
-                      DO_STEMS_FOR_UNKNOWN        => FALSE    );
+                      DO_STEMS_FOR_UNKNOWN        => FALSE,    
+                                              
+                      DO_ARABIC_NUMERALS          => TRUE);
 
   BAD_MODE_FILE : exception;
 
@@ -58,9 +60,9 @@ TRIM_OUTPUT_HELP : constant HELP_TYPE :=  (
    "not correct, just that they are statistically less likely.            ",
    "Note that poets are likely to employ unusual words and inflections for",
    "various reasons.  These may be trimmed out if this parameter in on.   ",
-   "When in English mode, trim just reduces the output to the top six     ",
-   "results, if there are that many.  Asterix means there are more        ",
-   "                                                The default is Y(es)  " );
+   "When in English-Latin mode, TRIM just reduces the output to the top   ",
+   "six results, if there are that many.  Asterisk means that tthe output ",
+   "was trimmed and more results are available.       The default is Y(es)" );
 
 
 HAVE_OUTPUT_FILE_HELP : constant HELP_TYPE :=  (
@@ -121,7 +123,7 @@ IGNORE_UNKNOWN_NAMES_HELP : constant HELP_TYPE :=  (
    "it is often convenient to ignore these sperious UNKNOWN hits.  This   ",
    "option implements that mode, and calls such words proper names.       ",
    "Any proper names that are in the dictionary are handled in the normal ",
-   "manner.                                The default is Y(es).          " );
+   "manner.                                          The default is Y(es)." );
 
 IGNORE_UNKNOWN_CAPS_HELP : constant HELP_TYPE :=  (
    "This option instructs the program to assume that any all caps word    ",
@@ -214,6 +216,12 @@ DO_STEMS_FOR_UNKNOWN_HELP : constant HELP_TYPE :=  (
    "from full translations, therefore the default choice is N(o).         ",
    "This processing can be turned on with the choice of Y(es).            " );
 
+DO_ARABIC_NUMERALS_HELP : constant HELP_TYPE :=  (
+   "This option instructs the program to process Arabic-Hindu numerals as ",
+   "words for translation to Roman numerals.  This option applies to both ",
+   "English-Latin and Latin-English modes.  If set to N(o), then the      ",
+   "program disregards Arabic-Hindu numerals and treats them like spaces. ",                                            
+   "spaces.                                          The default is Y(es)." );
 
 SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
    "This option instructs the program, to save the current parameters, as ",
@@ -227,6 +235,7 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
    "default parameters used, until a proper parameter file in written by  ",
    "the program.  Since one may want to make temporary changes during a   ",
    "run, but revert to the usual set, the default is N(o).                " );
+                                                                                            
 
   procedure PUT(HELP : HELP_TYPE) is
   begin
@@ -311,7 +320,7 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
 
     
     PUT_LINE("To set/change parameters reply Y/y or N/n.  Return accepts current value.");
-    PUT_LINE("A '?' reply gives infomation/help on that parameter.  A space skips the rest.");
+    PUT_LINE("A '?' reply gives information/help on that parameter.  A space skips the rest.");
     NEW_LINE;
      
   --  Interactive mode - lets you do things on unknown words
@@ -357,7 +366,7 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
         CREATE(OUTPUT, OUT_FILE, OUTPUT_FULL_NAME);
       exception
         when others =>
-          PUT_LINE("Cannot CREATE WORD.OUT - Check if it is in use elsewhere");
+          PUT_LINE("Cannot create WORD.OUT - Check if it is in use elsewhere");
       end;
       end if;
 
@@ -404,6 +413,7 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
 
     INQUIRE(DO_STEMS_FOR_UNKNOWN, DO_STEMS_FOR_UNKNOWN_HELP);
 
+    INQUIRE(DO_ARABIC_NUMERALS, DO_ARABIC_NUMERALS_HELP);
 
     PUT("Do you wish to save this set of parameters? Y or N (Default) ");
     PUT(" =>");
@@ -432,7 +442,6 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
   end CHANGE_PARAMETERS;
 
   
-     
   procedure INITIALIZE_WORD_PARAMETERS is
 begin
   WORDS_MODE := DEFAULT_MODE_ARRAY;
@@ -442,7 +451,7 @@ begin
   begin
     --  Read the mode file
     GET_MODES; --(WORDS_MODE);
-    PREFACE.PUT_LINE("MODE_FILE found - Using those modes and parameters");
+    PREFACE.PUT_LINE("MODE_FILE loaded");
   exception
   --  If there is any problem
   --  Put that the mode file is corrupted and the options are:
@@ -465,7 +474,7 @@ begin
      (WORDS_MODE(HAVE_OUTPUT_FILE))  then
     TEXT_IO.CREATE(OUTPUT, TEXT_IO.OUT_FILE, OUTPUT_FULL_NAME);
     --TEXT_IO.PUT_LINE("WORD.OUT Created at Initialization");
-    PREFACE.PUT_LINE("WORD.OUT Created at Initialization");
+    PREFACE.PUT_LINE("WORD.OUT created");
   end if;
   if not TEXT_IO.IS_OPEN(UNKNOWNS) and then WORDS_MODE(WRITE_UNKNOWNS_TO_FILE)  then
     TEXT_IO.CREATE(UNKNOWNS, TEXT_IO.OUT_FILE, UNKNOWNS_FULL_NAME);

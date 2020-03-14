@@ -251,7 +251,7 @@ package body ADDONS_PACKAGE is
     PREFACE.PUT(PRE, 3); PREFACE.PUT(" PREFIXES ");
     PREFACE.PUT(SUF, 3); PREFACE.PUT(" SUFFIXES ");
 
-    PREFACE.SET_COL(60); PREFACE.PUT_LINE("--  Loaded correctly");
+    PREFACE.SET_COL(60); PREFACE.PUT_LINE("--  loaded correctly");
     CLOSE(ADDONS_FILE);
 
 --for I in MEANS'RANGE  loop

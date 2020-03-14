@@ -268,7 +268,7 @@ end if;
           PUT(STEM_IO.COUNT((NUMBER_OF_NON_BLANK_STEMS)), 6);
         end if;   --  Kludge for when TEXT_IO.COUNT too small
     PREFACE.PUT(" stems");
-    PREFACE.SET_COL(55); PREFACE.PUT_LINE("--  Loaded correctly");
+    PREFACE.SET_COL(55); PREFACE.PUT_LINE("--  loaded correctly");
   end LOAD_INDICES_FROM_INDX_FILE;
 
 

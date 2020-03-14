@@ -44,7 +44,9 @@ package WORD_PARAMETERS is
 
                       DO_EXAMPLES,             
                       DO_ONLY_MEANINGS,        
-                      DO_STEMS_FOR_UNKNOWN       );         
+                      DO_STEMS_FOR_UNKNOWN,
+                      
+                      DO_ARABIC_NUMERALS);         
 
   package MODE_TYPE_IO is new TEXT_IO.ENUMERATION_IO(MODE_TYPE); 
 

@@ -1,23 +1,12 @@
-with CONFIG; use CONFIG;
-with STRINGS_PACKAGE; use STRINGS_PACKAGE;
-with LATIN_FILE_NAMES; use LATIN_FILE_NAMES;
-with WORD_PARAMETERS; use WORD_PARAMETERS;
-with INFLECTIONS_PACKAGE; use INFLECTIONS_PACKAGE;
-with DICTIONARY_PACKAGE; use DICTIONARY_PACKAGE;
-with ADDONS_PACKAGE; use ADDONS_PACKAGE;
-with UNIQUES_PACKAGE; use UNIQUES_PACKAGE;
-with WORD_SUPPORT_PACKAGE; use WORD_SUPPORT_PACKAGE;
-with DEVELOPER_PARAMETERS; use DEVELOPER_PARAMETERS;
-with WORD_PACKAGE; use WORD_PACKAGE;
-with DICTIONARY_FORM;
-with PUT_EXAMPLE_LINE;
-with LIST_SWEEP;
-with PUT_STAT;
+with Ada.Text_IO; use ADA.Text_IO;
+with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
+with WORD_PARAMETERS; use WORD_PARAMETERS;
+with DEVELOPER_PARAMETERS; use DEVELOPER_PARAMETERS;
 
 package body Arabic2Roman is
 
-   procedure Arabic2Roman (OUTPUT : File_Type; INPUT_WORD : in String; Arabic_Process_All : in Boolean) is
+   procedure Arabic2Roman (OUTPUT : File_Type; INPUT_WORD : in out String; Arabic_Process_All : in Boolean) is
 
    type Roman_Record_Type Is
       record
@@ -47,11 +36,10 @@ package body Arabic2Roman is
 
          if INPUT_WORD(Input_Counter) = '-' then
                 if Input_Counter = INPUT_WORD'First then Negative := True;
-                elsif Arabic_Process_All = False then ReTurn;
+                elsif Arabic_Process_All = False then return;
                 end if;
                if Input_Counter < INPUT_WORD'Last then Input_Counter := Input_Counter + 1; end if; -- advance one space if we wont go out of bounds
          end if;
-
 
 
          for J in Input_Counter..INPUT_WORD'Last loop
@@ -66,8 +54,8 @@ package body Arabic2Roman is
 
             case INPUT_WORD(Input_Counter) is  -- PARSE procedure leaves us with S (start of line), | (blank/space/delimiter), z (letter), #, or - (potential negative)
             when '0'..'9' => Arabic_String(Arabic_Build_Counter) := INPUT_WORD(Input_counter); Arabic_Build_Counter := Arabic_Build_Counter+1; Input_Counter := Input_Counter+1;
-            when '_' => Input_Counter := Input_Counter + 1;   -- this was a valid 000's delimiter (, or _) so ignore it
-            when 'z' => Input_Counter := Input_Counter + 1; -- there was a word or number here, so ignore it
+            when '_' => Input_Counter := Input_Counter + 1;       -- this was a valid 000's delimiter (, or _) so ignore it
+            when 'z' => Input_Counter := Input_Counter + 1;       -- there was a word or number here, so ignore it
             when '|' => Input_Counter := Input_Counter + 1; exit; -- a word or new number follows.
             when '.' => if (INPUT_WORD(Input_Counter+1) in '0'..'9') then return; else Input_Counter := Input_Counter + 1; end if;
             when '-' =>  -- "TRICK":  Accept negative numbers, convert to positive, and note that it's a neologism.   if Negative = True then
@@ -80,7 +68,7 @@ package body Arabic2Roman is
 
 
    if (Integer_Test(Arabic_String) = True) then    -- if enclosing the rest of the procedure
-    Arabic_Num := Integer'Value(Arabic_String);  -- rest of procedure requires interger
+    Arabic_Num := Integer'Value(Arabic_String);  -- rest of procedure requires integer
 
          if Negative = True then
                       if WORDS_MDEV(DO_PEARSE_CODES) then
@@ -113,14 +101,11 @@ package body Arabic2Roman is
 
          case Arabic_Num is
             when 1..99_999 => Roman_Num_Record.Age_F := Generate_Subtractive(Arabic_Num);
-
             when 100_000..999_999_999 =>
                    Roman_Num_Record.Age_F := "|" & Generate_Subtractive((Arabic_Num / 100_000) mod 100_000) & "|"
                                               & Generate_Subtractive(Arabic_Num mod 10_000);
                Roman_Num_Record.Bar_Reminder := True;
-
             when others => null;
-
          end case;
 
 
@@ -149,7 +134,7 @@ package body Arabic2Roman is
 
             case Roman_Num_Record.Bar_Reminder is
                      when False =>  Put_line(OUTPUT,"   NUM CARD    [XXFQA]");
-                     when True =>   Put(OUTPUT,"   NUM CARD    [XXFQC]"); Put_Line (""); Put_Line("     write bar across top of the numerals in the bars || (three sided box, open bottom)");
+                     when True =>   Put(OUTPUT,"   NUM CARD    [XXFQC]"); Put_Line (OUTPUT,""); Put_Line(OUTPUT,"     write bar across top of the numerals in the bars | | (three sided box, open bottom)");
             end Case;
 
          end if;
@@ -157,8 +142,6 @@ package body Arabic2Roman is
 
        Put_Line(OUTPUT,"");
        end if;  -- end if enclosing statements requiring integer
-
-
 
 
   end loop; -- end outermost loop
@@ -188,7 +171,7 @@ function Generate_Additive (Arabic_Num : in Integer) return Unbounded_String is
            when '7' =>  Built_String := Roman_Nums_CLASSICAL(COUNTER+1) & Roman_Nums_CLASSICAL(COUNTER) & Roman_Nums_CLASSICAL(COUNTER) &  Built_String;
            when '8' =>  Built_String := Roman_Nums_CLASSICAL(COUNTER+1) & Roman_Nums_CLASSICAL(COUNTER) & Roman_Nums_CLASSICAL(COUNTER) & Roman_Nums_CLASSICAL(COUNTER) &  Built_String;
            when '9' =>  Built_String := Roman_Nums_CLASSICAL(COUNTER+1) & Roman_Nums_CLASSICAL(COUNTER) & Roman_Nums_CLASSICAL(COUNTER) & Roman_Nums_CLASSICAL(COUNTER) & Roman_Nums_CLASSICAL(COUNTER) &  Built_String;
-            when others => null;
+           when others => null;
          end case;
          Counter := Counter+2;  -- Move two positions down the Roman numeral array each time
               if Counter > 11  then exit;
@@ -205,7 +188,7 @@ function Generate_Subtractive(Arabic_Num : in  Integer) return Unbounded_String 
 
       Built_String : Unbounded_String;
 
-   -- Too many different rules for forming to use array sensibly; spelled out for ease of reference
+   -- Rules get complex, especially starting at 4_000, so not using an array for readability and debugging purposes
 begin
 
       case (Arabic_Num / 10_000) mod 10 Is
@@ -285,14 +268,15 @@ begin
 
 end Generate_Subtractive;
 
-
 function Integer_Test (Arabic_String : in String) return Boolean is
-
+ -- Checks that PARSE and Arabic2Roman have left us with valid input
+ -- and lets us handle exceptions silently so we don't interrupt PARSE
+ -- if somehow nonsense characters have made it to this point
   type Valid_Integer is new Integer range -999_999_999..999_999_999;
   Tester : Valid_integer;
 
 begin
-      Tester := Valid_Integer'Value(Arabic_String);  -- See if we can treat User_Input as an integer
+      Tester := Valid_Integer'Value(Arabic_String);
       return True;
       exception
           when others =>

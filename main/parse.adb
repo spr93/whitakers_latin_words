@@ -16,7 +16,7 @@ with PREFACE;
 with PUT_STAT;
 with ENGLISH_SUPPORT_PACKAGE; use ENGLISH_SUPPORT_PACKAGE;
 with SEARCH_ENGLISH;
-with Arabic2Roman;
+with ARABIC2ROMAN;
 
 
 pragma Elaborate(WORD_PARAMETERS);
@@ -45,8 +45,8 @@ procedure PARSE(COMMAND_LINE : STRING := "") is
   procedure PARSE_LINE(INPUT_LINE : STRING) is
     L : INTEGER := TRIM(INPUT_LINE)'LAST;
     W : STRING(1..L) := (others => ' ');     
-    Arabic_String : String(1..2500) := (others => '|'); 
-    Arabic_Present : Boolean := False;
+    Arabic_String : String(1..2500) := (others => '|'); -- Initializing a full string is inefficient  - vector or another container better
+    Arabic_Present : Boolean := False;                  -- however this is consistent with the original Words approach
     Arabic_J : Integer := 1;
     Arabic_Process_All : Boolean := False;  
     Last_J : Integer := 1;  
@@ -71,7 +71,8 @@ procedure PARSE(COMMAND_LINE : STRING := "") is
          
          end loop;
     end ELIMINATE_NOT_LETTERS;
-
+   
+      
       --  Skip over leading and intervening blanks, looking for comments
       --  Punctuation, numbers, and special characters were cleared above
     J := 1;
@@ -82,25 +83,29 @@ procedure PARSE(COMMAND_LINE : STRING := "") is
         exit when LINE(J) in 'A'..'Z';
             exit when LINE(J) in 'a'..'z';
         if I < L  and then
-           LINE(I..I+1) = "--"   then
-          exit OVER_LINE;      --  the rest of the line is comment
+           LINE(I..I+1) = "--"   then  --  the rest of the line is comment
+          exit OVER_LINE;      
         end if;
         J := I + 1;
        end loop;
          
-         -- Intercept Arabic numerals here so we don't have to change the rest of the procedure
-
-    if Arabic_Present then 
-                            if L > 2500 then L := 2500; -- line full; get last digit and to go out of bounds
-                            end if;
-              if J > L then
+         ----------------------------BEGIN ROMAN NUMERALS--------------------------
+         -- Intercept Arabic numerals here 
+         -- a bit messy, but we can avoid changing the rest of the procedure 
+         if WORDS_MODE(DO_ARABIC_NUMERALS) and Arabic_Present then 
+        
+            if L > 2500 then 
+               L := 2500; -- line full; get last digit and stay in bounds
+            end if;
+            
+            if J > L then
                Arabic_Process_All := True;
             end if;
             
             If  Arabic_J = 1 Then 
                   case Arabic_String(Arabic_J) is
                   when 'z' => null; -- Arabic_J := Arabic_J+1; -- we've got a word first
-                  when others => Arabic_Process_All := True; Put_Line(""); -- Arabic_J := Arabic_J+1;-- conform to Words standard format
+                  when others => Arabic_Process_All := True; Put_Line(OUTPUT,""); -- Arabic_J := Arabic_J+1;-- conform to Words standard format
                   end case;
             end if; 
              
@@ -119,16 +124,16 @@ procedure PARSE(COMMAND_LINE : STRING := "") is
                                        Put_Line(OUTPUT,"");
                            end case; 
                 end if;
-         end if;    
+            end if;    
          
-    Arabic_J := Arabic_J + 1;
-  end if; 
+               Arabic_J := Arabic_J + 1;
+         end if; 
             
-
+         ----------------------------END ROMAN NUMERALS--------------------------
       
       exit when J > L;              --  Kludge
          
-      FOLLOWS_PERIOD := FALSE;      -- SPR:  This seems to be out of order.  Does this do anything?
+      FOLLOWS_PERIOD := FALSE;      --  SPR: What's the point?
       if FOLLOWED_BY_PERIOD  then
         FOLLOWED_BY_PERIOD := FALSE;
         FOLLOWS_PERIOD := TRUE;
@@ -269,7 +274,7 @@ if PA_LAST = 0  then
           
  end if;         
           
-          --  Do not SYNCOPE if there is a verb TO_BE or compound already there
+         --  Do not SYNCOPE if there is a verb TO_BE or compound already there
          --  I do this here and below, it might be combined but it works now
         for I in 1..PA_LAST  loop
  --PARSE_RECORD_IO.PUT(PA(I)); TEXT_IO.NEW_LINE;
@@ -386,7 +391,8 @@ begin
            end if;
          end loop;
  
-   
+-- --  SPR:  Remnants of issue below resolved - suppress duplicate results at the end of this procedure
+-- --        (+ allowed re-activation of abs/aps TRICK)
 -- --  WITH THE DICTIONARY BETTER, LET US FORGET THIS - a and c DONE, e and i STILL BUT NOT MANY
 --  SAVE_PA_LAST := PA_LAST;
 --  --  BIG PROBLEM HERE
@@ -1056,33 +1062,43 @@ begin              --  PARSE
       PARSE_LINE(COMMAND_LINE);
     end if;
 
-  else
+   else
+      
+      PREFACE.NEW_LINE;
+      
+  PREFACE.PUT_LINE(
+                   "Copyright (c) William Whitaker 1993-2006 - free for any use");
+      PREFACE.PUT_LINE(
+                   "with modifications and additions 2019-2020, see [SITE]");
+      
+      PREFACE.NEW_LINE;
+      
+      PREFACE.PUT_LINE(
+                    "In memoriam, William Whitaker, Chair of DoD Working Group responsible for"); 
+      PREFACE.PUT_LINE(
+                    "establishing the Ada language and accomplished amateur Latin lexicographer"); 
+      PREFACE.PUT_LINE(
+                    "who gave this comprehensive and free dictionary to the world.");
 
+      PREFACE.NEW_LINE;
+      
   PREFACE.PUT_LINE(
-                   "Copyright (c) William Whitaker 1993-2006 - Free for any use");
-        PREFACE.PUT_LINE(
-"Modifications and additions [XXX]; see [SITE]."); -- SPR ADD
---    PREFACE.PUT_LINE(
---  "For updates and latest version check http://www.erols.com/whitaker/words.htm");
---    PREFACE.PUT_LINE(
---  "Comments? William Whitaker, Box 51225  Midland  TX  79710  USA - whitaker@erols.com");
-  PREFACE.NEW_LINE;
-  PREFACE.PUT_LINE(
-"Input a word or line of Latin and ENTER to get the forms and meanings");
+           "Input a word or line of Latin and ENTER to get the forms and meanings");
   PREFACE.PUT_LINE("    Or input " & START_FILE_CHARACTER &
            " and the name of a file containing words or lines");
   PREFACE.PUT_LINE("    Or input " & CHANGE_PARAMETERS_CHARACTER &
            " to change parameters and mode of the program");
-  PREFACE.PUT_LINE("    Or input " & HELP_CHARACTER &
-           " to get help wherever available on individual parameters");
-  PREFACE.PUT_LINE(
+ -- PREFACE.PUT_LINE("    Or input " & HELP_CHARACTER &                 -- SPR:  Confusing because ? only applies when
+ --        " to get help wherever available on individual parameters"); -- responding to questions in the change params
+ PREFACE.PUT_LINE(                                                      -- menu.
 "Two empty lines (just a RETURN/ENTER) from the keyboard exits the program");
 
-  if ENGLISH_DICTIONARY_AVAILABLE(GENERAL)  then
-    PREFACE.PUT_LINE("English-to-Latin available");
-    PREFACE.PUT_LINE(
-                   CHANGE_LANGUAGE_CHARACTER & "E changes to English-to-Latin, " &
-                   CHANGE_LANGUAGE_CHARACTER & "L changes back     [tilde E]");
+      if ENGLISH_DICTIONARY_AVAILABLE(GENERAL)  then
+         PREFACE.NEW_LINE;
+         PREFACE.PUT_LINE("English-to-Latin available");
+         PREFACE.PUT_LINE(
+                   CHANGE_LANGUAGE_CHARACTER & "E changes to English-to-Latin mode, " &
+                   CHANGE_LANGUAGE_CHARACTER & "L changes back");
   end if;
   
   if CONFIGURATION = ONLY_MEANINGS  then
