@@ -39,7 +39,7 @@
                return TRUE;
             when 'X' | 'x'  => 
                return TRUE;
-          --when 'U' | 'u'  => return TRUE;  --  possible but unlikely
+            when 'U' | 'u'  => return TRUE;  -- SPR:  For OLD compatibiity
             when 'V' | 'v'  => 
                return TRUE;
             when 'I' | 'i'  => 
@@ -62,7 +62,7 @@
                return   50;
             when 'X' | 'x'  => 
                return   10;
-          --when 'U' | 'u'  => return    5;  --  possible but unlikely 
+            when 'U' | 'u'  => return    5;  -- SPR:  For OLD compatibiity
             when 'V' | 'v'  => 
                return    5;
             when 'I' | 'i'  => 
@@ -761,7 +761,7 @@
             S(S'LAST-1..S'LAST) = "is"   then   --  Terminal 'is'
                PA_LAST := PA_LAST + 1;
                TRICK_TRANSLATION_RECORD.FREQ := C;
-               PA(PA_LAST) := (HEAD("Word mod iis -> is", MAX_STEM_SIZE),
+               PA(PA_LAST) := (HEAD(" iis -> is", MAX_STEM_SIZE),
                                  NULL_INFLECTION_RECORD,
                                  XXX, NULL_MNPC);
                WORD(S(S'FIRST..S'LAST-2) & "iis", PA, PA_LAST);
@@ -800,68 +800,6 @@
          end ADJ_TERMINAL_IIS;
       
       
-      --  Now SLUR is handled in TRY_SLURY
-      --
-      --    procedure SLUR(X1 : STRING; EXPLANATION : STRING := "") is
-      --      PA_SAVE : INTEGER := PA_LAST;
-      --      SL : INTEGER := X1'LENGTH;
-      --    begin
-      --      if S'LENGTH >= X1'LENGTH+2  then
-      --        if S(S'FIRST..S'FIRST+X1'LENGTH-1) = X1   and then   --  Initial  X1
-      --          not IS_A_VOWEL(S(S'FIRST+SL))                  then
-      --          PA_LAST := PA_LAST + 1;
-      --          PA(PA_LAST)           := (HEAD("Slur " & X1 & "/" & X1(1..SL-1) & "~", MAX_STEM_SIZE),
-      --                    NULL_INFLECTION_RECORD,
-      --                    XXX, NULL_MNPC);
-      --          TWORD(X1(1..SL-1) & S(S'FIRST+SL) & S(S'FIRST+SL..S'LAST), PA, PA_LAST);
-      --          if (PA_LAST > PA_SAVE + 1)   and then
-      --            (PA(PA_LAST-1).IR.QUAL.POFS /= TACKON)  then
-      --            if EXPLANATION = ""  then
-      --              XXX_MEANING := HEAD(
-      --                    "An initial '" & X1 & "' may be rendered by " & X1(1) & "~"
-      --                                 , MAX_MEANING_SIZE);
-      --            else
-      --              XXX_MEANING := HEAD(EXPLANATION, MAX_MEANING_SIZE);
-      --            end if;
-      --PUT_STAT("TRICK   SLUR at "
-      --                       & HEAD(INTEGER'IMAGE(LINE_NUMBER), 8) & HEAD(INTEGER'IMAGE(WORD_NUMBER), 4)
-      --                       & "   " & HEAD(W, 20) & "   "  & PA(PA_SAVE+1).STEM);
-      --            return;
-      --          else
-      --            PA_LAST := PA_SAVE;
-      --          end if;
-      --
-      --        elsif (S(S'FIRST..S'FIRST+SL-1) = X1(1..SL-1))  and then
-      --              (S(S'FIRST+SL-1) = S(S'FIRST+SL))   and then   --  Double letter
-      --          not IS_A_VOWEL(S(S'FIRST+SL))           then  
-      --          PA_LAST := PA_LAST + 1;
-      --          PA(PA_LAST) := (HEAD("Slur " & X1(1..SL-1) & "~" & "/" & X1, MAX_STEM_SIZE),
-      --                    NULL_INFLECTION_RECORD,
-      --                    XXX, NULL_MNPC);
-      --           TWORD(X1 & S(S'FIRST+SL..S'LAST), PA, PA_LAST);
-      --          if (PA_LAST > PA_SAVE + 1)   and then
-      --            (PA(PA_LAST-1).IR.QUAL.POFS /= TACKON)  then
-      --            if EXPLANATION = ""  then
-      --              XXX_MEANING := HEAD(
-      --                    "An initial '" & X1(1..SL-1) & "~" & "' may be rendered by " & X1
-      --                                 , MAX_MEANING_SIZE);
-      --            else
-      --              XXX_MEANING := HEAD(EXPLANATION, MAX_MEANING_SIZE);
-      --            end if;
-      --PUT_STAT("TRICK   SLUR at "
-      --                       & HEAD(INTEGER'IMAGE(LINE_NUMBER), 8) & HEAD(INTEGER'IMAGE(WORD_NUMBER), 4)
-      --                       & "   " & HEAD(W, 20) & "   "  & PA(PA_SAVE+1).STEM);
-      --            return;
-      --          else
-      --            PA_LAST := PA_SAVE;
-      --      end if;
-      --
-      --        end if;
-      --      end if;
-      --      PA_LAST := PA_SAVE;
-      --    end SLUR;
-      --
-      --
       
          procedure DOUBLE_CONSONANTS(EXPLANATION : STRING := "") is
             PA_SAVE : INTEGER := PA_LAST;
@@ -1093,8 +1031,7 @@
          when 'a'  =>
          
          
-         --FLIP_FLOP("abs", "aps");   if PA_LAST > 0  then return; end if;
-         --FLIP_FLOP("acq", "adq");   if PA_LAST > 0  then return; end if;
+         
             FLIP_FLOP("adgn", "agn");   
             if PA_LAST > 0  then 
                return; end if;
@@ -1104,16 +1041,12 @@
             FLIP_FLOP("adsp", "asp");   
             if PA_LAST > 0  then 
                return; end if;
-         --FLIP_FLOP("ante",  "anti");   if PA_LAST > 0  then return; end if;
             FLIP_FLOP("arqui",  "arci");   
             if PA_LAST > 0  then 
                return; end if;
             FLIP_FLOP("arqu",  "arcu");   
             if PA_LAST > 0  then 
                return; end if;
-         --FLIP_FLOP("auri",  "aure");   if PA_LAST > 0  then return; end if;
-         --FLIP_FLOP("auri",  "auru");   if PA_LAST > 0  then return; end if;
-         --SLUR("ad");           if PA_LAST > 0  then return; end if;
             FLIP("ae",  "e");     
             if PA_LAST > 0  then 
                return; end if;
@@ -1130,18 +1063,7 @@
             if PA_LAST > 0  then 
                return; end if;
          
-         
-         
-         
-         --  when 'c'  =>
-         
-         --FLIP("circum" , "circun");   if PA_LAST > 0  then return; end if;
-         --FLIP_FLOP("con", "com");   if PA_LAST > 0  then return; end if;
-         --FLIP("co" , "com");   if PA_LAST > 0  then return; end if;
-         --FLIP("co" , "con");   if PA_LAST > 0  then return; end if;
-         --FLIP_FLOP("conl" , "coll");   if PA_LAST > 0  then return; end if;
-         
-         
+
          when 'd'  =>
          
            FLIP("dampn" , "damn");   
@@ -1239,13 +1161,6 @@
          when 'i'  =>
          
          
-         --SLUR("in");            if PA_LAST > 1 then return; end if;
-         
-         --FLIP_FLOP("inb", "imb");    if PA_LAST > 1 then return; end if;
-         --FLIP_FLOP("inp", "imp");    if PA_LAST > 1 then return; end if;
-         
-         
-         
          -- for some forms of eo the stem "i" grates with an "is..." ending
             if S'LENGTH > 1 and then
             S(S'FIRST..S'FIRST+1) = "is"   then
@@ -1265,10 +1180,6 @@
             else
                PA_LAST := 0;
             end if;
-         
-         
-         
-         
          
          
          when 'k'  =>
@@ -1308,14 +1219,10 @@
             FLIP_FLOP("nihil",  "nil");   
             if PA_LAST > 0  then 
                return; end if;
-         
-         --FLIP("nun",  "non");   if PA_LAST > 0  then return; end if;
-         
-         
+
          
          when 'o'  =>
-         
-         --SLUR("ob");           if PA_LAST > 0  then return; end if;
+
             FLIP_FLOP("obt", "opt");    
             if PA_LAST > 1 then 
                return; end if;
@@ -1345,18 +1252,8 @@
                return; end if;
          
          
-         --  when 'q'  =>
-         
-         
-         --FLIP_FLOP("quadri",  "quadru");   if PA_LAST > 0  then return; end if;
-         
-         
          when 's'  =>
               
-               
-         --  From Oxford Latin Dictionary p.1835 "sub-"
-         
-         --SLUR("sub");
          
             FLIP_FLOP("subsc",  "susc");   
             if PA_LAST > 0  then 
@@ -1689,14 +1586,7 @@
       end TRY_TRICKS;
    
 
-      
-      
-      
-      
-      
-      
-      
-         
+
       procedure TRY_SLURY(W : STRING;
                           PA : in out PARSE_ARRAY; PA_LAST : in out INTEGER;
                           LINE_NUMBER : INTEGER; WORD_NUMBER : INTEGER) is
@@ -1755,7 +1645,7 @@
       
          procedure FLIP_FLOP(X1, X2 : STRING; EXPLANATION : STRING := "") is
          --  At the begining of input word, replaces X1 by X2 - then X2 by X1
-         --  To be uesd only when X1 and X2 start with the same letter because it 
+         --  To be used only when X1 and X2 start with the same letter because it 
          --  will be called from a point where the first letter is established
             PA_SAVE : INTEGER := PA_LAST;
          begin
@@ -1890,14 +1780,9 @@
             FLIP_FLOP("acq", "adq");   
             if PA_LAST > 0  then 
                return; end if;
-         --FLIP_FLOP("adgn", "agn");   if PA_LAST > 0  then return; end if;
-         --FLIP_FLOP("adsc", "asc");   if PA_LAST > 0  then return; end if;
-         --FLIP_FLOP("adsp", "asp");   if PA_LAST > 0  then return; end if;
             FLIP_FLOP("ante",  "anti");   
             if PA_LAST > 0  then 
                return; end if;
-         --FLIP_FLOP("arqui",  "arci");   if PA_LAST > 0  then return; end if;
-         --FLIP_FLOP("arqu",  "arcu");   if PA_LAST > 0  then return; end if;
             FLIP_FLOP("auri",  "aure");   
             if PA_LAST > 0  then 
                return; end if;
@@ -1907,13 +1792,6 @@
             SLUR("ad");           
             if PA_LAST > 0  then 
                return; end if;
-         --FLIP("ae",  "e");     if PA_LAST > 0  then return; end if;
-         --FLIP("al",  "hal");   if PA_LAST > 0  then return; end if;
-         --FLIP("am",  "ham");   if PA_LAST > 0  then return; end if;
-         --FLIP("ar",  "har");   if PA_LAST > 0  then return; end if;
-         --FLIP("aur",  "or");   if PA_LAST > 0  then return; end if;
-         
-         
          
          
          elsif S(S'FIRST) = 'c'  then
@@ -1934,39 +1812,7 @@
             if PA_LAST > 0  then 
                return; end if;
          
-         
-         --elsif S(S'FIRST) = 'e'  then
-         
-         --FLIP_FLOP("ecf" , "eff");  if PA_LAST > 0  then return; end if;
-         --FLIP_FLOP("ecs" , "exs");  if PA_LAST > 0  then return; end if;
-         --FLIP_FLOP("es"  , "ess");  if PA_LAST > 0  then return; end if;
-         --FLIP_FLOP("ex"  , "exs");  if PA_LAST > 0  then return; end if;
-         
-         --FLIP("el",  "hel");   if PA_LAST > 0  then return; end if;
-         --FLIP("e",  "ae");   if PA_LAST > 0  then return; end if;
-         
-         --elsif S(S'FIRST) = 'f'  then
-         
-         --FLIP_FLOP("faen" , "foen");  if PA_LAST > 0  then return; end if;
-         
-         --FLIP("f",  "ph");   if PA_LAST > 0  then return; end if;  -- Try lead then all
-         
-         --elsif S(S'FIRST) = 'g'  then
-         
-         --FLIP("gna",  "na");   if PA_LAST > 0  then return; end if;
-         
-         --elsif S(S'FIRST) = 'h'  then
-         
-         --FLIP("har",  "ar");   if PA_LAST > 0  then return; end if;
-         --FLIP("hal",  "al");   if PA_LAST > 0  then return; end if;
-         --FLIP("ham",  "am");   if PA_LAST > 0  then return; end if;
-         --FLIP("hel",  "el");   if PA_LAST > 0  then return; end if;
-         --FLIP("hol",  "ol");   if PA_LAST > 0  then return; end if;
-         --FLIP("hum",  "um");   if PA_LAST > 0  then return; end if;
-         
-         
          elsif S(S'FIRST) = 'i'  then
-         
          
             SLUR("in");            
             if PA_LAST > 1 then 
@@ -1979,59 +1825,11 @@
             if PA_LAST > 1 then 
                return; end if;
          
-         
-         
-         --    -- for some forms of eo the stem "i" grates with an "is..." ending
-         --    if S'LENGTH > 1 and then
-         --       S(S'FIRST..S'FIRST+1) = "is"   then
-         --      PA(1) := ("Word mod is => iis", NULL_INFLECTION_RECORD,
-         --                XXX, NULL_MNPC);
-         --      PA_LAST := 1;
-         --      TWORD("i" & S(S'FIRST..S'LAST), PA, PA_LAST);
-         --    end if;
-         --    if (PA_LAST > PA_SAVE + 1)   and then
-         --       (PA(PA_LAST-1).IR.QUAL.POFS /= TACKON)  and then
-         --        PA(PA_LAST).IR.QUAL.POFS = V and then
-         --        PA(PA_LAST).IR.QUAL.V.CON = (6, 1) then  --    Check it is V 6 1 eo
-         --      XXX_MEANING := HEAD(
-         --"Some forms of eo stem 'i' grates with an 'is...' ending, so 'is' -> 'iis' "
-         --                             , MAX_MEANING_SIZE);
-         --      return;
-         --    else
-         --      PA_LAST := 0;
-         --    end if;
-         
-         
-         
-         
-         
-         
-         --elsif S(S'FIRST) = 'k'  then
-         
-         --FLIP("k",  "c");   if PA_LAST > 0  then return; end if;
-         --FLIP("c",  "k");   if PA_LAST > 0  then return; end if;
-         
-         
-         --elsif S(S'FIRST) = 'l'  then
-         
-         
-         --FLIP_FLOP("lub", "lib");    if PA_LAST > 1 then return; end if;
-         
-         
-         --elsif S(S'FIRST) = 'm'  then
-         
-         
-         --FLIP_FLOP("mani", "manu");    if PA_LAST > 1 then return; end if;
-         
-         
+
          
          elsif S(S'FIRST) = 'n'  then
          
-         
-         --FLIP("na",  "gna");   if PA_LAST > 0  then return; end if;
-         
-         --FLIP_FLOP("nihil",  "nil");   if PA_LAST > 0  then return; end if;
-         
+
             FLIP("nun",  "non");   
             if PA_LAST > 0  then 
                return; end if;
@@ -2043,13 +1841,6 @@
             SLUR("ob");           
             if PA_LAST > 0  then 
                return; end if;
-         --FLIP_FLOP("obt", "opt");    if PA_LAST > 1 then return; end if;
-         --FLIP_FLOP("obs", "ops");    if PA_LAST > 1 then return; end if;
-         --FLIP("ol",  "hol");   if PA_LAST > 0  then return; end if;
-         --FLIP("opp", "op");    if PA_LAST > 1 then return; end if;
-         --FLIP("or",  "aur");   if PA_LAST > 0  then return; end if;
-         
-         
          
          --elsif S(S'FIRST) = 'p'  then
          
@@ -2072,153 +1863,9 @@
             if PA_LAST > 0  then 
                return; end if; 
               
-        --  From Oxford Latin Dictionary p.1835 "sub-"
-         
-            SLUR("sub");
-         
-         FLIP_FLOP("subsc",  "susc");   if PA_LAST > 0  then return; end if;
-         FLIP_FLOP("subsp",  "susp");   if PA_LAST > 0  then return; end if;
-         
-         FLIP_FLOP("subc",  "susc");   if PA_LAST > 0  then return; end if;
-         FLIP_FLOP("succ",  "susc");   if PA_LAST > 0  then return; end if;
-         
-         FLIP_FLOP("subt",  "sust");   if PA_LAST > 0  then return; end if;
-         
-         FLIP_FLOP("subr", "surr"); if PA_LAST > 0  then return; end if;     -- SPR: White (1880)
-         
-                           
-         FLIP_FLOP("subst",  "sust");  if PA_LAST > 0  then return; end if;  -- SPR: White (1880)
-         
-         
-         --elsif S(S'FIRST) = 't'  then
-         
-         
-         --FLIP_FLOP("transv",  "trav");   if PA_LAST > 0  then return; end if;
-         
-         
-         
-         
-         --elsif S(S'FIRST) = 'u'  then
-         
-         --FLIP("ul",  "hul");   if PA_LAST > 0  then return; end if;
-         --FLIP("uol",  "vul");   if PA_LAST > 0  then return; end if;  --  u is not v for this purpose
-         
-         
-         
-         --elsif S(S'FIRST) = 'y'  then
-         
-         --FLIP("y",  "i");   if PA_LAST > 0  then return; end if;
-         
          
          end if;   --  if on first letter
       
-      
-      --  All INTERNAL out
-      --INTERNAL("ae",  "e");   if PA_LAST > 0  then return; end if;
-      --
-      --
-      --INTERNAL("cl",  "cul");   if PA_LAST > 0  then return; end if;
-      --
-      --INTERNAL("cu",  "quu");   if PA_LAST > 0  then return; end if;
-      --
-      --INTERNAL("f",  "ph");   if PA_LAST > 0  then return; end if;
-      --INTERNAL("ph",  "f");   if PA_LAST > 0  then return; end if;
-      --
-      --INTERNAL("h",  "");   if PA_LAST > 0  then return; end if;
-      --
-      --
-      --INTERNAL("vul",  "vol");   if PA_LAST > 0  then return; end if;
-      --INTERNAL("vol",  "vul");   if PA_LAST > 0  then return; end if;
-      --INTERNAL("uol",  "vul");   if PA_LAST > 0  then return; end if;
-      --
-      --
-      --ADJ_TERMINAL_IIS;   if PA_LAST > 0  then return; end if;
-      
-      
-      
-      ---------------------------------------------------------------
-      
-      
-      --if WORDS_MDEV(DO_MEDIEVAL_TRICKS)  then
-      ----      Medieval  ->  Classic
-      --
-      ----  Harrington/Elliott    1.1.1
-      --
-      --INTERNAL("col",  "caul");   if PA_LAST > 0  then return; end if;
-      --
-      ----TEXT_IO.PUT_LINE("Trying com -> con");
-      ----INTERNAL("com",  "con");   if PA_LAST > 0  then return; end if;   --  My own
-      --
-      ----INTERNAL("cl",  "cul");   if PA_LAST > 0  then return; end if;
-      --
-      --
-      ----  Harrington/Elliott    1.3   
-      --
-      --INTERNAL("e",  "ae");   if PA_LAST > 0  then return; end if;
-      --
-      --INTERNAL("o",  "u");   if PA_LAST > 0  then return; end if;
-      --
-      --INTERNAL("i",  "y");   if PA_LAST > 0  then return; end if;
-      --
-      --
-      ----  Harrington/Elliott    1.3.1
-      --
-      --INTERNAL("ism",  "sm");   if PA_LAST > 0  then return; end if;
-      --
-      --INTERNAL("isp",  "sp");   if PA_LAST > 0  then return; end if;
-      --
-      --INTERNAL("ist",  "st");   if PA_LAST > 0  then return; end if;
-      --
-      --INTERNAL("iz",  "z");   if PA_LAST > 0  then return; end if;
-      --
-      --INTERNAL("esm",  "sm");   if PA_LAST > 0  then return; end if;
-      --
-      --INTERNAL("esp",  "sp");   if PA_LAST > 0  then return; end if;
-      --
-      --INTERNAL("est",  "st");   if PA_LAST > 0  then return; end if;
-      --
-      --INTERNAL("ez",  "z");   if PA_LAST > 0  then return; end if;
-      --
-      --
-      ----  Harrington/Elliott    1.4  
-      --
-      --INTERNAL("di",  "z");   if PA_LAST > 0  then return; end if;
-      --
-      ----INTERNAL("f",  "ph");   if PA_LAST > 0  then return; end if;
-      --
-      --INTERNAL("is",  "ix");   if PA_LAST > 0  then return; end if;
-      --
-      --
-      --INTERNAL("b",  "p");   if PA_LAST > 0  then return; end if;
-      --
-      --INTERNAL("d",  "t");   if PA_LAST > 0  then return; end if;
-      --
-      --INTERNAL("v",  "b");   if PA_LAST > 0  then return; end if;
-      --
-      --INTERNAL("v",  "f");   if PA_LAST > 0  then return; end if;
-      --
-      --INTERNAL("v",  "f");   if PA_LAST > 0  then return; end if;
-      --
-      --INTERNAL("s",  "x");   if PA_LAST > 0  then return; end if;
-      --
-      --
-      --
-      ----  Harrington/Elliott    1.4.1
-      --
-      --INTERNAL("ci",  "ti");   if PA_LAST > 0  then return; end if;
-      --
-      --
-      ----  Harrington/Elliott    1.4.2
-      --
-      --INTERNAL("nt",  "nct");   if PA_LAST > 0  then return; end if;
-      --
-      --INTERNAL("nt",  "nct");   if PA_LAST > 0  then return; end if;
-      --
-      --
-      --DOUBLE_CONSONANTS;
-      --
-      --
-      --end if;   --  Medieval Tricks
       ---------------------------------------------
       
          exception
