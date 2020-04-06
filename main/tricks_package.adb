@@ -649,7 +649,7 @@
       
          procedure FLIP_FLOP(X1, X2 : STRING; EXPLANATION : STRING := "") is
          --  At the begining of input word, replaces X1 by X2 - then X2 by X1
-         --  To be uesd only when X1 and X2 start with the same letter because it 
+         --  To be used only when X1 and X2 start with the same letter because it 
          --  will be called from a point where the first letter is established
             PA_SAVE : INTEGER := PA_LAST;
          begin
@@ -1294,8 +1294,7 @@
 --            if PA_LAST > 0  then 
 --               return; end if;
          
-         
-         
+        
          
          when 'u'  =>
          
@@ -1306,8 +1305,8 @@
             if PA_LAST > 0  then 
                return; end if;  --  u is not v for this purpose
          
-         
-         
+            
+            
          when 'y'  =>
          
             FLIP("y",  "i");   
@@ -1327,6 +1326,14 @@
       
       
          INTERNAL("ae",  "e");   
+         if PA_LAST > 0  then 
+         return; end if;
+      
+         INTERNAL("anc",  "ang");   
+         if PA_LAST > 0  then 
+         return; end if;
+      
+         INTERNAL("ang",  "anc");   
          if PA_LAST > 0  then 
             return; end if;
       
@@ -1359,7 +1366,8 @@
       
          INTERNAL("oe",  "e");   
          if PA_LAST > 0  then 
-            return; end if;
+         return; end if;
+      
       
          INTERNAL("vul",  "vol");   
          if PA_LAST > 0  then 
@@ -1862,7 +1870,25 @@
             FLIP("se",  "ce");     --  Latham
             if PA_LAST > 0  then 
                return; end if; 
-              
+           
+         elsif S(S'FIRST) = 'u' then
+                     --  Handles certain names and nouns, incl. Vergil/Virgil, per OLD.  
+            FLIP("uirg",  "uerg");   
+            if PA_LAST > 0  then 
+              return; end if;
+      
+            FLIP("uerg",  "uirg");   
+            if PA_LAST > 0  then 
+               return; end if;
+           
+         elsif S(S'FIRST) = 'v' then
+            FLIP("virg",  "verg");   
+            if PA_LAST > 0  then 
+               return; end if;
+      
+            FLIP("verg",  "virg");   
+            if PA_LAST > 0  then 
+               return; end if;
          
          end if;   --  if on first letter
       
