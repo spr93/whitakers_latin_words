@@ -457,8 +457,13 @@ end PRINT_MODIFIED_QUAL;
 --               end if;
                PUT_INFLECTION_FLAGS;
                TEXT_IO.NEW_LINE(OUTPUT);
-               PUT_EXAMPLE_LINE(OUTPUT, SR.IR, DM.DE);    --   Print the example line; only full when DO_EXAMPLES
-                                                          --
+               if Dm.De.PART /= NULL_DICTIONARY_ENTRY.PART then  -- SPR:  Added because some UNIQUES won't generate a DE
+                                                                 --       in most cases these appear to be most easily
+                                                                 --       remedied by conforming the UNIQUES.LAT file
+                  PUT_EXAMPLE_LINE(OUTPUT, SR.IR, DM.DE);    --   Print the example line; only full when DO_EXAMPLES                                          --
+               TEXT_IO.NEW_LINE(OUTPUT);
+             end if;
+
             else
               TEXT_IO.NEW_LINE(OUTPUT);
              end if;
