@@ -28,9 +28,6 @@ be away/absent/distant/missing; be free/removed from; be lacking; be distinct;
 afore                        
 V    5 1 FUT  ACTIVE INF  0 X TO_BEING              X  X  X  C  X
 be away/absent/distant/missing; be free/removed from; be lacking; be distinct;
-viden                      
-V  2 1   PRES ACTIVE IND  2 S TRANS                 X  X  X  C  S
-do you not see; or consider; (vides-ne);
 memento                      
 V  0 0   PRES ACTIVE IMP  2 S TRANS                 X  X  X  C  O
 remember; be mindful of;
@@ -52,9 +49,6 @@ lyre, harp; tortoise shell (from which lyres were made); tortoise;
 chelyn                         
 N 9 9 ACC S F T                                     X  X  X  C  O
 lyre, harp; tortoise shell (from which lyres were made); tortoise;
-exspes                                                                      
-ADJ    3 1 NOM S X POS                              X  X  X  C  X 
-hopeless; (only NOM S);
 iusiurandum                     
 N 2 1 NOM S N t                                     X  X  X  C  X
 an oath (ius iurandum);                                                  
@@ -133,17 +127,17 @@ some/any one/thing; unspecified thing/person; certain quanity, a bit; at all;
 quippiam                        
 PRON 1 0 ACC S N INDEF                              X  X  X  B  O
 some/any one/thing; unspecified thing/person; certain quanity, a bit; at all;
-unusquisque                     
-PRON 1 0 NOM S M INDEF                              X  X  X  D  W
-each one;
 uniuscuiusque                     
 PRON 1 0 GEN S X INDEF                              X  X  X  D  W
 each one;
 unicuique                     
 PRON 1 0 DAT S X INDEF                              X  X  X  D  W
 each one;
-unumquodque                     
+uniuscuiusque                     
 PRON 1 0 ACC S M INDEF                              X  X  X  D  W
+each one;
+unusquisque                     
+PRON 1 0 NOM S M INDEF                              X  X  X  D  W
 each one;
 quantumcumque                   
 N 2 2 NOM S N T                                     X  X  X  D  O
@@ -151,12 +145,12 @@ however much/little; as much as; whatever;
 quantumcumque                   
 N 2 2 ACC S N T                                     X  X  X  D  O
 however much/little; as much as; whatever; 
-mi                              
-ADJ 1 1 VOC S M POS                                 X  X  X  B  X
-my, mine;
 mare                     
 ADJ 3 1 NOM S N POS                                 X  X  X  F  O
 male; masculine, of the male sex; manly, virile, brave, noble; G:masculine;
+mi                              
+ADJ 1 1 VOC S M POS                                 X  X  X  B  X
+my, mine;
 di                                     
 N 2 1 NOM P M p                                     X  E  X  C  X
 god;                                                                     
@@ -211,6 +205,9 @@ prefer;
 mavultis                        
 V     6 2 PRES  ACTIVE  IND  2 P X                  X  X  X  B  X
 prefer;
+viden                      
+V  2 1   PRES ACTIVE IND  2 S TRANS                 X  X  X  C  S
+do you not see; or consider; (vides-ne);
 vis                             
 V     6 2 PRES  ACTIVE  IND  2 S X                  X  X  X  A  X
 be willing; wish;
@@ -220,3 +217,6 @@ be willing; wish;
 vultis                          
 V     6 2 PRES  ACTIVE  IND  2 P X                  X  X  X  A  X
 be willing; wish;
+exspes                                                                      
+ADJ    3 1 NOM S X POS                              X  X  X  C  X 
+hopeless; (only NOM S);
