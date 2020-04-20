@@ -988,7 +988,6 @@ end if;
 ----------------------------------------------------------------------
 ----------------------------------------------------------------------
 
-
       J := K + 1;    --  In case it is end of line and we don't look for ' '
 
       exit when WORDS_MDEV(DO_ONLY_INITIAL_WORD);
@@ -1050,7 +1049,7 @@ end PARSE_LINE;
 --  
 
 
-begin              --  PARSE
+begin --  PARSE
 --  All Rights Reserved   -   William Armstrong Whitaker
 
 --  INITIALIZE_WORD_PARAMETERS;
@@ -1066,7 +1065,7 @@ begin              --  PARSE
       
       PREFACE.NEW_LINE;
       
-  PREFACE.PUT_LINE(
+      PREFACE.PUT_LINE(
                    "Copyright (c) William Whitaker 1993-2006 - free for any use");
       PREFACE.PUT_LINE(
                    "with modifications and additions 2019-2020, see [SITE]");
@@ -1082,16 +1081,16 @@ begin              --  PARSE
 
       PREFACE.NEW_LINE;
       
-  PREFACE.PUT_LINE(
-           "Input a word or line of Latin and ENTER to get the forms and meanings");
-  PREFACE.PUT_LINE("    Or input " & START_FILE_CHARACTER &
-           " and the name of a file containing words or lines");
-  PREFACE.PUT_LINE("    Or input " & CHANGE_PARAMETERS_CHARACTER &
-           " to change parameters and mode of the program");
- -- PREFACE.PUT_LINE("    Or input " & HELP_CHARACTER &                 -- SPR:  Confusing because ? only applies when
- --        " to get help wherever available on individual parameters"); -- responding to questions in the change params
- PREFACE.PUT_LINE(                                                      -- menu.
-"Two empty lines (just a RETURN/ENTER) from the keyboard exits the program");
+      PREFACE.PUT_LINE(
+                    "Input a word or line of Latin and ENTER to get the forms and meanings");
+      PREFACE.PUT_LINE("    Or input " & START_FILE_CHARACTER &
+                    " and the name of a file containing words or lines");
+      PREFACE.PUT_LINE("    Or input " & CHANGE_PARAMETERS_CHARACTER &
+                    " to change parameters and mode of the program");
+    -- PREFACE.PUT_LINE("    Or input " & HELP_CHARACTER &                 -- SPR:  Confusing because ? only applies when
+    --        " to get help wherever available on individual parameters"); -- responding to questions in the change params
+      PREFACE.PUT_LINE(                                                      -- menu.
+                    "Two empty lines (just a RETURN/ENTER) from the keyboard exits the program");
 
       if ENGLISH_DICTIONARY_AVAILABLE(GENERAL)  then
          PREFACE.NEW_LINE;
@@ -1105,7 +1104,7 @@ begin              --  PARSE
     PREFACE.PUT_LINE(
           "THIS VERSION IS HARDCODED TO GIVE DICTIONARY FORM AND MEANINGS ONLY");
     PREFACE.PUT_LINE(
-        "IT CANNOT BE MODIFIED BY CHANGING THE DO_MEANINGS_ONLY PARAMETER");
+          "IT CANNOT BE MODIFIED BY CHANGING THE DO_MEANINGS_ONLY PARAMETER");
   end if;
 
   GET_INPUT_LINES:

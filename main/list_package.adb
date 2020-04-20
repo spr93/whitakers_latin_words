@@ -99,7 +99,6 @@
          end if;
       end CAP_ENDING;
 
-
            procedure PUT_DICTIONARY_FLAGS(OUTPUT : TEXT_IO.FILE_TYPE;
                                           DE     : DICTIONARY_ENTRY;
                                           HIT    : out BOOLEAN) is
@@ -591,7 +590,7 @@ end PRINT_MODIFIED_QUAL;
                 S := HEAD(INTEGER'IMAGE(N) &  " - (CARD answers 'how many');", MAX_MEANING_SIZE);
               when ORD   =>
                 S := HEAD(INTEGER'IMAGE(N) & "th - (ORD, 'in series'); (a/the)" & INTEGER'IMAGE(N) &
-                                             "th (part) (fract w/pars?);", MAX_MEANING_SIZE);
+                                             "th (part) (fract. w/ pars?);", MAX_MEANING_SIZE);
               when DIST  =>
                 S := HEAD(INTEGER'IMAGE(N) & " each/apiece/times/fold/together/at a time - 'how many each'; by " &
                           INTEGER'IMAGE(N) & "s; ", MAX_MEANING_SIZE);

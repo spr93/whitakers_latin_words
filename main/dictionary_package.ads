@@ -78,7 +78,9 @@
     X,      --  General or unknown or too common to say
     A,      
     B,      --  C.H.Beeson, A Primer of Medieval Latin, 1925 (Bee)
-    C,      --  Charles Beard, Cassell's Latin Dictionary 1892 (Cas)       
+    C,      --  Charles Beard, Cassell's Latin Dictionary 1892 (Cas)  
+
+
     D,      --  J.N.Adams, Latin Sexual Vocabulary, 1982 (Sex)
     E,      --  L.F.Stelten, Dictionary of Eccles. Latin, 1995 (Ecc)
     F,      --  Roy J. Deferrari, Dictionary of St. Thomas Aquinas, 1960 (DeF)
@@ -101,12 +103,12 @@
     W,      --  My personal guess, mostly obvious extrapolation (Whitaker or W)   
     Y,      --  Temp special code
     Z       --  Sent by user --  no dictionary reference
-            --  Mostly John White of Blitz Latin
+                --  mostly John White of Blitz Latin
 
     --  Consulted but used only indirectly
     --  Liddell + Scott Greek-English Lexicon (Lid)
-    --  Oxford English Dictionary 2002 (OED) 
-                        
+    --  Various translations of Ovid and Vergil
+                             
     --  Consulted but used only occasionally, seperately referenced
     --  D.A. Kidd, Collins Latin Gem Dictionary, 1957 (Col)
     --  Allen + Greenough, New Latin Grammar, 1888 (A+G)
@@ -115,11 +117,12 @@
     --  W. M. Lindsay, Short Historical Latin Grammar, 1895 (Lindsay)
     --  Du Cange
     --  Oxford English Dictionary (OED)
-           
-    --  Note that the WORDS dictionary is not just a copy of source info, but the      
+    --         
+    
+    --  Note that the WORDS dictionary is not a copy of source info, but the      
     --  indicated SOURCE is a main reference/check point used to derive the entry
       
-                        );
+     );
 
    
       package SOURCE_TYPE_IO is new TEXT_IO.ENUMERATION_IO(SOURCE_TYPE);
@@ -166,8 +169,6 @@
       NULL_KIND_ENTRY : KIND_ENTRY;
    
    
-   
-   
       type TRANSLATION_RECORD is
          record
             AGE  : AGE_TYPE := X;
@@ -187,10 +188,8 @@
          procedure PUT(TR : in TRANSLATION_RECORD);
          procedure GET(S : in STRING; TR : out TRANSLATION_RECORD; LAST : out INTEGER);
          procedure PUT(S : out STRING; TR : in TRANSLATION_RECORD);  
-      end TRANSLATION_RECORD_IO;   
-   
-   
-   
+   end TRANSLATION_RECORD_IO;   
+
    
       type NOUN_ENTRY is
          record
@@ -208,7 +207,6 @@
          procedure GET(S : in STRING; N : out NOUN_ENTRY; LAST : out INTEGER);
          procedure PUT(S : out STRING; N : in NOUN_ENTRY);  
       end NOUN_ENTRY_IO;  
-   
    
    
       type PRONOUN_ENTRY is
@@ -243,7 +241,6 @@
          procedure GET(S : in STRING; P : out PROPACK_ENTRY; LAST : out INTEGER);
          procedure PUT(S : out STRING; P : in PROPACK_ENTRY);
       end PROPACK_ENTRY_IO;
-   
    
    
       type ADJECTIVE_ENTRY is
@@ -288,7 +285,7 @@
          end record;
    
    
-   
+
       package ADVERB_ENTRY_IO is
          DEFAULT_WIDTH : NATURAL;
          procedure GET(F : in FILE_TYPE; A : out ADVERB_ENTRY);
@@ -417,7 +414,7 @@
          record
             STEMS : STEMS_TYPE         := NULL_STEMS_TYPE;
             PART  : PART_ENTRY         := NULL_PART_ENTRY;
---            KIND  : KIND_ENTRY         := NULL_KIND_ENTRY;  
+--          KIND  : KIND_ENTRY         := NULL_KIND_ENTRY;  
             TRAN  : TRANSLATION_RECORD := NULL_TRANSLATION_RECORD;
             MEAN  : MEANING_TYPE       := NULL_MEANING_TYPE;
          end record;
@@ -463,9 +460,7 @@
          procedure PUT(S : out STRING; PR : in PARSE_RECORD);  
       end PARSE_RECORD_IO;  
    
-   
       type PARSE_ARRAY is array (INTEGER range <>) of PARSE_RECORD;
-   
    
       function NUMBER_OF_STEMS(P : PART_OF_SPEECH_TYPE) return STEM_KEY_TYPE;
    
