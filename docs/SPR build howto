@@ -1,0 +1,62 @@
+Run sorter against modified DICTLINE.GEN.  Input:
+
+            1 75         
+           77 24   P     
+          111 80        
+          101 10         
+          
+Copy DICTLINE.GEN to CHECK.IN and run CHECKER. 
+Review CHECK.OUT.
+
+Run WAKEDICT (note the W) against DICTLINE.GEN
+
+Run sorter against the resulting STEMLIST.GEN -- AMBIGUITY - ALSO RUN IT AGAINST THE DICT*FILE*.GEN?
+       SORTER
+         STEMLIST.GEN    --  Input  
+           1    18   U
+           20   24   P
+           1    18   C
+           1    56   A
+           58    1   D      
+         STEMLIST.GEN    --  Output  
+         
+[[SPR:  REMOVING WEIRD TO_BE AT THE FIRST LINE ]]
+
+Run makestem
+
+--English part:
+
+[[NEEDS THE MANUAL CLEANUP DESCRIBED IN WHITAKER'S HOW TO;
+  OTHERWISE WILL GENERATE NO HITS]]
+  
+Run makeewds against ewdslist.gen
+	Check output, especially for weird lines at top.  Remove weird lines at top.
+
+Sort EWDSLIST.GEN
+SORTER
+    EWDSLIST.GEN
+       1   24   A         --  Main word
+       1   24   C         --  Main word for CAPS
+      51    6   R         --  Part of Speech  
+      72    5   N    D    --  RANK
+      58    1   D         --  FREQ
+    EWSDLIST.GEN     --  Store 
+    
+[MAYBE:  RUN WEED]
+
+Run makeefil
+
+--necessary for both english and latin:
+
+Run MAKEINFL against INFLECTS.LAT
+
+THE FOLLOWING IS NOW THE FULL DATA SET:
+WORDS [executable]
+INFLECTS.SEC
+ADDONS.LAT
+UNIQUES.LAT
+DICTFILE.GEN
+STEMFILE.GEN
+INDXFILE.GEN
+EWDSFILE.GEN
+ 	
