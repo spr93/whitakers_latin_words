@@ -460,11 +460,11 @@ end PRINT_MODIFIED_QUAL;
                                                                  --       in most cases these appear to be most easily
                                                                  --       remedied by conforming the UNIQUES.LAT file
                   PUT_EXAMPLE_LINE(OUTPUT, SR.IR, DM.DE);    --   Print the example line; only full when DO_EXAMPLES                                          --
-               TEXT_IO.NEW_LINE(OUTPUT);
+           --    TEXT_IO.NEW_LINE(OUTPUT);
              end if;
 
             else
-              TEXT_IO.NEW_LINE(OUTPUT);
+           TEXT_IO.NEW_LINE(OUTPUT);
              end if;
           end if;
 
@@ -542,6 +542,7 @@ end PRINT_MODIFIED_QUAL;
            if (SR.IR.QUAL.POFS not in XONS)  and
            (DM.D_K in GENERAL..UNIQUE)
          then
+            Text_IO.New_Line(OUTPUT);
             PUT_DICTIONARY_FORM(OUTPUT, DM.D_K, DM.MNPC, DM.DE);  -- prints dictionary form line; e.g.,
          end if;                                                  --  amo, amare, amavi, amatus  V (1st)   [XXXAO]      veryfreq
          end PUT_FORM;
@@ -818,8 +819,6 @@ end PRINT_MODIFIED_QUAL;
 --  for I in 1..PA_LAST  loop
 --  PARSE_RECORD_IO.PUT(PA(I)); TEXT_IO.NEW_LINE;
 --  end loop;
-
-
 
 
 --               --  Does STATS
@@ -1350,10 +1349,14 @@ if PA_LAST = 0   then
               if (DMA(J).DE.MEAN /= DMA(J+1).DE.MEAN)  then
                 --  This if handles simple multiple MEAN with same IR and FORM
                 --  by anticipating duplicates and waiting until change
-                PUT_MEANING_LINE(SRAA(J)(1), DMA(J));
+                  PUT_MEANING_LINE(SRAA(J)(1), DMA(J));
+                  Text_IO.Put_Line(OUTPUT,"----------");
+                  Text_IO.New_Line(OUTPUT);
               end if;
             else
-            PUT_MEANING_LINE(SRAA(J)(1), DMA(J));
+               PUT_MEANING_LINE(SRAA(J)(1), DMA(J));
+               Text_IO.Put_Line(OUTPUT,"----------");
+               Text_IO.New_Line(OUTPUT);
             end if;
           end PUTTING_MEANING;
 

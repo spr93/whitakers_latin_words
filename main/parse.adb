@@ -1098,13 +1098,15 @@ begin --  PARSE
          PREFACE.PUT_LINE(
                    CHANGE_LANGUAGE_CHARACTER & "E changes to English-to-Latin mode, " &
                    CHANGE_LANGUAGE_CHARACTER & "L changes back");
+         PREFACE.NEW_LINE;
   end if;
   
   if CONFIGURATION = ONLY_MEANINGS  then
     PREFACE.PUT_LINE(
           "THIS VERSION IS HARDCODED TO GIVE DICTIONARY FORM AND MEANINGS ONLY");
     PREFACE.PUT_LINE(
-          "IT CANNOT BE MODIFIED BY CHANGING THE DO_MEANINGS_ONLY PARAMETER");
+           "IT CANNOT BE MODIFIED BY CHANGING THE DO_MEANINGS_ONLY PARAMETER");
+    PREFACE.NEW_LINE;
   end if;
 
   GET_INPUT_LINES:
@@ -1113,7 +1115,7 @@ begin --  PARSE
     begin                    --  Block to manipulate file of lines
       if (NAME(CURRENT_INPUT) = NAME(STANDARD_INPUT))  then
         SCROLL_LINE_NUMBER := INTEGER(TEXT_IO.LINE(TEXT_IO.STANDARD_OUTPUT));
-        PREFACE.NEW_LINE;
+      --  PREFACE.NEW_LINE;
         PREFACE.PUT("=>");
       end if;
 
