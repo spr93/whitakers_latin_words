@@ -31,6 +31,7 @@
       MM : INTEGER := MAX_MEANING_SIZE;
       I, J, K : INTEGER := 0;
 
+      Next_Meaning_Same, Last_Meaning_Same, Next_Form_Same, Last_Form_Same, Put_Form_Anyway : Boolean := False;
 
       INFLECTION_FREQUENCY : array (FREQUENCY_TYPE) of STRING(1..8) :=
               ("        ",  --  X
@@ -448,12 +449,6 @@ end PRINT_MODIFIED_QUAL;
 
 
 
---               if ((SR.IR.QUAL.POFS = NUM)  and      --  Don't want on inflection
---                   (DM.D_K in GENERAL..UNIQUE))  and then
---                   (DM.DE.KIND.NUM_VALUE > 0)  then
---                 TEXT_IO.PUT(OUTPUT, "  ");
---                 INFLECTIONS_PACKAGE.INTEGER_IO.PUT(OUTPUT, DM.DE.KIND.NUM_VALUE);
---               end if;
                PUT_INFLECTION_FLAGS;
                TEXT_IO.NEW_LINE(OUTPUT);
                if Dm.De.PART /= NULL_DICTIONARY_ENTRY.PART then  -- SPR:  Added because some UNIQUES won't generate a DE
@@ -1316,6 +1311,18 @@ if PA_LAST = 0   then
           if SRAA(J) /= OSRA  then --  Skips one identical SRA
                                      --  no matter what comes next
 
+-- Normalize spacing and dictionary flag printing when more than one set of STEMs for same PART
+            if Last_Form_Same and then Next_Form_Same
+              and then DMA(J).MNPC /= DMA(J+1).MNPC
+            then
+               Put_Form_Anyway := True;
+
+                  if (not WORDS_MODE(DO_ONLY_MEANINGS) and
+                      not (CONFIGURATION = ONLY_MEANINGS)) then
+                    Text_IO.New_Line(OUTPUT);
+                  end if;
+
+            end if;
 
 
         PUT_INFLECTION_ARRAY_J:
@@ -1331,34 +1338,101 @@ if PA_LAST = 0   then
           OSRA := SRAA(J);
           end if;
 
---TEXT_IO.PUT_LINE("PUTting FORM");
-          PUTTING_FORM:
-          begin
-            if J = 1  or else
-               DICTIONARY_FORM(DMA(J).DE) /= DICTIONARY_FORM(DMA(J-1).DE)  then
-            --  Put at first chance, skip duplicates
-                 PUT_FORM(SRAA(J)(1), DMA(J));
+-- Text_Io.Put_Line("Setting next/last MEAN and F booleans");
+
+            Last_Meaning_Same := False;
+            Next_Meaning_Same := False;
+            Last_Form_Same    := False;
+            Next_Form_Same    := False;
+
+          if J > 1 THEN
+                if DMA(J).DE.MEAN = DMA(J-1).DE.MEAN then Last_Meaning_Same := True;
+                end if;
+                if DMA(J).DE.PART.POFS = DMA(J-1).DE.PART.POFS and then
+                   --  For same reason checking .TRAN will always return false
+                   --  but checking individual elements works
+                   DMA(J).DE.TRAN.AGE = DMA(J-1).DE.TRAN.AGE and then
+                   DMA(J).DE.TRAN.AREA = DMA(J-1).DE.TRAN.AREA and then
+                   DMA(J).DE.TRAN.GEO = DMA(J-1).DE.TRAN.GEO and then
+                   DMA(J).DE.TRAN.FREQ = DMA(J-1).DE.TRAN.FREQ and then
+                   DMA(J).DE.TRAN.SOURCE = DMA(J-1).DE.TRAN.SOURCE then
+                   Last_Form_Same := True;
+                end if;
+         end if;
+
+                if DMA(J).DE.MEAN = DMA(J+1).DE.MEAN then Next_Meaning_Same := True;
+                end if;
+
+                if DMA(J).DE.PART.POFS = DMA(J+1).DE.PART.POFS and then
+                DMA(J).DE.TRAN.AGE = DMA(J+1).DE.TRAN.AGE and then
+                DMA(J).DE.TRAN.AREA = DMA(J+1).DE.TRAN.AREA and then
+                DMA(J).DE.TRAN.GEO = DMA(J+1).DE.TRAN.GEO and then
+                DMA(J).DE.TRAN.FREQ = DMA(J+1).DE.TRAN.FREQ and then
+                DMA(J).DE.TRAN.SOURCE = DMA(J+1).DE.TRAN.SOURCE then
+                Next_Form_Same := True;
+                end if;
+
+
+-- TEXT_IO.PUT_LINE("PUTting FORM");
+         PUTTING_FORM:
+         begin
+
+--DEBUG
+--       Text_IO.Put_Line("                               LAST FORM SAME: " & Last_Form_Same'Image);
+--       Text_IO.Put_Line("                               NEXT FORM SAME: " & Next_Form_Same'Image);
+--       Text_IO.Put_Line("                            LAST MEANING SAME: " & Last_MEANING_Same'Image);
+--       Text_IO.Put_Line("                            NEXT MEANING SAME: " & Next_MEANING_Same'Image);
+--       Text_IO.Put_Line("                              PUT FORM ANYWAY: " & Put_Form_Anyway'Image);
+--DEBUG
+
+
+
+               if Last_Form_Same = False  and then     -- false if J =1
+                  Next_Form_Same = False      THEN     -- unique sandwiched betwen other forms, print
+                  PUT_FORM(SRAA(J)(1), DMA(J));
+
+            elsif Last_Form_Same = False  and then     -- false if J =1
+                  Next_Form_Same          and then
+                  Next_Meaning_Same = False   THEN
+                  PUT_FORM(SRAA(J)(1), DMA(J));       -- make sure form won't fall between meanings
+
+            elsif  Put_Form_Anyway            Then
+                   PUT_FORM(SRAA(J)(1), DMA(J));
+            elsif  Last_Form_Same         and then
+                   Next_Form_Same = False     then
+                   PUT_FORM(SRAA(J)(1), DMA(J));
             end if;
+
           end PUTTING_FORM;
 
 
---TEXT_IO.PUT_LINE("PUTting MEANING");
+-- TEXT_IO.PUT_LINE("PUTting MEANING");
          PUTTING_MEANING:
-          begin
-            if (DMA(J).D_K in GENERAL..UNIQUE)  then
-              if (DMA(J).DE.MEAN /= DMA(J+1).DE.MEAN)  then
-                --  This if handles simple multiple MEAN with same IR and FORM
-                --  by anticipating duplicates and waiting until change
-                  PUT_MEANING_LINE(SRAA(J)(1), DMA(J));
-                  Text_IO.Put_Line(OUTPUT,"----------");
-                  Text_IO.New_Line(OUTPUT);
-              end if;
-            else
+            begin
+
+
+            if Put_Form_Anyway then
                PUT_MEANING_LINE(SRAA(J)(1), DMA(J));
-               Text_IO.Put_Line(OUTPUT,"----------");
-               Text_IO.New_Line(OUTPUT);
+               Put_Form_Anyway := False;
+
+            elsif  Next_meaning_Same and then Next_Form_Same then
+               null;
+
+            Elsif  Next_meaning_same = False and then Next_Form_Same then
+                   PUT_MEANING_LINE(SRAA(J)(1), DMA(J));
+
+            elsif Next_Meaning_Same = False and Then Next_Form_Same = False then
+                   PUT_MEANING_LINE(SRAA(J)(1), DMA(J));
+                   Text_IO.Put_Line(OUTPUT, "-----------");
+
+                      if (not WORDS_MODE(DO_ONLY_MEANINGS) and
+                            not (CONFIGURATION = ONLY_MEANINGS))       then
+                           Text_IO.NEW_LINE(OUTPUT);
+                          end if;
+
             end if;
-          end PUTTING_MEANING;
+
+         end PUTTING_MEANING;
 
 
 
@@ -1555,9 +1629,6 @@ end LIST_STEMS;
          end if;
  -- TEXT_IO.PUT_LINE("Leaving LIST_NEIGHBORHOOD    UNKNOWN_SEARCH");
          end UNKNOWN_SEARCH;
-
-
-
 
 
     procedure LIST_NEIGHBORHOOD(OUTPUT : TEXT_IO.FILE_TYPE;

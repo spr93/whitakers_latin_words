@@ -93,7 +93,9 @@ package body Arabic2Roman is
                if WORDS_MDEV(DO_PEARSE_CODES) then
                PUT( "03 "); end if;
                Put_Line("nihil");
-               New_Line;
+
+               Put_Line("-----------");
+                  New_Line;
                return; -- SPR:  is nulla better?  noun form of nulla isn't in the dictionary - is that right?
          end if;
 
@@ -102,7 +104,7 @@ package body Arabic2Roman is
          case Arabic_Num is
             when 1..99_999 => Roman_Num_Record.Age_F := Generate_Subtractive(Arabic_Num);
             when 100_000..999_999_999 =>
-                   Roman_Num_Record.Age_F := "|" & Generate_Subtractive((Arabic_Num / 100_000) mod 100_000) & "|"
+               Roman_Num_Record.Age_F := "|" & Generate_Subtractive((Arabic_Num / 100_000) mod 100_000) & "|"
                                               & Generate_Subtractive(Arabic_Num mod 10_000);
                Roman_Num_Record.Bar_Reminder := True;
             when others => null;
@@ -140,7 +142,8 @@ package body Arabic2Roman is
          end if;
 
 
-       Put_Line("");
+            Put_Line("-----------");
+            New_Line;
        end if;  -- end if enclosing statements requiring integer
 
 

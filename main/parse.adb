@@ -105,7 +105,8 @@ procedure PARSE(COMMAND_LINE : STRING := "") is
             If  Arabic_J = 1 Then 
                   case Arabic_String(Arabic_J) is
                   when 'z' => null; -- Arabic_J := Arabic_J+1; -- we've got a word first
-                  when others => Arabic_Process_All := True; Text_IO.New_Line; -- Arabic_J := Arabic_J+1;-- conform to Words standard format
+                  when others => Arabic_Process_All := True; 
+                                Text_IO.New_Line; -- Arabic_J := Arabic_J+1;-- conform to Words standard format
                   end case;
             end if; 
              
@@ -115,7 +116,6 @@ procedure PARSE(COMMAND_LINE : STRING := "") is
                   else   
                    Arabic2Roman.Arabic2Roman(Arabic_String((Arabic_J)..J), Arabic_Process_All);
                end if;
-               Text_IO.New_Line; 
             end if;    
          
                Arabic_J := Arabic_J + 1;
@@ -1108,7 +1108,8 @@ begin --  PARSE
       if (NAME(CURRENT_INPUT) = NAME(STANDARD_INPUT))  then
         SCROLL_LINE_NUMBER := INTEGER(TEXT_IO.LINE(TEXT_IO.STANDARD_OUTPUT));
       --  PREFACE.NEW_LINE;
-        PREFACE.PUT("=>");
+               PREFACE.PUT("=>");
+
       end if;
 
       LINE := BLANK_LINE;
