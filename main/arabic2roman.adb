@@ -1,12 +1,12 @@
 with Ada.Text_IO; use ADA.Text_IO;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
-
+with Config; use Config;
 with WORD_PARAMETERS; use WORD_PARAMETERS;
 with DEVELOPER_PARAMETERS; use DEVELOPER_PARAMETERS;
 
 package body Arabic2Roman is
 
-   procedure Arabic2Roman (OUTPUT : File_Type; INPUT_WORD : in out String; Arabic_Process_All : in Boolean) is
+   procedure Arabic2Roman (INPUT_WORD : in out String; Arabic_Process_All : in Boolean) is
 
    type Roman_Record_Type Is
       record
@@ -17,8 +17,8 @@ package body Arabic2Roman is
 
    Roman_Num_Record :  Roman_Record_Type;
 
-      Print_Medieval : Boolean;
-      Arabic_String : String(1..11);
+      Print_Medieval : Boolean := False;
+      Arabic_String : String(1..11) := (others => ' ');
       Arabic_Build_Counter : Integer := 1;
 
       Input_Counter : Integer := Input_Word'First;
@@ -72,28 +72,28 @@ package body Arabic2Roman is
 
          if Negative = True then
                       if WORDS_MDEV(DO_PEARSE_CODES) then
-                      PUT(OUTPUT, "06 ");
+                      PUT("06");
                      end if;
-            Put_Line(OUTPUT,"NB:  Negative numbers are a neologism.");
+            Put_Line("NB:  Negative numbers are a neologism.");
             end if;
 
 
 
      if WORDS_MDEV(DO_PEARSE_CODES) then
-         PUT(OUTPUT, "06 ");
+         PUT( "06 ");
       end if;
 
-      Put(Output,Arabic_String);
-      SET_COL(OUTPUT, 22);
-      Put(OUTPUT,"ARABIC NUM");
-      PUT_LINE(OUTPUT,"");
+      Put(Arabic_String);
+      SET_COL(22);
+      Put("ARABIC NUM");
+      New_Line;
 
             --quickly test and reject zeros
          if Arabic_num = 0 then
                if WORDS_MDEV(DO_PEARSE_CODES) then
-               PUT(OUTPUT, "03 "); end if;
-               Put_Line(Output,"nihil");
-               Put_Line(Output,"");
+               PUT( "03 "); end if;
+               Put_Line("nihil");
+               New_Line;
                return; -- SPR:  is nulla better?  noun form of nulla isn't in the dictionary - is that right?
          end if;
 
@@ -117,30 +117,30 @@ package body Arabic2Roman is
                end if;
 
             if WORDS_MDEV(DO_PEARSE_CODES) then
-               PUT(OUTPUT, "03 ");
+               PUT("03");
                end if;
 
-            Put_Line(OUTPUT,To_String(Roman_Num_Record.Age_X) & "   NUM CARD    [XXAQC]");
+            Put_Line(To_String(Roman_Num_Record.Age_X) & "   NUM CARD    [XXAQC]");
 
          end if;
 
 
          if Print_Medieval = True then
                      if WORDS_MDEV(DO_PEARSE_CODES) then
-                        PUT(OUTPUT, "03 ");
+                        PUT( "03 ");
                      end if;
 
-            Put(OUTPUT,To_String(Roman_Num_Record.Age_F));
+            Put(To_String(Roman_Num_Record.Age_F));
 
             case Roman_Num_Record.Bar_Reminder is
-                     when False =>  Put_line(OUTPUT,"   NUM CARD    [XXFQA]");
-                     when True =>   Put(OUTPUT,"   NUM CARD    [XXFQC]"); Put_Line (OUTPUT,""); Put_Line(OUTPUT,"     write bar across top of the numerals in the bars | | (three sided box, open bottom)");
+                     when False =>  Put_line("   NUM CARD    [XXFQA]");
+                     when True =>   Put("   NUM CARD    [XXFQC]"); Put_Line (""); Put_Line("     write bar across top of the numerals in the bars | | (three sided box, open bottom)");
             end Case;
 
          end if;
 
 
-       Put_Line(OUTPUT,"");
+       Put_Line("");
        end if;  -- end if enclosing statements requiring integer
 
 
@@ -186,7 +186,7 @@ function Generate_Additive (Arabic_Num : in Integer) return Unbounded_String is
 
 function Generate_Subtractive(Arabic_Num : in  Integer) return Unbounded_String is
 
-      Built_String : Unbounded_String;
+      Built_String : Unbounded_String := To_Unbounded_String("");
 
    -- Rules get complex, especially starting at 4_000, so not using an array for readability and debugging purposes
 begin
