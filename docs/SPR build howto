@@ -10,7 +10,7 @@ Review CHECK.OUT.
 
 Run WAKEDICT (note the W) against DICTLINE.GEN
 
-Run sorter against the resulting STEMLIST.GEN -- AMBIGUITY - ALSO RUN IT AGAINST THE DICT*FILE*.GEN?
+[[Run sorter against the resulting STEMLIST.GEN -- AMBIGUITY - ALSO RUN IT AGAINST THE DICT*FILE*.GEN?  -- SPR:  NO]]
        SORTER
          STEMLIST.GEN    --  Input  
            1    18   U
@@ -20,9 +20,12 @@ Run sorter against the resulting STEMLIST.GEN -- AMBIGUITY - ALSO RUN IT AGAINST
            58    1   D      
          STEMLIST.GEN    --  Output  
          
-[[SPR:  REMOVING WEIRD TO_BE AT THE FIRST LINE ]]
+do not:  [SPR:  REMOVE WEIRD TO_BE AT THE FIRST LINE ]]
 
 Run makestem
+
+Run MAKEINFL against INFLECTS.LAT
+
 
 --English part:
 
@@ -46,9 +49,7 @@ SORTER
 
 Run makeefil
 
---necessary for both english and latin:
-
-Run MAKEINFL against INFLECTS.LAT
+-- end English part
 
 THE FOLLOWING IS NOW THE FULL DATA SET:
 WORDS [executable]
