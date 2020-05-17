@@ -631,8 +631,10 @@ end PRINT_MODIFIED_QUAL;
                         TEXT_IO.PUT(OUTPUT, "03 ");
                       end if;
                       PUT_MEANING(OUTPUT, RRR_MEANING);      --  Roman Numeral
-                      RRR_MEANING := NULL_MEANING_TYPE;
-                      TEXT_IO.NEW_LINE(OUTPUT);
+                  RRR_MEANING := NULL_MEANING_TYPE;
+                 TEXT_IO.NEW_LINE(OUTPUT);
+                  Text_IO.Put_Line("-----------");
+
                     end if;
 
                   elsif DM.D_K = NNN then
@@ -1066,7 +1068,7 @@ when PRON  =>
 
 
   when others  =>
---TEXT_IO.PUT_LINE("Others");
+--zTEXT_IO.PUT_LINE("Others");
   OSRA := NULL_SRA;
   ODMA := NULL_DMA;
   --ODM := NULL_DICTIONARY_MNPC_RECORD;
@@ -1415,7 +1417,7 @@ if PA_LAST = 0   then
                PUT_MEANING_LINE(SRAA(J)(1), DMA(J));
                Put_Form_Anyway := False;
 
-            elsif  Next_meaning_Same and then Next_Form_Same then
+            elsif  Next_meaning_Same and then Next_Form_Same and then DMA(J).D_K in GENERAL..UNIQUE Then
                null;
 
             Elsif  Next_meaning_same = False and then Next_Form_Same then
@@ -1429,8 +1431,13 @@ if PA_LAST = 0   then
                             not (CONFIGURATION = ONLY_MEANINGS))       then
                            Text_IO.NEW_LINE(OUTPUT);
                           end if;
+            else
+                PUT_MEANING_LINE(SRAA(J)(1), DMA(J));
 
             end if;
+
+
+
 
          end PUTTING_MEANING;
 

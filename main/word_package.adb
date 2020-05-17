@@ -950,7 +950,7 @@ end CHANGE_LANGUAGE;
                   (PDL_P = N    and then PDL_PART.N.DECL = (9, 8)) or  --  No prefix for
                   (PDL_P = ADJ  and then PDL_PART.ADJ.DECL = (9, 8)) or --  abbreviations
                   (PDL_P = INTERJ  or PDL_P = CONJ) then  --  or INTERJ or CONJ
-               --PUT_LINE("In REDUCE_STEM_LIST   no prefix on abbreviationi, interj, conj");
+               --PUT_LINE("In REDUCE_STEM_LIST   no prefix on abbreviation, interj, conj");
                   goto END_OF_PDL_LOOP;
                else                                           --  Check if PREFIX agrees
                --PUT("PREFIX in REDUCE  "); 
@@ -1149,7 +1149,7 @@ end CHANGE_LANGUAGE;
                                               QUAL => (
                                                       POFS => ADV,
                                                       ADV => (
-                                                             CO => COMP, GENERATED => ADJADV) ),
+                                                             CO => COM, GENERATED => ADJADV) ),
                                               KEY => SL(I).IR.KEY,
                                               ENDING => SL(I).IR.ENDING,
                                               AGE => SL(I).IR.AGE,
