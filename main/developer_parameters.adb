@@ -56,7 +56,7 @@ package body DEVELOPER_PARAMETERS is
 
                       OMIT_ARCHAIC                => TRUE,
                       OMIT_MEDIEVAL               => FALSE,
-                      OMIT_UNCOMMON               => TRUE,
+                      OMIT_UNCOMMON               => FALSE,
 
                       DO_I_FOR_J                  => FALSE,
                       DO_U_FOR_V                  => FALSE,
@@ -281,13 +281,16 @@ OMIT_MEDIEVAL_HELP : constant HELP_TYPE :=  (
    "will not want them.  If there is no other possible form, then the     ",
    "Medieval (roughly defined) will be reported.   The default is Y(es).  " );
 
-OMIT_UNCOMMON_HELP : constant HELP_TYPE :=  (
-   "THIS OPTION IS CAN ONLY BE ACTIVE IF WORDS_MODE(TRIM_OUTPUT) IS SET!  ",
-   "This option instructs the program to omit inflections and dictionary  ",
-   "entries with FREQ codes indicating that the selection is uncommon.    ",
-   "While these forms area significant feature of the program, many users ",
-   "will not want them.  If there is no other possible form, then the     ",
-   "uncommon (roughly defined) will be reported.   The default is Y(es).  " );
+   --  SPR: OMIT_UNCOMMON is broken.  It's not filtering (or rarely filtering)
+   --       and under some circumstances can cause an extraneous raw dictionary 
+   --       line to print       
+--  OMIT_UNCOMMON_HELP : constant HELP_TYPE :=  (
+--     "THIS OPTION IS CAN ONLY BE ACTIVE IF WORDS_MODE(TRIM_OUTPUT) IS SET!  ",
+--     "This option instructs the program to omit inflections and dictionary  ",
+--     "entries with FREQ codes indicating that the selection is uncommon.    ",
+--     "While these forms are a significant feature of the program, many users",
+--     "will not want them.  If there is no other possible form, then the     ",
+--     "uncommon (roughly defined) will be reported.   The default is Y(es).  " );
 
 DO_I_FOR_J_HELP : constant HELP_TYPE :=  (
    "This option instructs the program to modify the output so that the j/J",
@@ -529,7 +532,7 @@ LOAD_DICTIONARY(DICT_LOC,
         START_FILE_CHARACTER := LINE(35);
       else
         PUT_LINE("Not an acceptable START_FILE_CHARACTER, may conflict");
-        PUT_LINE("NO CHANGE  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        PUT_LINE("CHARACTER NOT CHANGED");
       end if;
     else
       raise BAD_MDEV_FILE;
@@ -546,7 +549,7 @@ LOAD_DICTIONARY(DICT_LOC,
         CHANGE_PARAMETERS_CHARACTER := LINE(35);
       else
         PUT_LINE("Not an acceptable CHANGE_PARAMETERS_CHARACTER, may conflict");
-        PUT_LINE("NO CHANGE  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        PUT_LINE("CHARACTER NOT CHANGED");
       end if;
     else
       raise BAD_MDEV_FILE;
@@ -563,7 +566,7 @@ LOAD_DICTIONARY(DICT_LOC,
         CHANGE_DEVELOPER_MODES_CHARACTER := LINE(35);
       else
         PUT_LINE("Not an acceptable CHANGE_DEVELOPER_MODES_CHARACTER, may conflict");
-        PUT_LINE("NO CHANGE  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        PUT_LINE("CHARACTER NOT CHANGED");
       end if;
     else
       raise BAD_MDEV_FILE;
@@ -729,7 +732,10 @@ LOAD_DICTIONARY(DICT_LOC,
 
     INQUIRE(OMIT_MEDIEVAL, OMIT_MEDIEVAL_HELP);
 
-    INQUIRE(OMIT_UNCOMMON, OMIT_UNCOMMON_HELP);
+       --  SPR: OMIT_UNCOMMON is broken.  It's not filtering (or rarely filtering)
+       --       and under some circumstances can cause an extraneous raw dictionary 
+       --       line to print  
+    -- INQUIRE(OMIT_UNCOMMON, OMIT_UNCOMMON_HELP);
 
 
     INQUIRE(DO_I_FOR_J, DO_I_FOR_J_HELP);
@@ -848,6 +854,10 @@ begin
   --  Read the MDEV file
     GET_MDEVS;
     PREFACE.PUT_LINE("MDEV_FILE loaded");
+      if WORDS_MDEV(OMIT_UNCOMMON) = TRUE then
+         PREFACE.PUT_LINE ("MDEV_FILE:  OMIT_UNCOMMON option is deprecated; not applied");
+         WORDS_MDEV(OMIT_UNCOMMON) := FALSE;
+      end if; 
   exception
   --  If there is any problem
   --  Put that the MDEV file is corrupted and the options are:
