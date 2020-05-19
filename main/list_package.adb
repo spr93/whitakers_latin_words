@@ -142,16 +142,25 @@
                    DHIT := TRUE;
                  end if;
 
+         if DICTIONARY_FORM(DE)'LENGTH /= 0  then
+             TEXT_IO.PUT(OUTPUT, DICTIONARY_FORM(DE) & "  ");
+             DHIT := TRUE;
 
-
-                 if DICTIONARY_FORM(DE)'LENGTH /= 0  then
-                   TEXT_IO.PUT(OUTPUT, DICTIONARY_FORM(DE) & "  ");
-
-                     DHIT := TRUE;
+         -- qui and aliqui (PRON) are frequent enough that they should have dictionary forms
+         -- due to the program's structure we'll use another kludge to get there
+         elsif DE.PART.POFS = PRON then
+               if Trim(DE.STEMS(1)) = "qu" then
+                  TEXT_IO.PUT(OUTPUT, "qui, quae, quod  PRON");
+               --   Dhit := True;
+               elsif Trim(DE.STEMS(1)) = "aliqu" then
+               TEXT_IO.PUT(OUTPUT, "aliqui, aliquae, aliquod  PRON");
+                -- Dhit := True;
                   end if;
 
+           end if;
+
          if D_K = UNIQUE and then WORDS_MDEV(SHOW_DICTIONARY) = FALSE THEN
-            Text_IO.Put(OUTPUT, " [unique] ");
+            Text_IO.Put(OUTPUT, "[unique]");
          end If;
 
       end if;

@@ -54,20 +54,20 @@ package body DEVELOPER_PARAMETERS is
                       INCLUDE_UNKNOWN_CONTEXT     => TRUE,
                       NO_MEANINGS                 => FALSE,
 
-                      OMIT_ARCHAIC                => TRUE,
+                      OMIT_ARCHAIC                => FALSE,
                       OMIT_MEDIEVAL               => FALSE,
                       OMIT_UNCOMMON               => FALSE,
 
-                      DO_I_FOR_J                  => FALSE,
-                      DO_U_FOR_V                  => FALSE,
+                      DO_I_FOR_J                  => TRUE,
+                      DO_U_FOR_V                  => TRUE,
 
-                      PAUSE_IN_SCREEN_OUTPUT      => TRUE,
+                      PAUSE_IN_SCREEN_OUTPUT      => FALSE,
                       NO_SCREEN_ACTIVITY          => FALSE,
                       
                       UPDATE_LOCAL_DICTIONARY     => FALSE,
                       UPDATE_MEANINGS             => FALSE,
 
-                      MINIMIZE_OUTPUT             => TRUE    );
+                      MINIMIZE_OUTPUT             => FALSE    );
 
   BAD_MDEV_FILE : exception;
 
@@ -270,7 +270,7 @@ OMIT_ARCHAIC_HELP : constant HELP_TYPE :=  (
    "This option instructs the program to omit inflections and dictionary  ",
    "entries with an AGE code of A (Archaic).  Archaic results are rarely  ",
    "of interest in general use.  If there is no other possible form, then ",
-   "the Archaic (roughly defined) will be reported.  The default is Y(es)." );
+   "the Archaic (roughly defined) will be reported.   The default is N(o).");
 
 
 OMIT_MEDIEVAL_HELP : constant HELP_TYPE :=  (
@@ -279,7 +279,7 @@ OMIT_MEDIEVAL_HELP : constant HELP_TYPE :=  (
    "entries with AGE codes of E or later, those not in use in Roman times.",
    "While later forms and words are a significant application, most users ",
    "will not want them.  If there is no other possible form, then the     ",
-   "Medieval (roughly defined) will be reported.   The default is Y(es).  " );
+   "Medieval (roughly defined) will be reported.      The default is N(o).");
 
    --  SPR: OMIT_UNCOMMON is broken.  It's not filtering (or rarely filtering)
    --       and under some circumstances can cause an extraneous raw dictionary 
@@ -299,7 +299,7 @@ DO_I_FOR_J_HELP : constant HELP_TYPE :=  (
    "times.  The capital is usually rendered as I, as in inscriptions.     ",
    "If this is NO/FALSE, the output will have the same character as input.",
    "The program default, and the dictionary convention is to retain the j.",
-   "Reset if this ia unsuitable for your application. The default is N(o)." );
+   "                                                 The default is Y(es).");
 
 DO_U_FOR_V_HELP : constant HELP_TYPE :=  (
    "This option instructs the program to modify the output so that the u  ",
@@ -312,25 +312,21 @@ DO_U_FOR_V_HELP : constant HELP_TYPE :=  (
    "V in any case, as it was and is in inscriptions (easier to chisel).   ",
    "If this is NO/FALSE, the output will have the same character as input.",
    "The program default, and the dictionary convention is to retain the v.",
-   "Reset If this ia unsuitable for your application. The default is N(o)." );
+   "                                                 The default is Y(es)." );
 
 
 
 PAUSE_IN_SCREEN_OUTPUT_HELP : constant HELP_TYPE :=  (
-   "This option instructs the program to pause in output on the screen    ",
-   "after about 16 lines so that the user can read the output, otherwise  ",
-   "it would just scroll off the top.  A RETURN/ENTER gives another page. ",
-   "If the program is waiting for a return, it cannot take other input.   ",
-   "This option is active only for keyboard entry or command line input,  ",
-   "and only when there is no output file.  It is moot if only single word",
-   "input or brief output.                 The default is Y(es).          " );
+   "This option instructs the program to pause if a result is longer than ",
+   "about 16 lines--the maximum for certain legacy terminals and OSes.    ",
+   "                                                  The default is N(o).");
 
 
 NO_SCREEN_ACTIVITY_HELP : constant HELP_TYPE :=  (
    "This option instructs the program not to keep a running screen of the ",
    "input.  This is probably only to be used by the developer to calibrate",
    "run times for large text file input, removing the time necessary to   ",
-   "write to screen.                       The default is N(o).           ");
+   "write to screen.                                  The default is N(o).");
  
     
 
@@ -350,7 +346,7 @@ UPDATE_LOCAL_DICTIONARY_HELP : constant HELP_TYPE :=  (
    "not want to enter a word when this option is on, a simple RETURN at   ",
    "the STEM=> prompt will ignore and continue the program.  This option  ",
    "is only for very experienced users and should normally be off.        ",
-   "                                          The default is N(o).        ",
+   "                                                  The default is N(o).",
    "      ------    NOT AVAILABLE IN THIS VERSION   -------               " );
 
 UPDATE_MEANINGS_HELP : constant HELP_TYPE :=  (
@@ -363,14 +359,14 @@ UPDATE_MEANINGS_HELP : constant HELP_TYPE :=  (
    "new version from the developer.  Changes can only be recovered by     ",
    "considerable prcessing by the deneloper, and should be left there.    ",
    "This option is only for experienced users and should remain off.      ",
-   "                                          The default is N(o).        ",
+   "                                                  The default is N(o).",
    "      ------    NOT AVAILABLE IN THIS VERSION   -------               " );
      
 
 MINIMIZE_OUTPUT_HELP : constant HELP_TYPE :=  (
    "This option instructs the program to minimize the output.  This is a  ",
    "somewhat flexible term, but the use of this option will probably lead ",
-   "to less output.                        The default is Y(es).          " );
+   "to less output.                                   The default is N(o)." );
 
 
 SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
