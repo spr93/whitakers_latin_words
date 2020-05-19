@@ -1,9 +1,10 @@
    with TEXT_IO;
    with DIRECT_IO;
    with STRINGS_PACKAGE; use STRINGS_PACKAGE;
+   with INFLECTIONS_PACKAGE; use INFLECTIONS_PACKAGE;
    with DICTIONARY_PACKAGE; use DICTIONARY_PACKAGE;
    procedure SORTER is   
-   --  This program sorts a file of lines (strings) on 4 substrings Mx..Nx
+   --  This program sorts a file of lines (strings) on 5 substrings Mx..Nx
    --  Sort by stringwise (different cases), numeric, or POS enumeration
    
       package BOOLEAN_IO is new TEXT_IO.ENUMERATION_IO(BOOLEAN);
@@ -37,7 +38,7 @@
       OLD_LINE : TEXT_TYPE := BLANK_TEXT;
       P_LINE : TEXT_TYPE := BLANK_TEXT;
    
-      type SORT_TYPE is (A, C, G, U, N, F, P, S);
+      type SORT_TYPE is (A, C, G, U, N, F, P, R, S);
       package SORT_TYPE_IO is new TEXT_IO.ENUMERATION_IO(SORT_TYPE);
       use SORT_TYPE_IO;
    
@@ -50,12 +51,12 @@
       OUTPUT : TEXT_IO.FILE_TYPE;
       WORK   : LINE_IO.FILE_TYPE;
    
-      M1, M2, M3, M4 : NATURAL := 1;
-      N1, N2, N3, N4 : NATURAL := LINE_LENGTH;
-      Z1, Z2, Z3, Z4 : NATURAL := 0;           
+      M1, M2, M3, M4, M5 : NATURAL := 1;
+      N1, N2, N3, N4, N5 : NATURAL := LINE_LENGTH;
+      Z1, Z2, Z3, Z4, Z5 : NATURAL := 0;           
    
-      S1, S2, S3, S4 : SORT_TYPE := A;
-      W1, W2, W3, W4 : WAY_TYPE := I;
+      S1, S2, S3, S4, S5 : SORT_TYPE := A;
+      W1, W2, W3, W4, W5 : WAY_TYPE := I;
    
       ENTRY_FINISHED : exception;
    
@@ -682,6 +683,7 @@
       --FS, GS : SECTION_TYPE := NO_SECTION;
          FS, GS : APPENDIX_SECTION_TYPE := NO_APPENDIX_SECTION;
          PX, PY : PART_ENTRY;       --  So I can X here
+         RX, RY : PART_OF_SPEECH_TYPE;   --  So I can X here
       begin
          if ST = A  then
             AS := LOWER_CASE(AS);
@@ -744,6 +746,15 @@
                return (not (PX < PY)) and (not (PX = PY));
             end if;
          
+         elsif ST = R  then
+            PART_OF_SPEECH_TYPE_IO.GET(AS, RX, LAST);
+            PART_OF_SPEECH_TYPE_IO.GET(BS, RY, LAST);
+            if WT = I  then 
+               return RX < RY;
+            else
+               return (not (RX < RY)) and (not (RX = RY));
+            end if;
+         
          elsif ST = S  then
          --PUT_LINE("AS =>" & AS & '|');
             GET(AS, FS, LAST);
@@ -778,6 +789,7 @@
          FN, GN : FLOAT := 0.0;
          FS, GS : APPENDIX_SECTION_TYPE := NO_APPENDIX_SECTION;
          PX, PY : PART_ENTRY;
+         RX, RY : PART_OF_SPEECH_TYPE;
       begin
          if ST = A  then
             AS := LOWER_CASE(AS);
@@ -812,6 +824,11 @@
             PART_ENTRY_IO.GET(BS, PY, LAST);
             return PX = PY;
          
+         elsif ST = R  then
+            PART_OF_SPEECH_TYPE_IO.GET(AS, RX, LAST);
+            PART_OF_SPEECH_TYPE_IO.GET(BS, RY, LAST);
+            return RX = RY;
+         
          elsif ST = S  then
             GET(AS, FS, LAST);
             GET(BS, GS, LAST);
@@ -835,28 +852,39 @@
       function LT  (LEFT, RIGHT : TEXT_TYPE) return BOOLEAN is
       begin
       
-         if SLT(LEFT(M1..N1),  RIGHT(M1..N1), S1, W1)  then
-            return TRUE;
-         elsif SORT_EQUAL(LEFT(M1..N1),  RIGHT(M1..N1), S1, W1) then
-            if ((N2 > 0) and then 
+            if SLT(LEFT(M1..N1),  RIGHT(M1..N1), S1, W1)  then
+              return TRUE;
+            
+            elsif SORT_EQUAL(LEFT(M1..N1),  RIGHT(M1..N1), S1, W1) then
+              if ((N2 > 0) and then 
                 SLT(LEFT(M2..N2),  RIGHT(M2..N2), S2, W2) ) then
                return TRUE;
-            elsif ((N2 > 0) and then 
+               
+              elsif ((N2 > 0) and then 
                    SORT_EQUAL(LEFT(M2..N2),  RIGHT(M2..N2), S2, W2)) then
-               if ((N3 > 0) and then 
+                if ((N3 > 0) and then 
                    SLT(LEFT(M3..N3),  RIGHT(M3..N3), S3, W3 ))  then
                   return TRUE;
-               elsif ((N3 > 0) and then 
+                  
+                elsif ((N3 > 0) and then 
                       SORT_EQUAL(LEFT(M3..N3),  RIGHT(M3..N3), S3, W3))  then
                   if ((N4 > 0) and then 
                       SLT(LEFT(M4..N4),  RIGHT(M4..N4), S4, W4) )  then
                      return TRUE;
+                     
+                  elsif ((N4 > 0) and then 
+                        SORT_EQUAL(LEFT(M4..N4),  RIGHT(M4..N4), S4, W4))  then
+                    if ((N5 > 0) and then                
+                        SLT(LEFT(M5..N5),  RIGHT(M5..N5), S5, W5) )  then
+                       return TRUE;
+                       
+                    end if; 
                   end if;
-               end if;
+                end if;
+              end if;
             end if;
-         end if;
-         return FALSE;
-         exception 
+            return FALSE;
+          exception 
             when others =>
                TEXT_IO.PUT_LINE("exception in LT    showing LEFT and RIGHT");
                TEXT_IO.PUT_LINE(LEFT & "|");
@@ -930,9 +958,8 @@
    
       NEW_LINE;
       PUT_LINE("Sorts a text file of lines four times on substrings M..N");
-      PUT_LINE(
-              "A)lphabetic (all case) C)ase sensitive, iG)nore seperators, U)i_is_vj,");
-      PUT_LINE("    iN)teger, F)loating point, S)ection, or P)art entry");
+      PUT_LINE("A)lphabetic (all case) C)ase sensitive, iG)nore seperators, U)i_is_vj,");
+      PUT_LINE("    iN)teger, F)loating point, S)ection, P)art entry, or paR)t of speech");
       PUT_LINE("         I)ncreasing or D)ecreasing");
       NEW_LINE;
    
@@ -957,6 +984,8 @@
          GET_ENTRY(M3, N3, S3, W3);
          PROMPT_FOR_ENTRY("fourth");
          GET_ENTRY(M4, N4, S4, W4);
+         PROMPT_FOR_ENTRY("fifth");
+         GET_ENTRY(M5, N5, S5, W5);
          exception
             when PROGRAM_ERROR  =>
                raise;
