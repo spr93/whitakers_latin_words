@@ -1149,7 +1149,7 @@ end CHANGE_LANGUAGE;
                                               QUAL => (
                                                       POFS => ADV,
                                                       ADV => (
-                                                             CO => COM, GENERATED => ADJADV) ),
+                                                             CO => COM, GENERATED => X) ),
                                               KEY => SL(I).IR.KEY,
                                               ENDING => SL(I).IR.ENDING,
                                               AGE => SL(I).IR.AGE,

@@ -31,7 +31,7 @@
       MM : INTEGER := MAX_MEANING_SIZE;
       I, J, K : INTEGER := 0;
 
-      Next_Meaning_Same, Last_Meaning_Same, Next_Form_Same, Last_Form_Same, Put_Form_Anyway : Boolean := False;
+      Last_Meaning_Same, Next_Form_Same, Last_Form_Same, Put_Form_Anyway, Put_Meaning_Anyway : Boolean := False;
 
       INFLECTION_FREQUENCY : array (FREQUENCY_TYPE) of STRING(1..8) :=
               ("        ",  --  X
@@ -119,7 +119,6 @@
            end PUT_DICTIONARY_FLAGS;
 
 
-
       procedure PUT_DICTIONARY_FORM(OUTPUT : TEXT_IO.FILE_TYPE;
                                     D_K    : DICTIONARY_KIND;
                                     MNPC   : DICT_IO.COUNT;
@@ -130,25 +129,32 @@
 
 
          begin                               --  PUT_DICTIONARY_FORM
-               if WORDS_MODE(DO_DICTIONARY_FORMS)  then
+      if WORDS_MODE(DO_DICTIONARY_FORMS)  then
+
+             if WORDS_MODE(DO_ANSI_FORMATTING) then
+             TEXT_IO.PUT(FORMAT_Reset);
+           -- TEXT_IO.PUT(FORMAT_Bold);
+            TEXT_IO.PUT(FORMAT_Underline);
+         end if;
+
                  if WORDS_MDEV(DO_PEARSE_CODES) then
                    TEXT_IO.PUT(OUTPUT, "02 ");
                    DHIT := TRUE;
                  end if;
+
+
+
                  if DICTIONARY_FORM(DE)'LENGTH /= 0  then
                    TEXT_IO.PUT(OUTPUT, DICTIONARY_FORM(DE) & "  ");
 
-                   --TEXT_IO.PUT(OUTPUT, PART_OF_SPEECH_TYPE'IMAGE(DE.PART.POFS)& "  ");
---                     if DE.PART.POFS = N  then
---                        TEXT_IO.PUT(OUTPUT, "  " & GENDER_TYPE'IMAGE(DE.PART.N.GENDER) & "  ");
---                      end if;
---                      if (DE.PART.POFS = V)  and then  (DE.PART.V.KIND in GEN..PERFDEF)  then
---                        TEXT_IO.PUT(OUTPUT, "  " & VERB_KIND_TYPE'IMAGE(DE.PART.V.KIND) & "  ");
---                      end if;
-
                      DHIT := TRUE;
-                 end if;
-               end if;
+                  end if;
+
+         if D_K = UNIQUE and then WORDS_MDEV(SHOW_DICTIONARY) = FALSE THEN
+            Text_IO.Put(OUTPUT, " [unique] ");
+         end If;
+
+      end if;
 
 
 
@@ -186,7 +192,9 @@
                   TEXT_IO.NEW_LINE(OUTPUT);
                end if;
             --end if;
-
+          if WORDS_MODE(DO_ANSI_FORMATTING) then
+          TEXT_IO.PUT(FORMAT_Reset);
+          end if;
          end PUT_DICTIONARY_FORM;
 
 
@@ -450,18 +458,27 @@ end PRINT_MODIFIED_QUAL;
 
 
                PUT_INFLECTION_FLAGS;
-               TEXT_IO.NEW_LINE(OUTPUT);
-               if Dm.De.PART /= NULL_DICTIONARY_ENTRY.PART then  -- SPR:  Added because some UNIQUES won't generate a DE
-                                                                 --       in most cases these appear to be most easily
-                                                                 --       remedied by conforming the UNIQUES.LAT file
-                  PUT_EXAMPLE_LINE(OUTPUT, SR.IR, DM.DE);    --   Print the example line; only full when DO_EXAMPLES                                          --
-           --    TEXT_IO.NEW_LINE(OUTPUT);
-             end if;
 
-            else
-           TEXT_IO.NEW_LINE(OUTPUT);
+
+              -- PUT EXAMPLE LINE
+                 if WORDS_MODE(DO_ANSI_FORMATTING) and then WORDS_MODE(DIM_EXAMPLES_TEXT) and then
+                 WORDS_MODE(DO_EXAMPLES) and then WORDS_MODE(WRITE_OUTPUT_TO_FILE) = False then
+                 TEXT_IO.PUT(FORMAT_Reset);
+                 TEXT_IO.PUT(FORMAT_Faint);
+                 end if;
+
+             PUT_EXAMPLE_LINE(OUTPUT, SR.IR, DM.DE);    --   Print the example line; only full when DO_EXAMPLES                                          --
+
+                 if WORDS_MODE(DO_ANSI_FORMATTING) and then WORDS_MODE(DIM_EXAMPLES_TEXT) and then
+                 WORDS_MODE(DO_EXAMPLES) and then WORDS_MODE(WRITE_OUTPUT_TO_FILE) = False then
+                 TEXT_IO.PUT(FORMAT_Reset);
+                 end if;
+              --  END PUT EXAMPLE LINE
+
              end if;
-          end if;
+         end if;
+
+         TEXT_IO.NEW_LINE(OUTPUT);
 
          end PUT_INFLECTION;
 
@@ -537,7 +554,7 @@ end PRINT_MODIFIED_QUAL;
            if (SR.IR.QUAL.POFS not in XONS)  and
            (DM.D_K in GENERAL..UNIQUE)
          then
-            Text_IO.New_Line(OUTPUT);
+         --   Text_IO.New_Line(OUTPUT);
             PUT_DICTIONARY_FORM(OUTPUT, DM.D_K, DM.MNPC, DM.DE);  -- prints dictionary form line; e.g.,
          end if;                                                  --  amo, amare, amavi, amatus  V (1st)   [XXXAO]      veryfreq
          end PUT_FORM;
@@ -610,6 +627,10 @@ end PRINT_MODIFIED_QUAL;
                                        DM  : DICTIONARY_MNPC_RECORD) is
             begin
               if DM.D_K not in ADDONS..PPP  then
+                           if WORDS_MODE(DO_ANSI_FORMATTING) then
+                              TEXT_IO.PUT(FORMAT_Reset);
+                              TEXT_IO.PUT(FORMAT_Bold);
+                            end if;
 
                            if WORDS_MDEV(DO_PEARSE_CODES) then
                               TEXT_IO.PUT(OUTPUT, "03 ");
@@ -626,20 +647,29 @@ end PRINT_MODIFIED_QUAL;
                else
                   if DM.D_K = RRR  then
                     if RRR_MEANING /= NULL_MEANING_TYPE   then
-                      --PUT_DICTIONARY_FLAGS;
+                  --PUT_DICTIONARY_FLAGS;
+
+                     if WORDS_MODE(DO_ANSI_FORMATTING) then
+                        TEXT_IO.PUT(FORMAT_Reset);
+                        TEXT_IO.PUT(FORMAT_Bold);
+                        end if;
                       if WORDS_MDEV(DO_PEARSE_CODES) then
                         TEXT_IO.PUT(OUTPUT, "03 ");
                       end if;
                       PUT_MEANING(OUTPUT, RRR_MEANING);      --  Roman Numeral
-                  RRR_MEANING := NULL_MEANING_TYPE;
-                 TEXT_IO.NEW_LINE(OUTPUT);
-                  Text_IO.Put_Line("-----------");
+                      RRR_MEANING := NULL_MEANING_TYPE;
+                      TEXT_IO.NEW_LINE(OUTPUT);
+                 -- Text_IO.Put_Line("-----------");
 
                     end if;
 
                   elsif DM.D_K = NNN then
                     if NNN_MEANING /= NULL_MEANING_TYPE  then
-                     --PUT_DICTIONARY_FLAGS;
+                  --PUT_DICTIONARY_FLAGS;
+                     if WORDS_MODE(DO_ANSI_FORMATTING) then
+                     TEXT_IO.PUT(FORMAT_Reset);
+                     TEXT_IO.PUT(FORMAT_Bold);
+                     end if;
                       if WORDS_MDEV(DO_PEARSE_CODES) then
                         TEXT_IO.PUT(OUTPUT, "03 ");
                       end if;
@@ -651,10 +681,18 @@ end PRINT_MODIFIED_QUAL;
                       elsif DM.D_K = XXX  then
                        if XXX_MEANING /= NULL_MEANING_TYPE  then
                          if WORDS_MDEV(DO_PEARSE_CODES) then
-                     TEXT_IO.PUT(OUTPUT, "06 ");               -- SPR:  For new output format make tricks, syncope, etc separate codes
-                         end if;                               --       or replace with heading and format for each line
+                     TEXT_IO.PUT(OUTPUT, "06 ");
+                  end if;
+                              if WORDS_MODE(DO_ANSI_FORMATTING) then
+                              TEXT_IO.PUT(Format_Reset);
+                              TEXT_IO.PUT(Format_Inverse);
+                              end if;
                          PUT_MEANING(OUTPUT, XXX_MEANING);  --  TRICKS
                          XXX_MEANING := NULL_MEANING_TYPE;
+                              if WORDS_MODE(DO_ANSI_FORMATTING) then
+                              TEXT_IO.PUT(Format_Reset);
+                              end if;
+
                          TEXT_IO.NEW_LINE(OUTPUT);
                        end if;
 
@@ -662,8 +700,15 @@ end PRINT_MODIFIED_QUAL;
                        if YYY_MEANING /= NULL_MEANING_TYPE  then
                          if WORDS_MDEV(DO_PEARSE_CODES) then
                            TEXT_IO.PUT(OUTPUT, "06 ");
-                         end if;
-                         PUT_MEANING(OUTPUT, YYY_MEANING);  --  Syncope
+                  end if;
+                                                if WORDS_MODE(DO_ANSI_FORMATTING) then
+                              TEXT_IO.PUT(Format_Reset);
+                              TEXT_IO.PUT(Format_Inverse);
+                              end if;
+                  PUT_MEANING(OUTPUT, YYY_MEANING);  --  Syncope
+                                   if WORDS_MODE(DO_ANSI_FORMATTING) then
+                  TEXT_IO.PUT(Format_Reset);
+                  end if;
                          YYY_MEANING := NULL_MEANING_TYPE;
                          TEXT_IO.NEW_LINE(OUTPUT);
                        end if;
@@ -672,8 +717,15 @@ end PRINT_MODIFIED_QUAL;
                        if PPP_MEANING /= NULL_MEANING_TYPE  then
                          if WORDS_MDEV(DO_PEARSE_CODES) then
                            TEXT_IO.PUT(OUTPUT, "06 ");
-                         end if;
-                         PUT_MEANING(OUTPUT, PPP_MEANING); --  Compounds
+                  end if;
+                                                if WORDS_MODE(DO_ANSI_FORMATTING) then
+                              TEXT_IO.PUT(Format_Reset);
+                              TEXT_IO.PUT(Format_Inverse);
+                              end if;
+                  PUT_MEANING(OUTPUT, PPP_MEANING); --  Compounds
+                                   if WORDS_MODE(DO_ANSI_FORMATTING) then
+                  TEXT_IO.PUT(Format_Reset);
+                  end if;
                          PPP_MEANING := NULL_MEANING_TYPE;
                          TEXT_IO.NEW_LINE(OUTPUT);
                        end if;
@@ -682,13 +734,23 @@ end PRINT_MODIFIED_QUAL;
                      elsif DM.D_K = ADDONS  then
                         if WORDS_MDEV(DO_PEARSE_CODES) then
                            TEXT_IO.PUT(OUTPUT, "06 ");
-                         end if;
-                         PUT_MEANING(OUTPUT, MEANS(INTEGER(DM.MNPC)));
+               end if;
+                               if WORDS_MODE(DO_ANSI_FORMATTING) then
+                              TEXT_IO.PUT(Format_Reset);
+                              TEXT_IO.PUT(Format_Inverse);
+                              end if;
+               PUT_MEANING(OUTPUT, MEANS(INTEGER(DM.MNPC)));
+                 if WORDS_MODE(DO_ANSI_FORMATTING) then
+                  TEXT_IO.PUT(Format_Reset);
+                  end if;
                          TEXT_IO.NEW_LINE(OUTPUT);
 
                     end if;
 
-               end if;
+          end if;
+          if WORDS_MODE(DO_ANSI_FORMATTING) then
+          TEXT_IO.PUT(FORMAT_Reset);
+          end if;
             end PUT_MEANING_LINE;
 
 
@@ -787,7 +849,7 @@ end PRINT_MODIFIED_QUAL;
                                          PA(J2+1).MNPC);
  --PARSE_RECORD_IO.PUT(PA(PA_LAST)); TEXT_IO.NEW_LINE;
                     PPP_MEANING :=
-                        HEAD("Suffix could indicate ADV formed from ADJ (caution:  ADV form may not exist)",
+                        HEAD("Suffix may indicate ADV formed from ADJ (caution: the ADV form may not exist)",
                              MAX_MEANING_SIZE);
 
                   elsif PA(J2+1).IR.QUAL.ADJ.CO = SUPER  then
@@ -797,7 +859,7 @@ end PRINT_MODIFIED_QUAL;
                                          PA(J2+1).D_K,
                                          PA(J2+1).MNPC);
                   PPP_MEANING :=
-                         HEAD("Suffix could indicate ADV formed from ADJ (caution:  ADV form may not exist)",
+                         HEAD("Suffix may indicate ADV formed from ADJ (caution: the ADV form may not exist)",
                              MAX_MEANING_SIZE);
 
                end if;
@@ -1068,7 +1130,7 @@ when PRON  =>
 
 
   when others  =>
---zTEXT_IO.PUT_LINE("Others");
+--TEXT_IO.PUT_LINE("Others");
   OSRA := NULL_SRA;
   ODMA := NULL_DMA;
   --ODM := NULL_DICTIONARY_MNPC_RECORD;
@@ -1121,36 +1183,6 @@ when PRON  =>
 end loop CYCLE_OVER_PA;
 
 --TEXT_IO.PUT_LINE("Made QA");
-
-
-
-
-
-
-
---TEXT_IO.PUT_LINE("QA ARRAYS   FFFFFF  ======================================");
---     for J in 1..DICTIONARY_MNPC_ARRAY_SIZE  loop
---       if DMA(J) /= NULL_DICTIONARY_MNPC_RECORD  then
---         TEXT_IO.PUT(INTEGER'IMAGE(J) & "  ");
---         DICTIONARY_KIND_IO.PUT(DMA(J).D_K); TEXT_IO.PUT("  ");
---         MNPC_IO.PUT(DMA(J).MNPC); TEXT_IO.NEW_LINE;
---       end if;
---     end loop;
---     for J in 1..STEM_INFLECTION_ARRAY_ARRAY_SIZE  loop
---       for K in 1..STEM_INFLECTION_ARRAY_SIZE  loop
---         if SRAA(J)(K) /= NULL_STEM_INFLECTION_RECORD  then
---           TEXT_IO.PUT(INTEGER'IMAGE(J) & " " & INTEGER'IMAGE(K) & "  ");
---           QUALITY_RECORD_IO.PUT(SRAA(J)(K).IR.QUAL); TEXT_IO.NEW_LINE;
---         end if;
---       end loop;
---     end loop;
-
-
-
-
-
-
-
 
 
   --  Sets + if capitalized
@@ -1219,8 +1251,6 @@ end loop CYCLE_OVER_PA;
 --       end if;
 --
 --     end if;
-
-
 
 
 if PA_LAST = 0   then
@@ -1313,25 +1343,9 @@ if PA_LAST = 0   then
           if SRAA(J) /= OSRA  then --  Skips one identical SRA
                                      --  no matter what comes next
 
--- Normalize spacing and dictionary flag printing when more than one set of STEMs for same PART
-            if Last_Form_Same and then Next_Form_Same
-              and then DMA(J).MNPC /= DMA(J+1).MNPC
-            then
-               Put_Form_Anyway := True;
-
-                  if (not WORDS_MODE(DO_ONLY_MEANINGS) and
-                      not (CONFIGURATION = ONLY_MEANINGS)) then
-                    Text_IO.New_Line(OUTPUT);
-                  end if;
-
-            end if;
-
-
         PUT_INFLECTION_ARRAY_J:
           for K in SRAA(J)'RANGE loop
             exit when SRAA(J)(K) = NULL_STEM_INFLECTION_RECORD;
-
-
            PUT_INFLECTION(SRAA(J)(K), DMA(J));
             if SRAA(J)(K).STEM(1..3) = "PPL"  then
               TEXT_IO.PUT_LINE(OUTPUT, HEAD(PPP_MEANING, MM));
@@ -1340,16 +1354,24 @@ if PA_LAST = 0   then
           OSRA := SRAA(J);
           end if;
 
--- Text_Io.Put_Line("Setting next/last MEAN and F booleans");
+
+
+         --Text_Io.Put_Line("Setting next/last MEAN and F booleans");
 
             Last_Meaning_Same := False;
-            Next_Meaning_Same := False;
             Last_Form_Same    := False;
             Next_Form_Same    := False;
+
+            if Last_Form_Same and then Next_Form_Same
+              and then DMA(J).DE.STEMS /= DMA(J+1).DE.STEMS
+            then
+               Put_Form_Anyway := True;
+            end if;
 
           if J > 1 THEN
                 if DMA(J).DE.MEAN = DMA(J-1).DE.MEAN then Last_Meaning_Same := True;
                 end if;
+
                 if DMA(J).DE.PART.POFS = DMA(J-1).DE.PART.POFS and then
                    --  For same reason checking .TRAN will always return false
                    --  but checking individual elements works
@@ -1360,10 +1382,9 @@ if PA_LAST = 0   then
                    DMA(J).DE.TRAN.SOURCE = DMA(J-1).DE.TRAN.SOURCE then
                    Last_Form_Same := True;
                 end if;
+
          end if;
 
-                if DMA(J).DE.MEAN = DMA(J+1).DE.MEAN then Next_Meaning_Same := True;
-                end if;
 
                 if DMA(J).DE.PART.POFS = DMA(J+1).DE.PART.POFS and then
                 DMA(J).DE.TRAN.AGE = DMA(J+1).DE.TRAN.AGE and then
@@ -1375,6 +1396,8 @@ if PA_LAST = 0   then
                 end if;
 
 
+         Put_Meaning_Anyway := FALSE;
+
 -- TEXT_IO.PUT_LINE("PUTting FORM");
          PUTTING_FORM:
          begin
@@ -1383,64 +1406,46 @@ if PA_LAST = 0   then
 --       Text_IO.Put_Line("                               LAST FORM SAME: " & Last_Form_Same'Image);
 --       Text_IO.Put_Line("                               NEXT FORM SAME: " & Next_Form_Same'Image);
 --       Text_IO.Put_Line("                            LAST MEANING SAME: " & Last_MEANING_Same'Image);
---       Text_IO.Put_Line("                            NEXT MEANING SAME: " & Next_MEANING_Same'Image);
 --       Text_IO.Put_Line("                              PUT FORM ANYWAY: " & Put_Form_Anyway'Image);
+--       Text_IO.Put_Line("                           PUT MEANING ANYWAY: " & Put_Meaning_Anyway'Image);
 --DEBUG
 
+               if  Put_Form_Anyway            then
+               PUT_FORM(SRAA(J)(1), DMA(J));
+               Put_Meaning_Anyway := TRUE;
+
+               elsif Last_Form_Same and Then Dma(J).D_K = General and then SRAA(J-1) /= SRAA(J) then
+               PUT_FORM(SRAA(J)(1), DMA(J));
+               Put_Meaning_Anyway := True;            -- Make sure dictionary line always prints after inflections
+                                                      -- rare, occurs with "QUAE"
+
+               Elsif DMA(J).D_K = UNIQUE then            -- Always print uniques,otherwise we get orphaned inflections
+               PUT_FORM(SRAA(J)(1), DMA(J));          -- when there's more than one unique entry for the same form
+               Put_Meaning_Anyway := True;            -- e.g., quippiam, bobus
+
+               elsif Last_Form_Same
+               then null;
+
+               else PUT_FORM(SRAA(J)(1), DMA(J));
+               end if;
+
+       end PUTTING_FORM;
 
 
-               if Last_Form_Same = False  and then     -- false if J =1
-                  Next_Form_Same = False      THEN     -- unique sandwiched betwen other forms, print
-                  PUT_FORM(SRAA(J)(1), DMA(J));
-
-            elsif Last_Form_Same = False  and then     -- false if J =1
-                  Next_Form_Same          and then
-                  Next_Meaning_Same = False   THEN
-                  PUT_FORM(SRAA(J)(1), DMA(J));       -- make sure form won't fall between meanings
-
-            elsif  Put_Form_Anyway            Then
-                   PUT_FORM(SRAA(J)(1), DMA(J));
-            elsif  Last_Form_Same         and then
-                   Next_Form_Same = False     then
-                   PUT_FORM(SRAA(J)(1), DMA(J));
-            end if;
-
-          end PUTTING_FORM;
-
-
--- TEXT_IO.PUT_LINE("PUTting MEANING");
+         -- TEXT_IO.PUT_LINE("PUTting MEANING");
          PUTTING_MEANING:
             begin
 
-
-            if Put_Form_Anyway then
+            if Put_Meaning_Anyway then
                PUT_MEANING_LINE(SRAA(J)(1), DMA(J));
-               Put_Form_Anyway := False;
-
-            elsif  Next_meaning_Same and then Next_Form_Same and then DMA(J).D_K in GENERAL..UNIQUE Then
+               Put_Meaning_Anyway := False;
+            elsif  Last_Meaning_Same then
                null;
-
-            Elsif  Next_meaning_same = False and then Next_Form_Same then
-                   PUT_MEANING_LINE(SRAA(J)(1), DMA(J));
-
-            elsif Next_Meaning_Same = False and Then Next_Form_Same = False then
-                   PUT_MEANING_LINE(SRAA(J)(1), DMA(J));
-                   Text_IO.Put_Line(OUTPUT, "-----------");
-
-                      if (not WORDS_MODE(DO_ONLY_MEANINGS) and
-                            not (CONFIGURATION = ONLY_MEANINGS))       then
-                           Text_IO.NEW_LINE(OUTPUT);
-                          end if;
             else
                 PUT_MEANING_LINE(SRAA(J)(1), DMA(J));
-
             end if;
 
-
-
-
          end PUTTING_MEANING;
-
 
 
          DO_PAUSE:
@@ -1485,9 +1490,15 @@ end LIST_STEMS;
       TEXT_IO.PUT(OUTPUT, "=>  ");
       --TEXT_IO.PUT_LINE(OUTPUT, DICTIONARY_FORM(DE));
       PUT_DICTIONARY_FORM(OUTPUT, D_K, MN, DE);
+                 if WORDS_MODE(DO_ANSI_FORMATTING) then
+         TEXT_IO.PUT(Format_Reset);
+         TEXT_IO.PUT(Format_bold);
+                  end if;
       TEXT_IO.PUT_LINE(OUTPUT,
                        TRIM(HEAD(DE.MEAN, MM)));  --  so it wont line wrap/put CR
-
+                 if WORDS_MODE(DO_ANSI_FORMATTING) then
+                  TEXT_IO.PUT(Format_Reset);
+                  end if;
     end LIST_ENTRY;
 
 
@@ -1661,13 +1672,23 @@ end LIST_STEMS;
       UNKNOWN_SEARCH(HEAD(INPUT_WORD, MAX_STEM_SIZE), UNK_MNPC);
 
 -- TEXT_IO.PUT_LINE("UNK_MNPC = " & INTEGER'IMAGE(INTEGER(UNK_MNPC)));
-       if INTEGER(UNK_MNPC) > 0  then
+      if INTEGER(UNK_MNPC) > 0  then
+
+                          if WORDS_MODE(DO_ANSI_FORMATTING) then
+            TEXT_IO.PUT(Format_Reset);
+            TEXT_IO.PUT(Format_Inverse);
+                  end if;
          TEXT_IO.PUT_LINE(OUTPUT,
-        "----------  Entries in GENERAL Dictionary around the UNKNOWN  ----------");
+                          "----------  Entries in GENERAL Dictionary around the UNKNOWN  ----------");
+
+                          if WORDS_MODE(DO_ANSI_FORMATTING) then
+                  TEXT_IO.PUT(Format_Reset);
+                  end if;
          PAUSE(OUTPUT);
          for MN in DICT_IO.COUNT(INTEGER(UNK_MNPC)-5)..
                   DICT_IO.COUNT(INTEGER(UNK_MNPC)+3)  loop
-           LIST_ENTRY(OUTPUT, D_K, MN);
+
+            LIST_ENTRY(OUTPUT, D_K, MN);
 
          end loop;
        end if;

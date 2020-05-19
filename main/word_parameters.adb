@@ -21,7 +21,7 @@ package body WORD_PARAMETERS is
   --  The default modes are set in the body so that they can be changed
   --  with only this being recompiled, not the rest of the with'ing system
   DEFAULT_MODE_ARRAY : constant MODE_ARRAY := (
-                      TRIM_OUTPUT                 => TRUE,      
+                      TRIM_OUTPUT                 => FALSE,      
 
                       HAVE_OUTPUT_FILE            => FALSE,
                       WRITE_OUTPUT_TO_FILE        => FALSE,
@@ -29,21 +29,23 @@ package body WORD_PARAMETERS is
                       DO_UNKNOWNS_ONLY            => FALSE,
                       WRITE_UNKNOWNS_TO_FILE      => FALSE,
 
-                      IGNORE_UNKNOWN_NAMES        => TRUE,
-                      IGNORE_UNKNOWN_CAPS         => TRUE,
+                      IGNORE_UNKNOWN_NAMES        => FALSE,
+                      IGNORE_UNKNOWN_CAPS         => FALSE,
                       DO_COMPOUNDS                => TRUE,
                       DO_FIXES                    => TRUE,
                       DO_TRICKS                   => TRUE,
 
                       DO_DICTIONARY_FORMS         => TRUE,
-                      SHOW_AGE                    => FALSE,
-                      SHOW_FREQUENCY              => FALSE,
+                      SHOW_AGE                    => TRUE,
+                      SHOW_FREQUENCY              => TRUE,
 
-                      DO_EXAMPLES                 => FALSE,
+                      DO_EXAMPLES                 => TRUE,
                       DO_ONLY_MEANINGS            => FALSE,
-                      DO_STEMS_FOR_UNKNOWN        => FALSE,    
+                      DO_STEMS_FOR_UNKNOWN        => TRUE,    
                                               
-                      DO_ARABIC_NUMERALS          => TRUE);
+                      DO_ARABIC_NUMERALS          => TRUE,
+                      DO_ANSI_FORMATTING          => TRUE,
+                      DIM_EXAMPLES_TEXT           => FALSE);
 
   BAD_MODE_FILE : exception;
 
@@ -221,8 +223,24 @@ DO_ARABIC_NUMERALS_HELP : constant HELP_TYPE :=  (
    "words for translation to Roman numerals.  This option applies to both ",
    "English-Latin and Latin-English modes.  If set to N(o), then the      ",
    "program disregards Arabic-Hindu numerals and treats them like spaces. ",                                            
-   "spaces.                                          The default is Y(es)." );
+   "spaces.                                          The default is Y(es).");
 
+DO_ANSI_FORMATTING_HELP : constant HELP_TYPE :=  (
+   "This option uses standard ANSI tty control characters to format the   ",
+   "dictionary output.  The format emphasizes the dictionary and meaning  ",
+   "lines, as well as any important usage notes. The goal is to make      ",
+   "skimming large output easier.  This parameter has no effect on file   ",                                       
+   "output, which is always in plain text.           The default is Y(es).");
+
+DIM_EXAMPLES_TEXT_HELP : constant HELP_TYPE :=  (
+   "This option formats the examples line using the ANSI tty control      ",
+   "character for 'dimmed' or 'faint' text.  It may make skimming long    ",
+   "results faster by keeping the eye focused on the inflections line.    ",
+   "However, on some consoles the text may be too difficult to read.  On  ",                          
+   "others, the effect may be to invert the text color rather than dim it.",
+   "This parameter has no effect if DO_ANSI_FORMATTING is off.            ",
+   "                                                  The default is N(o).");
+  
 SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
    "This option instructs the program, to save the current parameters, as ",
    "just established by the user, in a file WORD.MOD.  If such a file     ",
@@ -406,7 +424,6 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
 
     INQUIRE(SHOW_FREQUENCY, SHOW_FREQUENCY_HELP);
 
-
     INQUIRE(DO_EXAMPLES, DO_EXAMPLES_HELP);
 
     INQUIRE(DO_ONLY_MEANINGS, DO_ONLY_MEANINGS_HELP);
@@ -414,6 +431,10 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
     INQUIRE(DO_STEMS_FOR_UNKNOWN, DO_STEMS_FOR_UNKNOWN_HELP);
 
     INQUIRE(DO_ARABIC_NUMERALS, DO_ARABIC_NUMERALS_HELP);
+      
+    INQUIRE(DO_ANSI_FORMATTING, DO_ANSI_FORMATTING_HELP);
+      
+    INQUIRE(DIM_EXAMPLES_TEXT, DIM_EXAMPLES_TEXT_HELP);
 
     PUT("Do you wish to save this set of parameters? Y or N (Default) ");
     PUT(" =>");
