@@ -3,7 +3,8 @@ Run sorter against modified DICTLINE.GEN.  Input:
             1 75         
            77 24   P     
           111 80        
-          101 10         
+          101 1        -- SPR:  TEST THIS Sort first by age
+          107 1        -- SPR:  TEST THIS Then frequency 
           
 Copy DICTLINE.GEN to CHECK.IN and run CHECKER. 
 Review CHECK.OUT.

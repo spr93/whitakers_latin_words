@@ -1,9 +1,9 @@
-with Ada.Text_IO; use ADA.Text_IO;
+with Ada.Text_IO;           use ADA.Text_IO;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
-with Config; use Config;
-with WORD_PARAMETERS; use WORD_PARAMETERS;
-with DEVELOPER_PARAMETERS; use DEVELOPER_PARAMETERS;
-
+with Config;                use Config;
+with WORD_PARAMETERS;       use WORD_PARAMETERS;
+with DEVELOPER_PARAMETERS;  use DEVELOPER_PARAMETERS;
+with LIST_PACKAGE;          use LIST_PACKAGE;
 
 -- Forms and age codes guided by sources incl.
 -- Wolfram Mathworld at http://mathworld.wolfram.com/RomanNumerals.html
@@ -35,8 +35,8 @@ package Arabic2Roman is
    User_Input :  Integer range -999_999_999..999_999_999;
 
 
-   procedure Arabic2Roman (INPUT_WORD : in out String; Arabic_Process_All : in Boolean);
-   -- in out is a dirty trick to make sure we pass by reference
+   procedure Arabic2Roman (OUTPUT : in Ada.Text_IO.File_Type ; INPUT_WORD : in out String; Arabic_Process_All : in Boolean);
+   -- in out is a dirty trick that encourages GNAT to pass by preference if it isn't already doing so
 
 
    function Generate_Additive (Arabic_Num : in Integer) return Unbounded_String;

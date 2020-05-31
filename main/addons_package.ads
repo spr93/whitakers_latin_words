@@ -1,6 +1,7 @@
 with TEXT_IO; 
 with INFLECTIONS_PACKAGE; use INFLECTIONS_PACKAGE;
-with DICTIONARY_PACKAGE; use DICTIONARY_PACKAGE;
+with DICTIONARY_PACKAGE;  use DICTIONARY_PACKAGE;
+
 package ADDONS_PACKAGE is
   use TEXT_IO;
 
@@ -9,7 +10,6 @@ package ADDONS_PACKAGE is
   MAX_FIX_SIZE : constant := MAX_STEM_SIZE;
 
   subtype TARGET_POFS_TYPE is PART_OF_SPEECH_TYPE range X..V;  
-
 
   type TARGET_ENTRY(POFS: TARGET_POFS_TYPE := X) is
     record
@@ -38,7 +38,7 @@ package ADDONS_PACKAGE is
       end case;
     end record;                                        
 
-  NULL_TARGET_ENTRY : TARGET_ENTRY;
+ NULL_TARGET_ENTRY : TARGET_ENTRY;
 
  package TARGET_ENTRY_IO is
    DEFAULT_WIDTH : NATURAL;
