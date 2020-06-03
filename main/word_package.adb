@@ -9,7 +9,14 @@
    with DEVELOPER_PARAMETERS; use DEVELOPER_PARAMETERS;
    with LINE_STUFF; use LINE_STUFF;
    with ENGLISH_SUPPORT_PACKAGE; use ENGLISH_SUPPORT_PACKAGE;
- package body WORD_PACKAGE is
+
+   -- FOR WINDOWS TARGETS ONLY
+   -- These with's enable Windows vt100 text format support
+   with System.OS_Constants;
+   with Windows_Vt100;
+   -- END WINDOWS TARGET-SPECIFIC SECTION
+
+package body WORD_PACKAGE is
 
       INFLECTIONS_SECTIONS_FILE : LEL_SECTION_IO.FILE_TYPE;
 
@@ -2216,6 +2223,20 @@ end CHANGE_LANGUAGE;
                ENGLISH_DICTIONARY_AVAILABLE(GENERAL) := FALSE;
          end TRY_TO_LOAD_ENGLISH_WORDS;
          
+      
+      declare
+         use System.OS_Constants;
+            Rc : Boolean := False;
+      begin
+         if  Target_OS = Windows and WORDS_MODE(DO_ANSI_FORMATTING) then 
+            
+            Rc := Windows_Vt100.Enable_Windows_Console_Vt100_Codes;
+            if RC = False then 
+               Words_Mode(DO_ANSI_FORMATTING) := FALSE;
+            end If; 
+       
+         end if;
+      end; -- declare block  
          
       
          --put_line("WORD_PACKAGE INITIALIZED");

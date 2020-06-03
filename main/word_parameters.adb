@@ -3,8 +3,16 @@ with LATIN_FILE_NAMES; use LATIN_FILE_NAMES;
 with CONFIG; use CONFIG;
 with PREFACE;
 pragma Elaborate(PREFACE);
+
+ -- FOR WINDOWS TARGETS ONLY
+ -- These with's enable Windows vt100 text format support
+ with System.OS_Constants;
+ with Windows_Vt100;
+ -- END WINDOWS TARGET-SPECIFIC SECTION
+
+
 package body WORD_PARAMETERS is
-  use TEXT_IO;
+use TEXT_IO;
 
   type HELP_TYPE is array (NATURAL range <>) of STRING(1..70);
   BLANK_HELP_LINE : constant STRING(1..70) := (others => ' ');
@@ -432,7 +440,23 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
 
     INQUIRE(DO_ARABIC_NUMERALS, DO_ARABIC_NUMERALS_HELP);
       
-    INQUIRE(DO_ANSI_FORMATTING, DO_ANSI_FORMATTING_HELP);
+      INQUIRE(DO_ANSI_FORMATTING, DO_ANSI_FORMATTING_HELP);
+
+      declare
+         use System.OS_Constants;
+            Rc : Boolean := False;
+      begin
+         if  Target_OS = Windows and WORDS_MODE(DO_ANSI_FORMATTING) then 
+            
+            Rc := Windows_Vt100.Enable_Windows_Console_Vt100_Codes;
+            if RC = False then 
+               Words_Mode(DO_ANSI_FORMATTING) := FALSE;
+            end If; 
+       
+         end if;
+      end; -- declare block  
+      
+      
       
     INQUIRE(DIM_EXAMPLES_TEXT, DIM_EXAMPLES_TEXT_HELP);
 

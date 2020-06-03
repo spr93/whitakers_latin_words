@@ -1,6 +1,6 @@
 with Text_IO;               use Text_IO;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
-with Config;                use Config;
+with CONFIG;                use CONFIG;
 with WORD_PARAMETERS;       use WORD_PARAMETERS;
 with DEVELOPER_PARAMETERS;  use DEVELOPER_PARAMETERS;
 with LIST_PACKAGE;          use LIST_PACKAGE;
@@ -105,10 +105,10 @@ package body Arabic2Roman is
               Integer'Value
                 (Arabic_String);  -- rest of procedure requires integer
 
-           --  PUT (OUTPUT, Arabic_String);
-           --  Set_Col (Output,15);
-           --  PUT (OUTPUT, "ARABIC NUM");
-           --  NEW_LINE(Output);
+            --  PUT (OUTPUT, Arabic_String);
+            --  Set_Col (Output,15);
+            --  PUT (OUTPUT, "ARABIC NUM");
+            --  NEW_LINE(Output);
 
             --quickly test and reject zeros
             if Arabic_Num = 0 then
@@ -116,24 +116,24 @@ package body Arabic2Roman is
                if WORDS_MODE (DO_ONLY_MEANINGS) = False
                  and then (not (CONFIGURATION = ONLY_MEANINGS))
                then
-                  NEW_LINE(OUTPUT);
+                  New_Line (OUTPUT);
                   if WORDS_MDEV (DO_PEARSE_CODES) then
-                     PUT (OUTPUT, "03 ");
+                     Put (OUTPUT, "03 ");
                   end if;
                   if WORDS_MODE (DO_ANSI_FORMATTING)
                     and then WORDS_MODE (WRITE_OUTPUT_TO_FILE) = False
                   then
-                     PUT (OUTPUT, Format_Reset);
-                     PUT (OUTPUT, Format_Bold);
+                     Put (OUTPUT, Format_Reset);
+                     Put (OUTPUT, Format_Bold);
                   end if;
 
-                  PUT_Line (OUTPUT, "nihil");
+                  Put_Line (OUTPUT, "nihil");
                   if WORDS_MODE (DO_ANSI_FORMATTING)
                     and then WORDS_MODE (WRITE_OUTPUT_TO_FILE) = False
                   then
-                     PUT (OUTPUT, Format_Reset);
+                     Put (OUTPUT, Format_Reset);
                   end if;
-                 NEW_LINE(OUTPUT);
+                  New_Line (OUTPUT);
                end if;
 
                return; -- SPR:  is nulla better?  noun form of nulla isn't in the dictionary - is that right?
@@ -171,18 +171,19 @@ package body Arabic2Roman is
             then
 
                if WORDS_MDEV (DO_PEARSE_CODES) then
-                  PUT (OUTPUT, "04 ");
+                  Put (OUTPUT, "04 ");
                end if;
                Put (OUTPUT, Arabic_String);
-               Set_Col (Output,15);
-               PUT_Line (OUTPUT, "========   ERROR  ");
+               Set_Col (OUTPUT, 15);
+               Put_Line (OUTPUT, "========   ERROR  ");
 
                if WORDS_MDEV (DO_PEARSE_CODES) then
-                  PUT (OUTPUT, "04 ");
+                  Put (OUTPUT, "04 ");
                end if;
 
-               PUT_Line
-                 (OUTPUT, "ONLY UNCOMMON MEDIEVAL NUMERAL FORMS EXIST; OMIT_MEDIEVAL OR OMIT_UNCOMMON ON");
+               Put_Line
+                 (OUTPUT,
+                  "ONLY UNCOMMON MEDIEVAL NUMERAL FORMS EXIST; OMIT_MEDIEVAL OR OMIT_UNCOMMON ON");
                -- NEW_LINE;
                return;
 
@@ -195,19 +196,19 @@ package body Arabic2Roman is
             then
 
                if WORDS_MDEV (DO_PEARSE_CODES) then
-                  PUT (OUTPUT, "04 ");
+                  Put (OUTPUT, "04 ");
                end if;
                Put (OUTPUT, Arabic_String);
-               Set_Col (Output,15);
-               PUT_Line (OUTPUT, "========   ERROR  ");
+               Set_Col (OUTPUT, 15);
+               Put_Line (OUTPUT, "========   ERROR  ");
 
                if WORDS_MDEV (DO_PEARSE_CODES) then
-                  PUT (OUTPUT, "04 ");
+                  Put (OUTPUT, "04 ");
                end if;
-               PUT_Line
+               Put_Line
                  (OUTPUT,
                   "ONLY MEDIEVAL NUMERAL FORMS EXIST; OMIT_MEDIEVAL ON");
-              -- NEW_LINE;
+               -- NEW_LINE;
                return;
 
             end if;
@@ -218,67 +219,66 @@ package body Arabic2Roman is
                if WORDS_MODE (DO_ONLY_MEANINGS) = False
                  and then (not (CONFIGURATION = ONLY_MEANINGS))
                then
-                  PUT (OUTPUT, "01 ");
+                  Put (OUTPUT, "01 ");
 
                else
-                  PUT
-                    (Output, "03 ");  -- Print as the meaning if only showing meanings;  disabling Arabic2Roman is the equivalent here
+                  Put
+                    (OUTPUT,
+                     "03 ");  -- Print as the meaning if only showing meanings;  disabling Arabic2Roman is the equivalent here
                end if;
             end if;
-
-
-
 
             if Put_Additive = True and Is_Negative = False and
               Arabic_Num in 1 .. 500 | 600 | 700 | 800 | 900 | 10_000
             then
-               PUT (OUTPUT, To_String (Roman_Num_Record.Age_X));
+               Put (OUTPUT, To_String (Roman_Num_Record.Age_X));
             else
-               PUT (OUTPUT, To_String (Roman_Num_Record.Age_F));
+               Put (OUTPUT, To_String (Roman_Num_Record.Age_F));
             end if;
 
-           if WORDS_MODE (DO_ONLY_MEANINGS) = False
+            if WORDS_MODE (DO_ONLY_MEANINGS) = False
               and then (not (CONFIGURATION = ONLY_MEANINGS))
             then
 
-               Set_Col (Output,41);
-               PUT (OUTPUT, "CARD");
+               Set_Col (OUTPUT, 41);
+               Put (OUTPUT, "CARD");
 
+               if WORDS_MODE (SHOW_AGE) then
+                  Set_Col (OUTPUT, 59);
+                  -- since negatives are neologism, ignore the additive form
+                  if Is_Negative = True then
+                     Put (OUTPUT, "NeoLatin");
 
-            if WORDS_MODE (SHOW_AGE) then
-               Set_Col (Output,59);
-               -- since negatives are neologism, ignore the additive form
-               if Is_Negative = True then
-                  PUT (OUTPUT, "NeoLatin");
-
-               elsif Put_Additive = True and
-                 Arabic_Num in 1 .. 500 | 600 | 700 | 800 | 900 | 10_000
-               then
-                  PUT
-                    (OUTPUT, "Archaic");  -- additive is different from subtractive; small or simple roman numerals
-               elsif Put_Additive = False and
-                 Arabic_Num in 1 .. 500 | 600 | 700 | 800 | 900 | 10_000
-               then
-                  PUT
-                    (OUTPUT, "Always");   --- additive and subtractive the same; small or simple roman numerals
-               else     -- long or complicated roman numerals => medieval
-                  PUT (OUTPUT, "Medieval");
+                  elsif Put_Additive = True and
+                    Arabic_Num in 1 .. 500 | 600 | 700 | 800 | 900 | 10_000
+                  then
+                     Put
+                       (OUTPUT,
+                        "Archaic");  -- additive is different from subtractive; small or simple roman numerals
+                  elsif Put_Additive = False and
+                    Arabic_Num in 1 .. 500 | 600 | 700 | 800 | 900 | 10_000
+                  then
+                     Put
+                       (OUTPUT,
+                        "Always");   --- additive and subtractive the same; small or simple roman numerals
+                  else     -- long or complicated roman numerals => medieval
+                     Put (OUTPUT, "Medieval");
 
                   end if;
 
-            end if;
-
-            if WORDS_MODE (SHOW_FREQUENCY) = True then
-               Set_Col (Output,69);
-               if Is_Negative = True and Put_Additive = False then
-                  PUT (OUTPUT, "very rare");
-               elsif Is_Negative = False then
-                  PUT (OUTPUT, "mostfreq");
                end if;
-            end if;
+
+               if WORDS_MODE (SHOW_FREQUENCY) = True then
+                  Set_Col (OUTPUT, 69);
+                  if Is_Negative = True and Put_Additive = False then
+                     Put (OUTPUT, "very rare");
+                  elsif Is_Negative = False then
+                     Put (OUTPUT, "mostfreq");
+                  end if;
+               end if;
             end if; -- end of meanings_only
 
-          New_Line(OUTPUT);
+            New_Line (OUTPUT);
 
             -- BAR REMINDER FOR BIG NUMBERS
             if Roman_Num_Record.Bar_Reminder = True then
@@ -286,101 +286,104 @@ package body Arabic2Roman is
                   if WORDS_MODE (DO_ONLY_MEANINGS) = False
                     and then (not (CONFIGURATION = ONLY_MEANINGS))
                   then
-                     PUT (OUTPUT, "01 ");
+                     Put (OUTPUT, "01 ");
                   else
-                     PUT
-                       (Output, "03 ");  -- Print as the meaning if only showing meanings;  disabling Arabic2Roman is the equivalent here
+                     Put
+                       (OUTPUT,
+                        "03 ");  -- Print as the meaning if only showing meanings;  disabling Arabic2Roman is the equivalent here
                   end if;
                end if;
 
-                              if WORDS_MODE (DO_ANSI_FORMATTING)
-                 and then WORDS_MODE (WRITE_OUTPUT_TO_FILE) = False
-               then
-                  PUT (OUTPUT, Format_Reset);
-                  Put (OUTPUT, Format_Inverse);
-               end if;
-
-               PUT_Line
-                 (OUTPUT,"NB:  Draw a bar across top of the numerals in the bars | |");
-                 Put_Line
-                 (OUTPUT, "    Three sided box, open bottom)");
                if WORDS_MODE (DO_ANSI_FORMATTING)
                  and then WORDS_MODE (WRITE_OUTPUT_TO_FILE) = False
                then
-                  PUT (OUTPUT, Format_Reset);
+                  Put (OUTPUT, Format_Reset);
+                  Put (OUTPUT, Format_Inverse);
+               end if;
+
+               Put_Line
+                 (OUTPUT,
+                  "NB:  Draw a bar across top of the numerals in the bars | |");
+               Put_Line (OUTPUT, "    Three sided box, open bottom)");
+               if WORDS_MODE (DO_ANSI_FORMATTING)
+                 and then WORDS_MODE (WRITE_OUTPUT_TO_FILE) = False
+               then
+                  Put (OUTPUT, Format_Reset);
                end if;
 
             end if;
 
             -- no pearse code for this line
 
-               if Is_Negative and then WORDS_MODE (DO_EXAMPLES) then
-
+            if Is_Negative and then WORDS_MODE (DO_EXAMPLES) then
 
                if WORDS_MODE (DO_ANSI_FORMATTING)
                  and then WORDS_MODE (WRITE_OUTPUT_TO_FILE) = False
                then
-                  PUT (OUTPUT, Format_Reset);
-                  PUT (OUTPUT, Format_Faint);
-                  end if;
-
-
-                 -- New_Line(OUTPUT);
-                  PUT_Line (OUTPUT, "~ negativum");
-                                 if WORDS_MODE (DO_ANSI_FORMATTING)
-                              and then WORDS_MODE (WRITE_OUTPUT_TO_FILE) = False
-                              then
-                              PUT (OUTPUT, Format_Reset);
+                  Put (OUTPUT, Format_Reset);
+                  Put (OUTPUT, Format_Faint);
                end if;
 
+               -- New_Line(OUTPUT);
+               Put_Line (OUTPUT, "~ negativum");
+               if WORDS_MODE (DO_ANSI_FORMATTING)
+                 and then WORDS_MODE (WRITE_OUTPUT_TO_FILE) = False
+               then
+                  Put (OUTPUT, Format_Reset);
+               end if;
 
                --New_Line(OUTPUT);
                if WORDS_MDEV (DO_PEARSE_CODES) then
-                  PUT (OUTPUT, "03 ");
+                  Put (OUTPUT, "03 ");
                end if;
 
                if WORDS_MODE (DO_ANSI_FORMATTING)
                  and then WORDS_MODE (WRITE_OUTPUT_TO_FILE) = False
                then
-                  PUT (OUTPUT, Format_Reset);
-                  PUT (OUTPUT, Format_Inverse);
+                  Put (OUTPUT, Format_Reset);
+                  Put (OUTPUT, Format_Inverse);
                end if;
 
-               PUT_Line
-                 (OUTPUT, "NB:  Negative numbers are a neologism.");
-             end if;
-           --    NEW_LINE(Output);
+               Put_Line (OUTPUT, "NB:  Negative numbers are a neologism.");
+            end if;
+            --    NEW_LINE(Output);
 
-               if WORDS_MDEV (SHOW_DICTIONARY_LINE) = True then
-                  if WORDS_MDEV (DO_PEARSE_CODES) then
-                        PUT (OUTPUT, "03 ");
-                        end if;
+            -- if enclosing dictionary line items
+            if
+              (WORDS_MDEV (SHOW_DICTIONARY_CODES) or
+               WORDS_MODE (SHOW_FREQUENCY)) and
+              WORDS_MODE (DO_ONLY_MEANINGS) = False and
+              CONFIGURATION /= ONLY_MEANINGS
+            then
+               if WORDS_MDEV (DO_PEARSE_CODES) then
+                  Put (OUTPUT, "03 ");
+               end if;
 
                if WORDS_MODE (DO_ANSI_FORMATTING)
                  and then WORDS_MODE (WRITE_OUTPUT_TO_FILE) = False
-                  then
-                  PUT (OUTPUT, Format_Reset);
-                  PUT (OUTPUT, Format_Underline);
-                  end if;
+               then
+                  Put (OUTPUT, Format_Reset);
+                  Put (OUTPUT, Format_Underline);
+               end if;
 
                if Is_Negative = True then -- subtractive, negative
                   if WORDS_MDEV (SHOW_DICTIONARY_CODES) = True then
-                     PUT (OUTPUT, "[HXXFQ]  ");
+                     Put (OUTPUT, "[HXXFQ]  ");
                   end if;
                   if WORDS_MODE (SHOW_FREQUENCY) = True then
-                     PUT (OUTPUT, "very rare");
-                     end if;
+                     Put (OUTPUT, "very rare");
+                  end if;
 
-               -- no additive negatives
+                  -- no additive negatives
 
                elsif Put_Additive = True and
                  Arabic_Num in 1 .. 500 | 600 | 700 | 800 | 900 | 10_000
                then
                   if WORDS_MDEV (SHOW_DICTIONARY_CODES) = True then
-                     PUT (OUTPUT, "[AXXAQ]  ");
+                     Put (OUTPUT, "[AXXAQ]  ");
                   end if;
                   if WORDS_MODE (SHOW_FREQUENCY) = True then
-                     PUT (OUTPUT, "very frequent");
+                     Put (OUTPUT, "very frequent");
                   end if;
 
                elsif Put_Additive = False and
@@ -388,157 +391,162 @@ package body Arabic2Roman is
                then
 
                   if WORDS_MDEV (SHOW_DICTIONARY_CODES) = True then
-                     PUT (OUTPUT, "[XXXAQ]  ");
+                     Put (OUTPUT, "[XXXAQ]  ");
                   end if;
                   if WORDS_MODE (SHOW_FREQUENCY) = True then
-                     PUT (OUTPUT, "very frequent");
+                     Put (OUTPUT, "very frequent");
                   end if;
+
                elsif Put_Additive = True then
                   if WORDS_MDEV (SHOW_DICTIONARY_CODES) = True then
-                     PUT (OUTPUT, "[FXXDQ]  ");
+                     Put (OUTPUT, "[FXXDQ]  ");
                   end if;
                   if WORDS_MODE (SHOW_FREQUENCY) = True then
-                     PUT (OUTPUT, "lesser");
+                     Put (OUTPUT, "lesser");
                   end if;
                else -- long or complicated number => medieval
                   if WORDS_MDEV (SHOW_DICTIONARY_CODES) = True then
-                     PUT (OUTPUT, "[FXXDQ]  ");
+                     Put (OUTPUT, "[FXXDQ]  ");
                   end if;
                   if WORDS_MODE (SHOW_FREQUENCY) = True then
-                     PUT (OUTPUT, "lesser");
+                     Put (OUTPUT, "lesser");
                   end if;
 
                end if;
+               if WORDS_MODE (DO_ANSI_FORMATTING)
+                 and then WORDS_MODE (WRITE_OUTPUT_TO_FILE) = False
+               then
+                  Put (OUTPUT, Format_Reset);
+                  Put (OUTPUT, Format_Bold);
+               end if;
 
-               -- end output of first result
-                              if WORDS_MODE (DO_ANSI_FORMATTING)
-                              and then WORDS_MODE (WRITE_OUTPUT_TO_FILE) = False
-                                  then
-                  PUT (OUTPUT, Format_Reset);
-                   PUT (OUTPUT, Format_Bold);
-                                 end if;
+               New_Line (OUTPUT);
+            end if; -- if enclosing dictionary line items
 
-               New_Line(OUTPUT);
+            for C in Arabic_String'Range loop
+               exit when Arabic_String (C) = ' ';
+               Put (OUTPUT, Arabic_String (C));
+            end loop;
 
-               for C in Arabic_String'Range loop
-                exit when Arabic_String(C) = ' ';
-                PUT (OUTPUT, Arabic_String(C));
-               end loop;
+            Put_Line (OUTPUT, " as a ROMAN NUMERAL;");
 
-               PUT_line (OUTPUT, " as a ROMAN NUMERAL;");
-
-                  if WORDS_MODE (DO_ANSI_FORMATTING)
-                              and then WORDS_MODE (WRITE_OUTPUT_TO_FILE) = False
-                                  then
-                                   PUT (OUTPUT, Format_Reset);
-                                 end if;
-
-               New_Line(OUTPUT);
+            if WORDS_MODE (DO_ANSI_FORMATTING)
+              and then WORDS_MODE (WRITE_OUTPUT_TO_FILE) = False
+            then
+               Put (OUTPUT, Format_Reset);
             end if;
 
-            if Put_Additive = True and Then
-              Arabic_Num in 1 .. 500 | 600 | 700 | 800 | 900 | 10_000 and Then
-              Is_Negative = False
-            then -- only situation where we could have another result:
-            -- small number with both additive and subtractive
-                 -- call this classical for lack of a better way to distinguish from additive
+            New_Line (OUTPUT);
+            -- end output of first result
 
-              NEW_LINE(OUTPUT);
+            if Put_Additive = True
+              and then Arabic_Num in 1 .. 500 | 600 | 700 | 800 | 900 | 10_000
+              and then Is_Negative = False
+            then -- only situation where we could have another result:
+               -- small number with both additive and subtractive
+   -- call this classical for lack of a better way to distinguish from additive
+
+               New_Line (OUTPUT);
                if WORDS_MDEV (DO_PEARSE_CODES) then
                   if WORDS_MODE (DO_ONLY_MEANINGS) = False
                     and then (not (CONFIGURATION = ONLY_MEANINGS))
                   then
-                     PUT (OUTPUT, "01 ");
+                     Put (OUTPUT, "01 ");
 
                   else
-                     PUT
-                       (OUTPUT, "03 ");  -- Print as the meaning if only showing meanings;  disabling Arabic2Roman is the equivalent here
+                     Put
+                       (OUTPUT,
+                        "03 ");  -- Print as the meaning if only showing meanings;  disabling Arabic2Roman is the equivalent here
                   end if;
                end if;
 
-
-
-               PUT (OUTPUT, To_String (Roman_Num_Record.Age_F));
+               Put (OUTPUT, To_String (Roman_Num_Record.Age_F));
 
                if WORDS_MODE (DO_ONLY_MEANINGS) = False
                  and then (not (CONFIGURATION = ONLY_MEANINGS))
                then
-                  Set_Col (Output,41);
-                  PUT (OUTPUT, "CARD");
+                  Set_Col (OUTPUT, 41);
+                  Put (OUTPUT, "CARD");
 
                   if WORDS_MODE (SHOW_AGE) then
-                     Set_Col (Output,59);
+                     Set_Col (OUTPUT, 59);
 
-                     PUT (OUTPUT, "Classical");
+                     Put (OUTPUT, "Classical");
                   end if;
 
                   if WORDS_MODE (SHOW_FREQUENCY) = True then
-                     Set_Col (Output,69);
+                     Set_Col (OUTPUT, 69);
 
-                     PUT (OUTPUT, "mostfreq");
+                     Put (OUTPUT, "mostfreq");
                   end if;
-                NEW_LINE(Output);
+                  New_Line (OUTPUT);
                end if;
-
-
 
                if WORDS_MODE (DO_ANSI_FORMATTING)
                  and then WORDS_MODE (WRITE_OUTPUT_TO_FILE) = False
                then
-                  PUT (OUTPUT, Format_Reset);
-                  PUT (OUTPUT, Format_Underline);
+                  Put (OUTPUT, Format_Reset);
+                  Put (OUTPUT, Format_Underline);
                end if;
 
-
-               if WORDS_MDEV (SHOW_DICTIONARY_LINE) = True
+               -- if enclosing dictionary line items
+               if
+                 (WORDS_MDEV (SHOW_DICTIONARY_CODES) or
+                  WORDS_MODE (SHOW_FREQUENCY)) and
+                 WORDS_MODE (DO_ONLY_MEANINGS) = False and
+                 CONFIGURATION /= ONLY_MEANINGS
                then
 
                   if WORDS_MDEV (DO_PEARSE_CODES) then
-                     PUT (OUTPUT, "03 ");
+                     Put (OUTPUT, "03 ");
                   end if;
                   if WORDS_MDEV (SHOW_DICTIONARY_CODES) = True then
-                     PUT (OUTPUT, "[CXXAQ]  ");
+                     Put (OUTPUT, "[CXXAQ]  ");
                   end if;
 
                   if WORDS_MODE (SHOW_FREQUENCY) = True then
-                     PUT (OUTPUT, "very frequent");
+                     Put (OUTPUT, "very frequent");
 
                   end if;
-             --
-               New_Line(OUTPUT);
-               end if; --dictionary line
+                  --
+                  if WORDS_MODE (DO_ANSI_FORMATTING)
+                 and then WORDS_MODE (WRITE_OUTPUT_TO_FILE) = False
+               then
+                     Put (OUTPUT, Format_Reset);
+                   end if;
+                  New_Line (OUTPUT);
+               end if;  -- if enclosing dictionary line items
 
-              if WORDS_MODE (DO_ANSI_FORMATTING)
-                              and then WORDS_MODE (WRITE_OUTPUT_TO_FILE) = False
-                                  then
-                  PUT (OUTPUT, Format_Reset);
-                   PUT (OUTPUT, Format_Bold);
-                                 end if;
+               if WORDS_MODE (DO_ANSI_FORMATTING)
+                 and then WORDS_MODE (WRITE_OUTPUT_TO_FILE) = False
+               then
+                  Put (OUTPUT, Format_Reset);
+                  Put (OUTPUT, Format_Bold);
+               end if;
 
                for C in Arabic_String'Range loop
-                exit when Arabic_String(C) = ' ';
-                PUT (OUTPUT, Arabic_String(C));
+                  exit when Arabic_String (C) = ' ';
+                  Put (OUTPUT, Arabic_String (C));
                end loop;
 
-               PUT_line (OUTPUT, " as a ROMAN NUMERAL;");
+               Put_Line (OUTPUT, " as a ROMAN NUMERAL;");
+
+               if WORDS_MODE (DO_ANSI_FORMATTING)
+                 and then WORDS_MODE (WRITE_OUTPUT_TO_FILE) = False
+               then
+                  Put (OUTPUT, Format_Reset);
+               end if;
 
             end if;
             -- end of second output
 
-            if WORDS_MODE (DO_ANSI_FORMATTING)
-                 and then WORDS_MODE (WRITE_OUTPUT_TO_FILE) = False
-               then
-                  PUT (OUTPUT, Format_Reset);
-            end if;
-
          end if; -- enclosing statements requiring integer
 
-         NEW_LINE(OUTPUT);
+         New_Line (OUTPUT);
 
       end loop;  -- end outermost loop
 
       return;
-
 
    end Arabic2Roman;
 

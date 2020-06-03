@@ -11,9 +11,6 @@ pragma ELABORATE(DICTIONARY_PACKAGE);
 pragma ELABORATE(ADDONS_PACKAGE);
 package body LINE_STUFF is
 
-
-
-
   procedure LOAD_DICTIONARY(DICT : in out DICTIONARY;
                             DICTIONARY_FILE_NAME : STRING)  is
   --  For loading a DICTIONARY list from a file
