@@ -19,7 +19,7 @@
       subtype PRIORITY_TYPE is INTEGER range 0..99;
       
       NUMBER_OF_EWORDS : INTEGER := 0;
-
+       
       type EWDS_RECORD is 
         record
           W    : EWORD := NULL_EWORD;
@@ -34,7 +34,7 @@
       
       NULL_EWDS_RECORD : EWDS_RECORD := ((others => ' '), 
                          (others => ' '), 0, X, X, 0, 0, 0);
-      
+     
       type EWDS_ARRAY is array (POSITIVE range <>) of EWDS_RECORD;
      
       package EWDS_DIRECT_IO is new DIRECT_IO(EWDS_RECORD);
@@ -45,8 +45,8 @@
         procedure GET(P : out EWDS_RECORD);
         procedure PUT(F : in TEXT_IO.FILE_TYPE; P : in EWDS_RECORD);
         procedure PUT(P : in EWDS_RECORD);
-        procedure GET(S : in STRING;  P : out EWDS_RECORD; 
-                                   LAST : out INTEGER);
+        procedure GET(S : in STRING; P : out EWDS_RECORD; 
+                                  LAST : out INTEGER);
         procedure PUT(S : out STRING; P : in EWDS_RECORD);  
       end EWDS_RECORD_IO; 
       

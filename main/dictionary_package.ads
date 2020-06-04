@@ -78,10 +78,9 @@
     X,      --  General or unknown or too common to say
     A,      
     B,      --  C.H.Beeson, A Primer of Medieval Latin, 1925 (Bee)
-    C,      --  Charles Beard, Cassell's Latin Dictionary 1892 (Cas) 
+    C,      --  Charles Beard, Cassell's Latin Dictionary 1892 (Cas)  
 
 
-                             
     D,      --  J.N.Adams, Latin Sexual Vocabulary, 1982 (Sex)
     E,      --  L.F.Stelten, Dictionary of Eccles. Latin, 1995 (Ecc)
     F,      --  Roy J. Deferrari, Dictionary of St. Thomas Aquinas, 1960 (DeF)
@@ -93,7 +92,7 @@
     L,      --  Lewis, C.S., Elementary Latin Dictionary 1891
     M,      --  Latham, Revised Medieval Word List, 1980 (Latham)
     N,      --  Lynn Nelson, Wordlist (Nel)
-    O,      --  Oxford Latin Dictionary (OLD), 1982 (most entries), 2012 (a few entries)
+    O,      --  Oxford Latin Dictionary, 1982 (OLD)
     P,      --  Souter, A Glossary of Later Latin to 600 A.D., Oxford 1949 (Souter)
     Q,      --  Other, cited or unspecified dictionaries
     R,      --  Plater + White, A Grammar of the Vulgate, Oxford 1926 (Plater)
@@ -367,11 +366,11 @@
          record
             case POFS is
                when N =>
-                    N : NOUN_ENTRY;
+                  N : NOUN_ENTRY;
                when PRON =>
-                 PRON : PRONOUN_ENTRY;
+                  PRON : PRONOUN_ENTRY;
                when PACK =>
-                 PACK : PROPACK_ENTRY;
+                  PACK : PROPACK_ENTRY;
                when ADJ =>
                   ADJ : ADJECTIVE_ENTRY;
                when NUM =>
@@ -379,7 +378,7 @@
                when ADV =>
                   ADV : ADVERB_ENTRY;
                when V =>
-                    V : VERB_ENTRY;
+                  V : VERB_ENTRY;
                when VPAR =>
                null;                 --  There will be no VPAR dictionary entries
                when SUPINE =>
