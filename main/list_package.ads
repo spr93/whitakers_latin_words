@@ -8,7 +8,9 @@ package LIST_PACKAGE is
 --  SCROLL_LINE_NUMBER : INTEGER := 0;
 --  OUTPUT_SCROLL_COUNT : INTEGER := 0;
 
-  
+  function TRIM_BAR (S : String) return String;  -- Make it visible to search_english
+   
+   
   procedure LIST_STEMS(OUTPUT   : TEXT_IO.FILE_TYPE;
                        RAW_WORD : STRING;
                        INPUT_LINE : STRING;
@@ -26,6 +28,7 @@ package LIST_PACKAGE is
                    
    
   procedure LIST_NEIGHBORHOOD(OUTPUT : TEXT_IO.FILE_TYPE; INPUT_WORD : STRING);
+
 
    
    ---------------------------

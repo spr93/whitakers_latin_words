@@ -133,6 +133,24 @@ package body LIST_PACKAGE is
       end if;
    end CAP_ENDING;
 
+
+      function TRIM_BAR (S : String) return String is
+      --  Takes vertical bars from beginning of MEAN and TRIMs
+      begin
+
+         if S'LENGTH > 3 and then S (S'FIRST .. S'FIRST + 3) = "||||" then
+            return TRIM (S (S'FIRST + 4 .. S'LAST));
+         elsif S'LENGTH > 2 and then S (S'FIRST .. S'FIRST + 2) = "|||" then
+            return TRIM (S (S'FIRST + 3 .. S'LAST));
+         elsif S'LENGTH > 1 and then S (S'FIRST .. S'FIRST + 1) = "||" then
+            return TRIM (S (S'FIRST + 2 .. S'LAST));
+         elsif S (S'FIRST) = '|' then
+            return TRIM (S (S'FIRST + 1 .. S'LAST));
+         else
+            return TRIM (S);
+         end if;
+   end TRIM_BAR;
+
    procedure PUT_DICTIONARY_FLAGS
      (OUTPUT : Text_IO.File_Type; DE : DICTIONARY_ENTRY; HIT : out Boolean)
    is
@@ -152,6 +170,7 @@ package body LIST_PACKAGE is
          HIT := True;
       end if;
    end PUT_DICTIONARY_FLAGS;
+
 
    procedure PUT_DICTIONARY_FORM
      (OUTPUT : Text_IO.File_Type; D_K : DICTIONARY_KIND; MNPC : DICT_IO.Count;
@@ -321,6 +340,9 @@ package body LIST_PACKAGE is
       W                  : constant String := RAW_WORD;
       J, J1, J2, K       : Integer         := 0;
       THERE_IS_AN_ADVERB : Boolean         := False;
+
+
+
 
       procedure PUT_INFLECTION
         (SR : STEM_INFLECTION_RECORD; DM : DICTIONARY_MNPC_RECORD)
@@ -604,23 +626,6 @@ package body LIST_PACKAGE is
                DM.DE);  -- prints dictionary form line; e.g.,
          end if;                                                  --  amo, amare, amavi, amatus  V (1st)   [XXXAO]      veryfreq
       end PUT_FORM;
-
-      function TRIM_BAR (S : String) return String is
-      --  Takes vertical bars from begining of MEAN and TRIMs
-      begin
-
-         if S'LENGTH > 3 and then S (S'FIRST .. S'FIRST + 3) = "||||" then
-            return TRIM (S (S'FIRST + 4 .. S'LAST));
-         elsif S'LENGTH > 2 and then S (S'FIRST .. S'FIRST + 2) = "|||" then
-            return TRIM (S (S'FIRST + 3 .. S'LAST));
-         elsif S'LENGTH > 1 and then S (S'FIRST .. S'FIRST + 1) = "||" then
-            return TRIM (S (S'FIRST + 2 .. S'LAST));
-         elsif S (S'FIRST) = '|' then
-            return TRIM (S (S'FIRST + 1 .. S'LAST));
-         else
-            return TRIM (S);
-         end if;
-      end TRIM_BAR;
 
       procedure PUT_MEANING (OUTPUT : Text_IO.File_Type; RAW_MEANING : String)
       is

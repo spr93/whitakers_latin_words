@@ -9,6 +9,7 @@
   with WORD_PACKAGE; use WORD_PACKAGE;
   with ENGLISH_SUPPORT_PACKAGE; use ENGLISH_SUPPORT_PACKAGE;
   with DICTIONARY_FORM;
+  with List_Package; -- for strip_bars
     
  procedure SEARCH_ENGLISH(INPUT_ENGLISH_WORD : STRING; POFS : PART_OF_SPEECH_TYPE := X) is
      use EWDS_DIRECT_IO;
@@ -91,10 +92,10 @@
       if NUMBER_OF_HITS = 0  then
          TEXT_IO.PUT_LINE(OUTPUT, "No Match");             
        else
---PUT_LINE("Unsorted EWDS");
---for I in 1..NUMBER_TO_SHOW  loop
---  PUT(INTEGER'IMAGE(I)); PUT("*"); EWDS_RECORD_IO.PUT(OUTPUT_ARRAY(I)); NEW_LINE;
---end loop;
+--  PUT_LINE("Unsorted EWDS");
+--  for I in 1..NUMBER_TO_SHOW  loop
+--   PUT(INTEGER'IMAGE(I)); PUT("*"); EWDS_RECORD_IO.PUT(OUTPUT_ARRAY(I)); NEW_LINE;
+--  end loop;
        
 SORT_OUTPUT_ARRAY;
 
@@ -176,10 +177,9 @@ DICT_IO.READ(DICT_FILE(GENERAL), DE, DICT_IO.COUNT(OUTPUT_ARRAY(I).N));
                  
 --TEXT_IO.PUT_LINE("DUMP_OUTPUT MEAN");      
        
-           TEXT_IO.PUT(OUTPUT, TRIM(DE.MEAN));
+           TEXT_IO.PUT(OUTPUT, TRIM (LIST_PACKAGE.TRIM_BAR(DE.MEAN)));
            TEXT_IO.NEW_LINE(OUTPUT);
-         
-      
+
                
        end loop;
  --TEXT_IO.PUT_LINE("DUMP_OUTPUT TRIMMED"); 
