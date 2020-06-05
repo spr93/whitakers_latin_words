@@ -1303,6 +1303,7 @@ package body LIST_PACKAGE is
             Text_IO.Put_Line (OUTPUT, "    ========   UNKNOWN    ");
             --TEXT_IO.NEW_LINE(OUTPUT);
          else              --  Just screen output
+            TEXT_IO.NEW_LINE(OUTPUT);
             if WORDS_MDEV (DO_PEARSE_CODES) then
                Text_IO.Put (OUTPUT, "04 ");
             end if;
@@ -1725,6 +1726,7 @@ package body LIST_PACKAGE is
             Text_IO.Put (Format_Reset);
             Text_IO.Put (Format_Inverse);
          end if;
+         Text_Io.New_Line(OUTPUT);
          Text_IO.Put_Line
            (OUTPUT,
             "----------  Entries in GENERAL Dictionary around the UNKNOWN  ----------");

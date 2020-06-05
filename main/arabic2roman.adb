@@ -154,6 +154,8 @@ package body Arabic2Roman is
                   return;  -- too big, nothing to do
             end case;
 
+            New_Line (OUTPUT);
+
             -- Is the number low enough to do an additive form?  is there a unique additive form?
             if Arabic_Num <= 100_000 then
                Roman_Num_Record.Age_X := Generate_Additive (Arabic_Num);
@@ -446,7 +448,7 @@ package body Arabic2Roman is
                -- small number with both additive and subtractive
    -- call this classical for lack of a better way to distinguish from additive
 
-               New_Line (OUTPUT);
+            --   New_Line (OUTPUT);
                if WORDS_MDEV (DO_PEARSE_CODES) then
                   if WORDS_MODE (DO_ONLY_MEANINGS) = False
                     and then (not (CONFIGURATION = ONLY_MEANINGS))

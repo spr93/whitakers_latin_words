@@ -106,16 +106,25 @@ procedure PARSE(COMMAND_LINE : STRING := "") is
                   case Arabic_String(Arabic_J) is
                   when 'z' => null; -- Arabic_J := Arabic_J+1; -- we've got a word first
                   when others => Arabic_Process_All := True; 
-                                Text_IO.New_Line; -- Arabic_J := Arabic_J+1;-- conform to Words standard format
+                  --              Text_IO.New_Line(OUTPUT); -- Arabic_J := Arabic_J+1;-- conform to Words standard format
                   end case;
             end if; 
              
             if Arabic_J >1 or Arabic_Process_All = True Then 
-                if J > L then
-                   Arabic2Roman.Arabic2Roman(Arabic_String((Last_J)..L), Arabic_Process_All);      
-                  else   
-                   Arabic2Roman.Arabic2Roman(Arabic_String((Arabic_J)..J), Arabic_Process_All);
-               end if;
+               if J > L then
+                    if  WORDS_MODE(WRITE_OUTPUT_TO_FILE)      then
+                     Arabic2Roman.Arabic2Roman(OUTPUT, Arabic_String((Last_J)..L), Arabic_Process_All);
+                  else 
+                     Arabic2Roman.Arabic2Roman(CURRENT_OUTPUT, Arabic_String((Last_J)..L), Arabic_Process_All);
+                     end if; 
+               else   
+                                      if  WORDS_MODE(WRITE_OUTPUT_TO_FILE)      then
+                     Arabic2Roman.Arabic2Roman(OUTPUT, Arabic_String((Last_J)..L), Arabic_Process_All);
+                  else
+                     
+                   Arabic2Roman.Arabic2Roman(Current_output, Arabic_String((Arabic_J)..J), Arabic_Process_All);
+                  end if;
+                  end if; 
             end if;    
          
                Arabic_J := Arabic_J + 1;
