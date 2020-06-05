@@ -506,7 +506,7 @@ begin
     when NAME_ERROR  =>
       WORDS_MODE := DEFAULT_MODE_ARRAY;
     when BAD_MODE_FILE  =>
-      PUT_LINE("MODE_FILE exists, but empty or corupted - Default modes used");
+      PUT_LINE("MODE_FILE exists, but empty or corrupted - Default modes used");
       PUT_LINE("You can set new parameters with CHANGE PARAMETERS and save.");
       WORDS_MODE := DEFAULT_MODE_ARRAY;
   when others  =>

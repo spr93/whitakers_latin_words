@@ -343,7 +343,7 @@ abbreviated                                                2 N
 __________________________________________________
 
 
-Sort EWDSLIST making a revised version (same name)
+Sort EWDSLIST.GEN making a revised version (same name)
 
 1    24   A
 1    24   C
@@ -446,10 +446,10 @@ run MAKEEFIL aginst it.
 (This assumes that you are using the presorted EWDSLIST.GEN 
 which comes with distribution and matches that DICTLINE.GEN.
 Otherwise make and run MAKEEWDS against DICTLINE.GEN 
-This produces EWSDLIST.GEN which has to be sorted by SORTER.
+This produces EWDSLIST.GEN which has to be sorted by SORTER.
 Check the begining of EWDSLIST with an editor.  
 If there are any strange lines, remove them.
-Invoke SORTER.  The input file is EWSDLIST.GEN.  
+Invoke SORTER.  The input file is EWDSLIST.GEN.  
 The sort fields are
 
 SORTER
@@ -459,7 +459,7 @@ SORTER
       51    6   R         --  Part of Speech  
       72    5   N    D    --  RANK
       58    1   D         --  FREQ
-    EWSDLIST.GEN     --  Store 
+    EWDSLIST.GEN     --  Store 
 
 The output file is also EWDSLIST.GEN - Enter/CR for the name works.)
 (For this distribution, there is no facility for English from a SPECIAL dictionary -

@@ -44,9 +44,7 @@ SORTER
       51    6   R         --  Part of Speech  
       72    5   N    D    --  RANK
       58    1   D         --  FREQ
-    EWSDLIST.GEN     --  Store 
-    
-[MAYBE:  RUN WEED]
+    EWDSLIST.GEN     --  Store 
 
 Run makeefil
 
