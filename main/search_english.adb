@@ -9,7 +9,7 @@
   with WORD_PACKAGE; use WORD_PACKAGE;
   with ENGLISH_SUPPORT_PACKAGE; use ENGLISH_SUPPORT_PACKAGE;
   with DICTIONARY_FORM;
-  with List_Package; -- for strip_bars
+  with List_Package; use LIST_PACKAGE; -- for strip_bars and ANSI formatting
     
  procedure SEARCH_ENGLISH(INPUT_ENGLISH_WORD : STRING; POFS : PART_OF_SPEECH_TYPE := X) is
      use EWDS_DIRECT_IO;
@@ -135,20 +135,30 @@ DICT_IO.READ(DICT_FILE(GENERAL), DE, DICT_IO.COUNT(OUTPUT_ARRAY(I).N));
 --TEXT_IO.PUT_LINE("DUMP_OUTPUT READ");             
 --  DICTIONARY_ENTRY_IO.PUT(DE); TEXT_IO.NEW_LINE;
 
+            
+         if WORDS_MODE (DO_ANSI_FORMATTING) then
+            Text_IO.Put (OUTPUT, Format_Reset);
+            Text_IO.Put (OUTPUT, Format_Underline);
+            end if;
+            
             PUT(OUTPUT, DICTIONARY_FORM(DE));
             TEXT_IO.PUT(OUTPUT, "   ");
             --PART_ENTRY_IO.PUT(OUTPUT, DE.PART);
 --TEXT_IO.PUT_LINE("DUMP_OUTPUT PART");             
             if DE.PART.POFS = N  then
-               TEXT_IO.PUT(OUTPUT, "  ");  DECN_RECORD_IO.PUT(OUTPUT, DE.PART.N.DECL);
-               TEXT_IO.PUT(OUTPUT, "  " & GENDER_TYPE'IMAGE(DE.PART.N.GENDER) & "  ");
+                DECN_RECORD_IO.PUT(OUTPUT, DE.PART.N.DECL);
+               --   TEXT_IO.PUT(OUTPUT, "  " & GENDER_TYPE'IMAGE(DE.PART.N.GENDER) & "  "); -- SPR:  This was duplicative:
+                                                                                            -- DICTIONARY_FORM(DE) already outputs the gender
              end if;
              if (DE.PART.POFS = V)   then
-               TEXT_IO.PUT(OUTPUT, "  ");  DECN_RECORD_IO.PUT(OUTPUT, DE.PART.V.CON);
-             end if;
-             if (DE.PART.POFS = V)  and then  (DE.PART.V.KIND in GEN..PERFDEF)  then
-               TEXT_IO.PUT(OUTPUT, "  " & VERB_KIND_TYPE'IMAGE(DE.PART.V.KIND) & "  ");
-             end if;
+               DECN_RECORD_IO.PUT(OUTPUT, DE.PART.V.CON);
+            end if;
+            
+-- SPR:  This was duplicative:
+-- DICTIONARY_FORM(DE) already outputs the VERB_KIND            
+--               if (DE.PART.POFS = V)  and then  (DE.PART.V.KIND in GEN..PERFDEF)  then
+--                 TEXT_IO.PUT(OUTPUT, "  " & VERB_KIND_TYPE'IMAGE(DE.PART.V.KIND) & "  ");
+--               end if;
       
  --TEXT_IO.PUT_LINE("DUMP_OUTPUT CODE");             
 
@@ -171,25 +181,59 @@ DICT_IO.READ(DICT_FILE(GENERAL), DE, DICT_IO.COUNT(OUTPUT_ARRAY(I).N));
             if WORDS_MDEV(SHOW_DICTIONARY_LINE)  then
                    TEXT_IO.PUT(OUTPUT, "(" 
                          & TRIM(INTEGER'IMAGE(OUTPUT_ARRAY(I).N)) & ")");
-               end if;
-                  
+            end if;
+            
+      if (WORDS_MODE (SHOW_FREQUENCY) or (DE.TRAN.FREQ >= D)) and
+        (TRIM (DICTIONARY_FREQUENCY (DE.TRAN.FREQ))'LENGTH /= 0)
+      then
+         Text_IO.Put
+           (OUTPUT, "  " & TRIM (DICTIONARY_FREQUENCY (DE.TRAN.FREQ)));
+      end if;
+        
+               if WORDS_MODE (DO_ANSI_FORMATTING) then
+               Text_IO.Put (OUTPUT, Format_Reset);
+               Text_IO.Put (OUTPUT, Format_Bold);
+               end if; 
                  TEXT_IO.NEW_LINE(OUTPUT);
                  
 --TEXT_IO.PUT_LINE("DUMP_OUTPUT MEAN");      
        
-           TEXT_IO.PUT(OUTPUT, TRIM (LIST_PACKAGE.TRIM_BAR(DE.MEAN)));
+            
+            TEXT_IO.PUT(OUTPUT, TRIM (LIST_PACKAGE.TRIM_BAR(DE.MEAN)));
+            
+            if WORDS_MODE (DO_ANSI_FORMATTING) then
+               Text_IO.Put (OUTPUT, Format_Reset);
+            end if; 
+            
            TEXT_IO.NEW_LINE(OUTPUT);
 
                
        end loop;
  --TEXT_IO.PUT_LINE("DUMP_OUTPUT TRIMMED"); 
                
-      if TRIMMED  then
-         PUT_LINE(OUTPUT, "[Output trimmed]");
+         if TRIMMED  then
+                        if WORDS_MODE (DO_ANSI_FORMATTING) then
+               Text_IO.Put (OUTPUT, Format_Reset);
+               Text_IO.Put (OUTPUT, Format_Inverse);
+
+            end if; 
+            
+         Text_Io.New_Line(Output);
+            
+            Text_Io.PUT_LINE(OUTPUT, "OUTPUT TRIMMED:  Turn off TRIM_OUTPUT to see more.");
+            
+             if WORDS_MODE (DO_ANSI_FORMATTING) then
+               Text_IO.Put (OUTPUT, Format_Reset);
+            end if; 
+
+            
        end if;
        
        end if;    --  On HITS = 0
        
+                 
+      Text_Io.New_Line(Output);
+      
      exception
            when others =>
              null;   --  If N not in DICT_FILE

@@ -29,7 +29,84 @@ package LIST_PACKAGE is
    
   procedure LIST_NEIGHBORHOOD(OUTPUT : TEXT_IO.FILE_TYPE; INPUT_WORD : STRING);
 
+   INFLECTION_FREQUENCY : array (FREQUENCY_TYPE) of String (1 .. 8) :=
+     ("        ",  --  X
 
+      "mostfreq",  --  A
+
+      "sometime",  --  B
+
+      "uncommon",  --  C
+
+      "infreq  ",  --  D
+
+      "rare    ",  --  E
+
+      "veryrare",  --  F
+
+      "inscript",  --  I
+
+      "        ",  --  Not used
+
+      "        ");
+   INFLECTION_AGE : array (AGE_TYPE) of String (1 .. 8) :=
+     ("Always  ",   --  X
+
+      "Archaic ",   --  A
+
+      "Early   ",   --  B
+
+      "Classic ",   --  C
+
+      "Late    ",   --  D
+
+      "Later   ",   --  E
+
+      "Medieval",   --  F
+
+      "Scholar ",   --  G
+
+      "Modern  "); --  H
+
+   DICTIONARY_FREQUENCY : array (FREQUENCY_TYPE) of String (1 .. 8) :=
+     ("        ",  --  X
+
+      "veryfreq",  --  A
+
+      "frequent",  --  B
+
+      "common  ",  --  C
+
+      "lesser  ",  --  D
+
+      "uncommon",  --  E
+
+      "veryrare",  --  F
+
+      "inscript",  --  I
+
+      "graffiti",  --  J
+
+      "Pliny   ");--  N
+
+   DICTIONARY_AGE : array (AGE_TYPE) of String (1 .. 8) :=
+     ("        ",   --  X
+
+      "Archaic ",   --  A
+
+      "Early   ",   --  B
+
+      "Classic ",   --  C
+
+      "Late    ",   --  D
+
+      "Later   ",   --  E
+
+      "Medieval",   --  F
+
+      "NeoLatin",   --  G
+
+      "Modern  "); --  H
    
    ---------------------------
    -- ANSI Formatting Codes --

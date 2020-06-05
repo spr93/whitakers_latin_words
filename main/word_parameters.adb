@@ -29,7 +29,7 @@ use TEXT_IO;
   --  The default modes are set in the body so that they can be changed
   --  with only this being recompiled, not the rest of the with'ing system
   DEFAULT_MODE_ARRAY : constant MODE_ARRAY := (
-                      TRIM_OUTPUT                 => FALSE,      
+                      TRIM_OUTPUT                 => TRUE,      
 
                       HAVE_OUTPUT_FILE            => FALSE,
                       WRITE_OUTPUT_TO_FILE        => FALSE,

@@ -34,84 +34,7 @@ package body LIST_PACKAGE is
    Last_Meaning_Same, Next_Form_Same, Last_Form_Same, Put_Form_Anyway,
    Put_Meaning_Anyway : Boolean := False;
 
-   INFLECTION_FREQUENCY : array (FREQUENCY_TYPE) of String (1 .. 8) :=
-     ("        ",  --  X
 
-      "mostfreq",  --  A
-
-      "sometime",  --  B
-
-      "uncommon",  --  C
-
-      "infreq  ",  --  D
-
-      "rare    ",  --  E
-
-      "veryrare",  --  F
-
-      "inscript",  --  I
-
-      "        ",  --  Not used
-
-      "        ");
-   INFLECTION_AGE : array (AGE_TYPE) of String (1 .. 8) :=
-     ("Always  ",   --  X
-
-      "Archaic ",   --  A
-
-      "Early   ",   --  B
-
-      "Classic ",   --  C
-
-      "Late    ",   --  D
-
-      "Later   ",   --  E
-
-      "Medieval",   --  F
-
-      "Scholar ",   --  G
-
-      "Modern  "); --  H
-
-   DICTIONARY_FREQUENCY : array (FREQUENCY_TYPE) of String (1 .. 8) :=
-     ("        ",  --  X
-
-      "veryfreq",  --  A
-
-      "frequent",  --  B
-
-      "common  ",  --  C
-
-      "lesser  ",  --  D
-
-      "uncommon",  --  E
-
-      "veryrare",  --  F
-
-      "inscript",  --  I
-
-      "graffiti",  --  J
-
-      "Pliny   ");--  N
-
-   DICTIONARY_AGE : array (AGE_TYPE) of String (1 .. 8) :=
-     ("        ",   --  X
-
-      "Archaic ",   --  A
-
-      "Early   ",   --  B
-
-      "Classic ",   --  C
-
-      "Late    ",   --  D
-
-      "Later   ",   --  E
-
-      "Medieval",   --  F
-
-      "NeoLatin",   --  G
-
-      "Modern  "); --  H
 
    function CAP_STEM (S : String) return String is
    begin
@@ -1589,9 +1512,23 @@ package body LIST_PACKAGE is
       end loop OUTPUT_LOOP;
       --TEXT_IO.PUT_LINE("Finished OUTPUT_LOOP");
 
-      if TRIMMED then
-         Put (OUTPUT, "[Trimmed output]");
-      end if;
+               if TRIMMED  then
+                        if WORDS_MODE (DO_ANSI_FORMATTING) then
+               Text_IO.Put (OUTPUT, Format_Reset);
+               Text_IO.Put (OUTPUT, Format_Inverse);
+
+            end if;
+
+         Text_Io.New_Line(Output);
+
+            Text_Io.PUT_LINE(OUTPUT, "OUTPUT TRIMMED:  Turn off TRIM_OUTPUT to see more.");
+
+             if WORDS_MODE (DO_ANSI_FORMATTING) then
+               Text_IO.Put (OUTPUT, Format_Reset);
+            end if;
+
+       end if;
+
       Text_IO.New_Line (OUTPUT);
 
    exception
