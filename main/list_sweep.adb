@@ -124,10 +124,12 @@
                            (LAST_THREE = "fer")  then   
                            null;
                         else 
-                           ALLOWED := FALSE;
+                           ALLOWED := FALSE;    
                         end if;
+                     elsif STEM'Length = 2 then  -- SPR:  This change enables "em" (imperative of emo) when TRIM_OUTPUT is on
+                     null;                       --       Otherwise the output is just the interject "em".  Probably other special cases too
                      else 
-                        ALLOWED := FALSE;
+                     ALLOWED := FALSE;
                      end if;
                   end if;
                end;
@@ -559,7 +561,7 @@
 -- TEXT_IO.PUT_LINE("Looping down on I  I = " & INTEGER'IMAGE(I)); 
              if (SL(I).IR.QUAL.POFS = N)  then 
 -- TEXT_IO.PUT_LINE("N found   I = " & INTEGER'IMAGE(I)); 
-PARSE_RECORD_IO.PUT(SL(I)); TEXT_IO.NEW_LINE;
+--PARSE_RECORD_IO.PUT(SL(I)); TEXT_IO.NEW_LINE;
                if NOT_ONLY_VOCATIVE    and then 
                    (SL(I).IR.QUAL.N.CS = VOC) and then 
                    ((DEPR(SL(I)).PART.N.KIND /= N) and 
