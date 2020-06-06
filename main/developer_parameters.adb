@@ -136,8 +136,9 @@ SHOW_DICTIONARY_CODES_HELP : constant HELP_TYPE :=  (
 DO_PEARSE_CODES_HELP : constant HELP_TYPE :=  (
    "This option causes special codes to be output flagging the different  ",
    "kinds of output lines.  01 for forms, 02 for dictionary forms, and    ",
-   "03 for meaning. The default choice is N(o).  It is activated by Y(es).",
-   "There are no Pearse codes in English mode.                            ");
+   "03 for meaning. There are no Pearse codes in English mode.            ",
+   "Type ? PEARSE in regular input mode for a bit more information.       ",
+   "The default choice is N(o).  It is activated by Y(es)."               ");
 
 DO_ONLY_INITIAL_WORD_HELP : constant HELP_TYPE :=  (
    "This option instructs the program to only analyze the initial word on ",

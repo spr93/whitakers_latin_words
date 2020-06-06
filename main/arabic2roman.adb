@@ -116,7 +116,7 @@ package body Arabic2Roman is
                if WORDS_MODE (DO_ONLY_MEANINGS) = False
                  and then (not (CONFIGURATION = ONLY_MEANINGS))
                then
-                  New_Line (OUTPUT);
+                 -- New_Line (OUTPUT);
                   if WORDS_MDEV (DO_PEARSE_CODES) then
                      Put (OUTPUT, "03 ");
                   end if;
@@ -154,7 +154,7 @@ package body Arabic2Roman is
                   return;  -- too big, nothing to do
             end case;
 
-            New_Line (OUTPUT);
+            --New_Line (OUTPUT);
 
             -- Is the number low enough to do an additive form?  is there a unique additive form?
             if Arabic_Num <= 100_000 then
@@ -538,13 +538,13 @@ package body Arabic2Roman is
                then
                   Put (OUTPUT, Format_Reset);
                end if;
-
+               New_Line (OUTPUT);
             end if;
             -- end of second output
 
          end if; -- enclosing statements requiring integer
 
-         New_Line (OUTPUT);
+
 
       end loop;  -- end outermost loop
 
