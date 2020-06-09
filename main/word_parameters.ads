@@ -4,9 +4,10 @@ package WORD_PARAMETERS is
 --  The default values are set in the body, so that they may be changed easily
 
   CHANGE_PARAMETERS_CHARACTER        : CHARACTER := '#';
-  CHANGE_LANGUAGE_CHARACTER          : CHARACTER := '~';
-  HELP_CHARACTER                     : CHARACTER := '?';
-
+  CHANGE_LANGUAGE_CHARACTER          : CHARACTER := '_'; --No more ~ as default because it causes shells to mangle arguments
+  HELP_CHARACTER                     : CHARACTER := '?'; --even MSFT PowerShell now conforms to the ~ => /home/user standard
+   
+                                                         
   --  These files are used by the program if requested, but not necessary
   --  They are all text files and human readable
 
@@ -60,8 +61,8 @@ package WORD_PARAMETERS is
   
   
   procedure CHANGE_PARAMETERS;  
-
- 
+   
   procedure INITIALIZE_WORD_PARAMETERS;
-
+    
+   
 end WORD_PARAMETERS;

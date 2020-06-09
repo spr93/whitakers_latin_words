@@ -99,7 +99,7 @@ CODES_HELP : constant MAIN_HELP_TYPE :=  (
   "  ***No scholarly rigor is assured.  This dictionary is an amatuer project***   ");
 
 AGE_HELP : constant MAIN_HELP_TYPE :=  (
-  "----------                                                                      ",
+  "---------                                                                       ",
   "AGE CODES                                                                       ",
   "---------                                                                       ",
   "                                                                                ",
@@ -121,7 +121,7 @@ AGE_HELP : constant MAIN_HELP_TYPE :=  (
 
 
 AREA_HELP : constant MAIN_HELP_TYPE :=  (
-  "-----------                                                                     ",
+  "----------                                                                      ",
   "AREA CODES                                                                      ",
   "----------                                                                      ",
   "                                                                                ",

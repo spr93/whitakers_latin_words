@@ -12,7 +12,8 @@ pragma Elaborate(PREFACE);
 
 
 package body WORD_PARAMETERS is
-use TEXT_IO;
+   use TEXT_IO;
+
 
   type HELP_TYPE is array (NATURAL range <>) of STRING(1..70);
   BLANK_HELP_LINE : constant STRING(1..70) := (others => ' ');

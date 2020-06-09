@@ -1259,9 +1259,6 @@ procedure PARSE (COMMAND_LINE : String := "") is
 begin --  PARSE
 --  All Rights Reserved - William Armstrong Whitaker
 
---  INITIALIZE_WORD_PARAMETERS; INITIALIZE_DEVELOPER_PARAMETERS;
---  INITIALIZE_WORD_PACKAGE;
---
    if METHOD = COMMAND_LINE_INPUT then
       if TRIM (COMMAND_LINE) /= "" then
          PARSE_LINE (COMMAND_LINE);
@@ -1269,53 +1266,84 @@ begin --  PARSE
 
    else
 
-      PREFACE.NEW_LINE;
-
       PREFACE.PUT_LINE
         ("Copyright (c) William Whitaker 1993-2006 - free for any use");
       PREFACE.PUT_LINE
         ("with modifications and additions 2019-2020, see [SITE]");
-
-      PREFACE.NEW_LINE;
-
       PREFACE.PUT_LINE
-        ("In memoriam, William Whitaker, Chair of DoD Working Group responsible for");
+        ("In memoriam, Gen. William Whitaker, Chair of DoD Working Group responsible for");
       PREFACE.PUT_LINE
-        ("establishing the Ada language and accomplished amateur Latin lexicographer");
+        ("establishing the Ada language and accomplished amateur Latin lexicographer,");
       PREFACE.PUT_LINE
         ("who gave this comprehensive and free dictionary to the world.");
 
       PREFACE.NEW_LINE;
-
-      PREFACE.PUT_LINE
-        ("Input a word or line of Latin and ENTER to get the forms and meanings");
-      PREFACE.PUT_LINE
-        ("    Or input " & START_FILE_CHARACTER &
-         " and the name of a file containing words or lines");
-      PREFACE.PUT_LINE
-        ("    Or input " & CHANGE_PARAMETERS_CHARACTER &
-         " to change parameters and mode of the program");
-      PREFACE.PUT_LINE ("    Or input " & HELP_CHARACTER & "to get help");
-      PREFACE.PUT_LINE
-        ("Two empty lines (just a RETURN/ENTER) from the keyboard exits the program");
-
-      if ENGLISH_DICTIONARY_AVAILABLE (GENERAL) then
-         PREFACE.NEW_LINE;
-         PREFACE.PUT_LINE ("English-to-Latin available");
-         PREFACE.PUT_LINE
-           (CHANGE_LANGUAGE_CHARACTER &
-            "E changes to English-to-Latin mode, " &
-            CHANGE_LANGUAGE_CHARACTER & "L changes back");
-         PREFACE.NEW_LINE;
+      
+      -- Begin restrictions report
+      if CONFIGURATION = ONLY_MEANINGS or CL_Arguments /= Null_CL_Arguments then
+         Preface.PUT_LINE("The following restrictions have been enabled and cannot be changed:");
+         if CONFIGURATION = ONLY_MEANINGS then
+            Preface.PUT_LINE("- MEANINGS ONLY:  Inflections will not display in Latin-English mode"); end if;
+         if CL_ARGUMENTS(ENGLISH_ONLY)then
+            Preface.Put_Line("- ENGLISH ONLY :   The program will not enter Latin-English mode"); end if;
+         if CL_ARGUMENTS(LATIN_ONLY) then
+            Preface.Put_Line("- LATIN ONLY   :   The program will not enter English-Latin mode"); end if; 
+         if CL_ARGUMENTS(READ_ONLY) then
+            Preface.Put_Line("- READ ONLY    :   Options cannot be changed; no output to file"); end if;
+         if CL_ARGUMENTS(NO_FILES) then
+            Preface.Put_Line("- NO FILES     :   The program will not load files for translation"); end if;                
+         if CL_ARGUMENTS(NO_EXIT) then
+            Preface.Put_Line("- NO EXIT      :   Only admin can terminate (ignores SIGSTOP, SIGINT, SIGTERM)"); end if;
+      Preface.New_Line;
       end if;
-
-      if CONFIGURATION = ONLY_MEANINGS then
-         PREFACE.PUT_LINE
-           ("THIS VERSION IS HARDCODED TO GIVE DICTIONARY FORM AND MEANINGS ONLY");
-         PREFACE.PUT_LINE
-           ("IT CANNOT BE MODIFIED BY CHANGING THE DO_MEANINGS_ONLY PARAMETER");
+      -- End restrictions report
+      
+    if CL_ARGUMENTS(ENGLISH_ONLY) 
+      and then ENGLISH_DICTIONARY_AVAILABLE(GENERAL)
+      then LANGUAGE := ENGLISH_TO_LATIN;
+    elsif CL_ARGUMENTS(English_ONLY)  then
+         Preface.Put_Line("English dictionary not available.  Cannot run in English-to-Latin only mode.");
+         return; 
+    else 
+     PREFACE.PUT
+       ("Input a word or line of Latin and press ENTER");
+      PREFACE.NEW_LINE;
+    end if;
+      
+      
+    if CL_Arguments(NO_FILES) = False then 
+       PREFACE.PUT_LINE
+         ("    Or input " & START_FILE_CHARACTER &
+          " and the name of a file containing words or lines");
+       PREFACE.PUT_LINE
+         ("    Or input " & CHANGE_PARAMETERS_CHARACTER &
+            " to change parameters and mode of the program");
          PREFACE.NEW_LINE;
-      end if;
+    end if; 
+      
+      
+     PREFACE.PUT_LINE ("Input " & HELP_CHARACTER & " to get help");
+     
+      if CL_Arguments(NO_EXIT) = False then 
+       PREFACE.PUT_LINE
+         ("Two empty lines (just a RETURN/ENTER) from the keyboard exits the program");
+         PREFACE.NEW_LINE;
+      end if; 
+      
+      
+      if ENGLISH_DICTIONARY_AVAILABLE (GENERAL) 
+        and then not CL_ARGUMENTS(ENGLISH_ONLY) 
+        and then not CL_Arguments(LATIN_ONLY)
+      then
+          PREFACE.NEW_LINE;
+          PREFACE.PUT_LINE ("English-to-Latin available");
+          PREFACE.PUT_LINE
+            (CHANGE_LANGUAGE_CHARACTER &
+             "E changes to English-to-Latin mode, " &
+          CHANGE_LANGUAGE_CHARACTER & "L changes back");
+          PREFACE.NEW_LINE;
+       end if;
+
 
       GET_INPUT_LINES :
       loop
@@ -1324,7 +1352,7 @@ begin --  PARSE
             if (Name (Current_Input) = Name (Standard_Input)) then
                SCROLL_LINE_NUMBER :=
                  Integer (Text_IO.Line (Text_IO.Standard_Output));
-               --  PREFACE.NEW_LINE;
+               PREFACE.NEW_LINE;
                PREFACE.PUT ("=>");
 
             end if;
@@ -1333,7 +1361,10 @@ begin --  PARSE
             Get_Line (LINE, L);
             if (L = 0) or else (TRIM (LINE (1 .. L)) = "") then
                --LINE_NUMBER := LINE_NUMBER + 1;  --  Count blank lines
-               if (Name (Current_Input) = Name (Standard_Input))
+               if CL_Arguments(NO_EXIT) then
+                  null;
+               Elsif (Name (Current_Input) = Name (Standard_Input))
+                 and then not CL_Arguments(NO_EXIT)
                then   --  INPUT is keyboard
                   PREFACE.PUT ("Blank exits =>");
                   Get_Line (LINE, L);             -- Second try
@@ -1343,7 +1374,8 @@ begin --  PARSE
                   end if;
                else                 --  INPUT is file
             --LINE_NUMBER := LINE_NUMBER + 1;   --  Count blank lines in file
-                  if End_Of_File (Current_Input) then
+                  if End_Of_File (Current_Input)
+                  then
                      Set_Input (Standard_Input);
                      Close (INPUT);
                   end if;
@@ -1354,6 +1386,7 @@ begin --  PARSE
             then            -- Not a blank line so L(1) (in file input)
 
                if LINE (1) = START_FILE_CHARACTER
+                 and then not CL_Arguments(NO_FILES)
                then    --  To begin file of words
                   if (Name (Current_Input) /= Name (Standard_Input)) then
                      Text_IO.Put_Line
@@ -1367,6 +1400,7 @@ begin --  PARSE
                elsif LINE (1) = CHANGE_PARAMETERS_CHARACTER
                  and then (Name (Current_Input) = Name (Standard_Input))
                  and then not CONFIG.SUPPRESS_PREFACE
+                 and then not CL_Arguments(READ_ONLY) 
                then
                   CHANGE_PARAMETERS;
 
@@ -1375,7 +1409,9 @@ begin --  PARSE
                  and then not CONFIG.SUPPRESS_PREFACE 
                then 
                   SHOW_HELP (UPPER_CASE(Trim(Line (2..L))));
-               elsif LINE (1) = CHANGE_LANGUAGE_CHARACTER then
+               elsif LINE (1) = CHANGE_LANGUAGE_CHARACTER 
+                 and then not (CL_Arguments(ENGLISH_ONLY) or CL_Arguments(LATIN_ONLY))
+               then
                   -- (NAME(CURRENT_INPUT) = NAME(STANDARD_INPUT)) and then
                   --   not CONFIG.SUPPRESS_PREFACE  then
                   --TEXT_IO.PUT_LINE("CHANGE CHARACTER   " & TRIM(LINE));
@@ -1384,6 +1420,7 @@ begin --  PARSE
                LINE (1) = CHANGE_DEVELOPER_MODES_CHARACTER
                  and then (Name (Current_Input) = Name (Standard_Input))
                  and then not CONFIG.SUPPRESS_PREFACE
+                 and then not CL_Arguments(READ_ONLY) 
                then
                   CHANGE_DEVELOPER_MODES;
                else
@@ -1410,7 +1447,9 @@ begin --  PARSE
                end if;
                Put_Line ("An unknown or unacceptable file name. Try Again");
             when End_Error =>          --  The end of the input file resets to CON:
-               if (Name (Current_Input) /= Name (Standard_Input)) then
+               if CL_Arguments(NO_EXIT) 
+                  then null;
+               elsif (Name (Current_Input) /= Name (Standard_Input)) then
                   Set_Input (Standard_Input);
                   Close (INPUT);
                   if METHOD = COMMAND_LINE_FILES then

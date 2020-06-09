@@ -58,8 +58,8 @@ package body DEVELOPER_PARAMETERS is
                       OMIT_MEDIEVAL               => FALSE,
                       OMIT_UNCOMMON               => FALSE,
 
-                      DO_I_FOR_J                  => TRUE,
-                      DO_U_FOR_V                  => TRUE,
+                  --    DO_I_FOR_J                  => TRUE,
+                  --    DO_U_FOR_V                  => TRUE,
 
                       PAUSE_IN_SCREEN_OUTPUT      => FALSE,
                       NO_SCREEN_ACTIVITY          => FALSE,
@@ -136,9 +136,8 @@ SHOW_DICTIONARY_CODES_HELP : constant HELP_TYPE :=  (
 DO_PEARSE_CODES_HELP : constant HELP_TYPE :=  (
    "This option causes special codes to be output flagging the different  ",
    "kinds of output lines.  01 for forms, 02 for dictionary forms, and    ",
-   "03 for meaning. There are no Pearse codes in English mode.            ",
-   "Type ? PEARSE in regular input mode for a bit more information.       ",
-   "The default choice is N(o).  It is activated by Y(es)."               ");
+   "03 for meaning. The default choice is N(o).  It is activated by Y(es).",
+   "There are no Pearse codes in English mode.                            ");
 
 DO_ONLY_INITIAL_WORD_HELP : constant HELP_TYPE :=  (
    "This option instructs the program to only analyze the initial word on ",
@@ -293,27 +292,40 @@ OMIT_MEDIEVAL_HELP : constant HELP_TYPE :=  (
 --     "will not want them.  If there is no other possible form, then the     ",
 --     "uncommon (roughly defined) will be reported.   The default is Y(es).  " );
 
-DO_I_FOR_J_HELP : constant HELP_TYPE :=  (
-   "This option instructs the program to modify the output so that the j/J",
-   "is represented as i/I.  The consonant i was writen as j in cursive in ",
-   "Imperial times and called i longa, and often rendered as j in medieval",
-   "times.  The capital is usually rendered as I, as in inscriptions.     ",
-   "If this is NO/FALSE, the output will have the same character as input.",
-   "The program default, and the dictionary convention is to retain the j.",
-   "                                                 The default is Y(es).");
+   
+--  SPR:  Gen. Whitaker never implemented this option, and it is much less
+--        helpful than treating I and J as equivalent in input (which he did do).
+--        Students whose instructors prefer I for N should know to convert the
+--        output just as they would for a paper dictionary. 
+--        The critical point is that we are flexible wrt input and consistent 
+--        wrt output.
+--  DO_I_FOR_J_HELP : constant HELP_TYPE :=  (
+--     "This option instructs the program to modify the output so that the j/J",
+--     "is represented as i/I.  The consonant i was writen as j in cursive in ",
+--     "Imperial times and called i longa, and often rendered as j in medieval",
+--     "times.  The capital is usually rendered as I, as in inscriptions.     ",
+--     "If this is NO/FALSE, the output will have the same character as input.",
+--     "The program default, and the dictionary convention is to retain the j.",
+--     "                                                 The default is Y(es).");
 
-DO_U_FOR_V_HELP : constant HELP_TYPE :=  (
-   "This option instructs the program to modify the output so that the u  ",
-   "is represented as v.  The consonant u was writen sometimes as uu.     ",
-   "The pronounciation was as current w, and important for poetic meter.  ",
-   "With the printing press came the practice of distinguishing consonant ",
-   "u with the character v, and was common for centuries.  The practice of",
-   "using only u has been adopted in some 20th century publications (OLD),",
-   " but it is confusing to many modern readers.  The capital is commonly ",
-   "V in any case, as it was and is in inscriptions (easier to chisel).   ",
-   "If this is NO/FALSE, the output will have the same character as input.",
-   "The program default, and the dictionary convention is to retain the v.",
-   "                                                 The default is Y(es)." );
+--  SPR:  Gen. Whitaker never implemented this option, and it is much less
+--        helpful than treating U and V as equivalent in input (which he did do).
+--        Students whose instructors prefer U for V should know to convert the
+--        output just as they would for a paper dictionary other than the OLD. 
+--        The critical point is that we are flexible wrt input and consistent 
+--        wrt output.
+--  DO_U_FOR_V_HELP : constant HELP_TYPE :=  (
+--     "This option instructs the program to modify the output so that the u  ",
+--     "is represented as v.  The consonant u was writen sometimes as uu.     ",
+--     "The pronounciation was as current w, and important for poetic meter.  ",
+--     "With the printing press came the practice of distinguishing consonant ",
+--     "u with the character v, and was common for centuries.  The practice of",
+--     "using only u has been adopted in some 20th century publications (OLD),",
+--     " but it is confusing to many modern readers.  The capital is commonly ",
+--     "V in any case, as it was and is in inscriptions (easier to chisel).   ",
+--     "If this is NO/FALSE, the output will have the same character as input.",
+--     "The program default, and the dictionary convention is to retain the v.",
+--     "                                                 The default is Y(es)." );
 
 
 
@@ -476,9 +488,6 @@ LOAD_DICTIONARY(DICT_LOC,
   end UPDATE_LOCAL_DICTIONARY_FILE;
 
 
-
-
-
   procedure PUT_MDEVS is
     use MDEV_TYPE_IO;
     use REPLY_TYPE_IO;
@@ -525,6 +534,7 @@ LOAD_DICTIONARY(DICT_LOC,
           (LINE(35) in '['..'`')  or
           (LINE(35) in '{'..'~'))  and
           (LINE(35) /= CHANGE_PARAMETERS_CHARACTER)  and
+          (LINE(35) /= '-')  and
           (LINE(35) /= CHANGE_DEVELOPER_MODES_CHARACTER)  then
         START_FILE_CHARACTER := LINE(35);
       else
@@ -735,9 +745,9 @@ LOAD_DICTIONARY(DICT_LOC,
     -- INQUIRE(OMIT_UNCOMMON, OMIT_UNCOMMON_HELP);
 
 
-    INQUIRE(DO_I_FOR_J, DO_I_FOR_J_HELP);
+  --  INQUIRE(DO_I_FOR_J, DO_I_FOR_J_HELP);
 
-    INQUIRE(DO_U_FOR_V, DO_U_FOR_V_HELP);
+  --  INQUIRE(DO_U_FOR_V, DO_U_FOR_V_HELP);
 
 
     INQUIRE(PAUSE_IN_SCREEN_OUTPUT, PAUSE_IN_SCREEN_OUTPUT_HELP);

@@ -654,7 +654,9 @@ package body WORD_PACKAGE is
                                  
                                  
  procedure CHANGE_LANGUAGE(C : CHARACTER) is
- begin  if UPPER_CASE(C) = 'L'  then
+   begin  if UPPER_CASE(C) = 'L' 
+        and then not CL_Arguments(ENGLISH_ONLY)
+      then
     LANGUAGE := LATIN_TO_ENGLISH;
     PREFACE.PUT_LINE("Language changed to " & LANGUAGE_TYPE'IMAGE(LANGUAGE));
   elsif UPPER_CASE(C) = 'E'  then  
@@ -666,16 +668,14 @@ package body WORD_PACKAGE is
       PREFACE.PUT_LINE("No English dictionary available");
     end if;
   else
-    PREFACE.PUT_LINE("Bad LANGAUGE input - no change, remains " & LANGUAGE_TYPE'IMAGE(LANGUAGE));
+    PREFACE.PUT_LINE("Bad LANGUAGE input - no change, remains " & LANGUAGE_TYPE'IMAGE(LANGUAGE));
   end if;
 exception 
   when others  =>
-    PREFACE.PUT_LINE("Bad LANGAUGE input - no change, remains " & LANGUAGE_TYPE'IMAGE(LANGUAGE));
+    PREFACE.PUT_LINE("Bad LANGUAGE input - no change, remains " & LANGUAGE_TYPE'IMAGE(LANGUAGE));
 end CHANGE_LANGUAGE;
     
   
-
-
       procedure WORD(RAW_WORD : in STRING;
                      PA : in out PARSE_ARRAY; PA_LAST : in out INTEGER) is
 
