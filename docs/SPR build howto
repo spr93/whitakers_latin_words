@@ -21,7 +21,7 @@ Run WAKEDICT (note the W) against DICTLINE.GEN
            58    1   D      
          STEMLIST.GEN    --  Output  
          
-do not:  [SPR:  REMOVE WEIRD TO_BE AT THE FIRST LINE ]]
+[SPR:  DO NOR REMOVE WEIRD TO_BE AT THE FIRST LINE - MAKESTEM.ADB ASSUMES IT'S THERE]]
 
 Run makestem
 
