@@ -10,7 +10,7 @@
    with LINE_STUFF; use LINE_STUFF;
    with ENGLISH_SUPPORT_PACKAGE; use ENGLISH_SUPPORT_PACKAGE;
 
-   -- FOR WINDOWS TARGETS ONLY
+   -- FOR WINDOWS TARGETS
    -- These with's enable Windows vt100 text format support
    with System.OS_Constants;
    with Windows_Vt100;

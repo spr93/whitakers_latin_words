@@ -1,15 +1,14 @@
 with Text_IO;               use Text_IO;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
-with CONFIG;                use CONFIG;
 with WORD_PARAMETERS;       use WORD_PARAMETERS;
 with DEVELOPER_PARAMETERS;  use DEVELOPER_PARAMETERS;
 with LIST_PACKAGE;          use LIST_PACKAGE;
+with CONFIG;                use CONFIG;
 
 package body Arabic2Roman is
 
    procedure Arabic2Roman
-     (OUTPUT : in Ada.Text_IO.File_Type; INPUT_WORD : in out String;
-      Arabic_Process_All : in Boolean)
+     (OUTPUT : in Ada.Text_IO.File_Type; INPUT_WORD : in out String)
    is
 
       type Roman_Record_Type is record
@@ -32,55 +31,45 @@ package body Arabic2Roman is
 
       for I in INPUT_WORD'range
       loop   --outermost loop ensures we catch input where there are two numbers in row
+
+         if Input_Counter > INPUT_WORD'Last then
+            return;
+         end if;
+
          Arabic_Build_Counter := 1;
          Is_Negative          := False;
          Arabic_String        :=
            (others => ' '); -- clear the string to build it again if we need to
          Put_Additive := False;
-         if Input_Counter > INPUT_WORD'Last then
-            return;
-         end if;
 
          if INPUT_WORD (Input_Counter) = '-' then
-            if Input_Counter = INPUT_WORD'First then
-               Is_Negative := True;
-            elsif Arabic_Process_All = False then
-               return;
-            end if;
-            if Input_Counter < INPUT_WORD'Last then
-               Input_Counter := Input_Counter + 1;
-            end if;
+            Is_Negative := True;
+            Input_Counter := Input_Counter + 1;
          end if;
 
          for J in Input_Counter .. INPUT_WORD'Last loop
             if Arabic_Build_Counter > 11
             then   -- too big; fast forward to the next number
                for Z in Input_Counter .. INPUT_WORD'Last loop
-                  if INPUT_WORD (Input_Counter) = '|' then
-                     exit;
-                  end if;
+                  exit when INPUT_WORD(INPUT_Counter) = '|';
                   Input_Counter := Input_Counter + 1;
                end loop;
+               Input_Counter := Input_Counter + 1;
                exit;
             end if;
 
             case INPUT_WORD (Input_Counter)
-            is  -- PARSE procedure leaves us with S (start of line), | (blank/space/delimiter), z (letter), #, or - (potential negative)
+            is  -- PARSE procedure leaves us with | (blank/space/delimiter), z (letter), #, or - (potential negative)
                when '0' .. '9' =>
                   Arabic_String (Arabic_Build_Counter) :=
                     INPUT_WORD (Input_Counter);
                   Arabic_Build_Counter := Arabic_Build_Counter + 1;
                   Input_Counter        := Input_Counter + 1;
                when '_' =>
-                  Input_Counter :=
-                    Input_Counter +
-                    1;       -- this was a valid 000's delimiter (, or _) so ignore it
+                  Input_Counter := Input_Counter + 1;       -- this was a valid 000's delimiter (, or _) so ignore it
                when 'z' =>
-                  Input_Counter :=
-                    Input_Counter +
-                    1;       -- there was a word or number here, so ignore it
-               when '|' =>
-                  Input_Counter := Input_Counter + 1;
+                  Input_Counter := Input_Counter + 1;       -- there was a word or letter here, so ignore it
+               when '|' => Input_Counter := Input_Counter + 1;
                   exit; -- a word or new number follows.
                when '.' =>
                   if (INPUT_WORD (Input_Counter + 1) in '0' .. '9') then
@@ -89,7 +78,7 @@ package body Arabic2Roman is
                      Input_Counter := Input_Counter + 1;
                   end if;
                when '-' =>  -- "TRICK":  Accept negative numbers, convert to positive, and note that it's a neologism.
-                  if Is_Negative = True and then WORDS_MODE (DO_TRICKS)
+                  if Is_Negative and then WORDS_MODE (DO_TRICKS)
                   then  -- otherwise ignore negative entries
                      exit;
                   end if;
@@ -116,7 +105,7 @@ package body Arabic2Roman is
                if WORDS_MODE (DO_ONLY_MEANINGS) = False
                  and then (not (CONFIGURATION = ONLY_MEANINGS))
                then
-                 -- New_Line (OUTPUT);
+                  -- New_Line (OUTPUT);
                   if WORDS_MDEV (DO_PEARSE_CODES) then
                      Put (OUTPUT, "03 ");
                   end if;
@@ -167,7 +156,7 @@ package body Arabic2Roman is
 
             -- if we've got a negative and we're omitting Medieval (or later) or uncommon => no result
             if
-              (Is_Negative = True and
+              (Is_Negative and
                (WORDS_MDEV (OMIT_MEDIEVAL) = True or
                 WORDS_MDEV (OMIT_UNCOMMON) = True))
             then
@@ -230,7 +219,7 @@ package body Arabic2Roman is
                end if;
             end if;
 
-            if Put_Additive = True and Is_Negative = False and
+            if Put_Additive and Is_Negative = False and
               Arabic_Num in 1 .. 500 | 600 | 700 | 800 | 900 | 10_000
             then
                Put (OUTPUT, To_String (Roman_Num_Record.Age_X));
@@ -248,7 +237,7 @@ package body Arabic2Roman is
                if WORDS_MODE (SHOW_AGE) then
                   Set_Col (OUTPUT, 59);
                   -- since negatives are neologism, ignore the additive form
-                  if Is_Negative = True then
+                  if Is_Negative then
                      Put (OUTPUT, "NeoLatin");
 
                   elsif Put_Additive = True and
@@ -272,7 +261,7 @@ package body Arabic2Roman is
 
                if WORDS_MODE (SHOW_FREQUENCY) = True then
                   Set_Col (OUTPUT, 69);
-                  if Is_Negative = True and Put_Additive = False then
+                  if Is_Negative and Put_Additive = False then
                      Put (OUTPUT, "very rare");
                   elsif Is_Negative = False then
                      Put (OUTPUT, "mostfreq");
@@ -368,7 +357,7 @@ package body Arabic2Roman is
                   Put (OUTPUT, Format_Underline);
                end if;
 
-               if Is_Negative = True then -- subtractive, negative
+               if Is_Negative then -- subtractive, negative
                   if WORDS_MDEV (SHOW_DICTIONARY_CODES) = True then
                      Put (OUTPUT, "[HXXFQ]  ");
                   end if;
@@ -399,7 +388,7 @@ package body Arabic2Roman is
                      Put (OUTPUT, "very frequent");
                   end if;
 
-               elsif Put_Additive = True then
+               elsif Put_Additive then
                   if WORDS_MDEV (SHOW_DICTIONARY_CODES) = True then
                      Put (OUTPUT, "[FXXDQ]  ");
                   end if;
@@ -441,14 +430,14 @@ package body Arabic2Roman is
             New_Line (OUTPUT);
             -- end output of first result
 
-            if Put_Additive = True
+            if Put_Additive
               and then Arabic_Num in 1 .. 500 | 600 | 700 | 800 | 900 | 10_000
               and then Is_Negative = False
             then -- only situation where we could have another result:
                -- small number with both additive and subtractive
    -- call this classical for lack of a better way to distinguish from additive
 
-            --   New_Line (OUTPUT);
+               --   New_Line (OUTPUT);
                if WORDS_MDEV (DO_PEARSE_CODES) then
                   if WORDS_MODE (DO_ONLY_MEANINGS) = False
                     and then (not (CONFIGURATION = ONLY_MEANINGS))
@@ -512,10 +501,10 @@ package body Arabic2Roman is
                   end if;
                   --
                   if WORDS_MODE (DO_ANSI_FORMATTING)
-                 and then WORDS_MODE (WRITE_OUTPUT_TO_FILE) = False
-               then
+                    and then WORDS_MODE (WRITE_OUTPUT_TO_FILE) = False
+                  then
                      Put (OUTPUT, Format_Reset);
-                   end if;
+                  end if;
                   New_Line (OUTPUT);
                end if;  -- if enclosing dictionary line items
 
@@ -543,8 +532,6 @@ package body Arabic2Roman is
             -- end of second output
 
          end if; -- enclosing statements requiring integer
-
-
 
       end loop;  -- end outermost loop
 

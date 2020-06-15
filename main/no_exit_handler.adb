@@ -12,7 +12,6 @@ package body no_exit_Handler is
       null;
       end No_Exit_Catch_Interr;
 
-    end  No_Exit_Handler;
-
+  end  No_Exit_Handler;
 
 end no_exit_handler;

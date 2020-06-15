@@ -12,14 +12,15 @@ with WORD_PACKAGE;            use WORD_PACKAGE;
 with LIST_PACKAGE;            use LIST_PACKAGE;
 with TRICKS_PACKAGE;          use TRICKS_PACKAGE;
 with CONFIG;                  use CONFIG;
-with PREFACE;
 with PUT_STAT;
 with ENGLISH_SUPPORT_PACKAGE; use ENGLISH_SUPPORT_PACKAGE;
 with SEARCH_ENGLISH;
 with Arabic2Roman;
 with words_help;              use words_help;
+with No_Exit_Handler;
 
 pragma Elaborate (WORD_PARAMETERS);
+
 procedure PARSE (COMMAND_LINE : String := "") is
    use INFLECTIONS_PACKAGE.INTEGER_IO;
    use INFLECTION_RECORD_IO;
@@ -29,7 +30,6 @@ procedure PARSE (COMMAND_LINE : String := "") is
 
    J, K, L          : Integer             := 0;
    LINE, BLANK_LINE : String (1 .. 2_500) := (others => ' ');
-   --INPUT : TEXT_IO.FILE_TYPE;
 
    PA : PARSE_ARRAY (1 .. 100)         := (others => NULL_PARSE_RECORD);
    SYNCOPE_MAX                   : constant                       := 20;
@@ -42,14 +42,12 @@ procedure PARSE (COMMAND_LINE : String := "") is
    procedure PARSE_LINE (INPUT_LINE : String) is
       L             : Integer             := TRIM (INPUT_LINE)'LAST;
       W             : String (1 .. L)     := (others => ' ');
-      Arabic_String : String (1 .. 2_500) :=
+      Arabic_String : String (1 .. L+1) :=
         (others =>
            '|'); -- Initializing a full string is inefficient  - vector or another container better
       Arabic_Present : Boolean :=
         False;                  -- however this is consistent with the original Words approach
       Arabic_J           : Integer := 1;
-      Arabic_Process_All : Boolean := False;
-      Last_J             : Integer := 1;
 
    begin
       WORD_NUMBER   := 0;
@@ -79,7 +77,6 @@ procedure PARSE (COMMAND_LINE : String := "") is
                when others =>
                   LINE (I) := ' ';
             end case;
-
          end loop;
       end ELIMINATE_NOT_LETTERS;
 
@@ -103,57 +100,26 @@ procedure PARSE (COMMAND_LINE : String := "") is
          -- Intercept Arabic numerals here a bit messy, but we can avoid
          -- changing the rest of the procedure
          if WORDS_MODE (DO_ARABIC_NUMERALS) and Arabic_Present then
-
-            if L > 2_500 then
-               L := 2_500; -- line full; get last digit and stay in bounds
+          
+            if arabic_J = 1 and then (Arabic_String(1) /= 'z')
+              then
+                 if words_mode(WRITE_OUTPUT_TO_FILE)   
+                 then Text_IO.New_Line(Output); 
+                 else 
+                 Text_IO.New_Line(current_Output); 
+                 end if; 
             end if;
+            
+            if WORDS_MODE (WRITE_OUTPUT_TO_FILE) then
 
-            if J > L then
-               Arabic_Process_All := True;
-            end if;
-
-            if Arabic_J = 1 then
-               case Arabic_String (Arabic_J) is
-                  when 'z' =>
-                     null; -- Arabic_J := Arabic_J+1; -- we've got a word first
-                  when others =>
-                     Arabic_Process_All := True;
-                     if WORDS_MODE (WRITE_OUTPUT_TO_FILE) then
-                        Text_IO.New_Line
-                          (OUTPUT); -- Arabic_J := Arabic_J+1;-- conform to Words standard format
-                     else
-                        Text_IO.New_Line (Current_Output);
-                     end if;
-
-               end case;
-            end if;
-
-            if Arabic_J > 1 or Arabic_Process_All = True then
-               if J > L then
-                  if WORDS_MODE (WRITE_OUTPUT_TO_FILE) then
                      Arabic2Roman.Arabic2Roman
-                       (OUTPUT, Arabic_String ((Last_J) .. L),
-                        Arabic_Process_All);
+                       (OUTPUT, Arabic_String ((Arabic_J) .. J));
                   else
                      Arabic2Roman.Arabic2Roman
-                       (Current_Output, Arabic_String ((Last_J) .. L),
-                        Arabic_Process_All);
+                       (Current_Output, Arabic_String ((Arabic_J) .. J));
                   end if;
-               else
-                  if WORDS_MODE (WRITE_OUTPUT_TO_FILE) then
-                     Arabic2Roman.Arabic2Roman
-                       (OUTPUT, Arabic_String ((Last_J) .. L),
-                        Arabic_Process_All);
-                  else
-
-                     Arabic2Roman.Arabic2Roman
-                       (Current_Output, Arabic_String ((Arabic_J) .. J),
-                        Arabic_Process_All);
-                  end if;
-               end if;
-            end if;
-
-            Arabic_J := Arabic_J + 1;
+ 
+            Arabic_J := (J);
          end if;
 
       ----------------------------END ROMAN NUMERALS--------------------------
@@ -447,27 +413,6 @@ procedure PARSE (COMMAND_LINE : String := "") is
                      end if;
                   end loop;
 
--- -- SPR: Remnants of issue below resolved - suppress duplicate results at the
--- end of this procedure -- (+ allowed re-activation of abs/aps TRICK) -- WITH
--- THE DICTIONARY BETTER, LET US FORGET THIS - a and c DONE, e and i STILL BUT
--- NOT MANY
---  SAVE_PA_LAST := PA_LAST; -- BIG PROBLEM HERE -- If I do SLURY everytime,
---  then each case where there is an aps- and abs- in dictionary -- will show
---  up twice, straight and SLURY, in the output - For either input -- But if
---  I only do SLURY if there is no hit, then some incomplete pairs will not
---  -- fully express (illuxit has two entries, inluxit has only one of them)
---  (inritas) -- So I will do SLURY and if it produces only 2 more PR (XXX
---  and GEN), kill it, otherwise use it only -- Still have a problem if there
---  are other intervening results, not slurried. -- Or if there is syncope
---  TRY_SLURY(INPUT_WORD, PA, PA_LAST, LINE_NUMBER, WORD_NUMBER);
-----TEXT_IO.PUT_LINE("SLURY+   PA_LAST = " & INTEGER'IMAGE(PA_LAST));
---  if SAVE_PA_LAST /= 0 then
---    if (PA_LAST - 2) = SAVE_PA_LAST  then
---      PA_LAST := SAVE_PA_LAST;
---      XXX_MEANING := NULL_MEANING_TYPE;
-----TEXT_IO.PUT_LINE("SLURY!   PA_LAST = " & INTEGER'IMAGE(PA_LAST));
---    end if;
---  end if;
 ----TEXT_IO.PUT_LINE("1  PASS_BLOCK for  " & INPUT_WORD & "   PA_LAST = " & INTEGER'IMAGE(PA_LAST));
 
                   --  Pure SYNCOPE
@@ -532,35 +477,6 @@ procedure PARSE (COMMAND_LINE : String := "") is
                      WORDS_MDEV (DO_ONLY_FIXES) := SAVE_DO_ONLY_FIXES;
                   end if;
 --TEXT_IO.PUT_LINE("6  PASS_BLOCK for  " & INPUT_WORD & "   PA_LAST = " & INTEGER'IMAGE(PA_LAST));
---  ROMAN_NUMERALS(INPUT_WORD, PA, PA_LAST);
-
-                  --  If Pure WORDS and ENCLITICS found something OK, otherwise
-                  --  proceed
---    if PA_LAST = 0  or        --  If no go, try syncope, fixes
---      (not WORDS_MODE(TRIM_OUTPUT)) or
---       WORDS_MDEV(DO_FIXES_ANYWAY) then
---
---
---     --  If SYNCOPE does it, then OK, otherwise proceed
---     --  Do not try FIXES (aud+i+i) on audii since SYNCOPE worked
---     --  Now try FIXES
---     if PA_LAST = 0  or (not WORDS_MODE(TRIM_OUTPUT)) or
---       WORDS_MDEV(DO_FIXES_ANYWAY)  then
---      --TRY_SLURY(INPUT_WORD, PA, PA_LAST, LINE_NUMBER, WORD_NUMBER);
---       if PA_LAST = 0  then
---       WORD(INPUT_WORD, PA, PA_LAST);
---         SYPA_LAST := 0;
---         --  SYNCOPE after TRICK
---         SYNCOPE(INPUT_WORD, SYPA, SYPA_LAST);  --  Want SYNCOPE second to make cleaner LIST
---       end if;
---     end if;
---     PA_LAST := PA_LAST + SYPA_LAST;   --  Make syncope another array to avoid PA_LAST = 0 problems
---     PA(1..PA_LAST) := PA(1..PA_LAST-SYPA_LAST) & SYPA(1..SYPA_LAST);  --  Add SYPA to PA
---     SYPA(1..SYNCOPE_MAX) := (1..SYNCOPE_MAX => NULL_PARSE_RECORD);   --  Clean up so it does not repeat
---     SYPA_LAST := 0;
---
---
--- end if; -- on A_LAST = 0
 
                end PASS;
 
@@ -1281,9 +1197,20 @@ begin --  PARSE
       
       -- Begin restrictions report
       if CONFIGURATION = ONLY_MEANINGS or CL_Arguments /= Null_CL_Arguments then
-         Preface.PUT_LINE("The following restrictions have been enabled and cannot be changed:");
+         if WORDS_MODE(DO_ANSI_FORMATTING) then
+            Preface.PUT(Format_Reset);
+            Preface.Put(Format_Inverse);
+         end if;
+         
+         Preface.PUT_LINE("The following restrictions are enabled:");
+        
+         if WORDS_MODE(DO_ANSI_FORMATTING) then
+            Preface.PUT(Format_Reset);
+            Preface.PUT(Format_Bold);
+         end if;
+        
          if CONFIGURATION = ONLY_MEANINGS then
-            Preface.PUT_LINE("- MEANINGS ONLY:  Inflections will not display in Latin-English mode"); end if;
+            Preface.PUT_LINE("- MEANINGS ONLY:   Inflections will not display in Latin-English mode"); end if;
          if CL_ARGUMENTS(ENGLISH_ONLY)then
             Preface.Put_Line("- ENGLISH ONLY :   The program will not enter Latin-English mode"); end if;
          if CL_ARGUMENTS(LATIN_ONLY) then
@@ -1294,6 +1221,11 @@ begin --  PARSE
             Preface.Put_Line("- NO FILES     :   The program will not load files for translation"); end if;                
          if CL_ARGUMENTS(NO_EXIT) then
             Preface.Put_Line("- NO EXIT      :   Only admin can terminate (ignores SIGSTOP, SIGINT, SIGTERM)"); end if;
+        
+         if WORDS_MODE(DO_ANSI_FORMATTING) then
+            Preface.Put(Format_Reset);
+         end if;
+         
       Preface.New_Line;
       end if;
       -- End restrictions report
@@ -1456,10 +1388,12 @@ begin --  PARSE
                      raise GIVE_UP;
                   end if;
                else
-                  Put_Line ("Raised END_ERROR, although in STANDARD_INPUT");
-                  Put_Line
-                    ("^Z is inappropriate keyboard input, WORDS should be terminated with a blank line");
-                  raise GIVE_UP;
+                  if CL_Arguments(NO_EXIT) 
+                  then null;
+                  
+                  else Put_Line ("Raised END_ERROR (may be inappropriate line terminator)");
+                     raise GIVE_UP;
+                     end if; 
                end if;
             when Status_Error =>      --  The end of the input file resets to CON:
                Put_Line ("Raised STATUS_ERROR");
@@ -1524,10 +1458,15 @@ begin --  PARSE
 
 exception
    when Storage_Error =>    --  Have tried at least twice, fail
-      PREFACE.PUT_LINE ("Continuing STORAGE_ERROR Exception in PARSE");
-      PREFACE.PUT_LINE ("If insufficient memory in DOS, try removing TSRs");
+      PREFACE.PUT_LINE ("Non-transient STORAGE_ERROR Exception in PARSE");
+   --   PREFACE.PUT_LINE ("If insufficient memory in DOS, try removing TSRs");
    when GIVE_UP =>
       PREFACE.PUT_LINE ("Giving up!");
    when others =>
-      PREFACE.PUT_LINE ("Unexpected exception raised in PARSE");
+    if CL_Arguments(NO_EXIT) 
+        -- then Return;
+        then Parse;
+         else 
+         PREFACE.PUT_LINE ("Unexpected exception raised in PARSE");
+         end if;
 end PARSE;

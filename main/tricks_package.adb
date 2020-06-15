@@ -23,9 +23,6 @@
          end if;
       end IS_A_VOWEL;
    
-   
-   
-   
       function A_ROMAN_DIGIT(CHAR : CHARACTER) return BOOLEAN is
       begin
          case CHAR is
@@ -39,11 +36,10 @@
                return TRUE;
             when 'X' | 'x'  => 
                return TRUE;
-            when 'U' | 'u'  => return TRUE;  -- SPR:  For OLD compatibiity
-            when 'V' | 'v'  => 
-               return TRUE;
+            when 'U' | 'u' | 'V' | 'v'  => 
+               return TRUE;  
             when 'I' | 'i'  => 
-               return TRUE;
+               return TRUE;      -- SPR:  Special case j/J in the last place (a Medieval form) handled in calling function
             when others => 
                return FALSE;
          end case;
@@ -62,10 +58,9 @@
                return   50;
             when 'X' | 'x'  => 
                return   10;
-            when 'U' | 'u'  => return    5;  -- SPR:  For OLD compatibiity
-            when 'V' | 'v'  => 
-               return    5;
-            when 'I' | 'i'  => 
+            when 'U' | 'u' | 'V' | 'v'  => 
+                return    5; 
+            when 'I' | 'i' | 'J' | 'j'  => 
                return    1;
             when others => 
                return    0;
@@ -74,12 +69,20 @@
    
       function ONLY_ROMAN_DIGITS(S : STRING) return BOOLEAN is
       begin
-      
-      
-         for I in S'range  loop
-            if not A_ROMAN_DIGIT(S(I))  then
+
+      for I in S'range  loop
+         
+         --  SPECIAL CASE:  Medieval scripts sometimes use "j" for "i" to 
+         --                 signify the end of a Roman numeral.  Handle here:
+         if   I = S'Last and ( S(I) = 'J' Or S(I) = 'j' )
+         then 
+            return True;
+         end if;
+         
+         if not A_ROMAN_DIGIT(S(I))  then
                return FALSE;
-            end if;
+         end if;
+         
          end loop;
          return TRUE;
       end ONLY_ROMAN_DIGITS;
@@ -90,11 +93,9 @@
          use TEXT_IO;
          TOTAL : NATURAL := 0;
          INVALID : exception;
-         DECREMENTED : BOOLEAN := FALSE;
          J : INTEGER := 0;
          S : constant STRING := UPPER_CASE(ST);
-         
-         
+           
       begin
         if ONLY_ROMAN_DIGITS(S)  then
     
@@ -136,7 +137,7 @@
 --    
 --        
               --  Ones
-          if S(J) = 'I' then
+          if (S(J) = 'I' or S(J) = 'J') then
             TOTAL := TOTAL + 1;
            J := J - 1;
             exit EVALUATE when J < S'FIRST;
@@ -148,7 +149,7 @@
             end loop;
           end if;
        
-          if S(J) = 'V'  then
+          if (S(J) = 'V') or (S(J) = 'U')  then
             TOTAL := TOTAL + 5;
            J := J - 1;
             exit EVALUATE when J < S'FIRST;
@@ -158,7 +159,7 @@
               exit EVALUATE when J < S'FIRST;
             end if;
             
-            if S(J) = 'I' or S(J) = 'V'  then raise INVALID; end if;
+            if S(J) = 'I' or S(J) = 'J' or S(J) = 'V' or S(J) = 'U'  then raise INVALID; end if;
           end if;
         
 --    
@@ -190,7 +191,7 @@
                J := J - 1;
                exit EVALUATE when J < S'FIRST;
             end if;
-            if S(J) = 'I' or S(J) = 'V'  then
+            if S(J) = 'I' or S(J) = 'J' or S(J) = 'V' or S(J) = 'U'   then
               raise INVALID;
             end if;
           end if;
@@ -205,7 +206,7 @@
               J := J - 1;
               exit EVALUATE when J < S'FIRST;
             end if;
-            if S(J) = 'I' or S(J) = 'V'  or S(J) = 'X'  or S(J) = 'L'  then raise INVALID; end if;
+            if S(J) = 'I' or S(J) = 'J' or S(J) = 'V'  or S(J) = 'U' OR S(J) = 'X'  or S(J) = 'L'  then raise INVALID; end if;
             
             if S(J) = 'C'  then
               TOTAL := TOTAL + 100;
@@ -218,7 +219,7 @@
               end if;
             end if;
  
-            if S(J) = 'I' or S(J) = 'V'  or S(J) = 'X'  or S(J) = 'L'  then raise INVALID; end if;
+            if S(J) = 'I' or S(J) = 'J' or S(J) = 'V' or S(J) = 'U' or S(J) = 'X'  or S(J) = 'L'  then raise INVALID; end if;
             end if;
               
           
@@ -237,7 +238,7 @@
                 J := J - 1;
                 exit EVALUATE when J < S'FIRST;
               end if;
-              if S(J) = 'I' or S(J) = 'V'  or S(J) = 'X'  or S(J) = 'L'  then raise INVALID; end if;
+              if S(J) = 'I' or S(J) = 'J' or S(J) = 'V' or S(J) = 'U' or S(J) = 'X'  or S(J) = 'L'  then raise INVALID; end if;
             end if;
             
 
@@ -261,7 +262,7 @@
               J := J - 1;
               exit EVALUATE when J < S'FIRST;
             end if;
-            if S(J) = 'I' or S(J) = 'V'  or S(J) = 'X'  or S(J) = 'L' or S(J) = 'C' or S(J) = 'D'  then raise INVALID; end if;
+            if S(J) = 'I' or S(J) = 'J' or S(J) = 'V' or S(J) = 'U' or S(J) = 'X'  or S(J) = 'L' or S(J) = 'C' or S(J) = 'D'  then raise INVALID; end if;
           end if;
          
 
@@ -280,7 +281,7 @@
                 J := J - 1;
                 exit EVALUATE when J < S'FIRST;
               end if;
-              if S(J) = 'I' or S(J) = 'V'  or S(J) = 'X'  or S(J) = 'L' or S(J) = 'C' or S(J) = 'D'  then raise INVALID; end if;
+              if S(J) = 'I' or S(J) = 'J' or S(J) = 'V' or S(J) = 'U' or S(J) = 'X'  or S(J) = 'L' or S(J) = 'C' or S(J) = 'D'  then raise INVALID; end if;
             end if;
  
             
@@ -395,7 +396,7 @@
          --  This one has to go first --  special for 3 4 
          --  ivi  => ii ,  in perfect  (esp. for V 3 4) 
          --  This is handled in WORDS as syncope
-         --  It seems to appear in texts as alternative stems  ii and ivi
+         --  It seems to appear in texts as alternative stems ii and ivi
              for I in reverse S'FIRST..S'LAST-1  loop
                if (S(I..I+1) = "ii")  then
                   PA_LAST := PA_LAST + 1;
@@ -649,7 +650,7 @@
       
          procedure FLIP_FLOP(X1, X2 : STRING; EXPLANATION : STRING := "") is
          --  At the begining of input word, replaces X1 by X2 - then X2 by X1
-         --  To be uesd only when X1 and X2 start with the same letter because it 
+         --  To be used only when X1 and X2 start with the same letter because it 
          --  will be called from a point where the first letter is established
             PA_SAVE : INTEGER := PA_LAST;
          begin
@@ -967,18 +968,19 @@
                      
                      
                         XXX_MEANING := HEAD(
-                                           "It is very likely a compound number    " &
+                                           "Likely a compound number    " &
                                            S(S'FIRST..S'FIRST+I-1) & " + " & 
                                            S(S'FIRST+I..S'LAST), MAX_MEANING_SIZE);
                         PUT_STAT("TRICK   2NUM at "
                                  & HEAD(INTEGER'IMAGE(LINE_NUMBER), 8) & HEAD(INTEGER'IMAGE(WORD_NUMBER), 4)
                                  & "   " & HEAD(W, 20) & "   "  & S(1..I_MID) & '+' & S(I_MID+1..S'LAST));
                      else                
-                        XXX_MEANING := HEAD(
+                     XXX_MEANING := HEAD(
                                            "May be 2 words combined (" &
                                            S(S'FIRST..S'FIRST+I-1) & "+" & 
                                            S(S'FIRST+I..S'LAST) & 
                                            ") If not obvious, probably incorrect", MAX_MEANING_SIZE);
+                     
                         PUT_STAT("TRICK   2WDS at "
                                  & HEAD(INTEGER'IMAGE(LINE_NUMBER), 8) & HEAD(INTEGER'IMAGE(WORD_NUMBER), 4)
                                  & "   " & HEAD(W, 20) & "   "  & S(1..I_MID) & '+' & S(I_MID+1..S'LAST));
@@ -1280,7 +1282,7 @@
             if PA_LAST > 0  then 
                return; end if;
             
-           FLIP_FLOP("subr",  "surr");  -- SPR: White (1880)  
+           FLIP_FLOP("subr",  "surr");      -- SPR: White (1880)  
             if PA_LAST > 0  then 
                return; end if;
          
@@ -1773,7 +1775,6 @@
       
          if S(S'FIRST) = 'a'  then
          
-         
             FLIP_FLOP("abs", "aps");   
             if PA_LAST > 0  then 
                return; end if;
@@ -1796,7 +1797,7 @@
          
          elsif S(S'FIRST) = 'c'  then
          
-            FLIP("circum" , "circun");   
+            FLIP_FLOP("circum" , "circun");   
             if PA_LAST > 0  then 
                return; end if;
             FLIP_FLOP("con", "com");   
@@ -1811,6 +1812,14 @@
             FLIP_FLOP("conl" , "coll");   
             if PA_LAST > 0  then 
                return; end if;
+         
+        
+         elsif S(S'FIRST) = 'f'  then 
+         
+            FLIP("f",  "ph");   
+            if PA_LAST > 0  then 
+            return; end if;  
+         
          
          elsif S(S'FIRST) = 'i'  then
          
@@ -1841,13 +1850,7 @@
             SLUR("ob");           
             if PA_LAST > 0  then 
                return; end if;
-         
-         --elsif S(S'FIRST) = 'p'  then
-         
-         
-         --FLIP("ph",  "f");   if PA_LAST > 0  then return; end if;  -- Try lead then all
-         --FLIP_FLOP("pre", "prae");    if PA_LAST > 1 then return; end if;
-         
+                  
          
          elsif S(S'FIRST) = 'q'  then
          

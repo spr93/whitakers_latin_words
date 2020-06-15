@@ -113,13 +113,6 @@ package body ADDONS_PACKAGE is
     PREFACE.PUT("ADDONS");
     PREFACE.PUT(" loading ");
 
---    if DICT_IO.IS_OPEN(DICT_FILE(D_K))  then
---      DICT_IO.DELETE(DICT_FILE(D_K));
---    end if;
---    DICT_IO.CREATE(DICT_FILE(D_K), DICT_IO.INOUT_FILE,
---          --ADD_FILE_NAME_EXTENSION(DICT_FILE_NAME, DICTIONARY_KIND'IMAGE(D_K)));
---       "");
---       
     while not END_OF_FILE(ADDONS_FILE)  loop                                 
 
       DE := NULL_DICTIONARY_ENTRY;

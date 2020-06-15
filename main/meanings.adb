@@ -12,7 +12,7 @@
    begin
       --  The language shift in argumants must take place here
       --  since later parsing of line ignores non-letter characters
-      CONFIGURATION := ONLY_MEANINGS;
+      CONFIGURATION := MEANINGS;
  
 
       --The main mode of usage for WORDS is a simple call, followed by screen interaction.

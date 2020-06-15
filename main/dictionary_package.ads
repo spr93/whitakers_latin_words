@@ -3,7 +3,9 @@
    with TEXT_IO; 
    with DIRECT_IO;
    with INFLECTIONS_PACKAGE; use INFLECTIONS_PACKAGE;
-   package DICTIONARY_PACKAGE is
+
+package DICTIONARY_PACKAGE is
+      pragma Elaborate_Body;
       use TEXT_IO;
    
       ZZZ_STEM  : constant STEM_TYPE := "zzz" & (4..MAX_STEM_SIZE => ' ');

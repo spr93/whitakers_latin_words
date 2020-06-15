@@ -1303,7 +1303,7 @@ package body LIST_PACKAGE is
             Text_IO.Put_Line (OUTPUT, "    ========   UNKNOWN    ");
             --TEXT_IO.NEW_LINE(OUTPUT);
          else              --  Just screen output
-            TEXT_IO.NEW_LINE(OUTPUT);
+           -- TEXT_IO.NEW_LINE(OUTPUT);
             if WORDS_MDEV (DO_PEARSE_CODES) then
                Text_IO.Put (OUTPUT, "04 ");
             end if;
@@ -1552,11 +1552,10 @@ package body LIST_PACKAGE is
       --TEXT_IO.PUT_LINE(OUTPUT, DICTIONARY_FORM(DE));
       PUT_DICTIONARY_FORM (OUTPUT, D_K, MN, DE);
       if WORDS_MODE (DO_ANSI_FORMATTING) then
-         Text_IO.Put (Format_Reset);
          Text_IO.Put (Format_Bold);
       end if;
       Text_IO.Put_Line
-        (OUTPUT, TRIM (HEAD (DE.MEAN, MM)));  --  so it wont line wrap/put CR
+        (OUTPUT, TRIM_BAR(TRIM (HEAD (DE.MEAN, MM))));  --  so it wont line wrap/put CR
       if WORDS_MODE (DO_ANSI_FORMATTING) then
          Text_IO.Put (Format_Reset);
       end if;
