@@ -6,6 +6,7 @@
    with UNIQUES_PACKAGE; use UNIQUES_PACKAGE;
    with DEVELOPER_PARAMETERS; use DEVELOPER_PARAMETERS;
    with WORD_SUPPORT_PACKAGE; use WORD_SUPPORT_PACKAGE;
+
    procedure LIST_SWEEP(PA : in out PARSE_ARRAY; PA_LAST : in out INTEGER) is
    --  This procedure is supposed to process the output PARSE_ARRAY at PA level
    --  before it get turned into SIRAA and DMNPCA in LIST_PACKAGE
@@ -761,14 +762,26 @@
                FIX_ON := TRUE;
                PW_ON  := FALSE;
                P_FIRST := J + 1;
-              --P_LAST := J + 1;
+            
             --TEXT_IO.PUT_LINE("SWEEP  FIX/TRICK  J = " & INTEGER'IMAGE(J) & "  P_FIRST = " & INTEGER'IMAGE(P_FIRST) & 
             --"  P_LAST = " & INTEGER'IMAGE(P_LAST));
-               JJ := J;
-               while PA(JJ+1).IR.QUAL.POFS = PA(JJ).IR.QUAL.POFS  loop
-                  P_LAST := JJ + 1;
-               end loop;
             
+            
+            JJ := J;
+             
+            for JJ in (P_First + 1) .. (PA'Last - 1 ) loop
+               P_LAST := JJ+1;
+               exit when PA(JJ+1).IR.QUAL.POFS /= PA(JJ).IR.QUAL.POFS;             
+            end loop;
+
+            --      The following from Wm. Whitaker's last version can go into into an infinite loop 
+            --      under some circumstances while trim_output is on. 
+            --      It's not clear what the purpose of the code was, but the above loop is equivalent
+            --      and bounded.
+            --                                while PA(JJ+1).IR.QUAL.POFS = PA(JJ).IR.QUAL.POFS  loop
+            --                                P_LAST := JJ + 1;
+            --                                end loop;
+
             
              ----Order internal to this set of inflections
 --  TEXT_IO.PUT_LINE("SWEEP  INTERNAL  J = " & INTEGER'IMAGE(J) & "  P_FIRST = " & INTEGER'IMAGE(P_FIRST) & 

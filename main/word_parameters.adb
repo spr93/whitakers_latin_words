@@ -30,7 +30,7 @@ package body WORD_PARAMETERS is
   --  The default modes are set in the body so that they can be changed
   --  with only this being recompiled, not the rest of the with'ing system
   DEFAULT_MODE_ARRAY : constant MODE_ARRAY := (
-                      TRIM_OUTPUT                 => TRUE,      
+                      TRIM_OUTPUT                 => FALSE,      
 
                       HAVE_OUTPUT_FILE            => FALSE,
                       WRITE_OUTPUT_TO_FILE        => FALSE,
@@ -72,9 +72,9 @@ TRIM_OUTPUT_HELP : constant HELP_TYPE :=  (
    "Note that poets are likely to employ unusual words and inflections for",
    "various reasons.  These may be trimmed out if this parameter in on.   ",
    "When in English-Latin mode, TRIM just reduces the output to the top   ",
-   "six results, if there are that many.  Asterisk means that tthe output ",
-   "was trimmed and more results are available.       The default is Y(es)" );
-
+   "six results, if there are that many. was trimmed and more results are ",
+   "available.                                         The default is N(o)",
+   "Setting to (Y)es is HIGHLY RECOMMENDED when using Latin-English mode. ");
 
 HAVE_OUTPUT_FILE_HELP : constant HELP_TYPE :=  (
    "This option instructs the program to create a file which can hold the ",
