@@ -8,7 +8,7 @@ with CONFIG;                use CONFIG;
 package body Arabic2Roman is
 
    procedure Arabic2Roman
-     (OUTPUT : in Ada.Text_IO.File_Type; INPUT_WORD : in out String)
+     (OUTPUT : in Ada.Text_IO.File_Type; INPUT_WORD : in String)
    is
 
       type Roman_Record_Type is record
@@ -240,7 +240,7 @@ package body Arabic2Roman is
                   if Is_Negative then
                      Put (OUTPUT, "NeoLatin");
 
-                  elsif Put_Additive = True and
+                  elsif Put_Additive and
                     Arabic_Num in 1 .. 500 | 600 | 700 | 800 | 900 | 10_000
                   then
                      Put

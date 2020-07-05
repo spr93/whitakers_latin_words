@@ -9,8 +9,7 @@ with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
 package Arabic2Roman is
 
-   subtype Numeral_String is Unbounded_String;
-   Roman_Nums_CLASSICAL : constant array (1..11) of Numeral_String  := (
+   Roman_Nums_CLASSICAL : constant array (1..11) of Unbounded_String  := (
                                                                      1         => (To_Unbounded_String("I")),
                                                                      2         => (To_Unbounded_String("V")),
                                                                      3         => (To_Unbounded_String("X")),
@@ -31,8 +30,7 @@ package Arabic2Roman is
    User_Input :  Integer range -999_999_999..999_999_999;
 
 
-   procedure Arabic2Roman (OUTPUT : in Ada.Text_IO.File_Type ; INPUT_WORD : in out String);
-   -- in out is a dirty trick that encourages GNAT to pass by preference if it isn't already doing so
+   procedure Arabic2Roman (OUTPUT : in Ada.Text_IO.File_Type ; INPUT_WORD : in String);
 
 
    function Generate_Additive (Arabic_Num : in Integer) return Unbounded_String;
