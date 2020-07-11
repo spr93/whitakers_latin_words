@@ -31,10 +31,8 @@ package body LIST_PACKAGE is
    MM                     : Integer  := MAX_MEANING_SIZE;
    I, J, K                : Integer  := 0;
 
-   Last_Meaning_Same, Next_Form_Same, Last_Form_Same, Put_Form_Anyway,
-   Put_Meaning_Anyway : Boolean := False;
-
-
+   Last_Meaning_Same, Next_Meaning_Same, Next_Form_Same, Last_Form_Same,
+   Put_Form_Anyway, Put_Meaning_Anyway : Boolean := False;
 
    function CAP_STEM (S : String) return String is
    begin
@@ -122,7 +120,7 @@ package body LIST_PACKAGE is
             DHIT := True;
 
             -- qui and aliqui (PRON) are frequent enough that they should have dictionary forms
-            -- due to the program's structure we'll use another kludge to get there
+            -- but due to the program's structure we'll use another kludge to get there
          elsif DE.PART.POFS = PRON then
             if TRIM (DE.STEMS (1)) = "qu" then
                Text_IO.Put (OUTPUT, "qui, quae, quod  PRON  ");
@@ -221,7 +219,7 @@ package body LIST_PACKAGE is
 
       STEM_INFLECTION_ARRAY_SIZE       : constant := 12;
       STEM_INFLECTION_ARRAY_ARRAY_SIZE : constant := 40;
-      -- SPR:  Increased inflection array size to prevent raising exception when a single rececord generates too many QUALs (e.g., 'ludica' generates 12 QUALs
+      -- SPR:  Increased inflection array size to prevent raising exception when a single record generates too many QUALs (e.g., 'ludica' generates 12 QUALs
       --       However, this exposed an issue where QUALs could be duplicated (ludica does this)
       --       -> corrected this by deleting duplicate quals in list_sweep
 
@@ -263,9 +261,6 @@ package body LIST_PACKAGE is
       W                  : constant String := RAW_WORD;
       J, J1, J2, K       : Integer         := 0;
       THERE_IS_AN_ADVERB : Boolean         := False;
-
-
-
 
       procedure PUT_INFLECTION
         (SR : STEM_INFLECTION_RECORD; DM : DICTIONARY_MNPC_RECORD)
@@ -322,39 +317,6 @@ package body LIST_PACKAGE is
             end if;
 
             if SR.IR /= NULL_INFLECTION_RECORD then
-
---PRINT_MODIFIED_QUAL:   --  Really pedantic
---declare
---  OUT_STRING : STRING(1..QUALITY_RECORD_IO.DEFAULT_WIDTH);
---WHICH_START : constant INTEGER
---            := PART_OF_SPEECH_TYPE_IO.DEFAULT_WIDTH + 1 + 1; --  8
---VARIANT_START : constant INTEGER
---            := WHICH_START + WHICH_TYPE_IO_DEFAULT_WIDTH + 1;
---VARIANT_FINISH : constant INTEGER
---            := VARIANT_START + VARIANT_TYPE_IO_DEFAULT_WIDTH;
---WHICH_BLANK : constant STRING(WHICH_START..VARIANT_START) := (others => ' ');
---VARIANT_BLANK : constant STRING(VARIANT_START..VARIANT_FINISH) := (others => ' ');
---begin
---  QUALITY_RECORD_IO.PUT(OUT_STRING, SR.IR.QUAL);
---  case SR.IR.QUAL.POFS is
---    when N | NUM | V | VPAR | SUPINE  =>         --  ADJ?
---      OUT_STRING(VARIANT_START..VARIANT_FINISH) := VARIANT_BLANK;
---    when PRON | PACK   =>
---      OUT_STRING(WHICH_START..VARIANT_FINISH) := WHICH_BLANK & VARIANT_BLANK;
---    when ADJ  =>
---      if SR.IR.QUAL.ADJ.DECL.WHICH = 1  then
---        OUT_STRING(VARIANT_START..VARIANT_FINISH) := VARIANT_BLANK;
---      end if;
---    when others  =>
---      null;
---  end case;
---  TEXT_IO.PUT(OUTPUT, OUT_STRING);
---end PRINT_MODIFIED_QUAL;
-
---QUALITY_RECORD_IO.PUT(OUTPUT, SR.IR.QUAL);
---NEW_LINE(OUTPUT);
---DICTIONARY_ENTRY_IO.PUT(OUTPUT, DM.DE);
---NEW_LINE(OUTPUT);
 
                PRINT_MODIFIED_QUAL :
                declare
@@ -1242,7 +1204,7 @@ package body LIST_PACKAGE is
          elsif WORDS_MODE (IGNORE_UNKNOWN_CAPS) and ALL_CAPS then
             NNN_MEANING :=
               HEAD
-                ("Assume this is capitalized proper name/abbr, under MODE IGNORE_UNKNOWN_CAPS ",
+                ("(Unknown capitalized word; assuming proper name or abbrev.)",
                  MAX_MEANING_SIZE);
             PA (1) :=
               (HEAD (RAW_WORD, MAX_STEM_SIZE),
@@ -1395,26 +1357,30 @@ package body LIST_PACKAGE is
             OSRA := SRAA (J);
          end if;
 
-         --Text_Io.Put_Line("Setting next/last MEAN and F booleans");
+
+
+         --Text_Io.Put_Line("Setting next/last MEAN and FORM booleans");
 
          Last_Meaning_Same := False;
+         Next_Meaning_Same := False;
          Last_Form_Same    := False;
          Next_Form_Same    := False;
 
-         if Last_Form_Same and then Next_Form_Same
-           and then DMA (J).DE.STEMS /= DMA (J + 1).DE.STEMS
-         then
-            Put_Form_Anyway := True;
-         end if;
+
+        if DMA (J).DE.MEAN = DMA (J + 1).DE.MEAN then
+               Next_Meaning_Same := True;
+        end if;
+
 
          if J > 1 then
             if DMA (J).DE.MEAN = DMA (J - 1).DE.MEAN then
                Last_Meaning_Same := True;
             end if;
 
-            if DMA (J).DE.PART.POFS = DMA (J - 1).DE.PART.POFS
+            if DMA(J).DE.STEMS = DMA(J - 1).DE.STEMS
+              and then DMA (J).DE.PART.POFS = DMA (J - 1).DE.PART.POFS
               and then
-               --  For same reason checking .TRAN will always return false
+               --  Checking .TRAN will always return false
                --  but checking individual elements works
                DMA (J).DE.TRAN.AGE = DMA (J - 1).DE.TRAN.AGE
               and then DMA (J).DE.TRAN.AREA = DMA (J - 1).DE.TRAN.AREA
@@ -1427,7 +1393,8 @@ package body LIST_PACKAGE is
 
          end if;
 
-         if DMA (J).DE.PART.POFS = DMA (J + 1).DE.PART.POFS
+         if DMA(J).DE.STEMS = DMA(J + 1).DE.STEMS
+           and then DMA (J).DE.PART.POFS = DMA (J + 1).DE.PART.POFS
            and then DMA (J).DE.TRAN.AGE = DMA (J + 1).DE.TRAN.AGE
            and then DMA (J).DE.TRAN.AREA = DMA (J + 1).DE.TRAN.AREA
            and then DMA (J).DE.TRAN.GEO = DMA (J + 1).DE.TRAN.GEO
@@ -1437,7 +1404,6 @@ package body LIST_PACKAGE is
             Next_Form_Same := True;
          end if;
 
-         Put_Meaning_Anyway := False;
 
 -- TEXT_IO.PUT_LINE("PUTting FORM");
          PUTTING_FORM :
@@ -1447,6 +1413,7 @@ package body LIST_PACKAGE is
 --       Text_IO.Put_Line("                               LAST FORM SAME: " & Last_Form_Same'Image);
 --       Text_IO.Put_Line("                               NEXT FORM SAME: " & Next_Form_Same'Image);
 --       Text_IO.Put_Line("                            LAST MEANING SAME: " & Last_MEANING_Same'Image);
+--       Text_IO.Put_Line("                            NEXT MEANING SAME: " & Next_MEANING_Same'Image);
 --       Text_IO.Put_Line("                              PUT FORM ANYWAY: " & Put_Form_Anyway'Image);
 --       Text_IO.Put_Line("                           PUT MEANING ANYWAY: " & Put_Meaning_Anyway'Image);
 --DEBUG
@@ -1460,11 +1427,10 @@ package body LIST_PACKAGE is
             then
                PUT_FORM (SRAA (J) (1), DMA (J));
                Put_Meaning_Anyway :=
-                 True;            -- Make sure dictionary line always prints after inflections
-               -- rare, occurs with "QUAE"
+                 True;            -- Make sure dictionary line always prints after inflections; rare issue, occurs with "QUAE"
 
             elsif DMA (J).D_K = UNIQUE
-            then            -- Always print uniques,otherwise we get orphaned inflections
+            then            -- Always print uniques, otherwise we get orphaned inflections
                PUT_FORM
                  (SRAA (J) (1),
                   DMA
@@ -1484,7 +1450,14 @@ package body LIST_PACKAGE is
          PUTTING_MEANING :
          begin
 
-            if Put_Meaning_Anyway then
+            If Next_Meaning_Same
+              and then Next_Form_Same = False
+              and then DMA (J).DE.PART.POFS = DMA (J + 1).DE.PART.POFS then -- for situations like cinerem
+                                                                            -- where stems vary but the word is the same
+                                                                            -- (ciner, cinis, cinus - all 3 1 nouns)
+               Put_Meaning_Anyway := True; -- Makes sure we put the meaning next time unless we're still in "cinerem"-like situation
+
+            Elsif Put_Meaning_Anyway then
                PUT_MEANING_LINE (SRAA (J) (1), DMA (J));
                Put_Meaning_Anyway := False;
             elsif Last_Meaning_Same then
