@@ -1304,14 +1304,9 @@ begin --  PARSE
                   then  -- Two in a row
                      exit;
                   end if;
-               else                 --  INPUT is file
-            --LINE_NUMBER := LINE_NUMBER + 1;   --  Count blank lines in file
-                  if End_Of_File (Current_Input)
+               elsif End_Of_File (Current_Input)
                   then
-                     if METHOD = COMMAND_LINE_FILES then return; end if;
-                     Set_Input (Standard_Input);
-                     Close (INPUT);
-                  end if;
+                     return; 
                end if;
             end if;
 
