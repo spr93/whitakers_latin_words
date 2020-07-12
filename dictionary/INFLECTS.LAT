@@ -4,7 +4,7 @@
 --  Presently there are almost 1800 separate entries.
 --  This data is processed to produce a file INFLECTS.SEC used by the code.
 
---  The part of speech is given,along with the appropriate characteristics
+--  The part of speech is given, along with the appropriate characteristics
 --  for a particular inflection.  The inflection/ending is specified by
 --  the stem to which it is attached, a number of characters, and the ending string.
 --  There is an AGE and FREQ for each entry.
@@ -20,7 +20,7 @@
 --  this is done on the basis of that case, not the inflection.
 --  The inflection is still as frequent as that case is.
 
---  Some inflections may be infrequent or early varients, and are so treated
+--  Some inflections may be infrequent or early variants, and are so treated
 
 
 --  The ones without endings
@@ -47,7 +47,7 @@ INTERJ 1 0           X A
 
 --  Inflections are taken primarily from Gildersleeve & Lodge, Latin Grammar
 --  and Allen & Greenough, New Latin Grammar
---  The books are almost identical, any diviations are noted
+--  The books are almost identical, any deviations are noted
 
 
 --                        FIRST DECLENSION
@@ -2741,7 +2741,7 @@ PRON  9 9 X X X  1 0                                X A
 --any; anyone/anything, any such; unspecified some; (after si/sin/sive/ne);
 --
 --qui, quae, quod (quae P N)          REL
---who; that; which, what; of which kind/drgree; person/thing/time/point that;
+--who; that; which, what; of which kind/degree; person/thing/time/point that;
 --
 --quis, quis, quid (quae P N)          INTERR
 --who/what/which?, what/which one/man/person/thing? what kind/type of?
