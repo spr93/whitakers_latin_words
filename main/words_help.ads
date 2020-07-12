@@ -307,7 +307,7 @@ MEANING_HELP : constant MAIN_HELP_TYPE :=  (
   "      or modified by examination of the Douay translation of the Latin          ",
   "      Vulgate Bible of St Jerome.                                               ",
   "                                                                                ",
-  "(eccl.)                                                                         ",
+  "(Ecc.)                                                                         ",
   "      designating a special church meaning in a list of conventional meanings,  ",
   "      an additional meaning not sufficient to justify a separate entry with     ",
   "      an ecclesiastical code.                                                   ",
