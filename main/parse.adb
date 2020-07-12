@@ -1308,6 +1308,7 @@ begin --  PARSE
             --LINE_NUMBER := LINE_NUMBER + 1;   --  Count blank lines in file
                   if End_Of_File (Current_Input)
                   then
+                     if METHOD = COMMAND_LINE_FILES then return; end if;
                      Set_Input (Standard_Input);
                      Close (INPUT);
                   end if;
@@ -1464,7 +1465,6 @@ exception
       PREFACE.PUT_LINE ("Giving up!");
    when others =>
     if CL_Arguments(NO_EXIT) 
-        -- then Return;
         then Parse;
          else 
          PREFACE.PUT_LINE ("Unexpected exception raised in PARSE");
