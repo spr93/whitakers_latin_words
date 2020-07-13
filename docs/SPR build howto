@@ -6,12 +6,12 @@ Run sorter against modified DICTLINE.GEN.  Input:
           101 1        -- SPR:  TEST THIS Sort first by age
           107 1        -- SPR:  TEST THIS Then frequency 
           
-Copy DICTLINE.GEN to CHECK.IN and run CHECKER. 
+Copy DICTLINE.GEN to CHECK.IN and run CHECK. 
 Review CHECK.OUT.
 
 Run WAKEDICT (note the W) against DICTLINE.GEN
 
-[[Run sorter against the resulting STEMLIST.GEN -- AMBIGUITY - ALSO RUN IT AGAINST THE DICT*FILE*.GEN?  -- SPR:  NO]]
+Run SORTER against the resulting STEMLIST.GEN
        SORTER
          STEMLIST.GEN    --  Input  
            1    18   U
@@ -21,7 +21,7 @@ Run WAKEDICT (note the W) against DICTLINE.GEN
            58    1   D      
          STEMLIST.GEN    --  Output  
          
-[SPR:  DO NOR REMOVE WEIRD TO_BE AT THE FIRST LINE - MAKESTEM.ADB ASSUMES IT'S THERE]]
+[SPR:  DO NOT REMOVE WEIRD TO_BE AT THE FIRST LINE - MAKESTEM.ADB ASSUMES IT'S THERE]]
 
 Run makestem
 
@@ -33,7 +33,7 @@ Run MAKEINFL against INFLECTS.LAT
 [[NEEDS THE MANUAL CLEANUP DESCRIBED IN WHITAKER'S HOW TO;
   OTHERWISE WILL GENERATE NO HITS]]
   
-Run makeewds against ewdslist.gen
+Run MAKEEWDS against ewdslist.gen
 	Check output, especially for weird lines at top.  Remove weird lines at top.
 
 Sort EWDSLIST.GEN
@@ -46,7 +46,7 @@ SORTER
       58    1   D         --  FREQ
     EWDSLIST.GEN     --  Store 
 
-Run makeefil
+Run MAKEEFIL
 
 -- end English part
 
