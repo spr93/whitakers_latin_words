@@ -30,9 +30,6 @@ Run MAKEINFL against INFLECTS.LAT
 
 --English part:
 
-[[NEEDS THE MANUAL CLEANUP DESCRIBED IN WHITAKER'S HOW TO;
-  OTHERWISE WILL GENERATE NO HITS]]
-  
 Run MAKEEWDS against ewdslist.gen
 	Check output, especially for weird lines at top.  Remove weird lines at top.
 
