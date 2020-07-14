@@ -31,8 +31,8 @@ package body LIST_PACKAGE is
    MM                     : Integer  := MAX_MEANING_SIZE;
    I, J, K                : Integer  := 0;
 
-   Last_Meaning_Same, Next_Meaning_Same, Next_Form_Same, Last_Form_Same,
-   Put_Form_Anyway, Put_Meaning_Anyway : Boolean := False;
+   Last_Meaning_Same, Next_Meaning_Same, Next_Form_Same,
+   Last_Form_Same, Put_Meaning_Anyway : Boolean := False;
 
    function CAP_STEM (S : String) return String is
    begin
@@ -1414,28 +1414,22 @@ package body LIST_PACKAGE is
 --       Text_IO.Put_Line("                               NEXT FORM SAME: " & Next_Form_Same'Image);
 --       Text_IO.Put_Line("                            LAST MEANING SAME: " & Last_MEANING_Same'Image);
 --       Text_IO.Put_Line("                            NEXT MEANING SAME: " & Next_MEANING_Same'Image);
---       Text_IO.Put_Line("                              PUT FORM ANYWAY: " & Put_Form_Anyway'Image);
 --       Text_IO.Put_Line("                           PUT MEANING ANYWAY: " & Put_Meaning_Anyway'Image);
 --DEBUG
 
-            if Put_Form_Anyway then
-               PUT_FORM (SRAA (J) (1), DMA (J));
-               Put_Meaning_Anyway := True;
+            if DMA (J).D_K = GENERAL
+              and then Last_Form_Same
+              and then SRAA (J - 1) /= SRAA (J) then  -- Special test for GENERAL addresses rare issue that occurs
+              PUT_FORM (SRAA (J) (1), DMA (J));       -- with "quae" and multiple unique entries, like eadem.
+              Put_Meaning_Anyway := True;             -- Make sure dictionary line always prints after inflections.
 
-            elsif Last_Form_Same and then DMA (J).D_K = GENERAL
-              and then SRAA (J - 1) /= SRAA (J)
-            then
-               PUT_FORM (SRAA (J) (1), DMA (J));
-               Put_Meaning_Anyway :=
-                 True;            -- Make sure dictionary line always prints after inflections; rare issue, occurs with "QUAE"
+            elsif DMA (J).D_K = UNIQUE then
 
-            elsif DMA (J).D_K = UNIQUE
-            then            -- Always print uniques, otherwise we get orphaned inflections
-               PUT_FORM
-                 (SRAA (J) (1),
-                  DMA
-                    (J));          -- when there's more than one unique entry for the same form
-               Put_Meaning_Anyway := True;            -- e.g., quippiam, bobus
+               if not Next_Meaning_Same
+                  and then not Next_Form_Same then
+                  PUT_FORM (SRAA (J) (1), DMA (J));
+                  Put_Meaning_Anyway := True;
+               end if;
 
             elsif Last_Form_Same then
                null;
@@ -1450,18 +1444,21 @@ package body LIST_PACKAGE is
          PUTTING_MEANING :
          begin
 
-            If Next_Meaning_Same
+
+            if Put_Meaning_Anyway then
+               PUT_MEANING_LINE (SRAA (J) (1), DMA (J));
+               Put_Meaning_Anyway := False;
+
+            elsif Next_Meaning_Same
               and then Next_Form_Same = False
               and then DMA (J).DE.PART.POFS = DMA (J + 1).DE.PART.POFS then -- for situations like cinerem
                                                                             -- where stems vary but the word is the same
                                                                             -- (ciner, cinis, cinus - all 3 1 nouns)
                Put_Meaning_Anyway := True; -- Makes sure we put the meaning next time unless we're still in "cinerem"-like situation
 
-            Elsif Put_Meaning_Anyway then
-               PUT_MEANING_LINE (SRAA (J) (1), DMA (J));
-               Put_Meaning_Anyway := False;
-            elsif Last_Meaning_Same then
+            elsif Last_Meaning_Same or DMA (J).D_K = UNIQUE then
                null;
+
             else
                PUT_MEANING_LINE (SRAA (J) (1), DMA (J));
             end if;

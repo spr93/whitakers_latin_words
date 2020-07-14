@@ -658,11 +658,11 @@ type INTERJECTION_RECORD is
 
   type INFLECTION_RECORD is
     record
-      QUAL   : QUALITY_RECORD   := NULL_QUALITY_RECORD;  
-      KEY    : STEM_KEY_TYPE := 0;               
-      ENDING : ENDING_RECORD := NULL_ENDING_RECORD;
-      AGE    : AGE_TYPE      := X;
-      FREQ   : FREQUENCY_TYPE      := X;
+      QUAL   : QUALITY_RECORD := NULL_QUALITY_RECORD;  
+      KEY    : STEM_KEY_TYPE  := 0;               
+      ENDING : ENDING_RECORD  := NULL_ENDING_RECORD;
+      AGE    : AGE_TYPE       := X;
+      FREQ   : FREQUENCY_TYPE := X;
     end record;
 
   NULL_INFLECTION_RECORD : INFLECTION_RECORD;
