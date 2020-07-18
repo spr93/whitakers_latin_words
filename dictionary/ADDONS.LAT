@@ -669,24 +669,9 @@ ADJ 1 ADJ 0 0 SUPER 4
 SUFFIX ti
 ADJ 2 N 1 1 F t  0
 -ness, makes abstract noun;
-SUFFIX i                      --  ?????????????
-V 4 ADV POS 1
--ly; (use imagination! run -> hastily; strive -> eagerly; stand -> immediately);
-SUFFIX i
+SUFFIX ia
 ADJ 2 N 1 1 F t  0
 -ness, -es, makes abstract noun;
-SUFFIX i
-N 2 N 1 1 F t  0
-art or craft done by the person (abstract noun of person); office of, -ship;
-SUFFIX i
-V 2 N 2 2 N t  0
-makes abstract noun of the verb; place/instrument/result of verb action;
-SUFFIX i
-ADJ 2 ADJ 0 0 COMP 3
--er, makes adjective comparative;
-SUFFIX i
-V   4 ADJ 0 0 COMP 3
-makes a verb PERF PPL into an adjective COMP (amat.ior => more loved);
 SUFFIX abil
 X 2 ADJ 3 2 POS  0
 -able, -ble; having the passive quality, able to, able to be;
@@ -1065,6 +1050,21 @@ V 4 N 3 1 F p  1
 SUFFIX ax
 X 2 ADJ 3 1 POS 1
 -ing; having a tendency/ability;
+SUFFIX i                      --  ?????????????
+V 4 ADV POS 1
+-ly; (use imagination! run -> hastily; strive -> eagerly; stand -> immediately);
+SUFFIX i
+N 2 N 1 1 F t  0
+art or craft done by the person (abstract noun of person); office of, -ship;
+SUFFIX i
+V 2 N 2 2 N t  0
+makes abstract noun of the verb; place/instrument/result of verb action;
+SUFFIX i
+ADJ 2 ADJ 0 0 COMP 3
+-er, makes adjective comparative;
+SUFFIX i
+V   4 ADJ 0 0 COMP 3
+makes a verb PERF PPL into an adjective COMP (amat.ior => more loved);
 --
 --
 --  TACKON is a fragment added to the end of a word, after inflection
