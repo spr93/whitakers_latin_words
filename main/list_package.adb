@@ -31,7 +31,7 @@ package body LIST_PACKAGE is
    MM                     : Integer  := MAX_MEANING_SIZE;
    I, J, K                : Integer  := 0;
 
-   Last_Meaning_Same, Next_Meaning_Same, Next_Form_Same,
+   Next_Meaning_Same, Next_Form_Same,
    Last_Form_Same, Put_Meaning_Anyway : Boolean := False;
 
    function CAP_STEM (S : String) return String is
@@ -829,10 +829,6 @@ package body LIST_PACKAGE is
 
       LIST_SWEEP (PA (1 .. PA_LAST), PA_LAST);
 
---  TEXT_IO.PUT_LINE("PA after leaving LIST_SWEEP    PA_LAST = "  & INTEGER'IMAGE(PA_LAST));
---  for I in 1..PA_LAST  loop
---  PARSE_RECORD_IO.PUT(PA(I)); TEXT_IO.NEW_LINE;
---  end loop;
 
 --               --  Does STATS
 --
@@ -1343,25 +1339,33 @@ package body LIST_PACKAGE is
 --            end if;                                                                      --!!!!!!!!!!!!!!!!!!!!!!!!
 --                                                                                         --!!!!!!!!!!!!!!!!!!!!!!!!
 -- --!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-         if SRAA (J) /= OSRA then --  Skips one identical SRA
+
+
+         if SRAA (J) /= OSRA Then
+         --  Skips one identical SRA
             --  no matter what comes next
 
-            PUT_INFLECTION_ARRAY_J :
+            if J = PA_LAST and then DMA(J).D_K  in ADDONS..YYY and then DMA(J+1).D_K = X
+            then
+               -- Prevent situation where two TRICKS and syncope could result in duplicated lines; e.g., admorunt
+               null;
+             else
+             PUT_INFLECTION_ARRAY_J :
             for K in SRAA (J)'RANGE loop
-               exit when SRAA (J) (K) = NULL_STEM_INFLECTION_RECORD;
+               exit when SRAA (J) (K) =  NULL_STEM_INFLECTION_RECORD;
                PUT_INFLECTION (SRAA (J) (K), DMA (J));
+
                if SRAA (J) (K).STEM (1 .. 3) = "PPL" then
                   Text_IO.Put_Line (OUTPUT, HEAD (PPP_MEANING, MM));
                end if;
             end loop PUT_INFLECTION_ARRAY_J;
+            end if;
+
+
             OSRA := SRAA (J);
+
          end if;
 
-
-
-         --Text_Io.Put_Line("Setting next/last MEAN and FORM booleans");
-
-         Last_Meaning_Same := False;
          Next_Meaning_Same := False;
          Last_Form_Same    := False;
          Next_Form_Same    := False;
@@ -1373,9 +1377,6 @@ package body LIST_PACKAGE is
 
 
          if J > 1 then
-            if DMA (J).DE.MEAN = DMA (J - 1).DE.MEAN then
-               Last_Meaning_Same := True;
-            end if;
 
             if DMA(J).DE.STEMS = DMA(J - 1).DE.STEMS
               and then DMA (J).DE.PART.POFS = DMA (J - 1).DE.PART.POFS
@@ -1409,57 +1410,53 @@ package body LIST_PACKAGE is
          PUTTING_FORM :
          begin
 
---DEBUG
---       Text_IO.Put_Line("                               LAST FORM SAME: " & Last_Form_Same'Image);
---       Text_IO.Put_Line("                               NEXT FORM SAME: " & Next_Form_Same'Image);
---       Text_IO.Put_Line("                            LAST MEANING SAME: " & Last_MEANING_Same'Image);
---       Text_IO.Put_Line("                            NEXT MEANING SAME: " & Next_MEANING_Same'Image);
---       Text_IO.Put_Line("                           PUT MEANING ANYWAY: " & Put_Meaning_Anyway'Image);
---DEBUG
 
             if DMA (J).D_K = GENERAL
               and then Last_Form_Same
-              and then SRAA (J - 1) /= SRAA (J) then  -- Special test for GENERAL addresses rare issue that occurs
-              PUT_FORM (SRAA (J) (1), DMA (J));       -- with "quae" and multiple unique entries, like eadem.
-              Put_Meaning_Anyway := True;             -- Make sure dictionary line always prints after inflections.
-
-            elsif DMA (J).D_K = UNIQUE then
-
-               if not Next_Meaning_Same
-                  and then not Next_Form_Same then
-                  PUT_FORM (SRAA (J) (1), DMA (J));
-                  Put_Meaning_Anyway := True;
+              then
+               if
+               SRAA (J - 1) /= SRAA (J) then           -- Special tests here address rare issue that occurs
+               PUT_FORM (SRAA (J) (1), DMA (J));       -- when there are multiple UNIQUE hits (e.g., quae, eadem, bobus)
+               Put_Meaning_Anyway := True;             -- Make sure dictionary line always prints after inflections.
                end if;
 
-            elsif Last_Form_Same then
-               null;
+           Elsif DMA (J).D_K = UNIQUE then
 
-            else
+               if not Next_Meaning_Same
+                and then not Next_Form_Same then
+                  PUT_FORM (SRAA (J) (1), DMA (J));
+               end if;
+
+           elsif Last_Form_Same then
+             null;
+
+           else
                PUT_FORM (SRAA (J) (1), DMA (J));
-            end if;
+           end if;
 
          end PUTTING_FORM;
 
-         -- TEXT_IO.PUT_LINE("PUTting MEANING");
+
+--DEBUG
+--       Text_IO.Put_Line("                               LAST FORM SAME: " & Last_Form_Same'Image);
+--       Text_IO.Put_Line("                               NEXT FORM SAME: " & Next_Form_Same'Image);
+--       Text_IO.Put_Line("                            NEXT MEANING SAME: " & Next_MEANING_Same'Image);
+--       Text_IO.Put_Line("                           PUT MEANING ANYWAY: " & Put_Meaning_Anyway'Image);
+--       Text_IO.Put_Line("At " & J'Image & "and " & DMA'Last'Image);
+--       Text_IO.Put_Line("D_K is " & Dma(J).D_K'Image & "D_K next is " & Dma(J+1).D_K'Image  );
+--DEBUG
+
+
          PUTTING_MEANING :
          begin
-
 
             if Put_Meaning_Anyway then
                PUT_MEANING_LINE (SRAA (J) (1), DMA (J));
                Put_Meaning_Anyway := False;
 
-            elsif Next_Meaning_Same
-              and then Next_Form_Same = False
-              and then DMA (J).DE.PART.POFS = DMA (J + 1).DE.PART.POFS then -- for situations like cinerem
-                                                                            -- where stems vary but the word is the same
-                                                                            -- (ciner, cinis, cinus - all 3 1 nouns)
-               Put_Meaning_Anyway := True; -- Makes sure we put the meaning next time unless we're still in "cinerem"-like situation
-
-            elsif Last_Meaning_Same or DMA (J).D_K = UNIQUE then
-               null;
-
-            else
+            elsif not Next_Meaning_Same
+              or DMA (J).D_K not in General..UNIQUE      -- Make sure no Roman numerals or syncopes, tricks, etc are missed
+            then                                         -- because they can have two NULL_MEANINGs in a row
                PUT_MEANING_LINE (SRAA (J) (1), DMA (J));
             end if;
 
