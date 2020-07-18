@@ -240,7 +240,7 @@ package body WORD_PACKAGE is
 
       procedure RUN_INFLECTIONS(S : in STRING; SL : in out SAL;
                                 RESTRICTION : DICT_RESTRICTION := REGULAR) is
-      --  Trys all possible inflections against the input word in S
+      --  Tries all possible inflections against the input word in S
       --  and constructs a STEM_LIST of those that survive SL
          use LEL_SECTION_IO;
          use INFLECTION_RECORD_IO;
