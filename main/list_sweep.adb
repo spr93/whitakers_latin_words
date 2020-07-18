@@ -10,7 +10,7 @@
    procedure LIST_SWEEP(PA : in out PARSE_ARRAY; PA_LAST : in out INTEGER) is
    --  This procedure is supposed to process the output PARSE_ARRAY at PA level
    --  before it get turned into SIRAA and DMNPCA in LIST_PACKAGE
-   --  Since it does only PARSE_ARRAY it is just cheaking INFLECTIONS, not DICTIONARY
+   --  Since it does only PARSE_ARRAY it is just checking INFLECTIONS, not DICTIONARY
    
       use INFLECTION_RECORD_IO;
       use DICT_IO;
