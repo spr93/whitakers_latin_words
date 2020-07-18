@@ -58,8 +58,8 @@ package body DEVELOPER_PARAMETERS is
                       OMIT_MEDIEVAL               => FALSE,
                       OMIT_UNCOMMON               => FALSE,
 
-                  --    DO_I_FOR_J                  => TRUE,
-                  --    DO_U_FOR_V                  => TRUE,
+                 --    DO_I_FOR_J                  => TRUE,
+                 --    DO_U_FOR_V                  => TRUE,
 
                       PAUSE_IN_SCREEN_OUTPUT      => FALSE,
                       NO_SCREEN_ACTIVITY          => FALSE,
@@ -71,30 +71,6 @@ package body DEVELOPER_PARAMETERS is
 
   BAD_MDEV_FILE : exception;
 
-
-
-
---HAVE_DEBUG_FILE_HELP : constant HELP_TYPE :=  (
---   "This option instructs the program to create a file which can hold     ",
---   "certain internal information about the current search.  The file is   ",
---   "overwritten for every word in order to prevent it from growing out of ",
---   "hand, so information about the last word searched is saved in case of ",
---   "failure.  The debug output file is named " & DEBUG_FULL_NAME
---                                   & (42+DEBUG_FULL_NAME'LENGTH..70 => ' '),
---   "Use of this option, along with the WRITE_DEBUG_FILE option may slow   ",
---   "the program significantly.  This information is usually only useful   ",
---   "to the developer, so the default is N(o).                             " );
---
---WRITE_DEBUG_FILE_HELP : constant HELP_TYPE :=  (
---   "This option instructs the program, when HAVE_DEBUG_FILE is on, to put ",
---   "some debug data to a file named " & DEBUG_FULL_NAME
---                                   & (33+DEBUG_FULL_NAME'LENGTH..70 => ' '),
---   "This option may be turned on and off while running of the program,    ",
---   "thereby capturing only certain desired results.  The file is reset and",
---   "restarted after each word parsed, so that it does not get too big.    ",
---   "If the option HAVE_DEBUG_FILE is off, the user will not be given a    ",
---   "chance to turn this one on.                  Default is N(o).         " );
---
 
 HAVE_STATISTICS_FILE_HELP : constant HELP_TYPE :=  (
    "This option instructs the program to create a file which can hold     ",

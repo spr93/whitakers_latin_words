@@ -25,9 +25,6 @@ package DEVELOPER_PARAMETERS is
   STATS_FULL_NAME : constant STRING := "WORD.STA";
 
   type MDEV_TYPE is (   
-     --               HAVE_DEBUG_FILE,      --  No longer in use
-     --               WRITE_DEBUG_FILE,     
-
                       HAVE_STATISTICS_FILE, 
                       WRITE_STATISTICS_FILE,
 
@@ -57,8 +54,8 @@ package DEVELOPER_PARAMETERS is
                       OMIT_MEDIEVAL,    
                       OMIT_UNCOMMON,    
                     
-                      DO_I_FOR_J,        
-                      DO_U_FOR_V,    
+                   --   DO_I_FOR_J,        
+                   --   DO_U_FOR_V,    
                     
                       PAUSE_IN_SCREEN_OUTPUT, 
                       NO_SCREEN_ACTIVITY,   
