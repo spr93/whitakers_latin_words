@@ -30,7 +30,7 @@ package body Arabic2Roman is
    begin
 
       for I in INPUT_WORD'range
-      loop   --outermost loop ensures we catch input where there are two numbers in row
+      loop   --outermost loop ensures we catch everything where there are two numbers in row
 
          if Input_Counter > INPUT_WORD'Last then
             return;
@@ -39,7 +39,7 @@ package body Arabic2Roman is
          Arabic_Build_Counter := 1;
          Is_Negative          := False;
          Arabic_String        :=
-           (others => ' '); -- clear the string to build it again if we need to
+           (others => ' ');   -- clear the string so we can build again if we need to
          Put_Additive := False;
 
          if INPUT_WORD (Input_Counter) = '-' then
@@ -59,7 +59,7 @@ package body Arabic2Roman is
             end if;
 
             case INPUT_WORD (Input_Counter)
-            is  -- PARSE procedure leaves us with | (blank/space/delimiter), z (letter), #, or - (potential negative)
+            is  -- PARSE procedure send us a string with these sentinels: | (blank/space/delimiter), z (letter), #, or - (potential negative)
                when '0' .. '9' =>
                   Arabic_String (Arabic_Build_Counter) :=
                     INPUT_WORD (Input_Counter);
@@ -116,7 +116,7 @@ package body Arabic2Roman is
                      Put (OUTPUT, Format_Bold);
                   end if;
 
-                  Put_Line (OUTPUT, "nihil");
+                  Put_Line (OUTPUT, "nihil; nullum;");
                   if WORDS_MODE (DO_ANSI_FORMATTING)
                     and then WORDS_MODE (WRITE_OUTPUT_TO_FILE) = False
                   then
@@ -125,7 +125,7 @@ package body Arabic2Roman is
                   New_Line (OUTPUT);
                end if;
 
-               return; -- SPR:  is nulla better?  noun form of nulla isn't in the dictionary - is that right?
+               return;
             end if;
 
             -- build the numerals
@@ -134,23 +134,29 @@ package body Arabic2Roman is
                when 1 .. 99_999 =>
                   Roman_Num_Record.Age_F := Generate_Subtractive (Arabic_Num);
                when 100_000 .. 999_999_999 =>
-                  Roman_Num_Record.Age_F :=
-                    "|" &
-                    Generate_Subtractive ((Arabic_Num / 100_000) mod 100_000) &
-                    "|" & Generate_Subtractive (Arabic_Num mod 10_000);
-                  Roman_Num_Record.Bar_Reminder := True;
-               when others =>
-                  return;  -- too big, nothing to do
-            end case;
+                  Roman_Num_Record.Age_F := Generate_Subtractive ((Arabic_Num / 100_000) mod 100_000);
 
-            --New_Line (OUTPUT);
+                  declare
+                     Barred_Length : String(1..(Length(Roman_Num_Record.Age_F)+2)) := (others => '_');
+                  begin
+                     Put_Line(OUTPUT, Barred_Length);
+                  end;
+
+                 Roman_Num_Record.Age_F :=
+                    "|" &
+                    Roman_Num_Record.Age_F &
+                    "|" & Generate_Subtractive (Arabic_Num mod 10_000);
+                    Roman_Num_Record.Bar_Reminder := True;
+               when others =>
+                  return;
+            end case;
 
             -- Is the number low enough to do an additive form?  is there a unique additive form?
             if Arabic_Num <= 100_000 then
                Roman_Num_Record.Age_X := Generate_Additive (Arabic_Num);
 
-               if Roman_Num_Record.Age_X /= Roman_Num_Record.Age_F then
-                  Put_Additive := True;
+            if Roman_Num_Record.Age_X /= Roman_Num_Record.Age_F then
+               Put_Additive := True;
                end if;
             end if;
 
@@ -215,7 +221,7 @@ package body Arabic2Roman is
                else
                   Put
                     (OUTPUT,
-                     "03 ");  -- Print as the meaning if only showing meanings;  disabling Arabic2Roman is the equivalent here
+                     "03 ");  -- Print as the meaning if only showing meanings; disabling Arabic2Roman is the equivalent here
                end if;
             end if;
 
@@ -294,8 +300,9 @@ package body Arabic2Roman is
 
                Put_Line
                  (OUTPUT,
-                  "NB:  Draw a bar across top of the numerals in the bars | |");
-               Put_Line (OUTPUT, "    Three sided box, open bottom)");
+                  "NB the line across the top and the numerals it's over.");
+               Put_Line (OUTPUT, "  Those numerals are in a three-sided 'box',");
+               Put_Line (OUTPUT, "  with the bottom side open.");
                if WORDS_MODE (DO_ANSI_FORMATTING)
                  and then WORDS_MODE (WRITE_OUTPUT_TO_FILE) = False
                then
@@ -337,14 +344,13 @@ package body Arabic2Roman is
 
                Put_Line (OUTPUT, "NB:  Negative numbers are a neologism.");
             end if;
-            --    NEW_LINE(Output);
 
             -- if enclosing dictionary line items
             if
               (WORDS_MDEV (SHOW_DICTIONARY_CODES) or
                WORDS_MODE (SHOW_FREQUENCY)) and
-              WORDS_MODE (DO_ONLY_MEANINGS) = False and
-              CONFIGURATION /= ONLY_MEANINGS
+               WORDS_MODE (DO_ONLY_MEANINGS) = False and
+               CONFIGURATION /= ONLY_MEANINGS
             then
                if WORDS_MDEV (DO_PEARSE_CODES) then
                   Put (OUTPUT, "03 ");
@@ -434,10 +440,9 @@ package body Arabic2Roman is
               and then Arabic_Num in 1 .. 500 | 600 | 700 | 800 | 900 | 10_000
               and then Is_Negative = False
             then -- only situation where we could have another result:
-               -- small number with both additive and subtractive
-   -- call this classical for lack of a better way to distinguish from additive
+                 -- small number with both additive and subtractive
+                 -- call this classical for lack of a better way to distinguish from additive
 
-               --   New_Line (OUTPUT);
                if WORDS_MDEV (DO_PEARSE_CODES) then
                   if WORDS_MODE (DO_ONLY_MEANINGS) = False
                     and then (not (CONFIGURATION = ONLY_MEANINGS))
@@ -528,8 +533,9 @@ package body Arabic2Roman is
                   Put (OUTPUT, Format_Reset);
                end if;
                New_Line (OUTPUT);
-            end if;
-            -- end of second output
+            end if;  -- end meaning line
+
+         -- end of second output
 
          end if; -- enclosing statements requiring integer
 

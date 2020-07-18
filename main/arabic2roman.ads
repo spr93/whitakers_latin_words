@@ -10,17 +10,17 @@ with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 package Arabic2Roman is
 
    Roman_Nums_CLASSICAL : constant array (1..11) of Unbounded_String  := (
-                                                                     1         => (To_Unbounded_String("I")),
-                                                                     2         => (To_Unbounded_String("V")),
-                                                                     3         => (To_Unbounded_String("X")),
-                                                                     4         => (To_Unbounded_String("L")),
-                                                                     5         => (To_Unbounded_String("C")),
-                                                                     6         => (To_Unbounded_String("|)")),
-                                                                     7         => (To_Unbounded_String("(|)")),
-                                                                     8         => (To_Unbounded_String("|))")),
-                                                                     9         => (To_Unbounded_String("((|))")),
-                                                                     10        => (To_Unbounded_String("|)))")),
-                                                                     11        => (To_Unbounded_String("(((|)))"))); -- 100_000
+                          1         => (To_Unbounded_String("I")),
+                          2         => (To_Unbounded_String("V")),
+                          3         => (To_Unbounded_String("X")),
+                          4         => (To_Unbounded_String("L")),
+                          5         => (To_Unbounded_String("C")),
+                          6         => (To_Unbounded_String("|)")),
+                          7         => (To_Unbounded_String("(|)")),
+                          8         => (To_Unbounded_String("|))")),
+                          9         => (To_Unbounded_String("((|))")),
+                         10        => (To_Unbounded_String("|)))")),
+                         11        => (To_Unbounded_String("(((|)))"))); -- 100_000
    -- Stop at 100_000 for classical period.  See also Pliny.
 
 
@@ -38,5 +38,6 @@ package Arabic2Roman is
 
 
    function Integer_Test (Arabic_String: in String) return Boolean;
+
 
 end  Arabic2Roman;
