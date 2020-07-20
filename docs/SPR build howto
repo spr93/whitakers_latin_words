@@ -18,7 +18,7 @@ Run SORTER against the resulting STEMLIST.GEN
            20   24   P
            1    18   C
            1    56   A
-           58    1   D      
+           58    1         
          STEMLIST.GEN    --  Output  
          
 [SPR:  DO NOT REMOVE WEIRD TO_BE AT THE FIRST LINE - MAKESTEM.ADB ASSUMES IT'S THERE]]
@@ -36,12 +36,12 @@ Run MAKEEWDS against ewdslist.gen
 Sort EWDSLIST.GEN
 SORTER
     EWDSLIST.GEN
-       1   24   A         --  Main word
-       1   24   C         --  Main word for CAPS
-      51    6   R         --  Part of Speech  
-      72    5   N    D    --  RANK
-      58    1   D         --  FREQ
-    EWDSLIST.GEN     --  Store 
+       1  24  A         --  Main word
+       1  24  C         --  Main word for CAPS
+      51   6  R         --  Part of Speech  
+      72   5  N   D     --  RANK
+      58   1  A         --  FREQ
+    EWDSLIST.GEN        --  Store 
 
 Run MAKEEFIL
 
