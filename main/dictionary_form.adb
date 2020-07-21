@@ -95,8 +95,8 @@ with DICTIONARY_PACKAGE; use DICTIONARY_PACKAGE;
               OX(1) := ADD(DE.STEMS(1), "os");
               OX(2) := ADD(DE.STEMS(2), "i");
             elsif DE.PART.N.DECL.VAR = 7  then
-              OX(1) := ADD(DE.STEMS(1), "os");
-              OX(2) := ADD(DE.STEMS(2), "i");
+              OX(1) := ADD(DE.STEMS(1), "");
+              OX(2) := ADD(DE.STEMS(2), "yos/i");
             elsif DE.PART.N.DECL.VAR = 8  then
               OX(1) := ADD(DE.STEMS(1), "on");
               OX(2) := ADD(DE.STEMS(2), "i");
@@ -123,6 +123,9 @@ with DICTIONARY_PACKAGE; use DICTIONARY_PACKAGE;
               OX(2) := ADD(DE.STEMS(2), "us");
             elsif DE.PART.N.DECL.VAR = 3  then
               OX(1) := ADD(DE.STEMS(1), "us");
+              OX(2) := ADD(DE.STEMS(2), "u");
+            elsif DE.PART.N.DECL.VAR = 4  then
+              OX(1) := ADD(DE.STEMS(1), "");
               OX(2) := ADD(DE.STEMS(2), "u");
             end if;
 
