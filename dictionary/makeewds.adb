@@ -1,4 +1,5 @@
-   with TEXT_IO; 
+with TEXT_IO; 
+with Ada.Exceptions;
    with STRINGS_PACKAGE; use STRINGS_PACKAGE;  
    with LATIN_FILE_NAMES; use LATIN_FILE_NAMES;
    with INFLECTIONS_PACKAGE; use INFLECTIONS_PACKAGE;
@@ -132,12 +133,17 @@
                J := J + 1;   
                JMAX := JMAX + 1;
                I := I + 1;
-               while S(I-1..I) /= "=>"  loop
+               
+              -- Put_Line("I is " & I'Image & " and S'Range is is " & S'First'Image & " .. " & S'Last'Image);
+               
+               while S(I-1..I) /= "=>" and S(I-1..I) /=  "];" loop
                   T(J) := S(I);
                   J := J + 1;   
                   JMAX := JMAX + 1;
                   I := I + 1;
+                  exit when I = S'Last;
                end loop;
+               
                WORD_START := I + 2;
                WORD_END   := 0;
 
@@ -216,15 +222,18 @@
       return T(1..JMAX);         
    
      exception
-          when others =>
+          when Catch_Me: others =>
                PUT_LINE("ADD_HYPHENATED  Exception    LINE = " & 
                         INTEGER'IMAGE(LINE_NUMBER));
                PUT_LINE(S);
-               PUT(DE); NEW_LINE;
+         PUT(DE); NEW_LINE;
+                  Put_Line(Ada.Exceptions.Exception_Name(Catch_Me));
+         Put_Line(Ada.Exceptions.Exception_Information(Catch_Me));
+         Put_Line(Ada.Exceptions.Exception_Message(Catch_Me));
          return T(1..JMAX);         
      end ADD_HYPHENATED;
 
-
+ 
       procedure EXTRACT_WORDS (S : in STRING;
                                POFS : in PART_OF_SPEECH_TYPE;
                                N : out INTEGER;
@@ -268,7 +277,8 @@
           SEMI := NULL_X_MEANING_TYPE;           
           IM := 1;
           SM1 := 1;
-          SM2 := 0;
+         SM2 := 0;
+         
           EXTRACT_SEMI:
             loop
               
@@ -383,7 +393,7 @@ WW := 20;
  --PUT_LINE("No exit on SM'LAST  "  & INTEGER'IMAGE(SM'LAST) & "  I = " & INTEGER'IMAGE(IM) & "|" & SM(IM) & "|");
                          if  (SM(IM) = ';') or (SM(IM) = ',')   then
  --PUT_LINE("Found ;, COMMA  IM = " & INTEGER'IMAGE(IM));
-                        --  Foumd COMMA
+                        --  Found COMMA
                                M := M + 1;
                                IC := 1;
                                IM := IM + 1;       --  Clear ;,
@@ -399,17 +409,30 @@ WW := 20;
                            while SM(IM) /= '>'  loop     
                               exit when SM(IM) = ']'; --  If no >
                               IM := IM + 1;
-                           end loop;
-                           IM := IM + 1;    --  Clear the '>' or ']'
-                            if  SM(IM) = ';'  then
-                            --  Foumd COMMA
+                        end loop;
+                     --   Put_Line(SM & "|" & IM'Image & "|" & IC'Image & "|" & M'Image);
+                     
+                        
+                        IM := IM + 1;    --  Clear the '>' or ']'
+                        
+                        
+                      
+                        
+                  --     Put_Line("IM is: " & IM'Image & "|" & "M is " & "|" &  M'Image  & "|" &  "IC is "  & "|" &  "SM is " & SM  & "|" & "(SM last is " & SM'Last'Image & " )"); 
+                        if IM < SM'Last and then 
+                          SM(IM) = ';'  then
+                            --  Found COMMA
                                M := M + 1;
                                IC := 1;
-                               IM := IM + 1;       --  Clear ;
+                           
+                           IM := IM + 1;       --  Clear ;
                                exit;
-                          elsif SM(IM) = ' '  then
-                            IM := IM + 1;
-                          end if;
+                           elsif IM < SM'Last and then  SM(IM) = ' '  then
+                           IM := IM + 1;
+                        end if;
+                        
+                        
+                        
                         end if;          --  But could be 2 =>!
  --PUT_LINE("Through ()[] I = " & INTEGER'IMAGE(I));
                         exit when IM > SM'LAST;
@@ -427,7 +450,7 @@ WW := 20;
                         IM >= SM'LAST  or
                         IM = S'LAST       
                         then
-                        --  Foumd COMMA
+                        --  Found COMMA
                            COMMA(IC) := SM(IM);
                            M := M + 1;
                            IC := 1;
@@ -456,7 +479,9 @@ WW := 30;
                         W_START, W_END : INTEGER := 0;
                      begin  
 WW := 31;                  
---PUT_LINE("PROCESS COMMA " & INTEGER'IMAGE(LINE_NUMBER) & INTEGER'IMAGE(CT'FIRST) & INTEGER'IMAGE(CT'LAST) &  "=>" & TRIM(COMMA));
+                     --PUT_LINE("PROCESS COMMA " & INTEGER'IMAGE(LINE_NUMBER) & INTEGER'IMAGE(CT'FIRST) & INTEGER'IMAGE(CT'LAST) &  "=>" & TRIM(COMMA));
+                     
+   --   PUT_LINE(CS);
                     if CT'LENGTH > 0  then   --  Is COMMA non empty
                      --  Are there any blanks?
                      --  If not then it is a pure word
@@ -474,7 +499,9 @@ WW := 31;
                         W_END   := CS'LAST;
                         for IW in CS'RANGE  loop
  --PUT('-');
- --PUT(CS(IW));                      
+ --PUT(CS(IW));   
+ -- PUT(CS);
+ -- NEW_LINE;
                           if (CS(IW) = '(')  or  
                              (CS(IW) = '[')    then  
  WW := 33;                  
@@ -517,11 +544,11 @@ WW := 365;
                            
 WW := 37;                  
                            
---PUT_LINE(INTEGER'IMAGE(LINE_NUMBER) & "WEEDing " & 
---INTEGER'IMAGE(W_START) & "  " & INTEGER'IMAGE(W_END)  
---& "  " & CS(W_START..W_END)
---);
-                              WEED_ALL(CS(W_START..W_END), POFS);
+--  PUT_LINE(INTEGER'IMAGE(LINE_NUMBER) & "WEEDing " & 
+--  INTEGER'IMAGE(W_START) & "  " & INTEGER'IMAGE(W_END)  
+--  & "  " & CS(W_START..W_END)
+--  );
+--                                WEED_ALL(CS(W_START..W_END), POFS);
                               if not PURE then
                                  WEED(CS(W_START..W_END), POFS);
                               end if;
@@ -539,7 +566,8 @@ WW := 40;
                         IC := 1; 
                         J := 1;
                         while  IC <= CS'LAST  loop
---PUT(CS(IC)); 
+
+  --PUT_LINE(CS & " : " &  CS(IC)); 
                         
                         if CS(IC) = '"'  or      --  Skip all "
                            CS(IC) = '('  or      --  Skip initial (
@@ -667,23 +695,45 @@ WW := 70;
          
             exit when L >= S'LAST;
          end loop;   --  loop over MEAN
-      	
---PUT_LINE("SEMI loop Processed");
-         if EWA(N) = NULL_EWDS_RECORD  then
+
+        
+      DROP_DUPES:
+      for Z in EWA'Range loop
+         if EWA(Z).W /= NULL_EWORD then 
+      
+               INNER_LOOP:
+               for ZZ in (Z+1)..EWA'Last loop 
+                  if EWA(Z).W = EWA(ZZ).W
+                  then EWA(ZZ).W := NULL_EWORD;
+                  end if;
+               end loop INNER_LOOP;
+           
+         end if; 
+      end loop DROP_DUPES; 
+      
+        
+      --PUT_LINE("SEMI loop Processed");
+
+         if N <= EWA'Last and then  EWA(N) = NULL_EWDS_RECORD  then
+            N := N -1;   --  Clean up danglers
+      end if;
+         if N <= EWA'Last and then N > 1 and then EWA(N) = NULL_EWDS_RECORD  then   --  AGAIN!!!!!!
             N := N -1;   --  Clean up danglers
          end if;
-         if EWA(N) = NULL_EWDS_RECORD  then   --  AGAIN!!!!!!
-            N := N -1;   --  Clean up danglers
-         end if;
-       exception
-          when others =>
+
+      exception
+          when Catch_Me: Others =>
             if (S(S'LAST) /= ')') or  (S(S'LAST) /= ']')  then    --  KLUDGE
                NEW_LINE;
                PUT_LINE("Extract Exception    WW = " & INTEGER'IMAGE(WW) & "    LINE = " & 
                         INTEGER'IMAGE(LINE_NUMBER));
                PUT_LINE(S);
                PUT(DE); NEW_LINE;
-             end if;
+         end if;
+         
+         Put_Line(Ada.Exceptions.Exception_Name(Catch_Me));
+         Put_Line(Ada.Exceptions.Exception_Information(Catch_Me));
+         Put_Line(Ada.Exceptions.Exception_Message(Catch_Me));
         end EXTRACT_WORDS;
 
    
