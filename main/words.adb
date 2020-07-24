@@ -105,9 +105,9 @@
          
        exception
          when Args_Exception: others =>     -- Parse may raise NO_EXCEPTION_EXCEPTION; handler is outside the block
-            Put_Line("Words accepts the following command-line arguments:");
+            Put_Line("Words operates in two modes when using command-line arguments");
             New_Line;
-            Put_Line("CLASSIC WORDS:  Non-interactive processing.  Maintains backward compatibility.");
+            Put_Line("[1] NON-INTERACTIVE WORDS:  Maintains backward compatibility.  Pearse codes available.");
             Put_Line("Usage:");
             Put_Line("words [string of Latin words]");
             Put_Line("   => send results for the Latin words to standard output and exit");
@@ -116,17 +116,17 @@
             Put_Line("words " & CHANGE_LANGUAGE_CHARACTER & "e [English word] [OPTIONAL:  part of speech OR second English word]");
             Put_Line("   => returns Latin translation options");
             New_Line;
-            Put_Line("YEAR 2020+:  Set limits on interactive mode using standard BSD or Linux syntax.");
+            Put_Line("[2] MODIFY INTERACTIVE-MODE:  Set limits on interactive mode.");
             Put_Line("Options:");
-            Put_Line("-r    Prevent user from modifying any runtime options");    
-            Put_Line("-n    Prevent user from loading a file for translation");
-            Put_Line("-x    Prevent user from exiting with two returns or ctl-C");
-            Put_Line("          NOT A SECURE MODE - only blocks SIGINT");
-            Put_Line("          No effect on suspend (SIGSTP) or kill (SIGTERM)"); 
-            Put_Line("-e    Prevent user from entering Latin-English mode");
-            Put_Line("-l    Prevent user from entering English-Latin mode");
-            Put_Line("-m    Show only meanings lines; user cannot override");
-            Put_Line("          Only applies in Latin-English mode");
+            Put_Line("-r    READ ONLY:     User cannot change settings, write settings files" );
+            Put_Line("                       or direct output to file");    
+            Put_Line("-n    NO FILES:      User cannot load a file or direct output to file");  
+            Put_Line("-x    NO EXIT:       User cannot exit with two returns or control-C");
+            Put_Line("                       NOT A SECURE MODE - only blocks SIGINT");
+            Put_Line("                       No effect on suspend (SIGSTP) or kill (SIGTERM)"); 
+            Put_Line("-l    LATIN ONLY:    User cannot enter English->Latin mode");
+            Put_Line("-e    ENGLISH ONLY:  User cannot enter Latin->English mode");
+            Put_Line("-m    MEANINGS ONLY: Show only the meanings line (in Latin->English mode)");
             New_Line;
             Put_Line("E.g., words -rnlm limits the user the functionality of a paper dictionary");
             New_Line;

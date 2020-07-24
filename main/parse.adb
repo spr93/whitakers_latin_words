@@ -1220,7 +1220,7 @@ begin --  PARSE
          if CL_ARGUMENTS(NO_FILES) then
             Preface.Put_Line("- NO FILES     :   The program will not load files for translation"); end if;                
          if CL_ARGUMENTS(NO_EXIT) then
-            Preface.Put_Line("- NO EXIT      :   Only admin can terminate (ignores SIGSTOP, SIGINT, SIGTERM)"); end if;
+            Preface.Put_Line("- NO EXIT      :   User cannot instruct the program to exit; SIGINT ignored"); end if;
         
          if WORDS_MODE(DO_ANSI_FORMATTING) then
             Preface.Put(Format_Reset);
@@ -1315,6 +1315,7 @@ begin --  PARSE
 
                if LINE (1) = START_FILE_CHARACTER
                  and then not CL_Arguments(NO_FILES)
+                 and then not CL_Arguments(READ_ONLY)
                then    --  To begin file of words
                   if (Name (Current_Input) /= Name (Standard_Input)) then
                      Text_IO.Put_Line
