@@ -1,4 +1,5 @@
-   with TEXT_IO; 
+with TEXT_IO; 
+with Ada.Command_Line;
    with STRINGS_PACKAGE; use STRINGS_PACKAGE;  
    with LATIN_FILE_NAMES; use LATIN_FILE_NAMES;
    with INFLECTIONS_PACKAGE; use INFLECTIONS_PACKAGE;
@@ -54,9 +55,32 @@
               " with NOM PERF PPL", MAX_MEANING_SIZE);
    
    begin
-      PUT_LINE(
-              "Takes a DICTLINE.D_K and produces a STEMLIST.D_K and DICTFILE.D_K");
+      PUT_LINE("Takes a DICTLINE.D_K and produces a STEMLIST.D_K and DICTFILE.D_K");
       PUT_LINE("This version inserts ESSE when D_K = GEN");
+      
+      -- Process command-line arguments
+            if Ada.Command_Line.Argument_Count = 1 then
+                 for YY in 1..TRIM (Ada.Command_Line.Argument(1))'length loop
+                  case Upper_Case(TRIM(Ada.Command_Line.Argument(1))(YY)) is
+            
+                     when '-' => exit when YY > 3;
+                        
+                     when 'G' => D_K := GENERAL;
+                                Put_Line("Working on GENERAL dictionary");
+                                  
+                     when 'S' => D_K := SPECIAL;
+                                Put_Line("Working on GENERAL dictionary");
+                     
+                    when others => 
+                     New_Line;
+                     Put_Line("====== UNKNOWN COMMAND-LINE ARGUMENT(S) - RUNNING INTERACTIVELY  ======");
+                     New_Line;
+                     exit; 
+                  end case;  
+                  end loop;
+            end if;   --  End command-line argument processing    
+
+   if D_K = XXX then
       PUT("What dictionary to list, GENERAL or SPECIAL  (Reply G or S) =>");
       GET_LINE(LINE, LAST);
       if LAST > 0  then
@@ -71,7 +95,7 @@
             raise TEXT_IO.DATA_ERROR;
          end if; 
       end if;
-   
+   end if; 
    
       OPEN(INPUT, IN_FILE, ADD_FILE_NAME_EXTENSION(DICT_LINE_NAME, 
                                                 DICTIONARY_KIND'IMAGE(D_K))); 

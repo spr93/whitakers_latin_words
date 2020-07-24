@@ -3,6 +3,10 @@
    with STRINGS_PACKAGE; use STRINGS_PACKAGE;
    with INFLECTIONS_PACKAGE; use INFLECTIONS_PACKAGE;
    with DICTIONARY_PACKAGE; use DICTIONARY_PACKAGE;
+   with Ada.Command_Line;
+   with Ada.Directories;
+
+
    procedure SORTER is   
    --  This program sorts a file of lines (strings) on 5 substrings Mx..Nx
    --  Sort by stringwise (different cases), numeric, or POS enumeration
@@ -50,7 +54,10 @@
       INPUT  : TEXT_IO.FILE_TYPE;
       OUTPUT : TEXT_IO.FILE_TYPE;
       WORK   : LINE_IO.FILE_TYPE;
+      
+      CLARG_FILENAME : STRING := "NULLNULL.NUL";
    
+    
       M1, M2, M3, M4, M5 : NATURAL := 1;
       N1, N2, N3, N4, N5 : NATURAL := LINE_LENGTH;
       Z1, Z2, Z3, Z4, Z5 : NATURAL := 0;           
@@ -238,7 +245,7 @@
          if TRIM(FROM)'LAST < FROM'FIRST   then   
             return;   --  Empty string, no data         --  Return default
          end if;
-      
+     
          GET(FROM, S.FIRST_LEVEL, L);
          if L+1 >= LT  then
             LAST := L;
@@ -473,6 +480,7 @@
       
          procedure ECHO_ENTRY is
          begin
+         TEXT_IO.Put_Line("M, N, S, W:  " & M'Image & ", " & N'Image & ", " & S'Image & ", " & W'Image);
             PUT("                    Sorting on LINE("); PUT(M,3); 
             PUT(".."); PUT(N, 3); PUT(")");
             PUT("  with S = "); PUT(S); PUT(" and W = "); PUT(W); 
@@ -506,7 +514,12 @@
             SORT_TYPE_IO.GET(ENTER_LINE(LAST+1..LS), S, LAST);
             WAY_TYPE_IO.GET(ENTER_LINE(LAST+1..LS), W, LAST);
             MX := M; NX := N;  SX := S; WX := W;
-            ECHO_ENTRY;
+        
+         
+         ECHO_ENTRY;
+         
+         
+         
             return;
             exception
                when PROGRAM_ERROR  =>
@@ -887,15 +900,23 @@
           exception 
             when others =>
                TEXT_IO.PUT_LINE("exception in LT    showing LEFT and RIGHT");
-               TEXT_IO.PUT_LINE(LEFT & "|");
-               TEXT_IO.PUT_LINE(RIGHT & "|");
+               TEXT_IO.PUT_LINE(LEFT & "|LEFT|");
+               TEXT_IO.PUT_LINE(RIGHT & "|RIGHT|");
                raise;
       end LT; 
    
       procedure OPEN_FILE_FOR_INPUT(INPUT : in out TEXT_IO.FILE_TYPE;
                                     PROMPT : STRING := "File for input => ") is
          LAST : NATURAL := 0;
-      begin
+   begin
+     
+      if CLARG_FILENAME /= "NULLNULL.NUL" then 
+         Text_IO.Put_Line("Opening " & CLARG_FILENAME);
+         OPEN(INPUT, IN_FILE, CLARG_FILENAME);
+         Text_IO.Put_Line("Opened " & CLARG_FILENAME);
+         
+      else 
+         Text_IO.Put_Line("Manual input mode");
       GET_INPUT_FILE:
          loop
             CHECK_INPUT:
@@ -912,6 +933,8 @@
             end CHECK_INPUT;
          end loop GET_INPUT_FILE;
       
+      end if;
+      
       end OPEN_FILE_FOR_INPUT;
    
    
@@ -920,7 +943,13 @@
          NAME : STRING(1..80) := (others => ' ');
          LAST : NATURAL := 0;
       begin
-      
+        
+      if CLARG_FILENAME /= "NULLNULL.NUL" then 
+
+         CREATE(OUTPUT, OUT_FILE, (CLARG_FILENAME(1..8) & ".SRD"));
+           
+      else
+            
       GET_OUTPUT_FILE:
          loop
             CHECK_OUTPUT:
@@ -940,6 +969,8 @@
                      PUT_LINE("   !!!!!!!!!  Try Again  !!!!!!!!");
             end CHECK_OUTPUT;
          end loop GET_OUTPUT_FILE;
+         
+      end if; 
       
       end CREATE_FILE_FOR_OUTPUT;
    
@@ -954,8 +985,129 @@
          return T;
       end GRAPHIC;
    
-   begin
+            procedure PROCESS_COMMAND_LINE_ARGUMENTS is 
+          --   Args_Exception : exception;
+            
+            begin 
+
+      
+               for ZZ in 1..Ada.Command_Line.Argument_Count Loop
+
+                 for YY in 1..TRIM (Ada.Command_Line.Argument(1))'length loop
+                  case Upper_Case(TRIM(Ada.Command_Line.Argument(1))(YY)) is
+                     when '-' => exit when YY > 3;
+                        
+                     when 'D' =>  
+                                   M1 := 1;
+                                   N1 := M1+(75-1);
+                                   S1 := A;
+                                   W1 := I;
+      
+                                   M2 := 77;
+                                   N2 := M2+(24-1);
+                                   S2 := P;
+                                   W2 := I;   
+                                      
+                                   M3 := 111;
+                                   N3 := M3+(80-1);
+                                   S3 := A;
+                                   W3 := I;   
+                                   
+         			   M4 := 101;
+                                   N4 := M4+(1-1);
+                                   S4 := A;
+                                   W4 := I;   
+         			               
+         			   M5 := 107;
+                                   N5 := M5+(1-1);
+                                   S5 := A;
+                                   W5 := I;   
+                  
+                  CLARG_FILENAME := "DICTLINE.GEN";
+
+                     when 'E' =>
+
+                                   M1 := 1;
+                                   N1 := M1+(24-1);
+                                   S1 := A;
+                                   W1 := I;
+      
+                                   M2 := 1;
+                                   N2 := M2+(24-1);
+                                   S2 := C;
+                                   W2 := I;   
+                                      
+                                   M3 := 51;
+                                   N3 := M3+(6-1);
+                                   S3 := R;
+                                   W3 := I;   
+                                   
+         			   M4 := 72;
+                                   N4 := M4+(5-1);
+                                   S4 := N;
+                                   W4 := D;   
+         			               
+         			   M5 := 58;
+                                   N5 := M5+(1-1);
+                                   S5 := A;
+                                   W5 := I;                         
+                        
+                  CLARG_FILENAME := "EWDSLIST.GEN";
+                  
+                      when 'S' =>  
+                     
+                                   M1 := 1;
+                                   N1 := M1+(18-1);
+                                   S1 := U;
+                                   W1 := I;
+      
+                                   M2 := 20;
+                                   N2 := M2+(24)-1;
+                                   S2 := P;
+                                   W2 := I;   
+                                      
+                                   M3 := 1;
+                                   N3 := M3+(18-1);
+                                   S3 := C;
+                                   W3 := I;   
+                                   
+         			   M4 := 1;
+                                   N4 := M4+(56-1);
+                                   S4 := A;
+                                   W4 := I;   
+         			               
+         			   M5 := 58;
+                                   N5 := N5+(1-1);
+                                   S5 := A;
+                                   W5 := I;               
+                        
+                    CLARG_FILENAME := "STEMLIST.GEN";
+                    
+                     
+                    when others => 
+                     New_Line;
+                     Put_Line("====== UNKNOWN COMMAND-LINE OPTION: " & TRIM(Ada.Command_Line.Argument(1))(YY) & " ======");
+                     New_Line;
+                     exit; 
+                     end case;  
+              
+               end loop; 
+                                 
+                  
+               end loop; -- while =< argument_counter'length
+      
+      Text_IO.Put_Line("Input file is " & CLARG_FILENAME);
+      
+         end PROCESS_COMMAND_LINE_ARGUMENTS;
    
+   begin
+ 
+If   Ada.Command_Line.Argument_Count > 0 then
+
+      PROCESS_COMMAND_LINE_ARGUMENTS;
+      OPEN_FILE_FOR_INPUT(INPUT, CLARG_FILENAME);
+      
+ else        
       NEW_LINE;
       PUT_LINE("Sorts a text file of lines four times on substrings M..N");
       PUT_LINE("A)lphabetic (all case) C)ase sensitive, iG)nore seperators, U)i_is_vj,");
@@ -974,8 +1126,8 @@
                raise;
             when others => 
                null;
-      end;
-   
+            end;
+           
    
       begin
          PROMPT_FOR_ENTRY("second");
@@ -994,7 +1146,9 @@
             when TEXT_IO.DATA_ERROR  | TEXT_IO.END_ERROR  => 
                null;
       end;
-   
+        
+end if; -- end detour for command line arguments 
+         
     --PUT_LINE("CREATING WORK FILE");
       NEW_LINE;
       CREATE (WORK, INOUT_FILE, "WORK."); 
@@ -1053,7 +1207,9 @@
             I := L;
             J := L + L;
          
-            while J <= IR   loop
+         while J <= IR   loop
+            
+          --  Text_IO.Put_Line("J is " & J'Image & "; IR is " & IR'image & "; " & " I is " & I'Image & "  and L is " & L'Image); -- DEBUG
                if J < IR  then
                   READ(WORK, LINE_TEXT, J);
                   READ(WORK, P_LINE, J+1);
@@ -1082,22 +1238,85 @@
       end LINE_HEAPSORT;
    
       PUT_LINE("Finished sorting in WORK");
-   
-      CREATE_FILE_FOR_OUTPUT(OUTPUT, "Where to put the output => ");
-   
-   
+
+   CREATE_FILE_FOR_OUTPUT(OUTPUT, "Where to put the output => ");
+
    --RESET(WORK);
       Set_Index(WORK, 1);
       while not END_OF_FILE(WORK)  loop
          READ(WORK, LINE_TEXT);
          if TRIM(GRAPHIC(LINE_TEXT))'LENGTH > 0  then
          --PUT_LINE(TRIM(LINE_TEXT, RIGHT));
-            PUT_LINE(OUTPUT, TRIM(LINE_TEXT, RIGHT));
+         PUT_LINE(OUTPUT, TRIM(LINE_TEXT, RIGHT));
          end if;
       end loop;
    
       CLOSE(WORK);
       CLOSE(OUTPUT);
+   
+   -- Check and rename input/output using command-line argument
+   if CLARG_FILENAME /= "NULLNULL.NUL" then 
+      declare
+         CL_Input_File_Name : String := CLARG_FILENAME;
+         CL_Temp_File_Name : String := (CLARG_FILENAME(1..8) & ".SRD");
+         CL_Renamed_Input_File_Name : String := (CLARG_FILENAME(1..8) & ".OLD");
+         Rename_Files_Exception : exception;
+         CL_User_Input : Character := 'X';
+        -- use Ada.Numerics;
+         use Ada.Directories;
+         In_Size : Ada.Directories.File_Size;
+         Out_Size : Ada.Directories.File_Size;
+
+      begin
+         In_Size :=  Ada.Directories.Size(CL_Input_File_Name);
+         Out_Size := Ada.Directories.Size(CL_Temp_File_Name);
+  
+         if Out_Size >=  (In_Size - (In_Size /10) ) then
+            
+            if Ada.Directories.Exists(CL_Renamed_Input_File_Name) then
+            Text_IO.Put_Line("CAUTION: " & CL_Renamed_Input_File_Name & " already exists."); 
+               while (CL_User_Input /= 'y') and then (CL_User_Input /= 'Y')   loop
+                  Text_IO.Put_Line("Delete/overwrite the existing " & CL_Renamed_Input_File_Name & " [y/n]?");
+                  Text_IO.Get(CL_User_Input);
+               if (CL_User_Input = 'n') or (CL_User_Input = 'N') then 
+                  raise Rename_Files_Exception; 
+               end if;
+               end loop;
+               if (CL_User_Input = 'y') or (CL_User_Input = 'Y') then 
+               Text_IO.Put_Line("Deleting " & CL_Renamed_Input_File_Name);
+               Ada.Directories.Delete_File(CL_Renamed_Input_File_Name);
+               end if;  
+            end if; 
+
+          
+                 Ada.Directories.Rename(Old_Name => CL_Input_File_Name,
+                                        New_Name => CL_Renamed_Input_File_Name);
+            
+                 Text_IO.Put_Line("The original input file " & CL_Input_File_Name & " HAS BEEN RENAMED " & CL_Renamed_Input_File_Name);
+                   
+                 Ada.Directories.Rename(Old_Name => CL_Temp_File_Name,
+                                        New_Name => CL_Input_File_Name);
+            else
+            Text_IO.Put_Line("The sorter output is not greater than or equal to the input.");
+            Text_IO.Put_Line("Please check any errors above and whether " & CL_Temp_File_Name & "contains valid output.");
+            Text_IO.Put_Line("if " & CL_Temp_File_Name & " contains valid output, then rename it " & CL_Input_File_Name);
+            Text_IO.Put_Line("before performing the next step in building the WORDS dictionary files.");
+            end if; 
+                   
+         exception
+            when Rename_Files_Exception =>
+               Text_IO.Put_Line("User decline to delete/overwrite the original " & CL_Renamed_Input_File_Name);
+               Text_IO.Put_Line("======== " & CL_Temp_File_Name & " CONTAINS THE SORTED OUTPUT ========");
+            when others => 
+               Text_IO.Put_Line("Encountered an error.  Check: ");
+               Text_IO.Put_Line("(1) Whether " & CL_Temp_File_Name & " contains valid sorted output");
+               Text_IO.Put_Line("(2) Whether " & CL_Renamed_Input_File_Name & " already exists (and, if so, whether you have permission to delete it)");
+               raise  TEXT_IO.DEVICE_ERROR; 
+      end; --block 
+   end if;
+   -- END input/output check-and-rename when using command-line argument
+   
+
       PUT_LINE("Done!");
       NEW_LINE;
    

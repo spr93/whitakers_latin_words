@@ -1,5 +1,6 @@
 with TEXT_IO; 
 with Ada.Exceptions;
+with Ada.Command_Line;
    with STRINGS_PACKAGE; use STRINGS_PACKAGE;  
    with LATIN_FILE_NAMES; use LATIN_FILE_NAMES;
    with INFLECTIONS_PACKAGE; use INFLECTIONS_PACKAGE;
@@ -507,7 +508,7 @@ WW := 31;
  WW := 33;                  
                            W_START := IW + 1;
                           else     
-WW := 34;                  
+ WW := 34;                  
                            if (CS(IW) = ' ')  or
                               (CS(IW) = '_')  or
                               (CS(IW) = '-')  or
@@ -738,10 +739,36 @@ WW := 70;
 
    
    begin
-      PUT_LINE(
+     
+   -- Process command-line arguments
+   if Ada.Command_Line.Argument_Count = 1 then
+                 for YY in 1..TRIM (Ada.Command_Line.Argument(1))'length loop
+                  case Upper_Case(TRIM(Ada.Command_Line.Argument(1))(YY)) is
+            
+                     when '-' => exit when YY > 3;
+                        
+                     when 'G' => D_K := GENERAL;
+                                Put_Line("Working on GENERAL dictionary");
+                                  
+                     when 'S' => D_K := SPECIAL;
+                                Put_Line("Working on GENERAL dictionary");
+                     
+                    when others => 
+                     New_Line;
+                     Put_Line("====== UNKNOWN COMMAND-LINE ARGUMENT(S) - RUNNING INTERACTIVELY  ======");
+                     New_Line;
+                     exit; 
+                  end case;  
+                  end loop;
+             end if;   --  End command-line argument processing    
+
+   if D_K = XXX then
+      
+    PUT_LINE(
               "Takes a DICTLINE.D_K and produces a EWDSLIST.D_K ");
       PUT("What dictionary to list, GENERAL or SPECIAL  =>");
-      GET_LINE(LINE, LAST);
+     
+     GET_LINE(LINE, LAST);
       if LAST > 0  then
          if TRIM(LINE(1..LAST))(1) = 'G'  or else
          TRIM(LINE(1..LAST))(1) = 'g'     then
@@ -755,7 +782,8 @@ WW := 70;
             raise TEXT_IO.DATA_ERROR;
          end if; 
       end if;
-   
+   end if; 
+      
    --PUT_LINE("OPENING   " &                                                 
    --     ADD_FILE_NAME_EXTENSION(DICT_LINE_NAME, DICTIONARY_KIND'IMAGE(D_K))); 
    

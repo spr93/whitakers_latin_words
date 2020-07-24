@@ -1,4 +1,5 @@
    with Text_Io; 
+   with Ada.Command_Line;
    with Strings_Package; use Strings_Package;  
    with Latin_File_Names; use Latin_File_Names;
    with Inflections_Package; use Inflections_Package;
@@ -61,8 +62,34 @@
       end Put_Indices;
    
    begin
+      
+   
       Put_Line("Creates STEMFILE.D_K and INDXFILE.D_K from STEMLIST.D_K");
    
+   
+      -- Process command-line arguments
+   if Ada.Command_Line.Argument_Count = 1 then
+                 for YY in 1..TRIM (Ada.Command_Line.Argument(1))'length loop
+                  case Upper_Case(TRIM(Ada.Command_Line.Argument(1))(YY)) is
+            
+                     when '-' => exit when YY > 3;
+                        
+                     when 'G' => D_K := GENERAL;
+                                Put_Line("Working on GENERAL dictionary");
+                                  
+                     when 'S' => D_K := SPECIAL;
+                                Put_Line("Working on GENERAL dictionary");
+                     
+                    when others => 
+                     New_Line;
+                     Put_Line("====== UNKNOWN COMMAND-LINE ARGUMENT(S) - RUNNING INTERACTIVELY  ======");
+                     New_Line;
+                     exit; 
+                  end case;  
+                  end loop;
+    end if;   --  End command-line argument processing    
+
+   if D_K = XXX then
       Put("What dictionary to load, GENERAL or SPECIAL  =>");
       Get_Line(Line, Last);
       if Last > 0  then
@@ -77,6 +104,9 @@
             raise Text_Io.Data_Error;
          end if; 
       end if;
+   end if;
+   
+   
    
       Open(   STEM_List(D_K), In_File,
               Add_File_Name_Extension(STEM_List_Name, 
@@ -180,28 +210,27 @@
                Get(Line(Ll+1..Last), Ds.Key , Ll);
                Get(Line(Ll+1..Last), Ds.mnpc , Ll);
                Write(STEM_File(D_K), Ds);
-            --Put_Line("Wrote STEMfile");
             
                if Fc /= Ofc   then  --  Jumped FC, effectively must have jumped a SC
-               --Put_Line("Jumped FC");
+               Put_Line("Jumped FC");
                   if Osc = ' '  then
                      Bdll(Ofc, Osc, D_K) := I - 1;
                   else
                      Ddll(Ofc, Osc, D_K) := I - 1;
                   end if;
-               
+               Put("Sc = '"); Put(Sc); Put("'   Fc = '"); Put(Fc); Put_Line("'");
                   if Sc = ' '  then 
-                  --Put("BDLF  "); Put(Bdlf(Fc, Sc, D_K)); New_Line;
+                  Put("BDLF  "); Put(Bdlf(Fc, Sc, D_K)); New_Line;
                      Bdlf(Fc, Sc, D_K) := I;
                   else
                      Ddlf(Fc, Sc, D_K) := I;
                   end if;
-               --Put_Line("if Sc done");
-               --Put("Ofc = '"); Put(Ofc); Put("'   Osc = '"); Put(Osc); Put_Line("'");
+               Put_Line("if Sc done");
+               Put("Ofc = '"); Put(Ofc); Put("'   Osc = '"); Put(Osc); Put_Line("'");
                   Put_Indices(Ofc & Osc, D_K);
                   Ofc := Fc;
                   Osc := Sc;
-               --Put_Line("exit Second_Character_Loop");
+               Put_Line("exit Second_Character_Loop");
                
                   exit Second_Character_Loop;
                else
