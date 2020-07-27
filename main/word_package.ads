@@ -3,6 +3,9 @@ with INFLECTIONS_PACKAGE; use INFLECTIONS_PACKAGE;
 with DICTIONARY_PACKAGE; use DICTIONARY_PACKAGE;
 with ADDONS_PACKAGE; use ADDONS_PACKAGE;
 with WORD_SUPPORT_PACKAGE; use WORD_SUPPORT_PACKAGE;
+with Ada.Directories;
+with Ada.Environment_Variables;
+
 package WORD_PACKAGE is
     
   LINE_NUMBER, WORD_NUMBER : INTEGER := 0;
@@ -75,4 +78,6 @@ package WORD_PACKAGE is
     
   procedure INITIALIZE_WORD_PACKAGE;
 
+  procedure CHECK_PATH_VARIABLE; -- search for WORD data files in the PATH directories
+   
 end WORD_PACKAGE;

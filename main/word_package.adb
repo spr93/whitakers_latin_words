@@ -9,6 +9,8 @@
    with DEVELOPER_PARAMETERS; use DEVELOPER_PARAMETERS;
    with LINE_STUFF; use LINE_STUFF;
    with ENGLISH_SUPPORT_PACKAGE; use ENGLISH_SUPPORT_PACKAGE;
+   with Ada.Directories;
+   with Ada.Environment_Variables;
 
    -- FOR WINDOWS TARGETS
    -- These with's enable Windows vt100 text format support
@@ -340,6 +342,7 @@ package body WORD_PACKAGE is
       --raise;
       end RUN_INFLECTIONS;
 
+   
 
       procedure TRY_TO_LOAD_DICTIONARY(D_K : DICTIONARY_KIND) is
       begin
@@ -2242,4 +2245,59 @@ end CHANGE_LANGUAGE;
          --put_line("WORD_PACKAGE INITIALIZED");
       end INITIALIZE_WORD_PACKAGE;
 
+  
+   procedure CHECK_PATH_VARIABLE is
+
+      Path_String : String := Ada.Environment_Variables.Value("PATH");
+      Start_Char : Natural := Path_String'First;
+      use Ada.Directories;
+
+      begin
+        for end_char in path_string'Range loop
+
+        case path_string(end_char) is
+
+         when ':' | ';' | ',' =>
+            if Exists(Compose(Containing_Directory => Path_String(start_char..(end_char-1)),
+                              Name                 => "INFLECTS.SEC"))
+            then
+               Set_Directory ( Path_String(start_char..(end_char-1)) );
+               Preface.Put_Line("Using data found at " & Current_Directory);
+                  exit;
+            elsif End_char+1 < Path_String'Last
+            then
+                Start_Char := End_char+1;
+            else
+            exit;
+           end if;
+
+         when ' '  =>
+            if End_char+1 < Path_String'Last
+            then
+               Start_Char := End_char+1;
+            else
+            exit;
+            end if;
+
+         when others =>
+            null;
+        end case;
+
+        if End_Char = Path_String'Last
+           and then Exists(Compose(Containing_Directory => Path_String(start_char..(end_char-1)),
+                                   Name                 => "INFLECTS.SEC"))
+           then
+            Set_Directory ( Path_String(start_char..(End_Char)) );
+            Preface.Put_Line("Using data found at " & Current_Directory);
+        end if;
+        end loop;
+     
+        
+   exception
+        when others => null;  -- Check path silently, don't get hung up on permissions errors or nonexistent directories in PATH
+
+
+ end CHECK_PATH_VARIABLE; 
+   
+   
    end WORD_PACKAGE;

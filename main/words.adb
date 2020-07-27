@@ -9,18 +9,30 @@
    with Ada.Interrupts; use Ada.Interrupts;
    with Ada.Interrupts.Names; use Ada.Interrupts.Names;
    with No_Exit_Handler; use No_Exit_Handler; 
-
+   with Ada.Environment_Variables;
+   with Ada.Directories;
 
    procedure WORDS is
       INPUT_LINE  : STRING(1..250) := (others => ' ');
       ARGUMENTS_START : INTEGER := 1;  
-       
+  
    begin
       --  The language shift in arguments must take place here
       --  since later parsing of line ignores non-letter characters
       CONFIGURATION := DEVELOPER_VERSION;
- 
-
+     
+      -- FIND DATA FILES
+      -- If the always-necessary INFLECTS.SEC isn't in the working directory, see if we can find them
+      if not Ada.Directories.Exists("INFLECTS.SEC") then
+         if Ada.Environment_Variables.Exists("LATINWORDS") then
+         Put_Line("LATINWORDS environment variable set; using data files at " & Ada.Environment_Variables.Value("LATINWORDS"));
+         Ada.Directories.Set_Directory(Ada.Environment_Variables.Value("LATINWORDS"));
+         else
+         CHECK_PATH_VARIABLE;
+         end if;
+      end if;
+      -- END FIND WORDS DATA FILES
+               
       --The main mode of usage for WORDS is a simple call, followed by screen interaction.
       if Ada.Command_Line.ARGUMENT_COUNT = 0  then      --  Simple WORDS
          METHOD := INTERACTIVE;                          --  Interactive
@@ -39,17 +51,19 @@
 
       declare 
              Args_Exception : exception;
-         
-             begin 
-               If TRIM(Ada.Command_Line.Argument(1))(1) /= '-' Or  TRIM (Ada.Command_Line.Argument(1))'length = 1   
-               then null;
-               else 
-               for I in 1..Ada.Command_Line.Argument_Count Loop
 
+             begin 
+               If TRIM(Ada.Command_Line.Argument(1))(1) /= '-'  
+               then null;
+             else 
+
+               for I in 1..Ada.Command_Line.Argument_Count loop
+             
                  for J in 2..TRIM (Ada.Command_Line.Argument(I))'length loop
                    exit when J > 5; -- max 5 arguments (-E and -L conflict) 
-                  case Upper_Case(TRIM(Ada.Command_Line.Argument(I))(J)) is
+                    case Upper_Case(TRIM(Ada.Command_Line.Argument(I))(J)) is
                     when '-' => exit when J > 2;
+                        exit;
                     when 'E' =>  
                        if CL_Arguments(Latin_Only) then raise Args_Exception;
                        else
@@ -107,7 +121,7 @@
          when Args_Exception: others =>     -- Parse may raise NO_EXCEPTION_EXCEPTION; handler is outside the block
             Put_Line("Words operates in two modes when using command-line arguments");
             New_Line;
-            Put_Line("[1] NON-INTERACTIVE WORDS:  Maintains backward compatibility.  Pearse codes available.");
+            Put_Line("[1] NON-INTERACTIVE WORDS:  Maintains compatibility with classic Words.");
             Put_Line("Usage:");
             Put_Line("words [string of Latin words]");
             Put_Line("   => send results for the Latin words to standard output and exit");

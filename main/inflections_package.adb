@@ -2533,9 +2533,11 @@ exception
   when Text_IO.Name_Error  =>
     NEW_LINE;
     PUT_LINE("There is no " & INFLECTIONS_SECTIONS_NAME & " file.");
-    PUT_LINE("The program cannot work without one.");
+    PUT_LINE("The program cannot work without one.");           
     PUT_LINE("Make sure you are in the subdirectory containing the files");
     PUT_LINE("for inflections, dictionary, addons and uniques.");
+    PUT_LINE("Alternatively, you may add the correct directory to the PATH");
+    PUT_LINE("or set a LATINWORDS environment variable to the correct directory.");
     raise GIVE_UP;
 
 end ESTABLISH_INFLECTIONS_SECTION;
