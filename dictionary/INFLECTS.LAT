@@ -920,10 +920,10 @@ ADJ   3 6 ACC P C POS   2 2 as       X A
 
 
 --  For ADJ abbreviations, indeclinable, but a special case vis. capitalization
-ADJ   9 8 X X X X 1 0             X A
+ADJ   9 8 X X X X 1 0                X A
 
 --  For adjective that is not declined
-ADJ   9 9 X X X X 1 0             X A
+ADJ   9 9 X X X X 1 0                X A
 
 
 
