@@ -1,7 +1,7 @@
 with TEXT_IO; 
 with DIRECT_IO;
 package INFLECTIONS_PACKAGE is
-   pragma Elaborate_Body;
+  pragma Elaborate_Body;
   package INTEGER_IO is new TEXT_IO.INTEGER_IO(INTEGER);
   use TEXT_IO;
 
@@ -358,7 +358,7 @@ type ADVERB_RECORD is
   record
          CO   : COMPARISON_TYPE := X;
    GENERATED  : GENERATED_TYPE := X;     -- Indicates record was created by ADJ VOC -> ADV conversion
-  end record;                                  -- (only matters for examples; unlike X and POS prints "~ly, ~ily")
+  end record;                            -- (only matters for examples; unlike X and POS prints "~ly, ~ily")
 
  package ADVERB_RECORD_IO is
    DEFAULT_WIDTH : NATURAL;
@@ -532,7 +532,7 @@ type INTERJECTION_RECORD is
   end SUFFIX_RECORD_IO;  
  
 
-  type QUALITY_RECORD(POFS : PART_OF_SPEECH_TYPE := X) is  -- SPR:  appears to a quality of the record's content, here the POFS type?
+  type QUALITY_RECORD(POFS : PART_OF_SPEECH_TYPE := X) is
     record
       case POFS is
         when N =>
