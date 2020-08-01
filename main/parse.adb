@@ -31,7 +31,7 @@ procedure PARSE (COMMAND_LINE : String := "") is
    J, K, L          : Integer             := 0;
    LINE, BLANK_LINE : String (1 .. 2_500) := (others => ' ');
 
-   PA : PARSE_ARRAY (1 .. 100)         := (others => NULL_PARSE_RECORD);
+   PA : PARSE_ARRAY (1 .. 150)         := (others => NULL_PARSE_RECORD);
    SYNCOPE_MAX                   : constant                       := 20;
    NO_SYNCOPE                    : Boolean                        := False;
    TRICKS_MAX                    : constant                       := 40;
@@ -226,8 +226,7 @@ procedure PARSE (COMMAND_LINE : String := "") is
                procedure ENCLITIC is
                   SAVE_DO_FIXES      : Boolean := WORDS_MODE (DO_FIXES);
                   SAVE_DO_ONLY_FIXES : Boolean := WORDS_MDEV (DO_ONLY_FIXES);
-                  ENCLITIC_LIMIT     : Integer :=
-                    4;                        -- SPR:  Arbitrary?   Any situations or special words where we want to change the initial limit?
+                  ENCLITIC_LIMIT     : Integer := 4;                       
                   TRY : constant String := LOWER_CASE (INPUT_WORD);
                begin
 --TEXT_IO.PUT_LINE("Entering ENCLITIC  HAVE DONE = " & BOOLEAN'IMAGE(HAVE_DONE_ENCLITIC));
@@ -1284,9 +1283,14 @@ begin --  PARSE
             if (Name (Current_Input) = Name (Standard_Input)) then
                SCROLL_LINE_NUMBER :=
                  Integer (Text_IO.Line (Text_IO.Standard_Output));
+               
+               PA := (others => NULL_PARSE_RECORD); -- clear PA to prevent exceptions in LIST_STEM
+                                                    -- which can occur after a huge result fills the
+                                                    -- PA (e.g., arcule will return a full array once
+                                                    -- then cause an exception the next time without this)
                PREFACE.NEW_LINE;
                PREFACE.PUT ("=>");
-
+               
             end if;
 
             LINE := BLANK_LINE;
