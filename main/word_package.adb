@@ -328,7 +328,6 @@ package body WORD_PACKAGE is
 
                      --PUT_LINE("LENGTH = " & INTEGER'IMAGE(STEM_LENGTH) 
                      --& "   SA =>" & PR.STEM & "|");
-
                      end if;
                   end if;
                end loop;
@@ -342,7 +341,6 @@ package body WORD_PACKAGE is
       --raise;
       end RUN_INFLECTIONS;
 
-   
 
       procedure TRY_TO_LOAD_DICTIONARY(D_K : DICTIONARY_KIND) is
       begin
@@ -354,14 +352,22 @@ package body WORD_PACKAGE is
                                               DICTIONARY_KIND'IMAGE(D_K)));
          DICT_IO.OPEN(DICT_FILE(D_K), DICT_IO.IN_FILE,
                       ADD_FILE_NAME_EXTENSION(DICT_FILE_NAME,
-                                              DICTIONARY_KIND'IMAGE(D_K)));
+                        DICTIONARY_KIND'IMAGE(D_K)));
          LOAD_INDICES_FROM_INDX_FILE(ADD_FILE_NAME_EXTENSION(INDX_FILE_NAME,
                                                              DICTIONARY_KIND'IMAGE(D_K)), D_K);
          DICTIONARY_AVAILABLE(D_K) := TRUE;
       --    PUT_LINE("Successfully loaded " & DICTIONARY_KIND'IMAGE(D_K) &
       --             " dictionary from STEMFILE ");
-
-         exception
+     
+      ISOLATE_MNPC_COUNT_ERRORS:  -- Used by LIST_NEIGHBORHOOD to prevent situations where the loop
+      declare                     -- would otherwise go beyond the dictionary bounds and raise exception
+         begin                    -- Since this addresses corner case and harmless exception, handle exceptions silently
+      LAST_MNPC := dict_io.size(DICT_FILE(GENERAL));  -- to avoid introducing new issues with via this fix
+      exception
+         when others => LAST_MNPC := NULL_MNPC;
+      end ISOLATE_MNPC_COUNT_ERRORS;
+      
+      exception
             when others  =>
             --PUT_LINE("Failed to load " & DICTIONARY_KIND'IMAGE(D_K) &
             --             " dictionary from STEMFILE ");

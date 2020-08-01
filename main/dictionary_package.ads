@@ -441,7 +441,7 @@ package DICTIONARY_PACKAGE is
       package MNPC_IO is new TEXT_IO.INTEGER_IO(DICT_IO.COUNT); 
       subtype MNPC_TYPE is DICT_IO.COUNT;
       NULL_MNPC : DICT_IO.COUNT := DICT_IO.COUNT'FIRST;
-   
+      LAST_MNPC : DICT_IO.COUNT := NULL_MNPC;
    
       type PARSE_RECORD is
          record

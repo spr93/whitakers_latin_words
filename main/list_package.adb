@@ -13,6 +13,7 @@ with DICTIONARY_FORM;
 with PUT_EXAMPLE_LINE;
 with LIST_SWEEP;
 with PUT_STAT;
+
 package body LIST_PACKAGE is
 
    package BOOLEAN_IO is new Text_IO.Enumeration_IO (Boolean);
@@ -31,8 +32,8 @@ package body LIST_PACKAGE is
    MM                     : Integer  := MAX_MEANING_SIZE;
    I, J, K                : Integer  := 0;
 
-   Next_Meaning_Same, Next_Form_Same,
-   Last_Form_Same, Put_Meaning_Anyway : Boolean := False;
+   Next_Meaning_Same, Next_Form_Same, Last_Form_Same,
+   Skip_Next, Put_Meaning_Anyway : Boolean := False;
 
    function CAP_STEM (S : String) return String is
    begin
@@ -238,7 +239,7 @@ package body LIST_PACKAGE is
         (1 .. STEM_INFLECTION_ARRAY_ARRAY_SIZE) :=
         (others => NULL_SRA);
 
---      type DICTIONARY_MNPC_RECORD is record
+--     type DICTIONARY_MNPC_RECORD is record
 --        D_K  : DICTIONARY_KIND := DEFAULT_DICTIONARY_KIND;
 --        MNPC : MNPC_TYPE := NULL_MNPC;
 --        DE   : DICTIONARY_ENTRY := NULL_DICTIONARY_ENTRY;
@@ -787,6 +788,8 @@ package body LIST_PACKAGE is
 --PARSE_RECORD_IO.PUT(PA(PA_LAST)); TEXT_IO.NEW_LINE;
                PA_LAST := PA_LAST + 1;
 
+
+            if PA (J2 + 1).IR.QUAL.POFS = ADJ then
                if PA (J2 + 1).IR.QUAL.ADJ.CO = POS then
 
 --TEXT_IO.PUT_LINE("In the ADJ -> ADV kludge  Adding POS for ADV");
@@ -818,7 +821,10 @@ package body LIST_PACKAGE is
                       ("Suffix may indicate ADV formed from ADJ (caution: the ADV form may not exist)",
                        MAX_MEANING_SIZE);
 
+                  end if;
                end if;
+
+
       --TEXT_IO.PUT_LINE("In the ADJ -> ADV kludge  Done adding PA for ADV");
             end if;           --  PA(I).IR.QUAL.POFS = ADJ
 
@@ -1345,17 +1351,29 @@ package body LIST_PACKAGE is
          --  Skips one identical SRA
             --  no matter what comes next
 
-            if J = PA_LAST and then DMA(J).D_K  in ADDONS..YYY and then DMA(J+1).D_K = X
-            then
+            if J = PA_LAST and then DMA(J).D_K  in ADDONS..YYY
+              and then DMA(J+1).D_K = X
+               then
                -- Prevent situation where two TRICKS and syncope could result in duplicated lines; e.g., admorunt
                null;
-             else
+            elsif DMA(J).D_K = PPP
+              and then J > 2
+                and then SRAA(J)(1).stem =  SRAA(J-2)(1).stem
+                 and then DMA(J).DE.STEMS = DMA(J-2).de.STEMS
+                   then
+                      Skip_Next := true;
+               --  PPP version of the same issue wrt TRICKS and SYNCOPE above
+               --  More complicated because the ADJ => ADV "kludge" part of LIST_PACKAGE inserts entries into the
+               --  PA (e.g., arcule), so we have to look foreward and behind to make sure there are really dupes
+            elsif Skip_Next = true
+                then
+                  null;
+            else
              PUT_INFLECTION_ARRAY_J :
             for K in SRAA (J)'RANGE loop
                exit when SRAA (J) (K) =  NULL_STEM_INFLECTION_RECORD;
-               PUT_INFLECTION (SRAA (J) (K), DMA (J));
-
-               if SRAA (J) (K).STEM (1 .. 3) = "PPL" then
+                  PUT_INFLECTION (SRAA (J) (K), DMA (J));
+                  if SRAA (J) (K).STEM (1 .. 3) = "PPL" then
                   Text_IO.Put_Line (OUTPUT, HEAD (PPP_MEANING, MM));
                end if;
             end loop PUT_INFLECTION_ARRAY_J;
@@ -1366,10 +1384,11 @@ package body LIST_PACKAGE is
 
          end if;
 
+
+
          Next_Meaning_Same := False;
          Last_Form_Same    := False;
          Next_Form_Same    := False;
-
 
         if DMA (J).DE.MEAN = DMA (J + 1).DE.MEAN then
                Next_Meaning_Same := True;
@@ -1406,14 +1425,15 @@ package body LIST_PACKAGE is
          end if;
 
 
--- TEXT_IO.PUT_LINE("PUTting FORM");
+ --TEXT_IO.PUT_LINE("PUTting FORM");
          PUTTING_FORM :
          begin
 
-
-            if DMA (J).D_K = GENERAL
-              and then Last_Form_Same
-              then
+            if Skip_Next = true then
+              null;
+            elsif DMA (J).D_K = GENERAL
+              and then Last_Form_Same                  -- therefore J > 1, so no explicit check
+               then
                if
                SRAA (J - 1) /= SRAA (J) then           -- Special tests here address rare issue that occurs
                PUT_FORM (SRAA (J) (1), DMA (J));       -- when there are multiple UNIQUE hits (e.g., quae, eadem, bobus)
@@ -1438,12 +1458,12 @@ package body LIST_PACKAGE is
 
 
 --DEBUG
---       Text_IO.Put_Line("                               LAST FORM SAME: " & Last_Form_Same'Image);
---       Text_IO.Put_Line("                               NEXT FORM SAME: " & Next_Form_Same'Image);
---       Text_IO.Put_Line("                            NEXT MEANING SAME: " & Next_MEANING_Same'Image);
---       Text_IO.Put_Line("                           PUT MEANING ANYWAY: " & Put_Meaning_Anyway'Image);
---       Text_IO.Put_Line("At " & J'Image & "and " & DMA'Last'Image);
---       Text_IO.Put_Line("D_K is " & Dma(J).D_K'Image & "D_K next is " & Dma(J+1).D_K'Image  );
+     --  Text_IO.Put_Line("                               LAST FORM SAME: " & Last_Form_Same'Image);
+     --  Text_IO.Put_Line("                               NEXT FORM SAME: " & Next_Form_Same'Image);
+     --  Text_IO.Put_Line("                            NEXT MEANING SAME: " & Next_MEANING_Same'Image);
+     --  Text_IO.Put_Line("                           PUT MEANING ANYWAY: " & Put_Meaning_Anyway'Image);
+     --  Text_IO.Put_Line("At " & J'Image);
+     --  Text_IO.Put_Line("D_K is " & Dma(J).D_K'Image & "D_K next is " & Dma(J+1).D_K'Image  );
 --DEBUG
 
 
@@ -1453,6 +1473,9 @@ package body LIST_PACKAGE is
             if Put_Meaning_Anyway then
                PUT_MEANING_LINE (SRAA (J) (1), DMA (J));
                Put_Meaning_Anyway := False;
+
+            elsif Skip_Next = true then
+               null;
 
             elsif not Next_Meaning_Same
               or DMA (J).D_K not in General..UNIQUE      -- Make sure no Roman numerals or syncopes, tricks, etc are missed
@@ -1485,28 +1508,38 @@ package body LIST_PACKAGE is
                Text_IO.Put (OUTPUT, Format_Reset);
                Text_IO.Put (OUTPUT, Format_Inverse);
 
-            end if;
+                   end if;
 
-         Text_Io.New_Line(Output);
+              Text_Io.New_Line(Output);
 
-            Text_Io.PUT_LINE(OUTPUT, "OUTPUT TRIMMED:  Turn off TRIM_OUTPUT to see more.");
+              Text_Io.PUT_LINE(OUTPUT, "OUTPUT TRIMMED:  Turn off TRIM_OUTPUT to see more.");
 
-             if WORDS_MODE (DO_ANSI_FORMATTING) then
+               if WORDS_MODE (DO_ANSI_FORMATTING) then
                Text_IO.Put (OUTPUT, Format_Reset);
-            end if;
+                end if;
 
-       end if;
+               end if;
 
       Text_IO.New_Line (OUTPUT);
+
+               if J < PA_LAST and then
+                SRAA(J)(1).stem =  SRAA(J-1)(1).stem
+                   and then DMA(J).DE.STEMS = DMA(J+1).de.STEMS
+                   then
+                  Skip_Next := true;
+               else
+                  skip_next := false;
+              end if;
 
    exception
       when others =>
          Text_IO.Put_Line
            ("Unexpected exception in LIST_STEMS processing " & RAW_WORD);
-         PUT_STAT
+         Text_IO.Put_Line
            ("EXCEPTION LS at " & HEAD (Integer'IMAGE (LINE_NUMBER), 8) &
             HEAD (Integer'IMAGE (WORD_NUMBER), 4) & "   " & HEAD (W, 20) &
-            "   " & PA (I).STEM);
+              "   " & PA (I).STEM);
+
    end LIST_STEMS;
 
    procedure LIST_ENTRY
@@ -1701,14 +1734,17 @@ package body LIST_PACKAGE is
             Text_IO.Put (Format_Reset);
          end if;
          PAUSE (OUTPUT);
+
          for MN in
-           DICT_IO.Count (Integer (UNK_MNPC) - 5) ..
-             DICT_IO.Count (Integer (UNK_MNPC) + 3)
-         loop
+              DICT_IO.Count (Integer (UNK_MNPC) - 5) ..
+              DICT_IO.Count (Integer (UNK_MNPC) + 3)
+            loop
+            exit when integer(MN) > integer(LAST_MNPC)
+              and then integer(LAST_MNPC) /= integer(null_mnpc);
 
-            LIST_ENTRY (OUTPUT, D_K, MN);
-
+               LIST_ENTRY (OUTPUT, D_K, MN);
          end loop;
+
       end if;
 
 -- TEXT_IO.PUT_LINE("Leaving LIST_NEIGHBORHOOD");

@@ -26,9 +26,10 @@ package WORD_PACKAGE is
       D_K  : DICTIONARY_KIND := DEFAULT_DICTIONARY_KIND;
     end record;
   NULL_PRUNED_DICTIONARY_ITEM : PRUNED_DICTIONARY_ITEM;
-  type PRUNED_DICTIONARY_LIST is array (1..80) of PRUNED_DICTIONARY_ITEM;
+  type PRUNED_DICTIONARY_LIST is array (1..100) of PRUNED_DICTIONARY_ITEM;
   --  Aug 96   QU_PRON max 42, PACK max 54
   --  Jan 97   QU_PRON max 42, PACK max 74  --  Might reduce
+  --  July 2020 more headroom for situations where there are multiple addons + dictionary entries (e.g., praedivine, praedivinere, etc.)
  
   PDL : PRUNED_DICTIONARY_LIST := (others => NULL_PRUNED_DICTIONARY_ITEM);
   PDL_INDEX : INTEGER := 0;
