@@ -65,7 +65,7 @@ N     1 1 NOM S C  1 1 a         X A
 N     1 1 NOM S M  1 2 as        B D    --  G&L 29 N1
 N     1 1 VOC S C  1 1 a         X A
 N     1 1 GEN S C  2 2 ae        X A
-N     1 1 GEN S C  2 2 ai        B C    --  G&L 29 N2 A&G 43a  --  Poetic
+N     1 1 GEN S C  2 2 ai        B C    --  G&L 29 N2 A&G 43a  (Poetic)
 N     1 1 LOC S C  2 2 ae        X A
 N     1 0 DAT S C  2 2 ae        X A
 N     1 0 DAT S C  2 2 ai        B I    --  G&L 29 N3
@@ -105,7 +105,7 @@ N     1 7 NOM S C  1 2 es        X A
 N     1 7 VOC S C  1 1 e         X A
 N     1 7 VOC S C  1 1 a         X B
 N     1 7 GEN S C  2 2 ae        X A
-N     1 7 GEN S C  2 2 ai        B B    --  G&L 29 N2 A&G 43a  --  Poetic
+N     1 7 GEN S C  2 2 ai        B B    --  G&L 29 N2 A&G 43a  (Poetic)
 N     1 7 LOC S C  2 2 ae        X A
 N     1 7 ABL S C  2 1 e         X A
 N     1 7 ABL S C  2 1 a         X B
@@ -120,7 +120,7 @@ N     1 8 NOM S M  1 2 as        X A
 N     1 8 NOM S F  1 1 a         X A    --  My guess from the Greek
 N     1 8 VOC S C  1 1 a         X A
 N     1 8 GEN S C  2 2 ae        X A
-N     1 8 GEN S C  2 2 ai        B B    --  G&L 29 N2 A&G 43a  --  Poetic
+N     1 8 GEN S C  2 2 ai        B B    --  G&L 29 N2 A&G 43a  (Poetic)
 N     1 8 LOC S C  2 2 ae        X A
 N     1 8 ACC S C  2 2 an        X A
 N     1 8 ACC S C  2 2 am        X B
@@ -187,7 +187,7 @@ N     2 3 GEN S X  2 1 i         X A
 
 
 --  Early (BC) 2nd declension nouns in ius/ium (not filius-like) - N 2 4
---  for the most part formed GEN S in 'i', not 'ii'   --  G&L 33 R 1
+--  for the most part formed GEN S in 'i', not 'ii'  G&L 33 R 1
 --  Dictionaries often show as ...(i)i
 --  N 2 4 uses GENDER discrimination to reduce to single VAR
 --  Ex: radius rad(i)i  => radi radi        M
@@ -205,7 +205,7 @@ N     2 4 ACC S X  2 2 um        X A
 --  Stem includes "i" mostly, loses the "i" in the VOC and GEN
 --  Note that the "i" is kept in plural
 --  I know of only male entries for this variant
---  Ex: filius fili  =>  fili  fili  --  but is very special case
+--  Ex: filius fili  =>  fili  fili  but is very special case
 --  Ex: Lucius Lucii  =>  Luci  Luci
 N     2 5 NOM S M  1 2 us        X A
 N     2 5 VOC S M  1 0           X A
@@ -232,7 +232,7 @@ N     2 6 ACC P N  2 1 e         B C     --  OLD cetus
 --  This artificial declension is a hybrid:  A subset of what A&G 82 call 
 --  Greek third declension proper names plus inflections from what A&G 52  
 --  call Greek second declension. To make things more complicated, OLD and 
---  L+S often have multiple alternative inflection--and A&G 82(fn) indicate  
+--  L+S often have multiple alternative inflection and A&G 82(fn) indicate  
 --  that the usual Latin third declension inflections may also apply.
 --  Yet this hybrid, combined with a couple UNIQUES entries, does a pretty 
 --  good job of capturing the dictionary's -ys stem Greek nouns that closely,
@@ -243,7 +243,10 @@ N     2 7 NOM S C  1 0           X A
 N     2 7 VOC S C  1 0           X A
 N     2 7 GEN S C  2 3 yos       X A  
 N     2 7 GEN S M  2 2 us        X A 
--- N     2 7 GEN S C  3 1 o         X A  -- this was only for echo
+
+-- N     2 7 GEN S C  3 1 o         X A  
+-- this was only for echo
+
 N     2 7 GEN S C  2 1 i         X A
 N     2 7 DAT S C  2 1 i         A A  
 N     2 7 ACC S C  2 2 yn        X A  -- Hack for ys->yn (on)
@@ -253,7 +256,8 @@ N     2 7 ACC S C  2 1 o         X B  -- ????
 N     2 7 ACC P C  2 3 yos       X A
 
 
---  Nouns from Greek in -on       --  only  N
+--  Nouns from Greek in -on       
+    --  only  N
 --  Ex:  Ilion Ilii    =>  Ili  Ili
 N     2 8 NOM S N  1 2 on        X A
 N     2 8 VOC S N  2 2 on        X A
@@ -264,7 +268,8 @@ N     2 8 ABL S N  1 2 on        X A  -- A&G 52
 
 
 
---  Ex:  Panthus, Panthi => Panth Panth  --  only one?
+--  Ex:  Panthus, Panthi => Panth Panth  
+        --  only one?
 --  Ex:  Teucrus
 --  and even OLD does not give information to allow this designation
 N     2 9 NOM S C  1 2 us        X A
@@ -298,7 +303,10 @@ N     3 1 ACC S C  2 2 em        X A
 
 N     3 0 NOM P C  2 2 es        X A
 N     3 0 NOM P C  2 2 is        A B
---N     3 0 NOM P C  2 3 eis       A C    --  Deleted for false positives (JFW)
+
+--N     3 0 NOM P C  2 3 eis       A C    
+--  Deleted for false positives (JFW)
+
 N     3 0 VOC P C  2 2 es        X A
 N     3 1 GEN P C  2 2 um        X A
 N     3 1 GEN P C  2 3 ium       X B      --  G&L 38 2
@@ -309,7 +317,7 @@ N     3 1 ACC P C  2 2 is        X C      --  G&L 57 4
 N     3 1 ACC P C  2 2 es        X A
 
 
---  Third declension  N nouns with stems ending in a consonant - N 3 2
+--  Third declension  N nouns with stems ending in a consonant  N 3 2
 --  Ex: nomen nomenis  =>  nomen nomin
 --  Ex: iter itineris =>  iter itiner
 --  Ex: tempus temporis  =>  tempus  tempor
@@ -323,7 +331,7 @@ N     3 2 GEN P N  2 3 ium       X B      --  G&L 38 2
 N     3 2 ACC P N  2 1 a         X A
 
 
---  Third declension nouns  I-stems (M & F) - N 3 3
+--  Third declension nouns  I-stems (M & F) N 3 3
 --  Ex: hostis hostis  =>  hostis host
 --  Ex: finis finis  =>  finis fin
 --  Consonant i-stems
@@ -345,9 +353,12 @@ N     3 3 ACC P C  2 3 eis       A C      --  G&L 57 5
 
 
 --  Third declension nouns  I-stems (N) - N 3 4
---  Ex: mare maris  =>  mare mar                       --  ending in "e"
---  Ex: animal animalis  =>  animal animal             --  ending in "al"
---  Ex: exemplar exemplaris  =>  exemplar exemplar     --  ending in "ar"
+--  Ex: mare maris  =>  mare mar                       
+    --  ending in "e"
+--  Ex: animal animalis  =>  animal animal             
+    --  ending in "al"
+--  Ex: exemplar exemplaris  =>  exemplar exemplar     
+    --  ending in "ar"
 --  Also use this for present participles (-ns) used as substantives in N
 N     3 4 ABL S N  2 1 i         X A
 N     3 4 ACC S N  1 0           X A
@@ -386,8 +397,8 @@ N     3 7 ACC P N  2 1 a         X A
 
 
 
---  Mixed Greek II and III  (V)          --  G&L 65
---  Ex:  Moses, Mosis  =>  Moses Mos     --  Ecc
+--  Mixed Greek II and III  (V)          G&L 65
+--  Ex:  Moses, Mosis  =>  Moses Mos     Ecc
 --  Ex:  Ulixes, Ulixis/i/ei  =>  Uxiles Uxil/Uxile
 --  Ex:  Achilles, Achillis  =>  Achilles Achill/Achille
 --N     3 0 VOC S X  1 0           X A
@@ -408,7 +419,8 @@ N     3 8 ACC P C  2 2 is        X A
 --  Both Greek 3rd declension and Latin 3rd.
 --  Ex:  tigris tigris/tigridis  =>  tigris tigr/tigrid
 --  Ex:  praxis praxios  =>  prax praxi
---  Ex:  haeresis haereseos  =>  haeres haerese (haeresis, -is is NOT --   of type 3 9, the ACC SING is haeresem)
+--  Ex:  haeresis haereseos  =>  haeres haerese (haeresis, -is is NOT 
+--   of type 3 9, the ACC SING is haeresem)
 --  Ex:  pater patros  =>  pater patr
 --  Note that the ACC SING can be derived from either the 1st or the
 --   2nd stem (depends on word)
@@ -418,7 +430,10 @@ N     3 9 NOM S X  1 2 is        X A  --JFW, 1st stem
 --N     3 0 VOC S X  1 0 NULL          X A
 -- there ought to be a N 3 9 VOC ending in -is, but I know of no example in Latin.
 N     3 9 GEN S X  2 2 os        X A
---N     3 9 GEN S X  2 2 is        X B  -- duplicates N 3 0
+
+--N     3 9 GEN S X  2 2 is        X B  
+-- duplicates N 3 0
+
 --N     3 0 DAT S X  2 1 i         D A
 N     3 9 ABL S X  2 1 i         X A
 N     3 9 ACC S X  1 2 in        X A  -- JFW, 1st stem
@@ -598,7 +613,10 @@ ADJ   0 0 GEN S C COMP  3 4 oris  X A
 ADJ   0 0 DAT S X COMP  3 3 ori   X A
 ADJ   0 0 ACC S C COMP  3 4 orem  X A
 ADJ   0 0 ABL S X COMP  3 3 ore   X A
---  Alternatively  -- For poet and early and late prose   G & L 89
+
+--  Alternatively  
+-- For poet and early and late prose   G & L 89
+
 ADJ   0 0 ABL S X COMP  3 3 ori   X A
 ADJ   0 0 VOC S C COMP  3 2 or    X A
 
@@ -676,7 +694,7 @@ ADJ   0 0 VOC P N SUPER 4 2 ma       X A
 
 --  Adjectives of first and second declension (-er) - ADJ 1 2
 --  Ex: miser misera miserum  =>  miser miser miseri miserri
---  Ex: sacer sacra sacrum  =>  sacer sacr zzz  sacerri     --  no COMP
+--  Ex: sacer sacra sacrum  =>  sacer sacr zzz  sacerri     (no COMP)
 --  Ex: pulcher pulchri  =>  pulcher pulchr pulchri pulcherri
 ADJ   1 2 NOM S M POS   1 0          X A
 ADJ   1 2 GEN S M POS   2 1 i        X A
@@ -694,7 +712,7 @@ ADJ   1 2 VOC S N POS   2 2 um       X A
 
 
 --  nullus type adjectives           (with ius in GEN and i in DAT sing)
---  nullus (gen) nullius  =>  null null zzz zzz   --  no COMP or SUPER
+--  nullus (gen) nullius  =>  null null zzz zzz   (no COMP or SUPER)
 ADJ   1 3 NOM S M POS   1 2 us       X A
 ADJ   1 3 GEN S X POS   2 3 ius      X A
 ADJ   1 3 DAT S X POS   2 1 i        X A
@@ -874,7 +892,7 @@ ADJ   3 0 VOC P N POS   2 2 ia       X A
 
 
 
---  Adjectives of third declension - two endings   - ADJ 3 2
+--  Adjectives of third declension - two endings 
 --  Ex: brevis breve  =>  brev brev brevi brevissi
 --  Ex: facil facil   =>  facil facil facili facilli
 ADJ   3 2 NOM S C POS   1 2 is       X A
@@ -890,7 +908,7 @@ ADJ   3 2 NOM P C POS   2 3 eis      F B -- Erasmus and neoLatin (JFW)
 ADJ   3 2 ACC P C POS   2 3 eis      F B -- Erasmus and neoLatin (JFW)
 
 
---  Adjectives of third declension - three endings  - ADJ 3 3
+--  Adjectives of third declension - three endings 
 --  Ex: celer celeris  celere  =>  celer celer celeri celerri
 --  Ex: acer acris acre  =>  acer acr acri acerri
 ADJ   3 3 NOM S M POS   1 0          X A
@@ -927,7 +945,7 @@ ADJ   9 9 X X X X 1 0                X A
 
 
 
---  Verbs of the first conjugation  --  V 1 1
+--  Verbs of the first conjugation  
 --  Ex: voco vocare vocavi vocatus  =>  voc voc vocav vocat
 --  Ex: porto portave portavi portatus  =>  port port portav portat
 
@@ -1234,8 +1252,7 @@ V     2 1 FUT   PASSIVE IMP  2 S  2 4 etor          X A
 V     2 1 FUT   PASSIVE IMP  3 S  2 4 etor          X A
 V     2 1 FUT   PASSIVE IMP  3 P  2 5 entor         X A
 
-
-  --  Infinitives
+--  Infinitives
 
 V     2 1 PRES  ACTIVE  INF  0 X  2 3 ere           X A
 V     2 1 PERF  ACTIVE  INF  0 X  3 4 isse          X A
@@ -1251,10 +1268,11 @@ V     2 1 PRES  PASSIVE INF  0 X  2 5 erier         B B
 --  Verbs of the third conjugation, variant 1 - V 3 1
 --  Ex: rego regere rexi rectum  =>  reg reg rex rect
 --  Ex: pono ponoere posui positus  =>  pon pon posu posit
---  Ex: capio capere cepi captus  => capi cap cep capt   --  I-stem too w/KEY
-  --  Indicative
+--  Ex: capio capere cepi captus  => capi cap cep capt   
+--  I-stem too w/KEY
+--  Indicative
 
-    --  Active voice
+--  Active voice
 
 V     3 0 PRES  ACTIVE  IND  1 S  1 1 o             X A
 V     3 1 PRES  ACTIVE  IND  2 S  2 2 is            X A
@@ -1470,7 +1488,7 @@ V     3 2 PRES  PASSIVE INF  0 X  2 4 rier          B B
 
 
 
---  Irregular verbs sort of like the third/fourth conjugation   -  no perfect system
+--  Irregular verbs sort of like the third/fourth conjugation (no perfect system)
 --  Ex: fio fieri factus sum   =>  fi f zzz fact
 
   --  Indicative
@@ -1851,7 +1869,8 @@ V     6 1 FUT   PASSIVE IND  1 P  2 5 bimur          X A
 V     6 1 FUT   PASSIVE IND  2 P  2 6 bimini         X A
 V     6 1 FUT   PASSIVE IND  3 P  2 6 buntur         X A
 
---  Or the V 3 4 form     -- Observed in Vulgate
+--  Or the V 3 4 form     
+-- Observed in Vulgate
 --  Key=2 used to get the i, which appears in Key=1 in V 3 4
 V     6 1 FUT   PASSIVE IND  1 S  2 2 ar            E C
 V     6 1 FUT   PASSIVE IND  2 S  2 4 eris          E C
@@ -1869,7 +1888,7 @@ V     6 1 FUT   PASSIVE IND  3 P  2 5 entur         E C
 
   --  Subjunctive
 
-    --  Active voice               --  A+G 203
+    --  Active voice               A+G 203
 
 V     6 1 PRES  ACTIVE  SUB  1 S  1 2 am            X A
 V     6 1 PRES  ACTIVE  SUB  2 S  1 2 as            X A
@@ -1888,7 +1907,7 @@ V     6 1 IMPF  ACTIVE  SUB  2 P  2 5 retis         X A
 V     6 1 IMPF  ACTIVE  SUB  3 P  2 4 rent          X A
 
 
-    --  Passive        - not used with eo, but with transitive compounds
+    --  Passive         not used with eo, but with transitive compounds
     --  I am unsure about these
 
 V     6 1 PRES  PASSIVE SUB  1 S  1 2 ar            X A
@@ -2803,10 +2822,12 @@ PRON  1 0 GEN P N   1 4 orum                        X A
 
 --  The various variations in NOM S M are:
 --  i or is
---  qui     --  Note that the only stem from hereon is qu (1)
+--  qui     
+--  Note that the only stem from hereon is qu (1)
 PRON  1 1 NOM S M   1 1 i                           X A
 
---  quis  --  Ususlly M or C
+--  quis  
+--  Usually M or C
 PRON  1 2 NOM S C   1 2 is                          X A
 PRON  1 5 ABL S F   1 1 o                           X A
 
@@ -2821,7 +2842,8 @@ PRON  1 3 ABL S F   1 1 a                           X A
 PRON  1 4 NOM S F   1 2 ae                          X A
 PRON  1 4 ABL S F   1 1 a                           X A
 
---  quis                --  Subsumed in 1 2
+--  quis                
+--  Subsumed in 1 2
 --PRON  1 5 NOM S F   1 2 is                          X A
 --PRON  1 5 ABL S F   1 1 o                           X A
 
@@ -2835,11 +2857,13 @@ PRON  1 7 NOM S N   1 2 od                          X A
 PRON  1 7 ACC S N   1 2 od                          X A
 
 --  -ae or -a NOM/ACC N P
---  -ae   --  usual
+--  -ae   
+--  usual
 PRON  1 8 NOM P N   1 2 ae                          X A
 PRON  1 8 ACC P N   1 2 ae                          X A
 
---  -a    --  used with ali- prefix
+--  -a    
+--  used with ali- prefix
 PRON  1 9 NOM P N   1 1 a                           X A
 PRON  1 9 ACC P N   1 1 a                           X A
 
