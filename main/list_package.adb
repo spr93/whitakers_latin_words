@@ -13,7 +13,6 @@ with DICTIONARY_FORM;
 with PUT_EXAMPLE_LINE;
 with LIST_SWEEP;
 with PUT_STAT;
-
 package body LIST_PACKAGE is
 
    package BOOLEAN_IO is new Text_IO.Enumeration_IO (Boolean);
@@ -1184,7 +1183,7 @@ package body LIST_PACKAGE is
 
 --TEXT_IO.PUT_LINE("Made QA");
 
-      --  Sets + if capitalized
+   --  Sets + if capitalized
    --  Strangely enough, it may enter LIST_STEMS with PA_LAST /= 0
    --  but be weeded and end up with no parse after LIST_SWEEP  -  PA_LAST = 0
       if PA_LAST = 0 then  --  WORD failed
@@ -1346,27 +1345,26 @@ package body LIST_PACKAGE is
 --                                                                                         --!!!!!!!!!!!!!!!!!!!!!!!!
 -- --!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-
          if SRAA (J) /= OSRA Then
          --  Skips one identical SRA
             --  no matter what comes next
 
-            if J = PA_LAST and then DMA(J).D_K  in ADDONS..YYY
+            if J = PA_LAST and then DMA(J).D_K in ADDONS..YYY
               and then DMA(J+1).D_K = X
-               then
+            then
                -- Prevent situation where two TRICKS and syncope could result in duplicated lines; e.g., admorunt
                null;
             elsif DMA(J).D_K = PPP
               and then J > 2
-                and then SRAA(J)(1).stem =  SRAA(J-2)(1).stem
-                 and then DMA(J).DE.STEMS = DMA(J-2).de.STEMS
-                   then
+               and then SRAA(J)(1).stem  = SRAA(J-2)(1).stem
+                and then DMA(J).DE.STEMS = DMA(J-2).de.STEMS
+             then
                       Skip_Next := true;
                --  PPP version of the same issue wrt TRICKS and SYNCOPE above
                --  More complicated because the ADJ => ADV "kludge" part of LIST_PACKAGE inserts entries into the
                --  PA (e.g., arcule), so we have to look foreward and behind to make sure there are really dupes
             elsif Skip_Next = true
-                then
+            then
                   null;
             else
              PUT_INFLECTION_ARRAY_J :
@@ -1379,12 +1377,8 @@ package body LIST_PACKAGE is
             end loop PUT_INFLECTION_ARRAY_J;
             end if;
 
-
             OSRA := SRAA (J);
-
          end if;
-
-
 
          Next_Meaning_Same := False;
          Last_Form_Same    := False;
@@ -1393,7 +1387,6 @@ package body LIST_PACKAGE is
         if DMA (J).DE.MEAN = DMA (J + 1).DE.MEAN then
                Next_Meaning_Same := True;
         end if;
-
 
          if J > 1 then
 
@@ -1508,28 +1501,30 @@ package body LIST_PACKAGE is
                Text_IO.Put (OUTPUT, Format_Reset);
                Text_IO.Put (OUTPUT, Format_Inverse);
 
-                   end if;
+            end if;
 
-              Text_Io.New_Line(Output);
+         Text_Io.New_Line(Output);
 
-              Text_Io.PUT_LINE(OUTPUT, "OUTPUT TRIMMED:  Turn off TRIM_OUTPUT to see more.");
+            Text_Io.PUT_LINE(OUTPUT, "OUTPUT TRIMMED:  Turn off TRIM_OUTPUT to see more.");
 
-               if WORDS_MODE (DO_ANSI_FORMATTING) then
+             if WORDS_MODE (DO_ANSI_FORMATTING) then
                Text_IO.Put (OUTPUT, Format_Reset);
-                end if;
+            end if;
 
-               end if;
+       end if;
 
       Text_IO.New_Line (OUTPUT);
 
                if J < PA_LAST and then
-                SRAA(J)(1).stem =  SRAA(J-1)(1).stem
+                SRAA(J)(1).stem =  SRAA(J-1)(1).stem     
                    and then DMA(J).DE.STEMS = DMA(J+1).de.STEMS
                    then
                   Skip_Next := true;
                else
                   skip_next := false;
               end if;
+        end if;
+
 
    exception
       when others =>
