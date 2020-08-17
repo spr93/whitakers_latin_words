@@ -191,16 +191,16 @@ filie
 N 2 5 VOC S M P                                     A  p  X  F  X
 son; [only known occurrence of this VOC form in L. Livius Andronicus];
 boum
-N 3 1 GEN P C t                                     X  A  X  E  O
+N 3 1 GEN P C T                                     X  A  X  E  O
 ox; bull; cow; cattle (pl.); (odd form of bos or bus);
 bobus
-N 3 1 DAT P C t                                     X  A  X  D  O
+N 3 1 DAT P C T                                     X  A  X  D  O
 ox; bull; cow; cattle (pl.); (odd form of bos or bus);
 bobus
-N 3 1 ABL P C t                                     X  A  X  D  O
+N 3 1 ABL P C T                                     X  A  X  D  O
 ox; bull; cow; cattle (pl.); (odd form of bos or bus);
 mensuum
-N 3 3 GEN P M t                                     X  X  X  C  O
+N 3 3 GEN P M T                                     X  X  X  C  O
 month;
 nonus
 N 3 3 NOM P M T                                     X  X  X  X  O
