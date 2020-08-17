@@ -170,23 +170,26 @@ deus
 N 2 1 VOC S M P                                     X  E  X  C  X
 god; God!: Oh God;
 di
-N 2 1 VOC P M P                                    X  E  X  C  X
+N 2 1 VOC P M P                                     X  E  X  C  X
 god;
 dii
-N 2 1 VOC P M p                                     X  E  X  C  X
+N 2 1 VOC P M P                                     X  E  X  C  X
 god;
 dis
-N 2 1 ABL P M p                                     X  E  X  C  X
+N 2 1 ABL P M P                                     X  E  X  C  X
 god;
 diis
-N 2 1 DAT P M p                                     X  E  X  C  X
+N 2 1 DAT P M P                                     X  E  X  C  X
 god;
 dis
-N 2 1 DAT P M p                                     X  E  X  C  X
+N 2 1 DAT P M P                                     X  E  X  C  X
 god;
 diis
-N 2 1 ABL P M p                                     X  E  X  C  X
+N 2 1 ABL P M P                                     X  E  X  C  X
 god;
+filie
+N 2 5 VOC S M P                                     A  p  X  F  X
+son; [only known occurrence of this VOC form in L. Livius Andronicus];
 boum
 N 3 1 GEN P C t                                     X  A  X  E  O
 ox; bull; cow; cattle (pl.); (odd form of bos or bus);
