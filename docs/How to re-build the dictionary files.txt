@@ -1,0 +1,86 @@
+Below is a simplified version of Wm. Whitaker's instructions for fully rebuilding the dictionary system
+
+
+*****
+EVEN EASIER:
+
+The sorter, wakedict, makestem, makeewds, and makeefil in this repository have been modified to accept command line options to automated the steps below.
+
+sorter will take D, S, and E, which will sort dictline, stemlist, and ewdsfile, respectively
+
+the other programs accept G (or S) to sort the GEN files
+
+so you can distill all the following steps to these commands.  rebuild.sh in tools runs 'em for you:
+
+./sorter D
+./wakedict G
+./sorter S
+./makestem G
+./makeinfl
+./makeewds G
+./sorter E
+./makeefil
+
+*****
+
+
+Run sorter against modified DICTLINE.GEN.  Input:
+
+            1 75         
+           77 24   P     
+          111 80        
+          101 1        -- SPR:  TEST THIS Sort first by age
+          107 1        -- SPR:  TEST THIS Then frequency 
+          
+
+Copy DICTLINE.GEN to CHECK.IN and run CHECK. 
+Review CHECK.OUT.
+
+Run WAKEDICT (note the W) against DICTLINE.GEN
+
+Run SORTER against the resulting STEMLIST.GEN
+       SORTER
+         STEMLIST.GEN    --  Input  
+           1    18   U
+           20   24   P
+           1    18   C
+           1    56   A
+           58    1         
+         STEMLIST.GEN    --  Output  
+         
+DO NOT REMOVE WEIRD TO_BE AT THE FIRST LINE - IT IS SUPPOSED TO BE THERE
+
+Run makestem
+
+Run MAKEINFL against INFLECTS.LAT
+
+
+--English part:
+
+Run MAKEEWDS against ewdslist.gen
+	Check output, especially for weird lines at top.  Remove weird lines at top.
+
+Sort EWDSLIST.GEN
+SORTER
+    EWDSLIST.GEN
+       1  24  A         --  Main word
+       1  24  C         --  Main word for CAPS
+      51   6  R         --  Part of Speech  
+      72   5  N   D     --  RANK
+      58   1  A         --  FREQ
+    EWDSLIST.GEN        --  Store 
+
+Run MAKEEFIL
+
+-- end English part
+
+THE FOLLOWING IS NOW THE FULL DATA SET:
+WORDS [executable]
+INFLECTS.SEC
+ADDONS.LAT
+UNIQUES.LAT
+DICTFILE.GEN
+STEMFILE.GEN
+INDXFILE.GEN
+EWDSFILE.GEN
+ 	
