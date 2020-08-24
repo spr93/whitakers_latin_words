@@ -209,10 +209,10 @@ nonus
 N 3 3 ACC P M T                                     X  X  X  X  O
 nine asses (money); (contracted form of nonnussis);
 republicae
-N 5 1 GEN S F t                                     X  X  X  B  X
+N 5 1 GEN S F T                                     X  X  X  B  X
 of the state/republic; (res publica => the state);
 rusi
-N 3 1 LOC S N w                                     X  X  X  B  X
+N 3 1 LOC S N W                                     X  X  X  B  X
 country; ( = in the country); (ancient form carried on);
 mavis
 V     6 2 PRES  ACTIVE  IND  2 S X                  X  X  X  B  X
@@ -223,6 +223,9 @@ prefer;
 mavultis
 V     6 2 PRES  ACTIVE  IND  2 P X                  X  X  X  B  X
 prefer;
+sis                                                 
+V     6 2 PRES  ACTIVE  IND  2 S X                  B  X  X  D  X 
+"if you want"; [contraction of "si vis"];
 viden
 V  2 1   PRES ACTIVE IND  2 S TRANS                 X  X  X  C  S
 do you not see; or consider; (vides-ne);

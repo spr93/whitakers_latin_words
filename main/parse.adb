@@ -44,9 +44,9 @@ procedure PARSE (COMMAND_LINE : String := "") is
       W             : String (1 .. L)     := (others => ' ');
       Arabic_String : String (1 .. L+1) :=
         (others =>
-           '|'); -- Initializing a full string is inefficient  - vector or another container better
+           '|');
       Arabic_Present : Boolean :=
-        False;                  -- however this is consistent with the original Words approach
+        False;                
       Arabic_J           : Integer := 1;
 
    begin
@@ -97,7 +97,7 @@ procedure PARSE (COMMAND_LINE : String := "") is
          end loop;
 
    ----------------------------BEGIN ROMAN NUMERALS--------------------------
-         -- Intercept Arabic numerals here a bit messy, but we can avoid
+         -- Intercept Arabic numerals here; a bit messy, but we can avoid
          -- changing the rest of the procedure
          if WORDS_MODE (DO_ARABIC_NUMERALS) and Arabic_Present then
           
@@ -1184,7 +1184,7 @@ begin --  PARSE
       PREFACE.PUT_LINE
         ("Copyright (c) William Whitaker 1993-2006 - free for any use");
       PREFACE.PUT_LINE
-        ("with modifications and additions 2019-2020, see [SITE]");
+        ("with modifications and additions 2008-2020, see github.com/spr93");
       PREFACE.PUT_LINE
         ("In memoriam, Gen. William Whitaker, Chair of DoD Working Group responsible for");
       PREFACE.PUT_LINE
@@ -1266,7 +1266,6 @@ begin --  PARSE
         and then not CL_ARGUMENTS(ENGLISH_ONLY) 
         and then not CL_Arguments(LATIN_ONLY)
       then
-          PREFACE.NEW_LINE;
           PREFACE.PUT_LINE ("English-to-Latin available");
           PREFACE.PUT_LINE
             (CHANGE_LANGUAGE_CHARACTER &

@@ -64,4 +64,4 @@ I also want to avoid introducing new issues in the short term.  Col. Whitaker's 
 
 *License:*
 
-Col. Whitaker released his works under his own permissive license (see /docs/"Whitaker's original"/words.html for his license information).  All copyrightable expression in my contributions is subject to those same terms.  That means everything in this repo is subject to Col. Whitaker's license terms.
+Col. Whitaker released his works under his own permissive license (see /docs/"Whitaker's original"/words.html for his license information).  All copyrightable expression in my contributions is subject to those same terms.

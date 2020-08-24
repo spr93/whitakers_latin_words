@@ -196,11 +196,18 @@ with DICTIONARY_PACKAGE; use DICTIONARY_PACKAGE;
 --TEXT_IO.NEW_LINE;  
 --DICTIONARY_ENTRY_IO.PUT(DE);
 --TEXT_IO.NEW_LINE;
-                     
-          if DE.PART.ADJ.CO = COMP  then       
-            OX(1) := ADD(DE.STEMS(1), "or");   
-            OX(2) := ADD(DE.STEMS(1), "or");   
-            OX(3) := ADD(DE.STEMS(1), "us");  
+
+          if DE.PART.ADJ.CO = COMP  then 
+            if DE.PART.ADJ.DECL.WHICH = 5 then  
+              OX(1) := ADD(DE.STEMS(1), "us");   
+              OX(2) := ADD(DE.STEMS(1), "a");   
+              OX(3) := ADD(DE.STEMS(1), "um");
+            else 
+              OX(1) := ADD(DE.STEMS(1), "or");   
+              OX(2) := ADD(DE.STEMS(1), "or");   
+              OX(3) := ADD(DE.STEMS(1), "us"); 
+            end if; 
+         
           elsif DE.PART.ADJ.CO = SUPER  then
             OX(1) := ADD(DE.STEMS(1), "mus");
             OX(2) := ADD(DE.STEMS(1), "ma");

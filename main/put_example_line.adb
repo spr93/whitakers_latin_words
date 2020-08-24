@@ -295,10 +295,11 @@ begin    --  PUT_EXAMPLE_LINE
          when ADJ =>
             case IR.QUAL.ADJ.CO is
                when COMP =>
+                  if DE.PART.ADJ.DECL.WHICH /= 5 Then
                   Text_IO.New_Line (OUTPUT);
                   Text_IO.Set_Col (OUTPUT, 6);
                   Text_IO.Put (OUTPUT, "~er; more/too _");
-
+                  end if;
                when SUPER =>
                   Text_IO.New_Line (OUTPUT);
                   Text_IO.Set_Col (OUTPUT, 6);
@@ -321,14 +322,14 @@ begin    --  PUT_EXAMPLE_LINE
                   Text_IO.Put (OUTPUT, "most/very ~(ly)");
 
                when POS =>
-                  case IR.QUAL.ADV.GENERATED is
-                     when ADJADV =>
+                   case IR.QUAL.ADV.GENERATED is
+                       when ADJADV =>
                         Text_IO.New_Line (OUTPUT);
                         Text_IO.Set_Col (OUTPUT, 6);
                         Text_IO.Put (OUTPUT, "~ily, ~ly");
-                     when others =>
+                        when others =>
                         null;
-                  end case;
+                   end case;
 
                when others =>
                   null;

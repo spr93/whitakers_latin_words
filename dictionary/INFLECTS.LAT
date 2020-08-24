@@ -606,7 +606,7 @@ ADJ   1 0 VOC P N POS   2 1 a     X A
 --  i must be in stem because of minor
 --  This seems a lot of fuss for the only example or a COMP stem without i
 --  but the alternatives (another DECL, UNIQUES) run to more cost
---  The only penality is the possible additional procssing on DEP verbs
+--  The only penalty is the possible additional procssing on DEP verbs
 --  I might reconsider if I was tring to share ADJ 3 1 POS with ADJ 0 0 COMP
 ADJ   0 0 NOM S C COMP  3 2 or    X A
 ADJ   0 0 GEN S C COMP  3 4 oris  X A
@@ -936,6 +936,48 @@ ADJ   3 6 VOC S X POS   1 0          X A
 
 ADJ   3 6 ACC P C POS   2 2 as       X A
 
+-- Artificial declension for adjectives that use 1 1 first and 
+-- second declension forms but are not POS 
+-- Only know of longiusculus, a, um (a comparative), but probably more
+-- This is just a copy of 1 0 / 1 1 POS forms with comparison-type COMP
+-- Ex: altus alta altum  =>  longiuscul longiuscul 
+ADJ   5 1 NOM S M COMP   1 2 us    X A
+ADJ   5 1 GEN S M COMP   1 1 i     X A
+ADJ   5 1 DAT S M COMP   1 1 o     X A
+ADJ   5 1 ACC S M COMP   1 2 um    X A 
+ADJ   5 1 ABL S M COMP   1 1 o     X A
+ADJ   5 1 VOC S M COMP   1 1 e     X A
+
+ADJ   5 1 NOM P M COMP   1 1 i     X A
+ADJ   5 1 GEN P M COMP   1 4 orum  X A
+ADJ   5 1 DAT P X COMP   1 2 is    X A
+ADJ   5 1 ACC P M COMP   1 2 os    X A
+ADJ   5 1 ABL P X COMP   1 2 is    X A
+ADJ   5 1 VOC P M COMP   1 1 i     X A
+
+ADJ   5 1 NOM S F COMP   1 1 a     X A
+ADJ   5 1 GEN S F COMP   1 2 ae    X A
+ADJ   5 1 DAT S F COMP   1 2 ae    X A
+ADJ   5 1 ACC S F COMP   1 2 am    X A
+ADJ   5 1 ABL S F COMP   1 1 a     X A
+ADJ   5 1 VOC S F COMP   1 1 a     X A
+
+ADJ   5 1 NOM P F COMP   2 2 ae    X A
+ADJ   5 1 GEN P F COMP   2 4 arum  X A
+ADJ   5 1 ACC P F COMP   2 2 as    X A
+ADJ   5 1 VOC P F COMP   2 2 ae    X A
+
+ADJ   5 1 NOM S N COMP   2 2 um    X A
+ADJ   5 1 GEN S N COMP   2 1 i     X A
+ADJ   5 1 DAT S N COMP   2 1 o     X A
+ADJ   5 1 ACC S N COMP   2 2 um    X A
+ADJ   5 1 ABL S N COMP   2 1 o     X A
+ADJ   5 1 VOC S N COMP   2 2 um    X A
+
+ADJ   5 1 NOM P N COMP   2 1 a     X A
+ADJ   5 1 GEN P N COMP   2 4 orum  X A
+ADJ   5 1 ACC P N COMP   2 1 a     X A
+ADJ   5 1 VOC P N COMP   2 1 a     X A
 
 --  For ADJ abbreviations, indeclinable, but a special case vis. capitalization
 ADJ   9 8 X X X X 1 0                X A

@@ -684,7 +684,7 @@ type INTERJECTION_RECORD is
   subtype INFLECTIONS_SECTION_4 is CHARACTER range 't'..'u';
 
   SIZE_OF_BLANK_INFLECTIONS   : constant INTEGER :=  80;    --  ############
-  SIZE_OF_INFLECTIONS_SECTION : constant INTEGER := 570;    --  ############
+  SIZE_OF_INFLECTIONS_SECTION : constant INTEGER := 600;    --  ############
 
   type INFLECTION_ARRAY is array (POSITIVE range <>) of INFLECTION_RECORD;
   subtype LEL_SECTION is INFLECTION_ARRAY(1..SIZE_OF_INFLECTIONS_SECTION);
