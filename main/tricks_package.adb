@@ -979,7 +979,7 @@
                                            "May be 2 words combined (" &
                                            S(S'FIRST..S'FIRST+I-1) & "+" & 
                                            S(S'FIRST+I..S'LAST) & 
-                                           ") If not obvious, probably incorrect", MAX_MEANING_SIZE);
+                                           ") - if not obvious, probably incorrect", MAX_MEANING_SIZE);
                      
                         PUT_STAT("TRICK   2WDS at "
                                  & HEAD(INTEGER'IMAGE(LINE_NUMBER), 8) & HEAD(INTEGER'IMAGE(WORD_NUMBER), 4)
