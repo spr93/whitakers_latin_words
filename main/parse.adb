@@ -214,6 +214,9 @@ procedure PARSE (COMMAND_LINE : String := "") is
 
          elsif LANGUAGE = LATIN_TO_ENGLISH then
 
+    XXX_MEANING_COUNTER := 1;  YYY_MEANING_COUNTER := 1; NNN_MEANING_COUNTER := 1;  RRR_MEANING_COUNTER := 1; PPP_MEANING_COUNTER := 1;
+
+            
             PARSE_WORD_LATIN_TO_ENGLISH :
             declare
                INPUT_WORD         : constant String := W (J .. K);
@@ -223,12 +226,17 @@ procedure PARSE (COMMAND_LINE : String := "") is
 
                procedure PASS (INPUT_WORD : String);
 
+
+               
                procedure ENCLITIC is
                   SAVE_DO_FIXES      : Boolean := WORDS_MODE (DO_FIXES);
                   SAVE_DO_ONLY_FIXES : Boolean := WORDS_MDEV (DO_ONLY_FIXES);
                   ENCLITIC_LIMIT     : Integer := 4;                       
                   TRY : constant String := LOWER_CASE (INPUT_WORD);
                begin
+                  
+     
+                  
 --TEXT_IO.PUT_LINE("Entering ENCLITIC  HAVE DONE = " & BOOLEAN'IMAGE(HAVE_DONE_ENCLITIC));
    --if WORDS_MODE(TRIM_OUTPUT)  and (PA_LAST > 0)  then    return;   end if;
                   if HAVE_DONE_ENCLITIC then
@@ -480,8 +488,8 @@ procedure PARSE (COMMAND_LINE : String := "") is
                end PASS;
 
             begin   --  PARSE
-               XXX_MEANING := NULL_MEANING_TYPE;
-
+             --  XXX_MEANING := Null_Special_Meaning_Array;
+             --  XXX_MEANING_COUNTER := 1;
                PASS_BLOCK :
                begin
                   PA_LAST     := 0;
@@ -752,10 +760,10 @@ procedure PARSE (COMMAND_LINE : String := "") is
                                                .GENDER,--  all have same PPL_INFO
                                              PA (J).IR.QUAL.VPAR
                                                .TENSE_VOICE_MOOD);
-                                          PPP_MEANING :=
+                                          PPP_MEANING(PPP_MEANING_COUNTER) :=
                                             HEAD
                                               ("PERF PASSIVE PPL + verb TO_BE => PASSIVE perfect system",
-                                               MAX_MEANING_SIZE);
+                                               MAX_MEANING_SIZE); PPP_MEANING_COUNTER := PPP_MEANING_COUNTER + 1;
 
                                        elsif PA (J).IR.QUAL.VPAR
                                            .TENSE_VOICE_MOOD =
@@ -779,10 +787,10 @@ procedure PARSE (COMMAND_LINE : String := "") is
                                                .GENDER,--  all have same PPL_INFO
                                              PA (J).IR.QUAL.VPAR
                                                .TENSE_VOICE_MOOD);
-                                          PPP_MEANING :=
+                                          PPP_MEANING(PPP_MEANING_COUNTER) :=
                                             HEAD
                                               ("FUT ACTIVE PPL + verb TO_BE => ACTIVE Periphrastic - about to, going to",
-                                               MAX_MEANING_SIZE);
+                                               MAX_MEANING_SIZE); PPP_MEANING_COUNTER := PPP_MEANING_COUNTER + 1;
 
                                        elsif PA (J).IR.QUAL.VPAR
                                            .TENSE_VOICE_MOOD =
@@ -806,10 +814,10 @@ procedure PARSE (COMMAND_LINE : String := "") is
                                                .GENDER,--  all have same PPL_INFO
                                              PA (J).IR.QUAL.VPAR
                                                .TENSE_VOICE_MOOD);
-                                          PPP_MEANING :=
+                                          PPP_MEANING(PPP_MEANING_COUNTER) :=
                                             HEAD
                                               ("FUT PASSIVE PPL + verb TO_BE => PASSIVE Periphrastic - should/ought/had to",
-                                               MAX_MEANING_SIZE);
+                                               MAX_MEANING_SIZE); PPP_MEANING_COUNTER := PPP_MEANING_COUNTER + 1;
 
                                        end if;
                                     else
@@ -900,10 +908,11 @@ procedure PARSE (COMMAND_LINE : String := "") is
                                                .GENDER,--  all have same PPL_INFO
                                              PA (J).IR.QUAL.VPAR
                                                .TENSE_VOICE_MOOD);
-                                          PPP_MEANING :=
+                                          PPP_MEANING(PPP_MEANING_COUNTER) :=
                                             HEAD
                                               ("PERF PASSIVE PPL + esse => PERF PASSIVE INF",
-                                               MAX_MEANING_SIZE);
+                                               MAX_MEANING_SIZE); 
+                                               PPP_MEANING_COUNTER := PPP_MEANING_COUNTER + 1;
 
                                        elsif PA (J).IR.QUAL.VPAR
                                            .TENSE_VOICE_MOOD =
@@ -924,19 +933,20 @@ procedure PARSE (COMMAND_LINE : String := "") is
                                           if IS_ESSE (NEXT_WORD) then
                                              COMPOUND_TVM :=
                                                (FUT, ACTIVE, INF);
-                                             PPP_MEANING :=
+                                             PPP_MEANING(PPP_MEANING_COUNTER) :=
                                                HEAD
                                                  ("FUT ACTIVE PPL + esse => PRES Periphastic/FUT ACTIVE INF - be about/going to",
-                                                  MAX_MEANING_SIZE);
+                                                  MAX_MEANING_SIZE); 
+                                                  PPP_MEANING_COUNTER := PPP_MEANING_COUNTER + 1;
                                              -- also peri COMPOUND_TVM :=
                                              -- (PRES, ACTIVE, INF);
                                           else   --  fuisse
                                              COMPOUND_TVM :=
                                                (PERF, ACTIVE, INF);
-                                             PPP_MEANING :=
+                                             PPP_MEANING(PPP_MEANING_COUNTER) :=
                                                HEAD
                                                  ("FUT ACT PPL + fuisse => PERF ACT INF Periphrastic - to have been about/going to",
-                                                  MAX_MEANING_SIZE);
+                                                  MAX_MEANING_SIZE); PPP_MEANING_COUNTER := PPP_MEANING_COUNTER + 1;
                                           end if;
 
                                        elsif PA (J).IR.QUAL.VPAR
@@ -959,19 +969,21 @@ procedure PARSE (COMMAND_LINE : String := "") is
                                           if IS_ESSE (NEXT_WORD) then
                                              COMPOUND_TVM :=
                                                (PRES, PASSIVE, INF);
-                                             PPP_MEANING :=
+                                             PPP_MEANING(PPP_MEANING_COUNTER) :=
                                                HEAD
                                                  ("FUT PASSIVE PPL + esse => PRES PASSIVE INF",
-                                                  MAX_MEANING_SIZE);
+                                                  MAX_MEANING_SIZE); 
+                                                  PPP_MEANING_COUNTER := PPP_MEANING_COUNTER + 1;
                                              -- also peri COMPOUND_TVM :=
                                              -- (PRES, ACTIVE, INF);
                                           else   --  fuisse
                                              COMPOUND_TVM :=
                                                (PERF, PASSIVE, INF);
-                                             PPP_MEANING :=
+                                             PPP_MEANING(PPP_MEANING_COUNTER) :=
                                                HEAD
                                                  ("FUT PASSIVE PPL + fuisse => PERF PASSIVE INF Periphrastic - about to, going to",
-                                                  MAX_MEANING_SIZE);
+                                                  MAX_MEANING_SIZE); 
+                                                  PPP_MEANING_COUNTER := PPP_MEANING_COUNTER + 1;
                                           end if;
 
                                        end if;
@@ -1051,10 +1063,11 @@ procedure PARSE (COMMAND_LINE : String := "") is
                                              (FUT, PASSIVE, INF), 0, X)),
                                            0, NULL_ENDING_RECORD, X, A),
                                           PPP, NULL_MNPC);
-                                       PPP_MEANING :=
+                                       PPP_MEANING(PPP_MEANING_COUNTER) :=
                                          HEAD
                                            ("SUPINE + iri => FUT PASSIVE INF - to be about/going/ready to be ~",
-                                            MAX_MEANING_SIZE);
+                                            MAX_MEANING_SIZE); 
+                                            PPP_MEANING_COUNTER := PPP_MEANING_COUNTER + 1;
 
                                        K := NK;
 
@@ -1079,6 +1092,8 @@ procedure PARSE (COMMAND_LINE : String := "") is
 
 -- TEXT_IO.PUT_LINE("Before LISTing STEMS (PA_LAST > 0 to start) PA_LAST = " &
 -- INTEGER'IMAGE(PA_LAST));
+
+XXX_MEANING_COUNTER := 0;  YYY_MEANING_COUNTER := 0; NNN_MEANING_COUNTER := 0;  RRR_MEANING_COUNTER := 0; PPP_MEANING_COUNTER := 0;
 
                if WORDS_MODE (WRITE_OUTPUT_TO_FILE) then
                   LIST_STEMS (OUTPUT, INPUT_WORD, INPUT_LINE, PA, PA_LAST);

@@ -34,17 +34,23 @@ package WORD_PACKAGE is
   PDL : PRUNED_DICTIONARY_LIST := (others => NULL_PRUNED_DICTIONARY_ITEM);
   PDL_INDEX : INTEGER := 0;
 
-  subtype SAL is PARSE_ARRAY(1..250);
+  SAL_LENGTH : Integer := 250;
+  subtype SAL is PARSE_ARRAY(1..SAL_LENGTH);
 
 
-  type DICT_RESTRICTION is (X, REGULAR, QU_PRON_ONLY, PACK_ONLY);
-
-  XXX_MEANING : MEANING_TYPE := NULL_MEANING_TYPE;  --  For TRICKS
-  YYY_MEANING : MEANING_TYPE := NULL_MEANING_TYPE;  --  For SYNCOPE
-  NNN_MEANING : MEANING_TYPE := NULL_MEANING_TYPE;  --  For Names
-  RRR_MEANING : MEANING_TYPE := NULL_MEANING_TYPE;  --  For Roman Numerals
-  PPP_MEANING : MEANING_TYPE := NULL_MEANING_TYPE;  --  For COMPOUNDED
-
+   type DICT_RESTRICTION is (X, REGULAR, QU_PRON_ONLY, PACK_ONLY);
+   
+  type Special_Meaning_Array Is array(INTEGER range  1..Sal_Length) of Meaning_Type;
+  Null_Special_Meaning_Array : Special_Meaning_Array := (others => Null_Meaning_Type);
+  XXX_MEANING : Special_Meaning_Array := Null_Special_Meaning_Array;  --  For TRICKS
+  YYY_MEANING : Special_Meaning_Array := Null_Special_Meaning_Array;  --  For SYNCOPE
+  NNN_MEANING : Special_Meaning_Array := Null_Special_Meaning_Array;  --  For Names
+  RRR_MEANING : Special_Meaning_Array := Null_Special_Meaning_Array;  --  For Roman Numerals
+  PPP_MEANING : Special_Meaning_Array := Null_Special_Meaning_Array;  --  For COMPOUNDS
+  
+   XXX_MEANING_COUNTER, YYY_MEANING_COUNTER, NNN_MEANING_COUNTER, 
+   RRR_MEANING_COUNTER, PPP_MEANING_COUNTER : INTEGER := 1;
+   
   SCROLL_LINE_NUMBER : INTEGER := 0;
   OUTPUT_SCROLL_COUNT : INTEGER := 0;
 
