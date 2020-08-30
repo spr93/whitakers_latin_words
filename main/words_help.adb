@@ -20,7 +20,7 @@ package body words_help is
     begin
 
       if Line'LENGTH >= 3 then
-         Help_Param := Line(Line'First..3);
+         Help_Param := Line(Line'First..(Line'First + 2));
       end if;
 
       if    Help_Param = "COD"                          then

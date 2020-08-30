@@ -76,7 +76,7 @@ package body ADDONS_PACKAGE is
             HEAD(TRIM(T), 250)(1..2) = "  ")  then
           null;
         else
-          S(1..L) := T(1..L);
+          S((S'First)..L) := T(1..L);
           LAST := L;
           exit;
         end if;

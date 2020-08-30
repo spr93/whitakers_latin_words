@@ -139,7 +139,7 @@
                exit FILE_LOOP;
             end if;
          end loop FILE_LOOP;
-         S(1..LX) := T(1..LX);
+         S(S'First..LX) := T(T'First..LX);
          LAST := LX;
       end GET_NON_COMMENT_LINE;
    

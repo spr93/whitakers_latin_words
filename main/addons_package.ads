@@ -3,7 +3,8 @@ with INFLECTIONS_PACKAGE; use INFLECTIONS_PACKAGE;
 with DICTIONARY_PACKAGE;  use DICTIONARY_PACKAGE;
 
 package ADDONS_PACKAGE is
-  use TEXT_IO;
+   pragma Elaborate_Body;
+   use TEXT_IO;
 
   subtype FIX_TYPE is STEM_TYPE;
   NULL_FIX_TYPE : constant FIX_TYPE := NULL_STEM_TYPE;

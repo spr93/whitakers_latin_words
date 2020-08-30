@@ -14,7 +14,7 @@ package body LATIN_FILE_NAMES is
     if EXTENSION'LENGTH >= 3  then
       EXTENSION_LENGTH := 3;
     end if;
-    return NAME(1..NAME_LENGTH) & '.' & EXTENSION(1..EXTENSION_LENGTH);
+    return NAME(Name'First..NAME_LENGTH) & '.' & EXTENSION(Extension'First..EXTENSION_LENGTH);
   end ADD_FILE_NAME_EXTENSION;
 
 
