@@ -31,12 +31,13 @@ Fully compatible with Col. Whitaker's last version:
 - The new command-line options do not interfere with Words's traditional command-line directives
 
 
-*Anything for dictionary tinkerers or rehosters?*
+*Anything else?*
 
 Yes:
 - User friendly documentation of the Word data files and the codes, abbreviations, and conventions they use; see the Open Document spreadsheet in the docs directory
 - The dictionary-building programs have been modified to accept command line options so that dictionary rebuilds can be done non-interactively; see rebuild.sh in the tools directory
 - Simplified dictionary rebuild instructions
+- Updated "DICTPAGE" output (a dictionary listing, formatted like a traditional paper dictionary, in HTML) is in /dictionary
 
 Why?
 ----
