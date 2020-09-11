@@ -613,25 +613,25 @@ SUFFIX boni
 N 2 ADJ 1 1 POS 0
 of good;
 SUFFIX moni
-V 2 N 1 1 F t 0
+V 2 N 1 1 F T 0
 -monia; act of; means of; result of;
 SUFFIX moni
 V 2 N 2 2 N t 0
 -monia; act of; means of; result of;
 SUFFIX anti
-V 1 N 1 1 F t 0
+V 1 N 1 1 F T 0
 -ance; state of; quality of; act of; (with 1st conj verbs);
 SUFFIX anti         --  Conflicts with another -anti-
 V 1 ADJ 0 0 COMP 0
 more -ing, makes ADJ COMP of verb, ('a' stem is for V 1 0);
 SUFFIX enti
-V 1 N 1 1 F t 0
+V 1 N 1 1 F T 0
 -ence; state of; quality of; act of; (with other than 1st conj verbs);
 SUFFIX enti
 V 1 ADJ 0 0 COMP 0
 more -ing, makes ADJ COMP of verb, ('e' stem is for V 2/3);
 SUFFIX ari
-N 2 N 1 1 F t  0
+N 2 N 1 1 F T  0
 place where (argent.aria = money place, bank); female agent (rare);
 SUFFIX ari
 N 2 N 2 2 N t  0
@@ -652,10 +652,10 @@ SUFFIX ori
 V 4 ADJ 1 1 POS 0
 -orous, -ory; having to do with, pretaining to; tending to;
 SUFFIX iti
-ADJ 2 N 1 1 F t  0
+ADJ 2 N 1 1 F T  0
 -ity, -ship, -ance, ility, ness; makes abstract noun of the adjective;
 SUFFIX iti
-ADJ 2 N 5 1 F t  0
+ADJ 2 N 5 1 F T  0
 -ity, -ship, -ance, ility, ness; makes abstract noun of the adjective;
 SUFFIX iti
 V   2 N 2 2 N t  0
@@ -667,10 +667,10 @@ SUFFIX ri  r
 ADJ 1 ADJ 0 0 SUPER 4
 -est, most ~, much ~, makes ADJ with stem ending in 'r' SUPER;
 SUFFIX ti
-ADJ 2 N 1 1 F t  0
+ADJ 2 N 1 1 F T  0
 -ness, makes abstract noun;
 SUFFIX ia
-ADJ 2 N 1 1 F t  0
+ADJ 2 N 1 1 F T  0
 -ness, -es, makes abstract noun;
 SUFFIX abil
 X 2 ADJ 3 2 POS  0
@@ -694,7 +694,7 @@ SUFFIX bil
 V 2 ADJ 3 2 POS  0
 -able, -ble; having the passive quality, able to, able to be; having ability;
 SUFFIX bul
-X 2 N 1 1 F t 0
+X 2 N 1 1 F T 0
 forms noun of means, instrument; place;
 SUFFIX bul
 X 2 N 2 2 N t 0
@@ -772,19 +772,19 @@ SUFFIX um
 ADJ 1 ADV POS 1
 -ly;
 SUFFIX udin  t
-ADJ 2 N 3 1 F t  2
+ADJ 2 N 3 1 F T  2
 -ness; makes abstract noun;
 SUFFIX sion
-V 4 N 3 1 F t  2
+V 4 N 3 1 F T  2
 -ing, -ion, -ery; the action or result of the action of the verb;
 SUFFIX sion
-V 2 N 3 1 F t  2
+V 2 N 3 1 F T  2
 -ing, -ion, -ery; the action or result of the action of the verb;
 SUFFIX tion
-V 4 N 3 1 F t  2
+V 4 N 3 1 F T  2
 -ing, -ion, -ery; the action or result of the action of the verb;
 SUFFIX tion
-V 2 N 3 1 F t  2
+V 2 N 3 1 F T  2
 -ing, -ion, -ery; the action or result of the action of the verb;
 SUFFIX ian
 N 2 N 2 1 M p 0
@@ -799,16 +799,16 @@ SUFFIX min
 V 2 N 3 2 N t 2
 act of; means of; result of;
 SUFFIX don
-V 2 N 3 1 F t  1
+V 2 N 3 1 F T  1
 act of or result of the action of the verb;
 SUFFIX gon
-V 2 N 3 1 F t  1
+V 2 N 3 1 F T  1
 act of or result of the action of the verb;
 SUFFIX ion
-V 4 N 3 1 F t  2
+V 4 N 3 1 F T  2
 -ing, -ion, -ery; indicates the action or result of the action of the verb;
 SUFFIX ion
-V 2 N 3 1 F t  2
+V 2 N 3 1 F T  2
 -ing, -ion, -ery; the action or result of the action of the verb;
 SUFFIX urn
 N 2 ADJ 1 1 POS 0
@@ -829,34 +829,34 @@ SUFFIX in
 N 2 ADJ 1 1 POS 0
 -ine; -in; of, pertaining/belonging to; connected with; derived/coming from;
 SUFFIX in
-N 2 N 1 1 F t 0
+N 2 N 1 1 F T 0
 -ing; art or craft (medic.ina = art of doctoring);
 SUFFIX udo  t
-ADJ 2 N 3 1 F t  1
+ADJ 2 N 3 1 F T  1
 -ness; makes abstract noun;
 SUFFIX sio
-V 2 N 3 1 F t  1
+V 2 N 3 1 F T  1
 -ing, -ion, -ery; the action or result of the action of the verb;
 SUFFIX sio
-V 4 N 3 1 F t  1
+V 4 N 3 1 F T  1
 -ing, -ion, -ery; the action or result of the action of the verb;
 SUFFIX tio
-V 2 N 3 1 F t  1
+V 2 N 3 1 F T  1
 -ing, -ion, -ery; the action or result of the action of the verb;
 SUFFIX tio
-V 4 N 3 1 F t  1
+V 4 N 3 1 F T  1
 -ing, -ion, -ery; the action or result of the action of the verb;
 SUFFIX do
-V 2 N 3 1 F t  1
+V 2 N 3 1 F T  1
 act of or result of the action of the verb;
 SUFFIX go
-V 2 N 3 1 F t  1
+V 2 N 3 1 F T  1
 act of or result of the action of the verb;
 SUFFIX io
-V 2 N 3 1 F t  1
+V 2 N 3 1 F T  1
 -ing, -ion, -ery; the action or result of the action of the verb;
 SUFFIX io
-V 4 N 3 1 F t  1
+V 4 N 3 1 F T  1
 -ing, -ion, -ery; indicates the action or result of the action of the verb;
 SUFFIX abiliter
 V 2 ADV POS 1
@@ -913,28 +913,28 @@ SUFFIX tr
 V 2 N 2 2 N t 0
 means, instrument; place;
 SUFFIX ur
-N 2 N 1 1 F t  0
+N 2 N 1 1 F T  0
 -ure, pertaining to, use of;
 SUFFIX ur
-N 4 N 1 1 F t  0
+N 4 N 1 1 F T  0
 -ure, pertaining to, use of;
 SUFFIX etas i
-ADJ 2 N 3 1 F t  1
+ADJ 2 N 3 1 F T  1
 -ness, makes abstract noun;
 SUFFIX itas
-ADJ 2 N 3 1 F t  1
+ADJ 2 N 3 1 F T  1
 -ity; -ness, makes abstract noun of quality or condition;
 SUFFIX itas
-N 2 N 3 1 F t  1
+N 2 N 3 1 F T  1
 -ness, condition of being; makes abstract noun (civ.itas = citizenship);
 SUFFIX itus
 X 2 ADV POS 1
 of _; from the _; -ing;
 SUFFIX tas
-N 2 N 3 1 F t  1
+N 2 N 3 1 F T  1
 -ness, condition of being; makes abstract noun;
 SUFFIX tus
-N 2 N 3 1 F t  1
+N 2 N 3 1 F T  1
 -liness, makes abstract noun;
 SUFFIX ans
 V 1 ADJ 3 1 POS  1
@@ -952,10 +952,10 @@ SUFFIX tus
 X 2 ADV POS 1
 of _; from the _;
 SUFFIX es
-N 2 N 3 1 F t 1
+N 2 N 3 1 F T 1
 result of; place of; (abstract noun);
 SUFFIX is
-N 2 N 3 1 F t 2
+N 2 N 3 1 F T 2
 result of; place of; (abstract noun);
 SUFFIX os
 N 2 ADJ 1 1 POS 0
@@ -979,25 +979,25 @@ SUFFIX ment
 V 2 N 2 2 N t 0
 -ment; -ion; act of; instrument/equipment/means for ~ing; result of ~ing;
 SUFFIX etat i
-V 4 N 3 1 F t  2
+V 4 N 3 1 F T  2
 -ness, makes abstract noun;
 SUFFIX itat
-ADJ 2 N 3 1 F t  2
+ADJ 2 N 3 1 F T  2
 -ity; -ness, makes abstract noun of quality or condition;
 SUFFIX itat
-N 2 N 3 1 F t  1
+N 2 N 3 1 F T  1
 -ness, condition of being; makes abstract noun (civ.itas = citizenship);
 SUFFIX tat
-N 2 N 3 1 F t  1
+N 2 N 3 1 F T  1
 -ness, condition of being; makes abstract noun;
 SUFFIX tat
-ADJ 2 N 3 1 F t  2
+ADJ 2 N 3 1 F T  2
 -ness, makes abstract noun;
 SUFFIX tat
 V 2 V 1 1 X 4
 try to do -, keep doing -;
 SUFFIX tut
-N 2 N 3 1 F t  2
+N 2 N 3 1 F T  2
 -liness, makes abstract noun;
 SUFFIX ant
 V 1 ADJ 3 1 POS  2
@@ -1054,10 +1054,10 @@ SUFFIX i                      --  ?????????????
 V 4 ADV POS 1
 -ly; (use imagination! run -> hastily; strive -> eagerly; stand -> immediately);
 SUFFIX i
-N 2 N 1 1 F t  0
+N 2 N 1 1 F T  0
 art or craft done by the person (abstract noun of person); office of, -ship;
 SUFFIX i
-V 2 N 2 2 N t  0
+V 2 N 2 2 N T  0
 makes abstract noun of the verb; place/instrument/result of verb action;
 SUFFIX i
 ADJ 2 ADJ 0 0 COMP 3
@@ -1109,7 +1109,7 @@ ADJ 0 0 POS
 -ever/-soever; (for generalized/indefinite force); (what/how -> what/however);
 TACKON cine
 PRON 3 1 ADJECT
-TACKON w/hic this?   (hic + ce + ne (enclitic));
+TACKON w/hic this?; (hic + ce + ne (enclitic));
 TACKON pte
 ADJ 1 0 POS
 TACKON ! (emphatic particle w/personal ADJ); (usually with ABL, suapte);
