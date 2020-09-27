@@ -55,7 +55,7 @@ package body Arabic2Roman is
                   Input_Counter := Input_Counter + 1;
                end loop;
                Input_Counter := Input_Counter + 1;
-               exit;
+              exit;  -- back to parse
             end if;
 
             case INPUT_WORD (Input_Counter)
@@ -162,7 +162,7 @@ package body Arabic2Roman is
 
             -- if we've got a negative and we're omitting Medieval (or later) or uncommon => no result
             if
-              (Is_Negative and
+              (Is_Negative and then
                (WORDS_MDEV (OMIT_MEDIEVAL) = True or
                 WORDS_MDEV (OMIT_UNCOMMON) = True))
             then
@@ -608,11 +608,8 @@ package body Arabic2Roman is
                null;
          end case;
          Counter :=
-           Counter +
-           2;  -- Move two positions down the Roman numeral array each time
-         if Counter > 11 then
-            exit;
-         end if;  -- shouldnt ever hit this, but just in case
+           Counter + 2;  -- Move two positions down the Roman numeral array each time
+         exit when Counter > 11;  -- shouldnt ever hit this, but just in case
       end loop;
 
       if Arabic_String2'Length >= 8 then

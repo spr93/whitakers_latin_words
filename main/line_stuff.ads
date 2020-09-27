@@ -104,10 +104,10 @@ package LINE_STUFF is
     procedure PUT(S : out STRING; P : in UNIQUE_ENTRY);
   end UNIQUE_ENTRY_IO;
 
-  procedure LOAD_STEM_FILE(D_K : DICTIONARY_KIND);
+  procedure LOAD_STEM_FILE(D_K : in DICTIONARY_KIND);
 
   procedure LOAD_DICTIONARY(DICT : in out DICTIONARY;
-                            DICTIONARY_FILE_NAME : STRING);
+                            DICTIONARY_FILE_NAME : in STRING);
 
   procedure LOAD_UNIQUES(UNQ : in out LATIN_UNIQUES; FILE_NAME : in STRING);
 

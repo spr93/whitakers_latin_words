@@ -180,7 +180,7 @@ package body LIST_PACKAGE is
    end PUT_DICTIONARY_FORM;
 
    procedure LIST_STEMS
-     (OUTPUT :    Text_IO.File_Type; RAW_WORD : String; INPUT_LINE : String;
+     (OUTPUT :    in Text_IO.File_Type; RAW_WORD : in String; INPUT_LINE : in String;
       PA     : in out PARSE_ARRAY; PA_LAST : in out Integer)
    is
       use Text_IO;
@@ -266,7 +266,7 @@ package body LIST_PACKAGE is
       THERE_IS_AN_ADVERB : Boolean         := False;
 
       procedure PUT_INFLECTION
-        (SR : STEM_INFLECTION_RECORD; DM : DICTIONARY_MNPC_RECORD)
+        (SR : in STEM_INFLECTION_RECORD; DM : in DICTIONARY_MNPC_RECORD)
       is
          --  Handles putting ONLY_MEAN, PEARSE_CODES, CAPS, QUAL, V_KIND, FLAGS
          procedure PUT_INFLECTION_FLAGS is
@@ -277,7 +277,7 @@ package body LIST_PACKAGE is
                (SR.IR.AGE /= X)) and     --  Warn even if not to show AGE
               TRIM (INFLECTION_AGE (SR.IR.AGE))'LENGTH /= 0
             then
-               Text_IO.Put (OUTPUT, "  " & INFLECTION_AGE (SR.IR.AGE));
+               Text_IO.Put (File => OUTPUT, Item => "  " & INFLECTION_AGE (SR.IR.AGE));
             end if;
             if
               (WORDS_MODE (SHOW_FREQUENCY) or
@@ -501,7 +501,7 @@ package body LIST_PACKAGE is
 --
 --
       procedure PUT_FORM
-        (SR : STEM_INFLECTION_RECORD; DM : DICTIONARY_MNPC_RECORD)
+        (SR : in STEM_INFLECTION_RECORD; DM : in DICTIONARY_MNPC_RECORD)
       is
       --  Handles PEARSE_CODES and DICTIONARY_FORM (which has FLAGS) and D_K
       --  The Pearse 02 is handled in PUT_DICTIONARY_FORM
@@ -1447,7 +1447,8 @@ package body LIST_PACKAGE is
          begin
 
             if Skip_Next = true then
-              null;
+               null;
+
             elsif DMA (J).D_K = GENERAL
               and then Last_Form_Same                  -- therefore J > 1, so no explicit check
                then
@@ -1457,7 +1458,7 @@ package body LIST_PACKAGE is
                Put_Meaning_Anyway := True;             -- Make sure dictionary line always prints after inflections.
                end if;
 
-           Elsif DMA (J).D_K = UNIQUE then
+           elsif DMA (J).D_K = UNIQUE then
 
                if not Next_Meaning_Same
                 and then not Next_Form_Same then
@@ -1714,7 +1715,7 @@ package body LIST_PACKAGE is
    end UNKNOWN_SEARCH;
 
    procedure LIST_NEIGHBORHOOD
-     (OUTPUT : Text_IO.File_Type; INPUT_WORD : String)
+     (OUTPUT : in Text_IO.File_Type; INPUT_WORD : in String)
    is
 
       D_K      : constant DICTIONARY_KIND := GENERAL;

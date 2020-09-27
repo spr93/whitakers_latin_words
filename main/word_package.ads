@@ -19,7 +19,6 @@ package WORD_PACKAGE is
   SA, SSA : STEM_ARRAY := NOT_A_STEM_ARRAY;
   SSA_MAX : INTEGER := 0;
 
-
   type PRUNED_DICTIONARY_ITEM is
     record
       DS   : DICTIONARY_STEM;
@@ -37,8 +36,7 @@ package WORD_PACKAGE is
   SAL_LENGTH : Integer := 250;
   subtype SAL is PARSE_ARRAY(1..SAL_LENGTH);
 
-
-   type DICT_RESTRICTION is (X, REGULAR, QU_PRON_ONLY, PACK_ONLY);
+  type DICT_RESTRICTION is (X, REGULAR, QU_PRON_ONLY, PACK_ONLY);
    
   type Special_Meaning_Array Is array(INTEGER range  1..Sal_Length) of Meaning_Type;
   Null_Special_Meaning_Array : Special_Meaning_Array := (others => Null_Meaning_Type);
@@ -48,8 +46,8 @@ package WORD_PACKAGE is
   RRR_MEANING : Special_Meaning_Array := Null_Special_Meaning_Array;  --  For Roman Numerals
   PPP_MEANING : Special_Meaning_Array := Null_Special_Meaning_Array;  --  For COMPOUNDS
   
-   XXX_MEANING_COUNTER, YYY_MEANING_COUNTER, NNN_MEANING_COUNTER, 
-   RRR_MEANING_COUNTER, PPP_MEANING_COUNTER : INTEGER := 1;
+  XXX_MEANING_COUNTER, YYY_MEANING_COUNTER, NNN_MEANING_COUNTER, 
+  RRR_MEANING_COUNTER, PPP_MEANING_COUNTER : INTEGER := 1;
    
   SCROLL_LINE_NUMBER : INTEGER := 0;
   OUTPUT_SCROLL_COUNT : INTEGER := 0;
@@ -69,8 +67,7 @@ package WORD_PACKAGE is
   function GTU(S, T : STRING) return BOOLEAN;  
       
   function EQU(S, T : STRING) return BOOLEAN;  
-      
-           
+              
   procedure RUN_INFLECTIONS(S : in STRING; SL : in out SAL;
                             RESTRICTION : DICT_RESTRICTION := REGULAR);
 

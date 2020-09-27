@@ -2,7 +2,7 @@ with TEXT_IO;
 with STRINGS_PACKAGE; use STRINGS_PACKAGE;
 with INFLECTIONS_PACKAGE; use INFLECTIONS_PACKAGE;
 with DICTIONARY_PACKAGE; use DICTIONARY_PACKAGE;
-  function DICTIONARY_FORM(DE : DICTIONARY_ENTRY) return STRING is
+  function DICTIONARY_FORM(DE : in DICTIONARY_ENTRY) return STRING is
 
       NULL_OX : constant STRING(1..24) := (others => ' ');
       OX : array (1..4) of STRING (1..24) := (others => NULL_OX);
@@ -13,7 +13,7 @@ with DICTIONARY_PACKAGE; use DICTIONARY_PACKAGE;
         
       NOT_FOUND : exception;
 
-      function ADD(STEM, INFL : STRING) return STRING is
+      function ADD(STEM, INFL : in STRING) return STRING is
       begin
         return HEAD(TRIM(STEM) & TRIM(INFL), 24);
       end ADD;
@@ -46,7 +46,7 @@ with DICTIONARY_PACKAGE; use DICTIONARY_PACKAGE;
            (((DE.PART.POFS = N)  and then (DE.PART.N.DECL.WHICH = 9))  or
             ((DE.PART.POFS = ADJ)  and then 
               ((DE.PART.ADJ.DECL.WHICH = 9) or
-               (DE.PART.ADJ.CO = COMP or DE.PART.ADJ.CO = SUPER))   ) or  
+               (DE.PART.ADJ.CO in COMP | SUPER)) ) or  
             ((DE.PART.POFS = V)  and then (DE.PART.V.CON = (9, 8))) or  
             ((DE.PART.POFS = V)  and then (DE.PART.V.CON = (9, 9))))  
              then
@@ -107,8 +107,7 @@ with DICTIONARY_PACKAGE; use DICTIONARY_PACKAGE;
 
           elsif DE.PART.N.DECL.WHICH = 3  then
             OX(1) := ADD(DE.STEMS(1), "");
-            if (DE.PART.N.DECL.VAR = 7)  or
-               (DE.PART.N.DECL.VAR = 9)  then
+            if DE.PART.N.DECL.VAR in 7 | 9  then
               OX(2) := ADD(DE.STEMS(2), "os/is");
             else
               OX(2) := ADD(DE.STEMS(2), "is");
@@ -523,8 +522,6 @@ with DICTIONARY_PACKAGE; use DICTIONARY_PACKAGE;
             OX(3) := ADD(OX(3), " (ii)");
           end if;
             
-            
-
         elsif (DE.PART.POFS = NUM) and then (DE.PART.NUM.SORT = X)  then
           if DE.PART.NUM.DECL.WHICH = 1  then
             if DE.PART.NUM.DECL.VAR = 1  then
@@ -667,7 +664,7 @@ with DICTIONARY_PACKAGE; use DICTIONARY_PACKAGE;
 
       return TRIM(FORM);
 
-      
+     
     exception
       when NOT_FOUND  =>
         return "";

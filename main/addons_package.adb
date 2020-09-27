@@ -42,7 +42,6 @@ package body ADDONS_PACKAGE is
     return TRUE;
   end EQU;
 
-
   procedure LOAD_ADDONS (FILE_NAME : in STRING) is
     use PART_OF_SPEECH_TYPE_IO;
     use TACKON_ENTRY_IO;
@@ -183,8 +182,7 @@ package body ADDONS_PACKAGE is
             TICKONS (TIC).MNPC := M;
             MEANS(M) := MEAN;
             M := M + 1;
- 
- 
+
           else
             PRE := PRE + 1;
             PREFIXES(PRE).POFS:= POFS;
@@ -250,8 +248,6 @@ package body ADDONS_PACKAGE is
 --for I in MEANS'RANGE  loop
 --  TEXT_IO.PUT(INTEGER'IMAGE(INTEGER(I))); TEXT_IO.PUT_LINE("--" & MEANS(I));
 --end loop;  
-  
-
   
     exception
     when TEXT_IO.NAME_ERROR  =>
@@ -515,7 +511,6 @@ package body ADDONS_PACKAGE is
   return;
   end PUT;
 
-
   procedure PUT(P : in TARGET_ENTRY) is
     C : POSITIVE := POSITIVE(COL);
   begin
@@ -634,9 +629,7 @@ package body ADDONS_PACKAGE is
     S(M+1..S'LAST) := (others => ' ');
   end PUT;
 
-
 end TARGET_ENTRY_IO;
-
 
 package body TACKON_ENTRY_IO is
   SPACER : CHARACTER := ' ';
@@ -761,7 +754,6 @@ end TACKON_ENTRY_IO;
       GET(F, P.TARGET_KEY);
      end GET;
 
-
     procedure GET(P : out SUFFIX_ENTRY) is
     begin
       GET(P.ROOT);
@@ -836,10 +828,7 @@ end TACKON_ENTRY_IO;
 
   end SUFFIX_ENTRY_IO;
 
-
-
- begin    --  Initiate body of ADDONS_PACKAGE
---TEXT_IO.PUT_LINE("Initializing ADDONS_PACKAGE");
+ begin    
 
   PREFIX_ENTRY_IO.DEFAULT_WIDTH := PART_OF_SPEECH_TYPE_IO.DEFAULT_WIDTH + 1 +
                                    PART_OF_SPEECH_TYPE_IO.DEFAULT_WIDTH;

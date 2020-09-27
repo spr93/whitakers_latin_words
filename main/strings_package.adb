@@ -1,14 +1,14 @@
    with TEXT_IO; use TEXT_IO;
    package body STRINGS_PACKAGE is
    
-      function MAX(A, B : INTEGER) return INTEGER is
+      function MAX(A, B : in INTEGER) return INTEGER is
       begin
          if A >= B  then 
             return A; end if; 
          return B;
       end MAX;
    
-      function MIN(A, B : INTEGER) return INTEGER is
+      function MIN(A, B : in INTEGER) return INTEGER is
       begin
          if A <= B  then 
             return A; end if; 
@@ -16,7 +16,7 @@
       end MIN;
    
    
-      function LOWER_CASE(C : CHARACTER) return CHARACTER is
+      function LOWER_CASE(C : in CHARACTER) return CHARACTER is
       begin
          if C in 'A'..'Z'  then
             return CHARACTER'VAL(CHARACTER'POS(C) + 32);
@@ -25,7 +25,7 @@
          end if;
       end LOWER_CASE;
    
-      function LOWER_CASE(S : STRING) return STRING is
+      function LOWER_CASE(S : in STRING) return STRING is
          T : STRING(S'RANGE);
       begin
          for I in S'RANGE  loop
@@ -35,7 +35,7 @@
       end LOWER_CASE;
    
    
-      function UPPER_CASE(C : CHARACTER) return CHARACTER is
+      function UPPER_CASE(C : in CHARACTER) return CHARACTER is
       begin
          if C in 'a'..'z'  then
             return CHARACTER'VAL(CHARACTER'POS(C) - 32);
@@ -44,7 +44,7 @@
          end if;
       end UPPER_CASE;
    
-      function UPPER_CASE(S : STRING) return STRING is
+      function UPPER_CASE(S : in STRING) return STRING is
          T : STRING(S'RANGE);
       begin
          for I in S'RANGE  loop

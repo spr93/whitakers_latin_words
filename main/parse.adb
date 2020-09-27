@@ -234,9 +234,7 @@ procedure PARSE (COMMAND_LINE : String := "") is
                   ENCLITIC_LIMIT     : Integer := 4;                       
                   TRY : constant String := LOWER_CASE (INPUT_WORD);
                begin
-                  
-     
-                  
+                             
 --TEXT_IO.PUT_LINE("Entering ENCLITIC  HAVE DONE = " & BOOLEAN'IMAGE(HAVE_DONE_ENCLITIC));
    --if WORDS_MODE(TRIM_OUTPUT)  and (PA_LAST > 0)  then    return;   end if;
                   if HAVE_DONE_ENCLITIC then
@@ -382,7 +380,7 @@ procedure PARSE (COMMAND_LINE : String := "") is
                   end loop LOOP_OVER_ENCLITIC_TACKONS;
                end TRICKS_ENCLITIC;
 
-               procedure PASS (INPUT_WORD : String) is
+               procedure PASS (INPUT_WORD : in String) is
 --  This is the core logic of the program, everything else is details
                   SAVE_PA_LAST       : Integer := 0;
                   SAVE_DO_FIXES      : Boolean := WORDS_MODE (DO_FIXES);
@@ -1482,5 +1480,6 @@ exception
         then Parse;
          else 
          PREFACE.PUT_LINE ("Unexpected exception raised in PARSE");
-         end if;
+      end if;
+     
 end PARSE;

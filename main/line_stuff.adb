@@ -12,7 +12,7 @@ pragma ELABORATE(ADDONS_PACKAGE);
 package body LINE_STUFF is
 
   procedure LOAD_DICTIONARY(DICT : in out DICTIONARY;
-                            DICTIONARY_FILE_NAME : STRING)  is
+                            DICTIONARY_FILE_NAME : in STRING)  is
   --  For loading a DICTIONARY list from a file
   --  Only used now for DICT.LOC
    
@@ -1023,7 +1023,5 @@ begin
   UNIQUE_ENTRY_IO.DEFAULT_WIDTH := MAX_STEM_SIZE + 1 +
                                    INFLECTION_RECORD_IO.DEFAULT_WIDTH + 1 +
                                    TRANSLATION_RECORD_IO.DEFAULT_WIDTH;
-
-
 
 end LINE_STUFF;

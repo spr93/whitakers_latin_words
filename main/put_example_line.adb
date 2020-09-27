@@ -4,14 +4,14 @@ with DICTIONARY_PACKAGE;  use DICTIONARY_PACKAGE;
 with CONFIG;              use CONFIG;
 with WORD_PARAMETERS;     use WORD_PARAMETERS;
 procedure PUT_EXAMPLE_LINE
-  (OUTPUT :    Text_IO.File_Type; IR : in INFLECTION_RECORD;
+  (OUTPUT :    in Text_IO.File_Type; IR : in INFLECTION_RECORD;
    DE     : in DICTIONARY_ENTRY)
 is
 
    VK : VERB_KIND_TYPE;
 
    procedure PUT_VERB_EXAMPLE
-     (OUTPUT :    Text_IO.File_Type; IR : in INFLECTION_RECORD;
+     (OUTPUT :    in Text_IO.File_Type; IR : in INFLECTION_RECORD;
       VK     : in VERB_KIND_TYPE)
    is
       PERSON : constant PERSON_TYPE := IR.QUAL.V.PERSON;

@@ -68,7 +68,6 @@ package ADDONS_PACKAGE is
     procedure PUT(S : out STRING; I : in TACKON_ENTRY);  
   end TACKON_ENTRY_IO;  
 
-
   type PREFIX_ENTRY is 
     record
       ROOT    : PART_OF_SPEECH_TYPE := X;
@@ -86,7 +85,6 @@ package ADDONS_PACKAGE is
     procedure GET(S : in STRING; P : out PREFIX_ENTRY; LAST : out INTEGER);
     procedure PUT(S : out STRING; P : in PREFIX_ENTRY);  
   end PREFIX_ENTRY_IO;  
- 
  
   type SUFFIX_ENTRY is 
     record
@@ -118,7 +116,6 @@ package ADDONS_PACKAGE is
 
   NULL_TACKON_ITEM : TACKON_ITEM;
 
-
   type PREFIX_ITEM is
     record
       POFS: PART_OF_SPEECH_TYPE := PREFIX;
@@ -127,10 +124,9 @@ package ADDONS_PACKAGE is
       ENTR : PREFIX_ENTRY := NULL_PREFIX_ENTRY;
       MNPC : INTEGER := 0;
     end record;
-  
+
   NULL_PREFIX_ITEM : PREFIX_ITEM;
  
-
   type SUFFIX_ITEM is
     record
       POFS: PART_OF_SPEECH_TYPE := SUFFIX;
@@ -141,7 +137,6 @@ package ADDONS_PACKAGE is
     end record;
 
   NULL_SUFFIX_ITEM : SUFFIX_ITEM;
-
  
   type PREFIX_ARRAY is array (INTEGER range <>) of PREFIX_ITEM; 
   type TICKON_ARRAY is array (INTEGER range <>) of PREFIX_ITEM; 
@@ -175,6 +170,5 @@ package ADDONS_PACKAGE is
                     PREFIX : PREFIX_ITEM) return STEM_TYPE;  
   function ADD_SUFFIX(STEM : STEM_TYPE; 
                     SUFFIX : SUFFIX_ITEM) return STEM_TYPE;   
-
 
 end ADDONS_PACKAGE;

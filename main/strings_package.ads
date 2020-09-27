@@ -5,15 +5,15 @@
       NULL_STRING : constant STRING(2..1) := (others => ' ');
    
    
-      function MAX(A, B : INTEGER) return INTEGER;
-      function MIN(A, B : INTEGER) return INTEGER;
+      function MAX(A, B : in INTEGER) return INTEGER;
+      function MIN(A, B : in INTEGER) return INTEGER;
    
    
-      function LOWER_CASE(C : CHARACTER) return CHARACTER;
-      function LOWER_CASE(S : STRING) return STRING;
+      function LOWER_CASE(C : in CHARACTER) return CHARACTER;
+      function LOWER_CASE(S : in STRING) return STRING;
    
-      function UPPER_CASE(C : CHARACTER) return CHARACTER;
-      function UPPER_CASE(S : STRING) return STRING;
+      function UPPER_CASE(C : in CHARACTER) return CHARACTER;
+      function UPPER_CASE(S : in STRING) return STRING;
    
       function TRIM(SOURCE : in STRING;
                     SIDE   : in TRIM_END := BOTH) return STRING;

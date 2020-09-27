@@ -243,8 +243,7 @@
       
          METHOD := COMMAND_LINE_INPUT;
       end if;
-   
-   
+      
       if METHOD = COMMAND_LINE_INPUT  then            --  Process words in command line
          MORE_ARGUMENTS:
          begin
@@ -258,8 +257,5 @@
          end MORE_ARGUMENTS;
       end if;
       end if;
-
-    
+ 
    end  WORDS;
-   
-     

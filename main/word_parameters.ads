@@ -23,7 +23,6 @@ package WORD_PARAMETERS is
   --  This is a flag to tell if there has been trimming for this word
   TRIMMED : BOOLEAN := FALSE;
   
-  
   type MODE_TYPE is (      
                       TRIM_OUTPUT, 
                       
@@ -55,14 +54,10 @@ package WORD_PARAMETERS is
 
   type MODE_ARRAY is array (MODE_TYPE) of BOOLEAN;
 
-
   WORDS_MODE : MODE_ARRAY;        --  Initialized in body
-
-  
   
   procedure CHANGE_PARAMETERS;  
    
   procedure INITIALIZE_WORD_PARAMETERS;
     
-   
 end WORD_PARAMETERS;

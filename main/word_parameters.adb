@@ -14,11 +14,9 @@ pragma Elaborate(PREFACE);
 package body WORD_PARAMETERS is
    use TEXT_IO;
 
-
   type HELP_TYPE is array (NATURAL range <>) of STRING(1..70);
   BLANK_HELP_LINE : constant STRING(1..70) := (others => ' ');
   NO_HELP : constant HELP_TYPE := (2..1 => BLANK_HELP_LINE);
-
 
   type REPLY_TYPE is (N, Y);
   package REPLY_TYPE_IO is new TEXT_IO.ENUMERATION_IO(REPLY_TYPE);
@@ -263,7 +261,6 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
    "the program.  Since one may want to make temporary changes during a   ",
    "run, but revert to the usual set, the default is N(o).                " );
                                                                                             
-
   procedure PUT(HELP : HELP_TYPE) is
   begin
     NEW_LINE;
@@ -415,7 +412,6 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
       end;
       end if;
 
-
     INQUIRE(IGNORE_UNKNOWN_NAMES, IGNORE_UNKNOWN_NAMES_HELP);
 
     INQUIRE(IGNORE_UNKNOWN_CAPS, IGNORE_UNKNOWN_CAPS_HELP);
@@ -425,7 +421,6 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
     INQUIRE(DO_FIXES, DO_FIXES_HELP);
 
     INQUIRE(DO_TRICKS, DO_TRICKS_HELP);
-
 
     INQUIRE(DO_DICTIONARY_FORMS, DO_DICTIONARY_FORMS_HELP);
 
@@ -456,9 +451,7 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
        
          end if;
       end; -- declare block  
-      
-      
-      
+          
     INQUIRE(DIM_EXAMPLES_TEXT, DIM_EXAMPLES_TEXT_HELP);
 
     PUT("Do you wish to save this set of parameters? Y or N (Default) ");
@@ -487,7 +480,6 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
 
   end CHANGE_PARAMETERS;
 
-  
   procedure INITIALIZE_WORD_PARAMETERS is
 begin
   WORDS_MODE := DEFAULT_MODE_ARRAY;
@@ -527,6 +519,5 @@ begin
     PREFACE.PUT_LINE("WORD.UNK Created at Initialization");
   end if;
 end INITIALIZE_WORD_PARAMETERS;
-
 
 end WORD_PARAMETERS;

@@ -856,7 +856,7 @@
       if PR /= OPR  then
             SUPRESS_KEY_CHECK:
             declare
-               function "<=" (A, B : PARSE_RECORD) return BOOLEAN is
+               function "<=" (A, B : in PARSE_RECORD) return BOOLEAN is
             begin                             --  !!!!!!!!!!!!!!!!!!!!!!!!!!
 
               if A.IR.QUAL = B.IR.QUAL  and
@@ -866,7 +866,7 @@
                      return FALSE;
                   end if;
                end "<=";
-               function "<" (A, B : PARSE_RECORD) return BOOLEAN is
+               function "<" (A, B : in PARSE_RECORD) return BOOLEAN is
                begin                             --  !!!!!!!!!!!!!!!!!!!!!!!!!!
                   if A.IR.QUAL = B.IR.QUAL  and
                  A.MNPC   /= B.MNPC     then
