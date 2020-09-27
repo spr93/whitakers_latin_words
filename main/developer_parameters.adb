@@ -10,11 +10,9 @@ package body DEVELOPER_PARAMETERS is
 
   use TEXT_IO;
 
-
   type HELP_TYPE is array (NATURAL range <>) of STRING(1..70);
   BLANK_HELP_LINE : constant STRING(1..70) := (others => ' ');
   NO_HELP : constant HELP_TYPE := (2..1 => BLANK_HELP_LINE);
-
 
   type REPLY_TYPE is (N, Y);
   package REPLY_TYPE_IO is new TEXT_IO.ENUMERATION_IO(REPLY_TYPE);
@@ -65,12 +63,11 @@ package body DEVELOPER_PARAMETERS is
                       NO_SCREEN_ACTIVITY          => FALSE,
                       
                       UPDATE_LOCAL_DICTIONARY     => FALSE,
-                      UPDATE_MEANINGS             => FALSE,
+                    --  UPDATE_MEANINGS             => FALSE,
 
                       MINIMIZE_OUTPUT             => FALSE    );
 
   BAD_MDEV_FILE : exception;
-
 
 HAVE_STATISTICS_FILE_HELP : constant HELP_TYPE :=  (
    "This option instructs the program to create a file which can hold     ",
@@ -90,7 +87,6 @@ WRITE_STATISTICS_FILE_HELP : constant HELP_TYPE :=  (
    "each invocation of the program, if the HAVE_STATISTICS_FILE is set.   ",
    "If the option HAVE_STATISTICS_FILE is off, the user will not be given ",
    "a chance to turn this one on.                Default is N(o).         " );
-
 
 SHOW_DICTIONARY_HELP : constant HELP_TYPE :=  (
    "This option causes a flag, like 'GEN>' to be put before the meaning   ",
@@ -199,8 +195,7 @@ DO_MEDIEVAL_TRICKS_HELP : constant HELP_TYPE :=  (
    "tricks for classical.  The dictionary can never contain all spelling  ",
    "variations found in medieval Latin, but some constructs are common.   ",
    "The default choice is N(o), since the results are iffy, medieval only,",
-   "and expensive.  This processing is turned on with the choice of Y(es)." );
-   
+   "and expensive.  This processing is turned on with the choice of Y(es)." ); 
 
 DO_SYNCOPE_HELP : constant HELP_TYPE :=  (
    "This option instructs the program to postulate that syncope of        ",
@@ -225,7 +220,6 @@ DO_TWO_WORDS_HELP : constant HELP_TYPE :=  (
    "Since this is a last chanceand infrequent, the default is Y(es);      ",
    "This processing is turned off with the choice of N(o).                " );
    
-
 INCLUDE_UNKNOWN_CONTEXT_HELP : constant HELP_TYPE :=  (
    "This option instructs the program, when writing to an UNKNOWNS file,  ",
    "to put out the whole context of the UNKNOWN (the whole input line on  ",
@@ -247,7 +241,6 @@ OMIT_ARCHAIC_HELP : constant HELP_TYPE :=  (
    "entries with an AGE code of A (Archaic).  Archaic results are rarely  ",
    "of interest in general use.  If there is no other possible form, then ",
    "the Archaic (roughly defined) will be reported.   The default is N(o).");
-
 
 OMIT_MEDIEVAL_HELP : constant HELP_TYPE :=  (
    "THIS OPTION IS CAN ONLY BE ACTIVE IF WORDS_MODE(TRIM_OUTPUT) IS SET!  ",
@@ -303,22 +296,17 @@ OMIT_MEDIEVAL_HELP : constant HELP_TYPE :=  (
 --     "The program default, and the dictionary convention is to retain the v.",
 --     "                                                 The default is Y(es)." );
 
-
-
 PAUSE_IN_SCREEN_OUTPUT_HELP : constant HELP_TYPE :=  (
    "This option instructs the program to pause if a result is longer than ",
    "about 16 lines--the maximum for certain legacy terminals and OSes.    ",
-   "                                                  The default is N(o).");
-
-
+                                                      "                                                  The default is N(o).");
+   
 NO_SCREEN_ACTIVITY_HELP : constant HELP_TYPE :=  (
    "This option instructs the program not to keep a running screen of the ",
    "input.  This is probably only to be used by the developer to calibrate",
    "run times for large text file input, removing the time necessary to   ",
    "write to screen.                                  The default is N(o).");
  
-    
-
 UPDATE_LOCAL_DICTIONARY_HELP : constant HELP_TYPE :=  (
    "This option instructs the program to invite the user to input a new   ",
    "word to the local dictionary on the fly.  This is only active if the  ",
@@ -335,28 +323,28 @@ UPDATE_LOCAL_DICTIONARY_HELP : constant HELP_TYPE :=  (
    "not want to enter a word when this option is on, a simple RETURN at   ",
    "the STEM=> prompt will ignore and continue the program.  This option  ",
    "is only for very experienced users and should normally be off.        ",
-   "                                                  The default is N(o).",
-   "      ------    NOT AVAILABLE IN THIS VERSION   -------               " );
+   "                                                  The default is N(o).");
+--   "      ------    NOT AVAILABLE IN THIS VERSION   -------               " );
 
-UPDATE_MEANINGS_HELP : constant HELP_TYPE :=  (
-   "This option instructs the program to invite the user to modify the    ",
-   "meaning displayed on a word translation.  This is only active if the  ",
-   "program is not using an (@) input file!  These changes are put into   ",
-   "the dictionary right then and permenently, and are available from     ",
-   "then on, in this session, and all later sessions.   Unfortunately,    ",
-   "these changes will not survive the replacement of the dictionary by a ",
-   "new version from the developer.  Changes can only be recovered by     ",
-   "considerable prcessing by the deneloper, and should be left there.    ",
-   "This option is only for experienced users and should remain off.      ",
-   "                                                  The default is N(o).",
-   "      ------    NOT AVAILABLE IN THIS VERSION   -------               " );
+--  The code necessary for this does not exist.                                                      
+--  UPDATE_MEANINGS_HELP : constant HELP_TYPE :=  (
+--     "This option instructs the program to invite the user to modify the    ",
+--     "meaning displayed on a word translation.  This is only active if the  ",
+--     "program is not using an (@) input file!  These changes are put into   ",
+--     "the dictionary right then and permenently, and are available from     ",
+--     "then on, in this session, and all later sessions.   Unfortunately,    ",
+--     "these changes will not survive the replacement of the dictionary by a ",
+--     "new version from the developer.  Changes can only be recovered by     ",
+--     "considerable prcessing by the developer, and should be left there.    ",
+--     "This option is only for experienced users and should remain off.      ",
+--     "                                                  The default is N(o).",
+--     "      ------    NOT AVAILABLE IN THIS VERSION   -------               " );
      
 
 MINIMIZE_OUTPUT_HELP : constant HELP_TYPE :=  (
    "This option instructs the program to minimize the output.  This is a  ",
    "somewhat flexible term, but the use of this option will probably lead ",
    "to less output.                                   The default is N(o)." );
-
 
 SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
    "This option instructs the program, to save the current parameters, as ",
@@ -379,7 +367,6 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
     end loop;
     NEW_LINE;
   end PUT;
-
 
   procedure UPDATE_LOCAL_DICTIONARY_FILE is
     use TEXT_IO;
@@ -448,8 +435,6 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
       begin
         APPEND_TO_DICT_LOC_FILE;
 
-
-
 DICT_LOC := NULL_DICTIONARY;
 LOAD_DICTIONARY(DICT_LOC,
                         ADD_FILE_NAME_EXTENSION(DICTIONARY_FILE_NAME, "LOCAL"));
@@ -462,7 +447,6 @@ LOAD_DICTIONARY(DICT_LOC,
     end loop;
 
   end UPDATE_LOCAL_DICTIONARY_FILE;
-
 
   procedure PUT_MDEVS is
     use MDEV_TYPE_IO;
@@ -588,7 +572,6 @@ LOAD_DICTIONARY(DICT_LOC,
     end if;
     NEW_LINE;
   end INQUIRE;
-
 
   procedure CHANGE_DEVELOPER_MODES is
     L1 : STRING(1..100);
@@ -729,16 +712,12 @@ LOAD_DICTIONARY(DICT_LOC,
     INQUIRE(PAUSE_IN_SCREEN_OUTPUT, PAUSE_IN_SCREEN_OUTPUT_HELP);
     
     INQUIRE(NO_SCREEN_ACTIVITY, NO_SCREEN_ACTIVITY_HELP);        
-
-    
     
     INQUIRE(UPDATE_LOCAL_DICTIONARY, UPDATE_LOCAL_DICTIONARY_HELP);
 
-    INQUIRE(UPDATE_MEANINGS, UPDATE_MEANINGS_HELP);
-
-
+    --INQUIRE(UPDATE_MEANINGS, UPDATE_MEANINGS_HELP);
+      
     INQUIRE(MINIMIZE_OUTPUT, MINIMIZE_OUTPUT_HELP);
-
 
 
     PUT("START_FILE_CHARACTER ?  "); SET_COL(45); PUT("(Currently  '");
@@ -755,7 +734,7 @@ LOAD_DICTIONARY(DICT_LOC,
         START_FILE_CHARACTER := L1(1);
       else
         PUT_LINE("Not an acceptable character, may conflict with other input");
-        PUT_LINE("NO CHANGE  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        PUT_LINE("NO CHANGE MADE");
       end if;
     end if;
     NEW_LINE;
@@ -774,11 +753,10 @@ LOAD_DICTIONARY(DICT_LOC,
         CHANGE_PARAMETERS_CHARACTER := L1(1);
       else
         PUT_LINE("Not an acceptable character, may conflict with other input");
-        PUT_LINE("NO CHANGE  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        PUT_LINE("NO CHANGE MADE");
       end if;
     end if;
     NEW_LINE;
-
 
     PUT("CHANGE_DEVELOPER_MODES_CHARACTER ?  ");
     SET_COL(45); PUT("(Currently  '");
@@ -796,7 +774,7 @@ LOAD_DICTIONARY(DICT_LOC,
         CHANGE_DEVELOPER_MODES_CHARACTER := L1(1);
       else
         PUT_LINE("Not an acceptable character, may conflict with other input");
-        PUT_LINE("NO CHANGE  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        PUT_LINE("NO CHANGE MADE");
       end if;
     end if;
     NEW_LINE;
@@ -855,7 +833,6 @@ begin
       WORDS_MDEV := DEFAULT_MDEV_ARRAY;
   end DO_MDEV_FILE;
 
-
 --  if not IS_OPEN(DBG) and then WORDS_MDEV(HAVE_DEBUG_FILE)  then
 --    CREATE(DBG, OUT_FILE, DEBUG_FULL_NAME);
 --    PREFACE.PUT_LINE("WORD.DBG Created at Initialization");
@@ -866,6 +843,5 @@ begin
   end if;
 
 end INITIALIZE_DEVELOPER_PARAMETERS;
-
 
 end DEVELOPER_PARAMETERS;
