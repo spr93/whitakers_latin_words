@@ -16,6 +16,7 @@ Col. Whitaker's last version of Words (1.97FC), with
 - an expanded and corrected dictionary (110 new stems and 6 new uniques)
 - output formatted with vt100 codes to enhance readability (optional; see below)
 - more consistent list output (no known situations where the program returns duplicate results or )
+- the ability to accept input with macrons (and other accented Unicode UTF-8 characters)
 - a comprehensive online help system, including a reference abbreviation and code definitions
 - conversion to Roman Numerals (optional module)
 - clarified grammar notes
