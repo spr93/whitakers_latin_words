@@ -28,4 +28,9 @@
                                      S : out STRING; LAST : out INTEGER);
    
    
+   INPUT_LINE_LENGTH : Integer := 2_500;
+   procedure GET_UNICODE (LINE : in out String; L : in out Integer);
+   pragma Inline(GET_UNICODE);
+   pragma Wide_Character_Encoding(UTF8);
+   
    end STRINGS_PACKAGE;  

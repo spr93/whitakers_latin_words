@@ -15,6 +15,7 @@ with CONFIG;                  use CONFIG;
 with PUT_STAT;
 with ENGLISH_SUPPORT_PACKAGE; use ENGLISH_SUPPORT_PACKAGE;
 with SEARCH_ENGLISH;
+
 with Arabic2Roman;
 with words_help;              use words_help;
 with No_Exit_Handler;
@@ -29,7 +30,8 @@ procedure PARSE (COMMAND_LINE : String := "") is
    STORAGE_ERROR_COUNT : Integer := 0;
 
    J, K, L          : Integer             := 0;
-   LINE, BLANK_LINE : String (1 .. 2_500) := (others => ' ');
+   
+   LINE, BLANK_LINE : String (1 .. INPUT_LINE_LENGTH) := (others => ' ');
 
    PA : PARSE_ARRAY (1 .. 150)         := (others => NULL_PARSE_RECORD);
    SYNCOPE_MAX                   : constant                       := 20;
@@ -1302,11 +1304,16 @@ begin --  PARSE
                                                     -- then cause an exception the next time without this)
                PREFACE.NEW_LINE;
                PREFACE.PUT ("=>");
-               
             end if;
 
             LINE := BLANK_LINE;
-            Get_Line (LINE, L);
+            
+            if WORDS_MODE(DO_UNICODE_INPUT) then
+               Get_Unicode(LINE, L);
+            else 
+               Get_Line(LINE,L);
+            end if;
+            
             if (L = 0) or else (TRIM (LINE (1 .. L)) = "") then
                --LINE_NUMBER := LINE_NUMBER + 1;  --  Count blank lines
                if CL_Arguments(NO_EXIT) then
@@ -1315,7 +1322,13 @@ begin --  PARSE
                  and then not CL_Arguments(NO_EXIT)
                then   --  INPUT is keyboard
                   PREFACE.PUT ("Blank exits =>");
-                  Get_Line (LINE, L);             -- Second try
+                  
+                 if WORDS_MODE(DO_UNICODE_INPUT) then
+                   Get_Unicode(LINE, L);
+                 else 
+                   Get_Line(LINE,L);
+                 end if;
+                
                   if (L = 0) or else (TRIM (LINE (1 .. L)) = "")
                   then  -- Two in a row
                      exit;

@@ -48,7 +48,8 @@ package WORD_PARAMETERS is
                       
                       DO_ARABIC_NUMERALS,
                       DO_ANSI_FORMATTING,
-                      DIM_EXAMPLES_TEXT);         
+                      DIM_EXAMPLES_TEXT,
+                      DO_UNICODE_INPUT        );         
 
   package MODE_TYPE_IO is new TEXT_IO.ENUMERATION_IO(MODE_TYPE); 
 

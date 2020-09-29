@@ -10,7 +10,6 @@ pragma Elaborate(PREFACE);
  with Windows_Vt100;
  -- END WINDOWS TARGET-SPECIFIC SECTION
 
-
 package body WORD_PARAMETERS is
    use TEXT_IO;
 
@@ -52,7 +51,8 @@ package body WORD_PARAMETERS is
                                               
                       DO_ARABIC_NUMERALS          => TRUE,
                       DO_ANSI_FORMATTING          => TRUE,
-                      DIM_EXAMPLES_TEXT           => FALSE);
+                      DIM_EXAMPLES_TEXT           => FALSE,
+                      DO_UNICODE_INPUT                  => TRUE);
 
   BAD_MODE_FILE : exception;
 
@@ -247,6 +247,15 @@ DIM_EXAMPLES_TEXT_HELP : constant HELP_TYPE :=  (
    "others, the effect may be to invert the text color rather than dim it.",
    "This parameter has no effect if DO_ANSI_FORMATTING is off.            ",
    "                                                  The default is N(o).");
+   
+DO_UNICODE_HELP_TEXT : constant HELP_TYPE :=  (
+   "This option allows the program to accept input text with macrons.  It ", 
+   "takes the input text as Unicode (UTF-8), then converts any accented   ",  
+   "characters to their basic form before processing.  Words ouptut will  ",
+   "still be in plain ASCII (Latin-1). Disable if your input is garbled or", 
+   "to increase performance when processing large plain-text files.       ",
+   "When this parameter is disabled, accented characters will be skipped. ",
+   "                                                 The default is Y(es).");
   
 SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
    "This option instructs the program, to save the current parameters, as ",
@@ -452,7 +461,9 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
          end if;
       end; -- declare block  
           
-    INQUIRE(DIM_EXAMPLES_TEXT, DIM_EXAMPLES_TEXT_HELP);
+      INQUIRE(DIM_EXAMPLES_TEXT, DIM_EXAMPLES_TEXT_HELP);
+      
+      INQUIRE(DO_UNICODE_INPUT, DO_UNICODE_HELP_TEXT);
 
     PUT("Do you wish to save this set of parameters? Y or N (Default) ");
     PUT(" =>");

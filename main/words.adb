@@ -5,12 +5,13 @@
    with WORD_PARAMETERS; use WORD_PARAMETERS;
    with DEVELOPER_PARAMETERS; use DEVELOPER_PARAMETERS;
    with WORD_PACKAGE; use WORD_PACKAGE;
-   with PARSE;
+
+with PARSE;
    with Ada.Interrupts; use Ada.Interrupts;
    with Ada.Interrupts.Names; use Ada.Interrupts.Names;
    with No_Exit_Handler; use No_Exit_Handler; 
    with Ada.Environment_Variables;
-   with Ada.Directories;
+with Ada.Directories;
 
    procedure WORDS is
       INPUT_LINE  : STRING(1..250) := (others => ' ');
