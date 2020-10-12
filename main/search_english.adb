@@ -1,6 +1,5 @@
   with TEXT_IO; use TEXT_IO;
   with Strings_Package; use Strings_Package;  
-  with LATIN_FILE_NAMES; use LATIN_FILE_NAMES;
   with CONFIG;
   with WORD_PARAMETERS; use WORD_PARAMETERS;
   with Inflections_Package; use Inflections_Package;
@@ -135,12 +134,8 @@ DICT_IO.READ(DICT_FILE(GENERAL), DE, DICT_IO.COUNT(OUTPUT_ARRAY(I).N));
 --TEXT_IO.PUT_LINE("DUMP_OUTPUT READ");             
 --  DICTIONARY_ENTRY_IO.PUT(DE); TEXT_IO.NEW_LINE;
 
-            
-         if WORDS_MODE (DO_ANSI_FORMATTING) then
-            Text_IO.Put (OUTPUT, Format_Reset);
-            Text_IO.Put (OUTPUT, Format_Underline);
-            end if;
-            
+            Format (OUTPUT, Underline);
+
             PUT(OUTPUT, DICTIONARY_FORM(DE));
             TEXT_IO.PUT(OUTPUT, "   ");
             --PART_ENTRY_IO.PUT(OUTPUT, DE.PART);
@@ -183,51 +178,25 @@ DICT_IO.READ(DICT_FILE(GENERAL), DE, DICT_IO.COUNT(OUTPUT_ARRAY(I).N));
                          & TRIM(INTEGER'IMAGE(OUTPUT_ARRAY(I).N)) & ")");
             end if;
             
-      if (WORDS_MODE (SHOW_FREQUENCY) or (DE.TRAN.FREQ >= D)) and
-        (TRIM (DICTIONARY_FREQUENCY (DE.TRAN.FREQ))'LENGTH /= 0)
-      then
-         Text_IO.Put
+           if (WORDS_MODE (SHOW_FREQUENCY) or (DE.TRAN.FREQ >= D)) and
+             (TRIM (DICTIONARY_FREQUENCY (DE.TRAN.FREQ))'LENGTH /= 0)
+           then
+              Text_IO.Put
            (OUTPUT, "  " & TRIM (DICTIONARY_FREQUENCY (DE.TRAN.FREQ)));
-      end if;
-        
-               if WORDS_MODE (DO_ANSI_FORMATTING) then
-               Text_IO.Put (OUTPUT, Format_Reset);
-               Text_IO.Put (OUTPUT, Format_Bold);
-               end if; 
-                 TEXT_IO.NEW_LINE(OUTPUT);
-                 
---TEXT_IO.PUT_LINE("DUMP_OUTPUT MEAN");      
-       
+            end if;
             
-            TEXT_IO.PUT(OUTPUT, TRIM (LIST_PACKAGE.TRIM_BAR(DE.MEAN)));
-            
-            if WORDS_MODE (DO_ANSI_FORMATTING) then
-               Text_IO.Put (OUTPUT, Format_Reset);
-            end if; 
-            
-           TEXT_IO.NEW_LINE(OUTPUT);
-
-               
+            --TEXT_IO.PUT_LINE("DUMP_OUTPUT MEAN");   
+            Format (OUTPUT, Bold); TEXT_IO.NEW_LINE(OUTPUT);   
+            TEXT_IO.PUT(OUTPUT, TRIM (LIST_PACKAGE.TRIM_BAR(DE.MEAN)));      
+            Format(OUTPUT,Reset);TEXT_IO.NEW_LINE(OUTPUT);
        end loop;
  --TEXT_IO.PUT_LINE("DUMP_OUTPUT TRIMMED"); 
                
          if TRIMMED  then
-                        if WORDS_MODE (DO_ANSI_FORMATTING) then
-               Text_IO.Put (OUTPUT, Format_Reset);
-               Text_IO.Put (OUTPUT, Format_Inverse);
-
-            end if; 
-            
-         Text_Io.New_Line(Output);
-            
-            Text_Io.PUT_LINE(OUTPUT, "OUTPUT TRIMMED:  Turn off TRIM_OUTPUT to see more.");
-            
-             if WORDS_MODE (DO_ANSI_FORMATTING) then
-               Text_IO.Put (OUTPUT, Format_Reset);
-            end if; 
-
-            
-       end if;
+            Text_Io.New_Line(Output); Format(Output,Inverse);     
+            Text_Io.PUT(OUTPUT, "OUTPUT TRIMMED:  Turn off TRIM_OUTPUT to see more.");
+            Format(Output,Reset); Text_Io.New_Line(Output); 
+         end if;
        
        end if;    --  On HITS = 0
        

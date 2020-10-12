@@ -1,3 +1,4 @@
+with Text_IO;              use Text_IO;
 with CONFIG;               use CONFIG;
 with STRINGS_PACKAGE;      use STRINGS_PACKAGE;
 with LATIN_FILE_NAMES;     use LATIN_FILE_NAMES;
@@ -34,29 +35,6 @@ package body LIST_PACKAGE is
 
    Next_Meaning_Same, Next_Form_Same, Last_Form_Same,
    Skip_Next, Put_Meaning_Anyway : Boolean := False;
-
-
-
-   function CAP_STEM (S : String) return String is
-   begin
-      if ALL_CAPS then
-         return UPPER_CASE (S);
-      elsif CAPITALIZED then
-         return UPPER_CASE (S (S'FIRST)) & S (S'FIRST + 1 .. S'LAST);
-      else
-         return S;
-      end if;
-   end CAP_STEM;
-
-   function CAP_ENDING (S : String) return String is
-   begin
-      if ALL_CAPS then
-         return UPPER_CASE (S);
-      else
-         return S;
-      end if;
-   end CAP_ENDING;
-
 
       function TRIM_BAR (S : String) return String is
       --  Takes vertical bars from beginning of MEAN and TRIMs
@@ -108,16 +86,12 @@ package body LIST_PACKAGE is
    begin                               --  PUT_DICTIONARY_FORM
       if WORDS_MODE (DO_DICTIONARY_FORMS) then
 
-         if WORDS_MODE (DO_ANSI_FORMATTING) then
-            Text_IO.Put (OUTPUT, Format_Reset);
-            Text_IO.Put (OUTPUT, Format_Underline);
-         end if;
-
          if WORDS_MDEV (DO_PEARSE_CODES) then
             Text_IO.Put (OUTPUT, "02 ");
             DHIT := True;
          end if;
 
+         Format(Output,Underline);
          if DICTIONARY_FORM (DE)'LENGTH /= 0 then
             Text_IO.Put (OUTPUT, DICTIONARY_FORM (DE) & "  ");
             DHIT := True;
@@ -169,9 +143,7 @@ package body LIST_PACKAGE is
 
       PUT_DICTIONARY_FLAGS (OUTPUT, DE, FHIT);
 
-       if WORDS_MODE (DO_ANSI_FORMATTING) then
-         Text_IO.Put (Format_Reset);
-       end if;
+      Format(OUTPUT,Reset);
 
       if (CHIT or DHIT or EHIT or FHIT or LHIT) then
          Text_IO.New_Line (OUTPUT);
@@ -406,14 +378,7 @@ package body LIST_PACKAGE is
                PUT_INFLECTION_FLAGS;
 
                -- PUT EXAMPLE LINE
-               if WORDS_MODE (DO_ANSI_FORMATTING)
-                 and then WORDS_MODE (DIM_EXAMPLES_TEXT)
-                 and then WORDS_MODE (DO_EXAMPLES)
-                 and then WORDS_MODE (WRITE_OUTPUT_TO_FILE) = False
-               then
-                  Text_IO.Put (Format_Reset);
-                  Text_IO.Put (Format_Faint);
-               end if;
+               Format(Output,Faint);
 
                if DM.DE.PART /= NULL_DICTIONARY_ENTRY.PART
                then  -- SPR:  Added because some UNIQUES won't generate a DE,
@@ -422,15 +387,8 @@ package body LIST_PACKAGE is
 
                end if;                                       --
 
-               if WORDS_MODE (DO_ANSI_FORMATTING)
-                 and then WORDS_MODE (DIM_EXAMPLES_TEXT)
-                 and then WORDS_MODE (DO_EXAMPLES)
-                 and then WORDS_MODE (WRITE_OUTPUT_TO_FILE) = False
-               then
                   Text_IO.Put (Format_Reset);
-               end if;
                --  END PUT EXAMPLE LINE
-
             end if;
          end if;
 
@@ -578,15 +536,12 @@ package body LIST_PACKAGE is
       is
       begin
          if DM.D_K not in ADDONS .. PPP then
-            if WORDS_MODE (DO_ANSI_FORMATTING) then
-               Text_IO.Put (Format_Reset);
-               Text_IO.Put (Format_Bold);
-            end if;
 
             if WORDS_MDEV (DO_PEARSE_CODES) then
                Text_IO.Put (OUTPUT, "03 ");
             end if;
 
+            Format(Output,BOLD);
             if DM.DE.PART.POFS = NUM and then DM.DE.PART.NUM.VALUE > 0 then
                Text_IO.Put_Line
                  (OUTPUT,
@@ -598,18 +553,20 @@ package body LIST_PACKAGE is
                PUT_MEANING (OUTPUT, TRIM_BAR (DM.DE.MEAN));
                Text_IO.New_Line (OUTPUT);
             end if;
+
+
          else
             if DM.D_K = RRR then
+
                if RRR_MEANING(RRR_MEANING_COUNTER+1) /= NULL_MEANING_TYPE then
                   --PUT_DICTIONARY_FLAGS;
 
-                  if WORDS_MODE (DO_ANSI_FORMATTING) then
-                     Text_IO.Put (Format_Reset);
-                     Text_IO.Put (Format_Bold);
-                  end if;
                   if WORDS_MDEV (DO_PEARSE_CODES) then
                      Text_IO.Put (OUTPUT, "03 ");
                   end if;
+
+                  Format(Output,BOLD);
+
                   PUT_MEANING (OUTPUT, RRR_MEANING(RRR_MEANING_COUNTER+1));      --  Roman Numeral
                   --RRR_MEANING := NULL_MEANING_TYPE;
                   RRR_MEANING_COUNTER := RRR_MEANING_COUNTER+1;
@@ -619,15 +576,15 @@ package body LIST_PACKAGE is
                end if;
 
             elsif DM.D_K = NNN then
+
                if NNN_MEANING(NNN_MEANING_COUNTER+1) /= NULL_MEANING_TYPE then
                   --PUT_DICTIONARY_FLAGS;
-                  if WORDS_MODE (DO_ANSI_FORMATTING) then
-                     Text_IO.Put (Format_Reset);
-                     Text_IO.Put (Format_Bold);
-                  end if;
                   if WORDS_MDEV (DO_PEARSE_CODES) then
                      Text_IO.Put (OUTPUT, "03 ");
                   end if;
+
+                  Format(Output,BOLD);
+
                   PUT_MEANING (OUTPUT, NNN_MEANING(NNN_MEANING_COUNTER+1));  --  Unknown Name
                   -- NNN_MEANING := NULL_MEANING_TYPE;
                   NNN_MEANING_COUNTER := NNN_MEANING_COUNTER +1;
@@ -635,6 +592,7 @@ package body LIST_PACKAGE is
                end if;
 
             elsif DM.D_K = XXX then
+
                if XXX_MEANING(XXX_MEANING_COUNTER+1) = NULL_MEANING_TYPE and then
                   XXX_MEANING(XXX_MEANING_COUNTER+2) /= NULL_MEANING_TYPE then
                   XXX_MEANING_COUNTER := XXX_MEANING_COUNTER+1;
@@ -642,19 +600,14 @@ package body LIST_PACKAGE is
 
                if XXX_MEANING(XXX_MEANING_COUNTER+1) /= NULL_MEANING_TYPE then
                   if WORDS_MDEV (DO_PEARSE_CODES) then
-                     Text_IO.Put (OUTPUT, "06 ");
-                  end if;
-                  if WORDS_MODE (DO_ANSI_FORMATTING) then
-                     Text_IO.Put (Format_Reset);
-                     Text_IO.Put (Format_Inverse);
-                  end if;
+                     Text_IO.Put (OUTPUT, "06 ");  -- from here onward it's 06's => inverse
+                  end if;                          -- so we must issue vt100 RESET before the new line
+                  Format(Output,Inverse);          -- otherwise the Windows and OS/2 terminals print blank spaces
+                                                   -- to then end of the line (until LF on terminals that use CRLF)
                   PUT_MEANING (OUTPUT, XXX_MEANING(XXX_MEANING_COUNTER+1));  --  TRICKS
                   -- XXX_MEANING := NULL_MEANING_TYPE;
                   XXX_MEANING_COUNTER := XXX_MEANING_COUNTER +1;
-                  if WORDS_MODE (DO_ANSI_FORMATTING) then
-                     Text_IO.Put (Format_Reset);
-                  end if;
-
+                  Format(Output,Reset);
                   Text_IO.New_Line (OUTPUT);
                end if;
 
@@ -668,14 +621,9 @@ package body LIST_PACKAGE is
                   if WORDS_MDEV (DO_PEARSE_CODES) then
                      Text_IO.Put (OUTPUT, "06 ");
                   end if;
-                  if WORDS_MODE (DO_ANSI_FORMATTING) then
-                     Text_IO.Put (Format_Reset);
-                     Text_IO.Put (Format_Inverse);
-                  end if;
+                  Format(Output,Inverse);
                   PUT_MEANING (OUTPUT, YYY_MEANING(YYY_MEANING_COUNTER+1));  --  Syncope
-                  if WORDS_MODE (DO_ANSI_FORMATTING) then
-                     Text_IO.Put (Format_Reset);
-                  end if;
+                  Format(Output,Reset);
                   -- YYY_MEANING := NULL_MEANING_TYPE;
                   YYY_MEANING_COUNTER := YYY_MEANING_COUNTER +1;
                   Text_IO.New_Line (OUTPUT);
@@ -686,14 +634,10 @@ package body LIST_PACKAGE is
                   if WORDS_MDEV (DO_PEARSE_CODES) then
                      Text_IO.Put (OUTPUT, "06 ");
                   end if;
-                  if WORDS_MODE (DO_ANSI_FORMATTING) then
-                     Text_IO.Put (Format_Reset);
-                     Text_IO.Put (Format_Inverse);
-                  end if;
+
+                  Format(Output,Inverse);
                   PUT_MEANING (OUTPUT, PPP_MEANING(PPP_MEANING_COUNTER+1)); --  Compounds
-                  if WORDS_MODE (DO_ANSI_FORMATTING) then
-                     Text_IO.Put (Format_Reset);
-                  end if;
+                  Format(Output,Reset);
                   --PPP_MEANING := NULL_MEANING_TYPE;
                   PPP_MEANING_COUNTER := PPP_MEANING_COUNTER+1;
                   Text_IO.New_Line (OUTPUT);
@@ -703,22 +647,18 @@ package body LIST_PACKAGE is
                if WORDS_MDEV (DO_PEARSE_CODES) then
                   Text_IO.Put (OUTPUT, "06 ");
                end if;
-               if WORDS_MODE (DO_ANSI_FORMATTING) then
-                  Text_IO.Put (Format_Reset);
-                  Text_IO.Put (Format_Inverse);
-               end if;
+
+               Format(Output,Inverse);
                PUT_MEANING (OUTPUT, MEANS (Integer (DM.MNPC)));
-               if WORDS_MODE (DO_ANSI_FORMATTING) then
-                  Text_IO.Put (Format_Reset);
-               end if;
+               Format(Output,Reset);
                Text_IO.New_Line (OUTPUT);
 
             end if;
 
          end if;
-         if WORDS_MODE (DO_ANSI_FORMATTING) then
-            Text_IO.Put (Format_Reset);
-         end if;
+
+         Text_IO.Put (Format_Reset); --required for 03 branches above; belt and suspenders for 06
+
       end PUT_MEANING_LINE;
 
    begin
@@ -1521,20 +1461,9 @@ package body LIST_PACKAGE is
       --TEXT_IO.PUT_LINE("Finished OUTPUT_LOOP");
 
                if TRIMMED  then
-                        if WORDS_MODE (DO_ANSI_FORMATTING) then
-               Text_IO.Put (OUTPUT, Format_Reset);
-               Text_IO.Put (OUTPUT, Format_Inverse);
-
-                   end if;
-
-              Text_Io.New_Line(Output);
-
-              Text_Io.PUT_LINE(OUTPUT, "OUTPUT TRIMMED:  Turn off TRIM_OUTPUT to see more.");
-
-               if WORDS_MODE (DO_ANSI_FORMATTING) then
-               Text_IO.Put (OUTPUT, Format_Reset);
-                end if;
-
+               Format(OUTPUT,Inverse); Text_Io.New_Line(Output);
+               Text_Io.PUT(OUTPUT, "OUTPUT TRIMMED:  Turn off TRIM_OUTPUT to see more.");
+               Text_Io.New_Line(Output); Format(OUTPUT,Inverse);
                end if;
 
       Text_IO.New_Line (OUTPUT);
@@ -1565,16 +1494,11 @@ package body LIST_PACKAGE is
    begin
       DICT_IO.Read (DICT_FILE (D_K), DE, MN);
       Text_IO.Put (OUTPUT, "=>  ");
-      --TEXT_IO.PUT_LINE(OUTPUT, DICTIONARY_FORM(DE));
       PUT_DICTIONARY_FORM (OUTPUT, D_K, MN, DE);
-      if WORDS_MODE (DO_ANSI_FORMATTING) then
-         Text_IO.Put (Format_Bold);
-      end if;
-      Text_IO.Put_Line
+      Format(Output,Bold);
+      Text_IO.Put
         (OUTPUT, TRIM_BAR(TRIM (HEAD (DE.MEAN, MM))));  --  so it wont line wrap/put CR
-      if WORDS_MODE (DO_ANSI_FORMATTING) then
-         Text_IO.Put (Format_Reset);
-      end if;
+      Format(Output,Reset); New_Line(Output);
    end LIST_ENTRY;
 
    procedure UNKNOWN_SEARCH
@@ -1737,18 +1661,12 @@ package body LIST_PACKAGE is
 -- TEXT_IO.PUT_LINE("UNK_MNPC = " & INTEGER'IMAGE(INTEGER(UNK_MNPC)));
       if Integer (UNK_MNPC) > 0 then
 
-         if WORDS_MODE (DO_ANSI_FORMATTING) then
-            Text_IO.Put (Format_Reset);
-            Text_IO.Put (Format_Inverse);
-         end if;
-         Text_Io.New_Line(OUTPUT);
-         Text_IO.Put_Line
+         Text_Io.New_Line(OUTPUT); Format(Output,Inverse);
+         Text_IO.Put
            (OUTPUT,
             "----------  Entries in GENERAL Dictionary around the UNKNOWN  ----------");
+         Format(Output,Reset); Text_Io.New_Line(OUTPUT);
 
-         if WORDS_MODE (DO_ANSI_FORMATTING) then
-            Text_IO.Put (Format_Reset);
-         end if;
          PAUSE (OUTPUT);
 
          for MN in
@@ -1763,8 +1681,29 @@ package body LIST_PACKAGE is
 
       end if;
 
--- TEXT_IO.PUT_LINE("Leaving LIST_NEIGHBORHOOD");
-
    end LIST_NEIGHBORHOOD;
+
+   procedure Format (OUTPUT : in Text_IO.File_Type; Format : In Format_Command) is
+   begin
+
+      if WORDS_MODE(DO_ANSI_FORMATTING) and then
+        not WORDS_MODE (WRITE_OUTPUT_TO_FILE) then
+        Put (OUTPUT, Format_Reset);
+
+         case Format is
+            when UNDERLINE => Put (OUTPUT, Format_Underline);
+            when INVERSE   => Put (OUTPUT, Format_Inverse);
+            when FAINT     => if WORDS_MODE(DIM_EXAMPLES_TEXT) then
+                               Put (OUTPUT, Format_Faint);
+                                            end if;
+            when BOLD      => Put (OUTPUT, Format_Bold);
+            when RESET     => null;
+         end case;
+
+
+      end if;
+
+
+   end Format;
 
 end LIST_PACKAGE;
