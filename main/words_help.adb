@@ -5,7 +5,7 @@ package body words_help is
    -- SHOW_HELP --
    ---------------
 
-   procedure PUT(HELP : Main_HELP_TYPE) is
+   procedure PUT(HELP : in Main_HELP_TYPE) is
   begin
     NEW_LINE;
     for I in HELP'FIRST..HELP'LAST  loop

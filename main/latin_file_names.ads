@@ -18,7 +18,6 @@ package LATIN_FILE_NAMES is
   --  The following files are used in the DOS LATIN program and are 
   --  DOS legal, names no longer than 8 characters, with '.' and extension
 
-
   --  Single files, that is, that need only the one FULL name, no variations
   --  These files are input files and may have any name legal in your system
   --  and contain the ASCII information copied from the porting system
@@ -26,14 +25,14 @@ package LATIN_FILE_NAMES is
   INFLECTIONS_FULL_NAME     : constant STRING := "INFLECTS.LAT";
   INFLECTIONS_SECTIONS_NAME : constant STRING := "INFLECTS.SEC";
 
-  UNIQUES_FULL_NAME      : constant STRING := "UNIQUES.LAT";
-  ADDONS_FULL_NAME       : constant STRING := "ADDONS.LAT";
+  UNIQUES_FULL_NAME         : constant STRING := "UNIQUES.LAT";
+  ADDONS_FULL_NAME          : constant STRING := "ADDONS.LAT";
 
   --  These files may be created and used by the program
-  MODE_FULL_NAME         : constant STRING := "WORD.MOD";
-  OUTPUT_FULL_NAME       : constant STRING := "WORD.OUT";
-  UNKNOWNS_FULL_NAME     : constant STRING := "WORD.UNK";
-  PARSE_FULL_NAME        : constant STRING := "WORD.PRS";
+  MODE_FULL_NAME            : constant STRING := "WORD.MOD";
+  OUTPUT_FULL_NAME          : constant STRING := "WORD.OUT";
+  UNKNOWNS_FULL_NAME        : constant STRING := "WORD.UNK";
+  PARSE_FULL_NAME           : constant STRING := "WORD.PRS";
 
   --  These file names are used with extensions (e.g., GEN, SPE, LOC) 
   --  for the various dictionaries
@@ -48,7 +47,6 @@ package LATIN_FILE_NAMES is
   STEM_LIST_NAME        : constant STRING := "STEMLIST";
   STEM_FILE_NAME        : constant STRING := "STEMFILE";
   INDX_FILE_NAME        : constant STRING := "INDXFILE";
-
 
   function ADD_FILE_NAME_EXTENSION(NAME, EXTENSION : STRING) return STRING;
   --  This is the function that creates a file name legal for your system

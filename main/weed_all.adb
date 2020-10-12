@@ -2,6 +2,10 @@
    with INFLECTIONS_PACKAGE; use INFLECTIONS_PACKAGE;
    procedure WEED_ALL(W : in out STRING; 
                       POFS : in PART_OF_SPEECH_TYPE) is
+ 
+
+   --  Used for making English dictionaries; not part of the Words runtime library
+
    --  In contrast to the Latin phase where the prioritization takes is at runtime
    --  for the English most of the work is done beforehand
    --  both the setting of a priority class for each entry in the scan of DICTLINE

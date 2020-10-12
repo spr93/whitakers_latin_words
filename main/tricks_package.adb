@@ -338,7 +338,6 @@ with PUT_STAT;
       --  Determines and returns the value of a Roman numeral, or 0 if invalid
       --  This seems to allow all of Caesar's.   Actually there are no rules 
       --  if you look at some of the 12-15 century stuff
-         use TEXT_IO;
          TOTAL : INTEGER := 0;
          DECREMENTED_FROM : INTEGER := 0;
          
@@ -390,7 +389,7 @@ with PUT_STAT;
       
       --  Syncopated forms (see Gildersleeve and Lodge, 131)
       
-         YYY_MEANING := NULL_Special_Meaning_Array;
+         YYY_MEANING := Null_Special_Meaning_Array;
          
          --  This one has to go first --  special for 3 4 
          --  ivi  => ii ,  in perfect  (esp. for V 3 4) 
@@ -1594,7 +1593,6 @@ with PUT_STAT;
       --  Since the chances are 1/1000 that we have one,
       --  Ignore the possibility of two in the same word
       --  That is called lying with statistics                
-         use INFLECTIONS_PACKAGE.INTEGER_IO;
          S  : constant STRING(1..W'LENGTH) := W;
          PA_SAVE : INTEGER := PA_LAST;
       

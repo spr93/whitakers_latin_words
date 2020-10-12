@@ -10,7 +10,6 @@ package body DICTIONARY_PACKAGE is
   KIND_ENTRY_IO_DEFAULT_WIDTH : constant NATURAL := VERB_KIND_TYPE_IO.DEFAULT_WIDTH;
   --PART_WIDTH : NATURAL;
   
-  
   function NUMBER_OF_STEMS(P : PART_OF_SPEECH_TYPE) return STEM_KEY_TYPE is
   begin
     case P is
@@ -29,8 +28,6 @@ package body DICTIONARY_PACKAGE is
       when others  => return 0;
     end case;
   end NUMBER_OF_STEMS;
-
-
 
   package body PARSE_RECORD_IO is
     use TEXT_IO;
@@ -100,11 +97,13 @@ package body DICTIONARY_PACKAGE is
       M : INTEGER := 0;
     begin
       M := L + MAX_STEM_SIZE;
+      pragma Warnings(Off);  
       S(L+1..M) := PR.STEM;
       L := M + 1;
       S(L) :=  ' ';
       M := L + INFLECTION_RECORD_IO.DEFAULT_WIDTH;
       PUT(S(L+1..M), PR.IR);
+      pragma Warnings(On);  
       L := M + 1;
       S(L) :=  ' ';
       M := L + DICTIONARY_KIND_IO.DEFAULT_WIDTH;
@@ -1437,7 +1436,9 @@ package body TRANSLATION_RECORD_IO is
       M : INTEGER := 0;
     begin
       M := L + AGE_TYPE_IO.DEFAULT_WIDTH;
+      pragma Warnings(Off);   
       PUT(S(L+1..M), TR.AGE);
+      pragma Warnings(On);
       L := M + 1;
       S(L) :=  ' ';
       M := L + AREA_TYPE_IO.DEFAULT_WIDTH;

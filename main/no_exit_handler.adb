@@ -7,7 +7,6 @@ package body no_exit_Handler is
   protected body No_Exit_Handler is
 
      procedure  No_Exit_Catch_Interr Is
-      use Ada.Interrupts;
       begin
       null;
       end No_Exit_Catch_Interr;

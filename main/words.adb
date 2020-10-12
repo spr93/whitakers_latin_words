@@ -1,5 +1,5 @@
    with Ada.Command_Line;
-   with Ada.Text_IO; use Ada.Text_IO;
+   with Text_IO; use Text_IO;
    with STRINGS_PACKAGE; use STRINGS_PACKAGE;
    with CONFIG; use CONFIG;
    with WORD_PARAMETERS; use WORD_PARAMETERS;
@@ -38,7 +38,7 @@ with Ada.Directories;
       if Ada.Command_Line.ARGUMENT_COUNT = 0  then      --  Simple WORDS
          METHOD := INTERACTIVE;                          --  Interactive
          SUPPRESS_PREFACE := FALSE;
-         SET_OUTPUT(Ada.TEXT_IO.STANDARD_OUTPUT);
+         SET_OUTPUT(STANDARD_OUTPUT);
          INITIALIZE_WORD_PARAMETERS;
          INITIALIZE_DEVELOPER_PARAMETERS;
          INITIALIZE_WORD_PACKAGE;
@@ -100,7 +100,7 @@ with Ada.Directories;
             -- Still in the "else" statement => we're using the - / -- style arguments => continue interactive mode startup
             METHOD := INTERACTIVE;      
             SUPPRESS_PREFACE := FALSE;
-            SET_OUTPUT(Ada.TEXT_IO.STANDARD_OUTPUT);
+            SET_OUTPUT(STANDARD_OUTPUT);
             INITIALIZE_WORD_PARAMETERS;
             INITIALIZE_DEVELOPER_PARAMETERS;
             INITIALIZE_WORD_PACKAGE;
@@ -168,7 +168,7 @@ with Ada.Directories;
             OPEN(INPUT, IN_FILE, INPUT_NAME); --  Try file name, not raises NAME_ERROR
             METHOD := COMMAND_LINE_FILES;
             SET_INPUT(INPUT);
-            SET_OUTPUT(Ada.TEXT_IO.STANDARD_OUTPUT);
+            SET_OUTPUT(STANDARD_OUTPUT);
             PARSE;          --  No additional arguments, so just go to PARSE now
             exception                  --  Triggers on INPUT
                when NAME_ERROR  =>                   --  Raised NAME_ERROR therefore
@@ -200,13 +200,14 @@ with Ada.Directories;
          
                SET_INPUT(INPUT);
                SET_OUTPUT(OUTPUT);
-         
+               
+               WORDS_MODE(DO_UNICODE_INPUT) := False;
                SUPPRESS_PREFACE := TRUE;
                OUTPUT_SCREEN_SIZE := INTEGER'LAST;
                PARSE;           --  No additional arguments, so just go to PARSE now
          
-               SET_INPUT(Ada.TEXT_IO.STANDARD_INPUT);    --  Clean up
-               SET_OUTPUT(Ada.TEXT_IO.STANDARD_OUTPUT);
+               SET_INPUT(STANDARD_INPUT);    --  Clean up
+               SET_OUTPUT(STANDARD_OUTPUT);
                CLOSE(OUTPUT);
             end if;
             exception                  --  Triggers on either INPUT or OUTPUT  !!!
@@ -223,8 +224,6 @@ with Ada.Directories;
          THREE_ARGUMENTS:                                   --  or multiwords in-line
          declare
             ARG1 : constant STRING := TRIM(Ada.Command_Line.Argument(1));
-            ARG2 : constant STRING := TRIM(Ada.Command_Line.Argument(2));
-            ARG3 : constant STRING := TRIM(Ada.Command_Line.Argument(3));
          begin
            if ARG1(1) = CHANGE_LANGUAGE_CHARACTER  then
              if (ARG1'LENGTH > 1)  then 
