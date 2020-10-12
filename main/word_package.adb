@@ -30,7 +30,8 @@ package body WORD_PACKAGE is
          if WORDS_MDEV(PAUSE_IN_SCREEN_OUTPUT)  then
           if METHOD = INTERACTIVE  then
            if TEXT_IO.NAME(OUTPUT) =
-                  TEXT_IO.NAME(TEXT_IO.STANDARD_OUTPUT)  then
+              TEXT_IO.NAME(TEXT_IO.STANDARD_OUTPUT)  then
+                     
                      TEXT_IO.PUT_LINE(TEXT_IO.STANDARD_OUTPUT,
                  "                          MORE - hit RETURN/ENTER to continue");
                      TEXT_IO.GET_LINE(TEXT_IO.STANDARD_INPUT, PAUSE_LINE, PAUSE_LAST);
@@ -666,7 +667,7 @@ package body WORD_PACKAGE is
    begin  if UPPER_CASE(C) = 'L' 
         and then not CL_Arguments(ENGLISH_ONLY)
       then
-    LANGUAGE := LATIN_TO_ENGLISH;
+         LANGUAGE := LATIN_TO_ENGLISH;
     PREFACE.PUT_LINE("Language changed to " & LANGUAGE_TYPE'IMAGE(LANGUAGE));
   elsif UPPER_CASE(C) = 'E'  then  
     if ENGLISH_DICTIONARY_AVAILABLE(GENERAL)  then
@@ -1535,9 +1536,7 @@ end CHANGE_LANGUAGE;
                end if;       --  First search passed but SXX null
             end if;         --  First search failed
 
---TEXT_IO.PUT_LINE("End of PRUNE_STEMS   PA_LAST = " & INTEGER'IMAGE(PA_LAST));
-
-
+--TEXT_IO.PUT_LINE("End of PRUNE_STEMS   PA_LAST = " & INTEGER'IMAGE(PA_LAST))
          end PRUNE_STEMS;
 
 
@@ -1551,19 +1550,19 @@ end CHANGE_LANGUAGE;
             PACKON_FIRST_HIT : BOOLEAN := FALSE;
             SL, SL_NULLS : SAL := (others => NULL_PARSE_RECORD);
 
-            function "<=" (LEFT, RIGHT : PRONOUN_KIND_TYPE)   return BOOLEAN is
-            begin
-               if (RIGHT = LEFT   or else
-                   RIGHT = X)  then
-                  return TRUE;
-               elsif
-                  (RIGHT = ADJECT and    --  Just for PACK
-                   LEFT  = INDEF)   then
-                  return TRUE;
-               else
-                  return FALSE;
-               end if;
-            end "<=";
+--              function "<=" (LEFT, RIGHT : PRONOUN_KIND_TYPE)   return BOOLEAN is
+--              begin
+--                 if (RIGHT = LEFT   or else
+--                     RIGHT = X)  then
+--                    return TRUE;
+--                 elsif
+--                    (RIGHT = ADJECT and    --  Just for PACK
+--                     LEFT  = INDEF)   then
+--                    return TRUE;
+--                 else
+--                    return FALSE;
+--                 end if;
+--              end "<=";
 
          begin
 
@@ -1822,7 +1821,6 @@ end CHANGE_LANGUAGE;
          procedure TRY_TACKONS(INPUT_WORD : STRING) is
             TACKON_HIT : BOOLEAN := FALSE;
             TACKON_ON  : BOOLEAN := FALSE;
-            TACKON_LENGTH : constant INTEGER := 0; 
             J : INTEGER := 0;
             DE : DICTIONARY_ENTRY := NULL_DICTIONARY_ENTRY;
             MEAN : MEANING_TYPE := NULL_MEANING_TYPE;
