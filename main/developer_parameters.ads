@@ -47,21 +47,16 @@ package DEVELOPER_PARAMETERS is
                       DO_SYNCOPE,            
                       DO_TWO_WORDS,            
                       INCLUDE_UNKNOWN_CONTEXT,
-                      NO_MEANINGS,
-                      
                       
                       OMIT_ARCHAIC,        
                       OMIT_MEDIEVAL,    
                       OMIT_UNCOMMON,    
-                    
-                   --   DO_I_FOR_J,        
-                   --   DO_U_FOR_V,    
-                    
+                                 
                       PAUSE_IN_SCREEN_OUTPUT, 
                       NO_SCREEN_ACTIVITY,   
                         
                       UPDATE_LOCAL_DICTIONARY,
-                      UPDATE_MEANINGS,       
+                    --UPDATE_MEANINGS,       
 
                       MINIMIZE_OUTPUT         );
 

@@ -50,7 +50,6 @@ package body DEVELOPER_PARAMETERS is
                       DO_SYNCOPE                  => TRUE,
                       DO_TWO_WORDS                => TRUE,
                       INCLUDE_UNKNOWN_CONTEXT     => TRUE,
-                      NO_MEANINGS                 => FALSE,
 
                       OMIT_ARCHAIC                => FALSE,
                       OMIT_MEDIEVAL               => FALSE,
@@ -227,13 +226,6 @@ INCLUDE_UNKNOWN_CONTEXT_HELP : constant HELP_TYPE :=  (
    "large text files in which it is expected that there will be relatively",
    "few UNKNOWNS.    The main use at the moment is to provide display     ",
    "of the input line on the output file in the case of UNKNOWNS_ONLY.    ");
-
-NO_MEANINGS_HELP : constant HELP_TYPE :=  (  
-   "This option instructs the program to omit putting out meanings.       ", 
-   "This is only useful for certain dictionary maintenance procedures.    ",
-   "The combination not DO_DICTIONARY_FORMS, MEANINGS_ONLY, NO_MEANINGS   ",
-   "results in no visible output, except spacing lines.    Default is N)o.");
-   
 
 OMIT_ARCHAIC_HELP : constant HELP_TYPE :=  (
    "THIS OPTION IS CAN ONLY BE ACTIVE IF WORDS_MODE(TRIM_OUTPUT) IS SET!  ",
@@ -691,9 +683,6 @@ LOAD_DICTIONARY(DICT_LOC,
 
     INQUIRE(INCLUDE_UNKNOWN_CONTEXT, INCLUDE_UNKNOWN_CONTEXT_HELP);
 
-    INQUIRE(NO_MEANINGS, NO_MEANINGS_HELP);
-
-
     INQUIRE(OMIT_ARCHAIC, OMIT_ARCHAIC_HELP);
 
     INQUIRE(OMIT_MEDIEVAL, OMIT_MEDIEVAL_HELP);
@@ -828,8 +817,8 @@ begin
     when NAME_ERROR  =>
       WORDS_MDEV := DEFAULT_MDEV_ARRAY;
     when BAD_MDEV_FILE  =>
-      PREFACE.PUT_LINE("MDEV_FILE exists, but empty or corupted - Default MDEVs used");
-      PREFACE.PUT_LINE("You can set new parameters with CHANGE PARAMETERS and save.");
+      PREFACE.PUT_LINE("MDEV_FILE invalid or corrupted - default MDEVs used");
+      PREFACE.PUT_LINE("You fix this by setting new parameters.  Enter " & CHANGE_PARAMETERS_CHARACTER& " and then save.");
       WORDS_MDEV := DEFAULT_MDEV_ARRAY;
   end DO_MDEV_FILE;
 
