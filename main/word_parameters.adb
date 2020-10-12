@@ -23,36 +23,6 @@ package body WORD_PARAMETERS is
   MODE_OF_REPLY : array (REPLY_TYPE) of BOOLEAN := (FALSE, TRUE);
 
   BLANK_INPUT : exception;
-  
-  --  The default modes are set in the body so that they can be changed
-  --  with only this being recompiled, not the rest of the with'ing system
-  DEFAULT_MODE_ARRAY : constant MODE_ARRAY := (
-                      TRIM_OUTPUT                 => FALSE,      
-
-                      HAVE_OUTPUT_FILE            => FALSE,
-                      WRITE_OUTPUT_TO_FILE        => FALSE,
-
-                      DO_UNKNOWNS_ONLY            => FALSE,
-                      WRITE_UNKNOWNS_TO_FILE      => FALSE,
-
-                      IGNORE_UNKNOWN_NAMES        => FALSE,
-                      IGNORE_UNKNOWN_CAPS         => FALSE,
-                      DO_COMPOUNDS                => TRUE,
-                      DO_FIXES                    => TRUE,
-                      DO_TRICKS                   => TRUE,
-
-                      DO_DICTIONARY_FORMS         => TRUE,
-                      SHOW_AGE                    => TRUE,
-                      SHOW_FREQUENCY              => TRUE,
-
-                      DO_EXAMPLES                 => TRUE,
-                      DO_ONLY_MEANINGS            => FALSE,
-                      DO_STEMS_FOR_UNKNOWN        => TRUE,    
-                                              
-                      DO_ARABIC_NUMERALS          => TRUE,
-                      DO_ANSI_FORMATTING          => TRUE,
-                      DIM_EXAMPLES_TEXT           => FALSE,
-                      DO_UNICODE_INPUT                  => TRUE);
 
   BAD_MODE_FILE : exception;
 

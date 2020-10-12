@@ -18,7 +18,6 @@ with SEARCH_ENGLISH;
 
 with Arabic2Roman;
 with words_help;              use words_help;
-with No_Exit_Handler;
 
 pragma Elaborate (WORD_PARAMETERS);
 
@@ -115,7 +114,7 @@ procedure PARSE (COMMAND_LINE : String := "") is
             if WORDS_MODE (WRITE_OUTPUT_TO_FILE) then
 
                      Arabic2Roman.Arabic2Roman
-                       (OUTPUT, Arabic_String ((Arabic_J) .. J));
+                       (OUTPUT, Arabic_String((Arabic_J) .. J));
                   else
                      Arabic2Roman.Arabic2Roman
                        (Current_Output, Arabic_String ((Arabic_J) .. J));
@@ -238,7 +237,7 @@ procedure PARSE (COMMAND_LINE : String := "") is
                begin
                              
 --TEXT_IO.PUT_LINE("Entering ENCLITIC  HAVE DONE = " & BOOLEAN'IMAGE(HAVE_DONE_ENCLITIC));
-   --if WORDS_MODE(TRIM_OUTPUT)  and (PA_LAST > 0)  then    return;   end if;
+   --if WORDS_MODE(TRIM_OUTPUT)  and (PA_LAST > 0)  sathen    return;   end if;
                   if HAVE_DONE_ENCLITIC then
                      return;
                   end if;
@@ -1276,7 +1275,6 @@ begin --  PARSE
          PREFACE.NEW_LINE;
       end if; 
       
-      
       if ENGLISH_DICTIONARY_AVAILABLE (GENERAL) 
         and then not CL_ARGUMENTS(ENGLISH_ONLY) 
         and then not CL_Arguments(LATIN_ONLY)
@@ -1308,11 +1306,12 @@ begin --  PARSE
 
             LINE := BLANK_LINE;
             
-            if WORDS_MODE(DO_UNICODE_INPUT) then
+            if METHOD = INTERACTIVE
+              and then WORDS_MODE(DO_UNICODE_INPUT) then
                Get_Unicode(LINE, L);
-            else 
+           else 
                Get_Line(LINE,L);
-            end if;
+           end if;
             
             if (L = 0) or else (TRIM (LINE (1 .. L)) = "") then
                --LINE_NUMBER := LINE_NUMBER + 1;  --  Count blank lines
@@ -1323,11 +1322,12 @@ begin --  PARSE
                then   --  INPUT is keyboard
                   PREFACE.PUT ("Blank exits =>");
                   
-                 if WORDS_MODE(DO_UNICODE_INPUT) then
-                   Get_Unicode(LINE, L);
-                 else 
-                   Get_Line(LINE,L);
-                 end if;
+                  if METHOD = INTERACTIVE 
+                    and then WORDS_MODE(DO_UNICODE_INPUT) then
+                    Get_Unicode(LINE, L);
+                else 
+                 Get_Line(LINE,L);
+                end if;
                 
                   if (L = 0) or else (TRIM (LINE (1 .. L)) = "")
                   then  -- Two in a row

@@ -1,5 +1,4 @@
 with TEXT_IO;         use TEXT_IO;
-with Ada.Strings;
 with Ada.Wide_Text_IO;
 with Ada.Wide_Characters.Handling;
 with Ada.Characters.Conversions;
@@ -152,7 +151,6 @@ with LIST_PACKAGE;
    
      
    procedure GET_UNICODE (LINE : in out String; L : in out Integer) is
-
          -- Converts unicode accented forms to basic ASCII 
          -- Useful for input that includes macrons.
          -- E.g., this causes 'ē' to be processed as 'e'
@@ -161,9 +159,10 @@ with LIST_PACKAGE;
          W_Line : Wide_String := Ada.Wide_Text_IO.Get_Line;
 
          T_Line : String := Ada.Characters.Conversions.To_String (    
-                            Ada.Wide_Characters.Handling.To_Basic(W_Line));
-          
-      begin
+                          Ada.Wide_Characters.Handling.To_Basic(W_Line));
+         
+   begin
+      null;
          
               if T_Line'Last <= INPUT_LINE_LENGTH then 
                 LINE(T_LINE'RANGE) := T_LINE;
@@ -172,22 +171,15 @@ with LIST_PACKAGE;
                 Line := T_Line(T_Line'First..Line'Last);
                 L := Line'Last;
               end if; 
-               -- SPR to do:  add exception to fall back to old way
       
    exception 
       when Constraint_Error =>
-         if WORDS_MODE (DO_ANSI_FORMATTING) then
-            Text_IO.Put (OUTPUT, LIST_PACKAGE.Format_Reset);
-            Text_IO.Put (OUTPUT, LIST_PACKAGE.Format_Inverse);
-         end if;
-
-         Text_IO.Put_Line(OUTPUT, "ERROR processing Unicode. Falling back to non-Unicode mode.");
-         Text_IO.Put(OUTPUT, "If this resolves the problem, save the current parameters by entering " & CHANGE_PARAMETERS_CHARACTER);
+           LIST_PACKAGE.Format(OUTPUT,LIST_PACKAGE.Inverse);
+           Text_IO.Put_Line(OUTPUT, "ERROR processing Unicode. Falling back to non-Unicode mode.");
+           Text_IO.Put(OUTPUT, "If this resolves the problem, save the current parameters by entering " & CHANGE_PARAMETERS_CHARACTER);
            WORDS_MODE(DO_UNICODE_INPUT) := False;
-          if WORDS_MODE (DO_ANSI_FORMATTING) then
-            Text_IO.Put (OUTPUT, LIST_PACKAGE.Format_Reset);
-         end if;
-         New_Line;
+           LIST_PACKAGE.Format(Output,LIST_PACKAGE.Reset);
+           New_Line;
       
       end GET_UNICODE; 
    
