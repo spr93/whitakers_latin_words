@@ -22,6 +22,7 @@ Col. Whitaker's last version of Words (1.97FC), with
 - clarified grammar notes
 - lightly modified inflections and "tricks" (conservative and verified with the latest Oxford Latin Dictionary)
 - bug fixes throughout
+- Unicode conversions so that vowels with macrons can be used as input
 - more flexibility as to where the data files are stored (first checks the working directory, then checks whether a LATINWORDS environment variable contains the directory information, then checks the system PATH variable)--so that, e.g., the executable and data can be separated into the traditional Unix-like directory structure
 - also in the vein of being more Unix-like, underscore ('_') and not tilde ('~') (the traditional abbreviation for the user's home directory) is the default change-language character (no more remembering to put quotes around the change-language character when running Words from a shell command line)
 - command-line options to disable features (useful for pedagogical purposes and lab environments, but these are *not* robust and cannot, by themselves, be relied upon for any real security)
