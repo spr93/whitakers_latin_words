@@ -17,10 +17,10 @@
    with Ada.Environment_Variables;
    with Ada.Directories;
 
+
    procedure WORDS is
 
       Argument_Offset : INTEGER := 0;  
-
    begin
       --  The language shift in arguments must take place here
       --  since later parsing of line ignores non-letter characters
@@ -38,8 +38,8 @@
       end if;
       -- END FIND WORDS DATA FILES
                
-      --SIMPLE INTERACTIVE MODE
-      if Ada.Command_Line.ARGUMENT_COUNT = 0  then       --  Simple WORDS
+--SIMPLE INTERACTIVE MODE 
+   if Ada.Command_Line.ARGUMENT_COUNT = 0  then       --  Simple WORDS
          METHOD := INTERACTIVE;                          --  Interactive
          SUPPRESS_PREFACE := FALSE;
          SET_OUTPUT(STANDARD_OUTPUT);
@@ -48,17 +48,14 @@
          INITIALIZE_WORD_PACKAGE;
          PARSE;
 
-      --COMMAND-LINE ARGUMENTS
-      else 
+ --COMMAND-LINE ARGUMENTS ("new" style to modify interactive mode)
+   elsif TRIM(Ada.Command_Line.Argument(1))(1) = '-'  
+        then 
 
-      -- First possibility: "New" (2020)-style arguments
-      declare 
+        declare 
              Args_Exception : exception;
 
              begin 
-               If TRIM(Ada.Command_Line.Argument(1))(1) /= '-'  
-               then null;
-             else 
 
                for I in 1..Ada.Command_Line.Argument_Count loop
              
@@ -99,7 +96,7 @@
                exit when I > 5;  -- max 5 arguments (-E and -L conflict) 
             end loop; -- while =< argument_counter'length
 
-            -- Still in the "else" statement => we're using the - / -- style arguments => continue interactive mode startup
+            -- Still in the "elsif" statement => we're using the - / -- style arguments => continue interactive mode startup
             METHOD := INTERACTIVE;      
             SUPPRESS_PREFACE := FALSE;
             SET_OUTPUT(STANDARD_OUTPUT);
@@ -111,16 +108,12 @@
                loop   -- appears to be memory leak if we recursively call parse from within parse exception handler 
                PARSE; -- not elegant, but return => infinite loops avoids more complex logic in block exception handler or global handler
                end loop;
-               
             else
                Parse;
             end if;
-         
-            return; -- if parse terminates we have to expressly terminate the program so we don't fall through the old parameters routine
-
-         end if; 
-         
+      
        exception
+         
          when Args_Exception =>     -- Parse may raise NO_EXCEPTION_EXCEPTION; handler is outside the block
             Put_Line("Words operates in two modes when using command-line arguments");
             New_Line;
@@ -150,20 +143,21 @@
             Put_Line("These options are overrides; non-conflicting settings (WORD.MOD) still apply");
             New_Line;
             Return; 
-        end; -- block
-      end if; 
-   
- --  Note:  Other than exceptions, prorgram won't get beyond this line 
- --  if either simple interactive mode or new-style command arguments used
-  
+      end; -- block
+
+else -- NOT entering interactive mode; back to classic Words startup
+
 --   CLASSIC WORDS INIT
      SUPPRESS_PREFACE := TRUE;
      INITIALIZE_WORD_PARAMETERS;
      INITIALIZE_DEVELOPER_PARAMETERS;
      INITIALIZE_WORD_PACKAGE;
-
- 
-   if Ada.Command_Line.Argument_Count > 1 
+end if; 
+ --  Note:  Other than exceptions, prorgram won't get beyond this line 
+ --  if either simple interactive mode or new-style command arguments used
+  
+ -- check for change langauge command line option
+ if Ada.Command_Line.Argument_Count > 1 
      and then 
        Ada.Command_Line.Argument(1)(1) = CHANGE_LANGUAGE_CHARACTER
         and then 
@@ -171,12 +165,12 @@
    then 
       CHANGE_LANGUAGE(Trim(Ada.Command_Line.Argument(1))(2));
       Argument_Offset := 1;  -- i.e., start processing at argument 2
-      Put_Line("DEBUG: " & Language'Image);
    end if; 
       
-   --  when 1 => either a simple Latin word or an input file.
-   --  when 2 => two words in-line
-   --  when more => command-line of words   
+ --  choose a non-interactive mode: 
+ --  when 1 argument     => either a simple Latin word or an input file.
+ --  when 2 arguments    => two words in-line
+ --  when more arguments => command-line of words   
    if (Ada.Command_Line.Argument_Count - Argument_Offset) in 1..2
      then 
          declare  -- block for I/O and unicode exceptions
@@ -222,8 +216,8 @@
  
                     T_Line : String      := Ada.Characters.Conversions.To_String (    
                                             Ada.Wide_Characters.Handling.To_Basic(W_Line));
-                  begin 
-                  PARSE(Trim(T_Line));    
+                  begin  
+                  PARSE(Trim(T_Line));   
                end;
              end loop; 
 
@@ -237,14 +231,13 @@
          SET_INPUT(STANDARD_INPUT);    
          SET_OUTPUT(STANDARD_OUTPUT);
          return; 
-       
-
+      
          exception                 
                when NAME_ERROR  =>                     --  Raised NAME_ERROR therefore
             METHOD := COMMAND_LINE_INPUT;      --  Assume w found word in command line
-            Put_Line(Standard_Output,"debug:  Falling back to command line input");
-               when End_Error => 
-                   if WORDS_MODE(DO_UNICODE_INPUT) then null;     --  unicode endings get weird
+            Put_Line(Standard_Output,"Cannot open file.  Falling back to comman-line mode.");
+               when others => 
+                   if WORDS_MODE(DO_UNICODE_INPUT) then null;  
                    else raise End_Error; 
                    end if; 
                         Put_Line("I/O ERROR");
@@ -257,7 +250,7 @@
    else   -- More than 2 arguments (after possible language switch) => translate all words on the command line
        METHOD := COMMAND_LINE_INPUT;
    end If; 
-   
+
    --  Process words in command line
    if METHOD = COMMAND_LINE_INPUT  then            --  Process words in command line
          for I in (1 + Argument_Offset)..Ada.Command_Line.Argument_Count  loop  --  Assemble input words 
@@ -268,6 +261,5 @@
             end; --block 
          end loop; 
    end if;
-          
-        
+
 end  WORDS;

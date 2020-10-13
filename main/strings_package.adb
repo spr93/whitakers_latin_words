@@ -173,14 +173,13 @@ with LIST_PACKAGE;
               end if; 
       
    exception 
-      when Constraint_Error =>
+      when others =>
            LIST_PACKAGE.Format(OUTPUT,LIST_PACKAGE.Inverse);
            Text_IO.Put_Line(OUTPUT, "ERROR processing Unicode. Falling back to non-Unicode mode.");
            Text_IO.Put(OUTPUT, "If this resolves the problem, save the current parameters by entering " & CHANGE_PARAMETERS_CHARACTER);
            WORDS_MODE(DO_UNICODE_INPUT) := False;
            LIST_PACKAGE.Format(Output,LIST_PACKAGE.Reset);
            New_Line;
-      
       end GET_UNICODE; 
    
    

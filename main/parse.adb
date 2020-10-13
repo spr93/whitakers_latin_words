@@ -15,16 +15,16 @@ with CONFIG;                  use CONFIG;
 with PUT_STAT;
 with ENGLISH_SUPPORT_PACKAGE; use ENGLISH_SUPPORT_PACKAGE;
 with SEARCH_ENGLISH;
-
+with Ada.Exceptions;
 with Arabic2Roman;
-with words_help;              use words_help;
+with Words_Help;              use words_help;
 
 pragma Elaborate (WORD_PARAMETERS);
 
 procedure PARSE (COMMAND_LINE : String := "") is
    use INFLECTIONS_PACKAGE.INTEGER_IO;
    use INFLECTION_RECORD_IO;
-   use Text_IO;
+   use Text_IO; 
 
    STORAGE_ERROR_COUNT : Integer := 0;
 
@@ -1162,28 +1162,27 @@ XXX_MEANING_COUNTER := 0;  YYY_MEANING_COUNTER := 0; NNN_MEANING_COUNTER := 0;  
          PA_LAST := 0;
    end PARSE_LINE;
 
---procedure CHANGE_LANGUAGE(C : CHARACTER) is
---begin
---  if UPPER_CASE(C) = 'L' then
---    LANGUAGE := LATIN_TO_ENGLISH;
---    PREFACE.PUT_LINE("Language changed to " & LANGUAGE_TYPE'IMAGE(LANGUAGE));
---  elsif UPPER_CASE(C) = 'E' then
---    if ENGLISH_DICTIONARY_AVAILABLE(GENERAL)  then
---      LANGUAGE:= ENGLISH_TO_LATIN;
---      PREFACE.PUT_LINE("Language changed to " & LANGUAGE_TYPE'IMAGE(LANGUAGE));
---      PREFACE.PUT_LINE("Input a single English word (+ part of speech - N, ADJ, V, PREP, ...)");
---    else
---      PREFACE.PUT_LINE("No English dictionary available");
---    end if;
---  else
---    PREFACE.PUT_LINE("Bad LANGAUGE input - no change, remains " & LANGUAGE_TYPE'IMAGE(LANGUAGE));
---  end if;
---exception
---  when others  =>
---    PREFACE.PUT_LINE("Bad LANGAUGE input - no change, remains " & LANGUAGE_TYPE'IMAGE(LANGUAGE));
---end CHANGE_LANGUAGE;
---
---
+procedure CHANGE_LANGUAGE(C : CHARACTER) is
+begin
+if UPPER_CASE(C) = 'L' then
+  LANGUAGE := LATIN_TO_ENGLISH;
+  PREFACE.PUT_LINE("Language changed to " & LANGUAGE_TYPE'IMAGE(LANGUAGE));
+elsif UPPER_CASE(C) = 'E' then
+  if ENGLISH_DICTIONARY_AVAILABLE(GENERAL)  then
+    LANGUAGE:= ENGLISH_TO_LATIN;
+    PREFACE.PUT_LINE("Language changed to " & LANGUAGE_TYPE'IMAGE(LANGUAGE));
+    PREFACE.PUT_LINE("Input a single English word (+ part of speech - N, ADJ, V, PREP, ...)");
+  else
+    PREFACE.PUT_LINE("No English dictionary available");
+  end if;
+else
+  PREFACE.PUT_LINE("Bad LANGUAGE input - no change, remains " & LANGUAGE_TYPE'IMAGE(LANGUAGE));
+end if;
+exception
+when others  =>
+  PREFACE.PUT_LINE("Bad LANGUAGE input - no change, remains " & LANGUAGE_TYPE'IMAGE(LANGUAGE));
+end CHANGE_LANGUAGE;
+
 
 begin --  PARSE
 --  All Rights Reserved - William Armstrong Whitaker
@@ -1335,7 +1334,7 @@ begin --  PARSE
                   end if;
                elsif End_Of_File (Current_Input)
                   then
-                     return; 
+                     Exit; 
                end if;
             end if;
 
@@ -1403,7 +1402,7 @@ begin --  PARSE
                   Set_Input (Standard_Input);
                   Close (INPUT);
                end if;
-               Put_Line ("An unknown or unacceptable file name. Try Again");
+               Put_Line ("Unknown or unacceptable file name. Try Again");
             when End_Error =>          --  The end of the input file resets to CON:
                if CL_Arguments(NO_EXIT) 
                   then null;
@@ -1422,77 +1421,82 @@ begin --  PARSE
                      end if; 
                end if;
             when Status_Error =>      --  The end of the input file resets to CON:
-               Put_Line ("Raised STATUS_ERROR");
+                 Put_Line ("Raised STATUS_ERROR");
          end GET_INPUT_LINE;                     --  end Block to manipulate file of lines
 
       end loop GET_INPUT_LINES;          --  Loop on lines
-
+     return; 
    end if;     --  On command line input
 
-   begin
-      STEM_IO.Open
-        (STEM_FILE (LOCAL), STEM_IO.In_File,
-         ADD_FILE_NAME_EXTENSION (STEM_FILE_NAME, "LOCAL"));
-      --  Failure to OPEN will raise an exception, to be handled below
-      if STEM_IO.Is_Open (STEM_FILE (LOCAL)) then
-         STEM_IO.Delete (STEM_FILE (LOCAL));
-      end if;
-   exception
-      when others =>
-         null;      --  If cannot OPEN then it does not exist, so is deleted
-   end;
-   --  The rest of this seems like overkill, it might have been done elsewhere
-   begin
-      if DICT_IO.Is_Open (DICT_FILE (LOCAL)) then
-         DICT_IO.Delete (DICT_FILE (LOCAL));
-      else
-         DICT_IO.Open
-           (DICT_FILE (LOCAL), DICT_IO.In_File,
-            ADD_FILE_NAME_EXTENSION (DICT_FILE_NAME, "LOCAL"));
-         DICT_IO.Delete (DICT_FILE (LOCAL));
-      end if;
-   exception
-      when others =>
-         null;
-   end;   --  not there, so don't have to DELETE
-   begin
-      if DICT_IO.Is_Open (DICT_FILE (ADDONS)) then
-         DICT_IO.Delete (DICT_FILE (ADDONS));
-      else
-         DICT_IO.Open
-           (DICT_FILE (ADDONS), DICT_IO.In_File,
-            ADD_FILE_NAME_EXTENSION (DICT_FILE_NAME, "ADDONS"));
-         DICT_IO.Delete (DICT_FILE (ADDONS));
-      end if;
-   exception
-      when others =>
-         null;
-   end;   --  not there, so don't have to DELETE
-   begin
-      if DICT_IO.Is_Open (DICT_FILE (UNIQUE)) then
-         DICT_IO.Delete (DICT_FILE (UNIQUE));
-      else
-         DICT_IO.Open
-           (DICT_FILE (UNIQUE), DICT_IO.In_File,
-            ADD_FILE_NAME_EXTENSION (DICT_FILE_NAME, "UNIQUE"));
-         DICT_IO.Delete (DICT_FILE (UNIQUE));
-      end if;
-   exception
-      when others =>
-         null;
-   end;   --  not there, so don't have to DELETE
+   
+   -- why are we deleting here?
+--     begin
+--        STEM_IO.Open
+--          (STEM_FILE (LOCAL), STEM_IO.In_File,
+--           ADD_FILE_NAME_EXTENSION (STEM_FILE_NAME, "LOCAL"));
+--        --  Failure to OPEN will raise an exception, to be handled below
+--        if STEM_IO.Is_Open (STEM_FILE (LOCAL)) then
+--           STEM_IO.Delete (STEM_FILE (LOCAL));
+--        end if;
+--     exception
+--        when others =>
+--           null;      --  If cannot OPEN then it does not exist, so is deleted
+--     end;
+--    
+--     
+--     --  The rest of this seems like overkill, it might have been done elsewhere
+--     begin
+--        if DICT_IO.Is_Open (DICT_FILE (LOCAL)) then
+--           DICT_IO.Delete (DICT_FILE (LOCAL));
+--        else
+--           DICT_IO.Open
+--             (DICT_FILE (LOCAL), DICT_IO.In_File,
+--              ADD_FILE_NAME_EXTENSION (DICT_FILE_NAME, "LOCAL"));
+--           DICT_IO.Delete (DICT_FILE (LOCAL));
+--        end if;
+--     exception
+--        when others =>
+--           null;
+--     end;   --  not there, so don't have to DELETE
+--     begin
+--        if DICT_IO.Is_Open (DICT_FILE (ADDONS)) then
+--           DICT_IO.Delete (DICT_FILE (ADDONS));
+--        else
+--           DICT_IO.Open
+--             (DICT_FILE (ADDONS), DICT_IO.In_File,
+--              ADD_FILE_NAME_EXTENSION (DICT_FILE_NAME, "ADDONS"));
+--           DICT_IO.Delete (DICT_FILE (ADDONS));
+--        end if;
+--     exception
+--        when others =>
+--           null;
+--     end;   --  not there, so don't have to DELETE
+--  
+--     begin
+--        if DICT_IO.Is_Open (DICT_FILE (UNIQUE)) then
+--           DICT_IO.Delete (DICT_FILE (UNIQUE));
+--        else
+--           DICT_IO.Open
+--             (DICT_FILE (UNIQUE), DICT_IO.In_File,
+--              ADD_FILE_NAME_EXTENSION (DICT_FILE_NAME, "UNIQUE"));
+--           DICT_IO.Delete (DICT_FILE (UNIQUE));
+--        end if;
+--     exception
+--        when others =>
+--           null;
+--     end;   --  not there, so don't have to DELETE
 
 exception
+
    when Storage_Error =>    --  Have tried at least twice, fail
-      PREFACE.PUT_LINE ("Non-transient STORAGE_ERROR Exception in PARSE");
-   --   PREFACE.PUT_LINE ("If insufficient memory in DOS, try removing TSRs");
+      PREFACE.PUT_LINE ("STORAGE_ERROR Exception in PARSE");
    when GIVE_UP =>
       PREFACE.PUT_LINE ("Giving up!");
    when others =>
     if CL_Arguments(NO_EXIT) 
         then Parse;
-         else 
-         PREFACE.PUT_LINE ("Unexpected exception raised in PARSE");
-      end if;
+        else 
+        PREFACE.PUT_LINE ("Unexpected exception raised in PARSE");
+    end if;
      
 end PARSE;
