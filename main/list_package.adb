@@ -387,7 +387,7 @@ package body LIST_PACKAGE is
 
                end if;                                       --
 
-                  Text_IO.Put (Format_Reset);
+               Format(Output,Reset);
                --  END PUT EXAMPLE LINE
             end if;
          end if;
@@ -657,7 +657,7 @@ package body LIST_PACKAGE is
 
          end if;
 
-         Text_IO.Put (Format_Reset); --required for 03 branches above; belt and suspenders for 06
+         Format(Output,Reset); --required for 03 branches above; belt and suspenders for 06
 
       end PUT_MEANING_LINE;
 
