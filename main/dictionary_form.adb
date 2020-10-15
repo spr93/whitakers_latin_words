@@ -224,7 +224,7 @@ with DICTIONARY_PACKAGE; use DICTIONARY_PACKAGE;
               elsif DE.PART.ADJ.DECL.VAR = 3  then
                 OX(1) := ADD(DE.STEMS(1), "us");
                 OX(2) := ADD(DE.STEMS(2), "a");
-                OX(3) := ADD(DE.STEMS(2), "um (gen -ius)");
+                OX(3) := ADD(DE.STEMS(2), "um (gen. -ius)");
               elsif DE.PART.ADJ.DECL.VAR = 4  then
                 OX(1) := ADD(DE.STEMS(1), "");
                 OX(2) := ADD(DE.STEMS(2), "a");
@@ -267,8 +267,8 @@ with DICTIONARY_PACKAGE; use DICTIONARY_PACKAGE;
             elsif DE.PART.ADJ.DECL.WHICH = 3  then
               if DE.PART.ADJ.DECL.VAR = 1  then
                 OX(1) := ADD(DE.STEMS(1), "");
-                OX(2) := ADD(NULL_OX, "(gen.)");
-                OX(3) := ADD(DE.STEMS(2), "is");
+                OX(2) := ADD(DE.STEMS(2), "is (gen.)");
+                OX(3) := ADD(NULL_OX, "");
               elsif DE.PART.ADJ.DECL.VAR = 2  then
                 OX(1) := ADD(DE.STEMS(1), "is");
                 OX(2) := ADD(DE.STEMS(2), "is");
@@ -279,8 +279,8 @@ with DICTIONARY_PACKAGE; use DICTIONARY_PACKAGE;
                 OX(3) := ADD(DE.STEMS(2), "e");
               elsif DE.PART.ADJ.DECL.VAR = 6  then
                 OX(1) := ADD(DE.STEMS(1), "");
-                OX(2) := ADD(NULL_OX, "(gen.)");
-                OX(3) := ADD(DE.STEMS(2), "os");
+                OX(2) := ADD(DE.STEMS(2), "os (-is) (gen.)");
+                OX(3) := ADD(NULL_OX, "");
               end if;
 
             elsif DE.PART.ADJ.DECL = (9, 8)  then
@@ -615,7 +615,7 @@ with DICTIONARY_PACKAGE; use DICTIONARY_PACKAGE;
         elsif OX(3)(1..7) = "PERFDEF"  then
           null;
         elsif OX(3)(1..5) = "BLANK"  then
-          null;
+            null;
         elsif OX(3) /= NULL_OX  then
           ADD_UP(", " & TRIM(OX(3)));
         end if;
