@@ -11,7 +11,7 @@ with DICTIONARY_PACKAGE; use DICTIONARY_PACKAGE;
         ("1st", "2nd", "3rd", "4th", "5th");
         
       NOT_FOUND : exception;
-
+   
       function ADD(STEM, INFL : in STRING) return STRING is
       begin
         return HEAD(TRIM(STEM) & TRIM(INFL), 24);
@@ -194,12 +194,13 @@ with DICTIONARY_PACKAGE; use DICTIONARY_PACKAGE;
 --TEXT_IO.NEW_LINE;  
 --DICTIONARY_ENTRY_IO.PUT(DE);
 --TEXT_IO.NEW_LINE;
-
+          
           if DE.PART.ADJ.CO = COMP  then 
             if DE.PART.ADJ.DECL.WHICH = 5 then  
               OX(1) := ADD(DE.STEMS(1), "us");   
               OX(2) := ADD(DE.STEMS(1), "a");   
               OX(3) := ADD(DE.STEMS(1), "um");
+              
             else 
               OX(1) := ADD(DE.STEMS(1), "or");   
               OX(2) := ADD(DE.STEMS(1), "or");   
@@ -217,22 +218,27 @@ with DICTIONARY_PACKAGE; use DICTIONARY_PACKAGE;
                 OX(1) := ADD(DE.STEMS(1), "us");
                 OX(2) := ADD(DE.STEMS(2), "a");
                 OX(3) := ADD(DE.STEMS(2), "um");
+          
               elsif DE.PART.ADJ.DECL.VAR = 2  then
                 OX(1) := ADD(DE.STEMS(1), "");
                 OX(2) := ADD(DE.STEMS(2), "a");
-                OX(3) := ADD(DE.STEMS(2), "um");
+               OX(3) := ADD(DE.STEMS(2), "um");
+             
               elsif DE.PART.ADJ.DECL.VAR = 3  then
                 OX(1) := ADD(DE.STEMS(1), "us");
                 OX(2) := ADD(DE.STEMS(2), "a");
-                OX(3) := ADD(DE.STEMS(2), "um (gen. -ius)");
+               OX(3) := ADD(DE.STEMS(2), "um (gen. -ius)");
+             
               elsif DE.PART.ADJ.DECL.VAR = 4  then
                 OX(1) := ADD(DE.STEMS(1), "");
                 OX(2) := ADD(DE.STEMS(2), "a");
-                OX(3) := ADD(DE.STEMS(2), "um");
+               OX(3) := ADD(DE.STEMS(2), "um");
+            
               elsif DE.PART.ADJ.DECL.VAR = 5  then
                 OX(1) := ADD(DE.STEMS(1), "us");
                 OX(2) := ADD(DE.STEMS(2), "a");
-                OX(3) := ADD(DE.STEMS(2), "ud");
+               OX(3) := ADD(DE.STEMS(2), "ud");
+        
               else
                 raise NOT_FOUND;
               end if;
@@ -590,45 +596,81 @@ with DICTIONARY_PACKAGE; use DICTIONARY_PACKAGE;
 
         else
           OX(1) := ADD(DE.STEMS(1), "");
-        end if;     -- On PART   
+        end if;     -- On PART           
 
+ --  Now clean up for output
+--  Because ADJs can have multiple dictionary forms, formatting them with ';'
+--  requires special processing.  Sometimes they require look ahead
+--  and each OX needs at least one change, so let's branch once here
+case de.part.pofs is
 
-        
---TEXT_IO.PUT_LINE(OX(1) & "+" & OX(2) & "+" & OX(3) & "+" & OX(4));                
-        
-                --  Now clean up and output
-        --  Several flags have been set which modify OX's
-        if OX(1)(1..3) = "zzz"  then
-          ADD_UP(" - ");
-        elsif OX(1) /= NULL_OX  then
-          ADD_UP(TRIM(OX(1)));
-        end if;
-        if OX(2)(1..3) = "zzz"  then
-          ADD_UP(", - ");
-        elsif OX(2) /= NULL_OX  then
-          ADD_UP(", " & TRIM(OX(2)));
-        end if;
-        if OX(3)(1..3) = "zzz"  then
-          ADD_UP(", - ");
-        elsif OX(3)(1..3) = "DEP"  then
+  when ADJ    =>
+		   if OX(1)(1..3) = "zzz" then
+				 OX(1) := NULL_OX;
+				 
+			elsif OX(1) /= NULL_OX  then
+				ADD_UP(TRIM(OX(1)));
+			 end if;
+			 
+                 if OX(2)(1..3) = "zzz"  then
+					ADD_UP("-");
+			 elsif OX(2) /= NULL_OX  then
+				  ADD_UP(", " & TRIM(OX(2)));
+			 end if;
+			 
+		   if OX(3)(1..3) = "zzz"  then
+				   ADD_UP("; - ");
+      elsif OX(3) /= NULL_OX  then
+                  if  OX(4) /= NULL_OX  then 
+			   ADD_UP("; " & TRIM(OX(3)));
+				else 
+            ADD_UP(", " & TRIM(OX(3)));
+            end if;
+			 end if;
+			 
+		   if OX(4)(1..3) = "zzz"  then
+				ADD_UP(", - ");
+				elsif OX(4)(1..5) = "BLANK"  then
+         null;
+                 elsif OX(4)(1..5) = "BLANK"  then
           null;
-        elsif OX(3)(1..7) = "PERFDEF"  then
-          null;
-        elsif OX(3)(1..5) = "BLANK"  then
-            null;
-        elsif OX(3) /= NULL_OX  then
-          ADD_UP(", " & TRIM(OX(3)));
-        end if;
-        if OX(4)(1..3) = "zzz"  then
-          ADD_UP(", - ");
-        elsif OX(4)(1..5) = "BLANK"  then
-          null;
-        elsif OX(4) /= NULL_OX  then
-          ADD_UP(", " & TRIM(OX(4)));
-        end if;
-
- 
-        ADD_TO("  " & PART_OF_SPEECH_TYPE'IMAGE(DE.PART.POFS)& "  ");
+		   elsif OX(4) /= NULL_OX  then
+				ADD_UP("; " & TRIM(OX(4)));
+                  end if;
+      
+  when others =>
+			if OX(1)(1..3) = "zzz"  then
+			  ADD_UP(" - ");
+			elsif OX(1) /= NULL_OX  then
+			  ADD_UP(TRIM(OX(1)));
+			end if;
+			if OX(2)(1..3) = "zzz"  then
+			  ADD_UP(", - ");
+			elsif OX(2) /= NULL_OX  then
+			  ADD_UP(", " & TRIM(OX(2)));
+			end if;
+			if OX(3)(1..3) = "zzz"  then
+			  ADD_UP(", - ");
+			elsif OX(3)(1..3) = "DEP"  then
+			  null;
+			elsif OX(3)(1..7) = "PERFDEF"  then
+			  null;
+			elsif OX(3)(1..5) = "BLANK"  then
+				null;
+			elsif OX(3) /= NULL_OX  then
+			  ADD_UP(", " & TRIM(OX(3)));
+			end if;
+			if OX(4)(1..3) = "zzz"  then
+			  ADD_UP(", - ");
+			elsif OX(4)(1..5) = "BLANK"  then
+			  null;
+			elsif OX(4) /= NULL_OX  then
+			  ADD_UP(", " & TRIM(OX(4)));
+			end if;
+   end case;
+   
+   
+    ADD_TO("  " & PART_OF_SPEECH_TYPE'IMAGE(DE.PART.POFS)& "  ");
 
       if DE.PART.POFS = N  then
         
