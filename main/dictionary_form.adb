@@ -3,26 +3,26 @@ with Inflections_Package; use Inflections_Package;
 with Dictionary_Package; use Dictionary_Package;
 function Dictionary_Form(DE      : in     Dictionary_Entry) return String is
 
-  Null_OX : constant String(1 .. 24)           := (others => ' ');
+  Null_OX : constant String(1 .. 24) := (others => ' ');
   OX      : array (1 .. 4) of String (1 .. 24) := (others => Null_OX);
-  Form    : String(1 .. 100)                   := (others => ' ');
+  Form    : String(1 .. 100) := (others => ' ');
 
   Fst     : array (Which_Type range 1 .. 5) of String(1 .. 3) :=
-    ("1st", "2nd", "3rd", "4th", "5th");
+  ("1st", "2nd", "3rd", "4th", "5th");
 
   Not_Found: exception;
 
-  function Add(Stem, Infl  : in String) return String is
+  function Add(Stem, Infl    : in     String) return String is
   begin
     return Head(Trim(Stem) & Trim(Infl), 24);
   end Add;
 
-  procedure Add_Up(Factor  :    String) is
+  procedure Add_Up(Factor  :        String) is
   begin
     Form := Head(Trim(Form) & Trim(Factor), 100);
   end Add_Up;
 
-  procedure Add_to(Factor  :     String) is
+  procedure Add_to(Factor  :        String) is
   begin
     Form := Head(Trim(Form) & Factor, 100);
   end Add_to;
