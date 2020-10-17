@@ -50,7 +50,7 @@
 
       SWITCH:
       declare
-        DW, EW : EWDS_RECORD := NULL_EWDS_RECORD;
+        DW: EWDS_RECORD := NULL_EWDS_RECORD;
    
       begin
           INNER_LOOP:    --  Order by RANK, FREQ, SEMI

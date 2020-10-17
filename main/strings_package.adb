@@ -21,7 +21,7 @@ with LIST_PACKAGE;
          return B;
       end MIN;
    
-   
+
       function LOWER_CASE(C : in CHARACTER) return CHARACTER is
       begin
          if C in 'A'..'Z'  then
