@@ -36,7 +36,7 @@ package body LIST_PACKAGE is
    Next_Meaning_Same, Next_Form_Same, Last_Form_Same,
    Skip_Next, Put_Meaning_Anyway : Boolean := False;
 
-      function TRIM_BAR (S : String) return String is
+   function TRIM_BAR (S : String) return String is
       --  Takes vertical bars from beginning of MEAN and TRIMs
       begin
 
@@ -72,7 +72,6 @@ package body LIST_PACKAGE is
          HIT := True;
       end if;
    end PUT_DICTIONARY_FLAGS;
-
 
    procedure PUT_DICTIONARY_FORM
      (OUTPUT : Text_IO.File_Type; D_K : DICTIONARY_KIND; MNPC : DICT_IO.Count;
@@ -153,7 +152,7 @@ package body LIST_PACKAGE is
 
    procedure LIST_STEMS
      (OUTPUT :    in Text_IO.File_Type; RAW_WORD : in String; INPUT_LINE : in String;
-      PA     : in out PARSE_ARRAY; PA_LAST : in out Integer)
+      PA     :    in out PARSE_ARRAY; PA_LAST : in out Integer)
    is
       use Text_IO;
       use DICT_IO;
@@ -226,7 +225,7 @@ package body LIST_PACKAGE is
 
       type DICTIONARY_MNPC_ARRAY is
         array (1 .. DICTIONARY_MNPC_ARRAY_SIZE) of DICTIONARY_MNPC_RECORD;
-      DMA, ODMA, NULL_DMA : DICTIONARY_MNPC_ARRAY;
+      DMA, ODMA, NULL_DMA : DICTIONARY_MNPC_ARRAY := (others => NULL_DICTIONARY_MNPC_RECORD);
 
       --MEANING_ARRAY_SIZE : constant := 5;
       --MEANING_ARRAY : array (1..MEANING_ARRAY_SIZE) of MEANING_TYPE;
@@ -393,7 +392,6 @@ package body LIST_PACKAGE is
          end if;
 
          Text_IO.New_Line (OUTPUT);
-
       end PUT_INFLECTION;
 
 --         procedure PUT_DICTIONARY_FORM(OUTPUT : TEXT_IO.FILE_TYPE;
@@ -1454,7 +1452,7 @@ package body LIST_PACKAGE is
                SCROLL_LINE_NUMBER := Integer (Text_IO.Line (OUTPUT));
             end if;
          end DO_PAUSE;
-         --TEXT_IO.PUT_LINE("End of OUTPUT_LOOP with J = " & INTEGER'IMAGE(J));
+    --    TEXT_IO.PUT_LINE("End of OUTPUT_LOOP with J = " & INTEGER'IMAGE(J));
 
          J := J + 1;
       end loop OUTPUT_LOOP;
@@ -1463,7 +1461,7 @@ package body LIST_PACKAGE is
                if TRIMMED  then
                Format(OUTPUT,Inverse); Text_Io.New_Line(Output);
                Text_Io.PUT(OUTPUT, "OUTPUT TRIMMED:  Turn off TRIM_OUTPUT to see more.");
-               Text_Io.New_Line(Output); Format(OUTPUT,Inverse);
+               Format(OUTPUT,RESET); Text_Io.New_Line(Output);
                end if;
 
       Text_IO.New_Line (OUTPUT);
@@ -1477,6 +1475,8 @@ package body LIST_PACKAGE is
                   skip_next := false;
               end if;
 
+      Skip_Next := false;
+
    exception
       when others =>
          Text_IO.Put_Line
@@ -1485,6 +1485,7 @@ package body LIST_PACKAGE is
            ("EXCEPTION LS at " & HEAD (Integer'IMAGE (LINE_NUMBER), 8) &
             HEAD (Integer'IMAGE (WORD_NUMBER), 4) & "   " & HEAD (W, 20) &
               "   " & PA (I).STEM);
+
    end LIST_STEMS;
 
    procedure LIST_ENTRY

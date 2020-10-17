@@ -28,11 +28,11 @@ procedure PARSE (COMMAND_LINE : String := "") is
 
    STORAGE_ERROR_COUNT : Integer := 0;
 
-   J, K, L          : Integer             := 0;
+   J, K, L             : Integer := 0;
    
    LINE, BLANK_LINE : String (1 .. INPUT_LINE_LENGTH) := (others => ' ');
 
-   PA : PARSE_ARRAY (1 .. 150)         := (others => NULL_PARSE_RECORD);
+   PA : PARSE_ARRAY (1 .. 150)   :=          (others => NULL_PARSE_RECORD);
    SYNCOPE_MAX                   : constant                       := 20;
    NO_SYNCOPE                    : Boolean                        := False;
    TRICKS_MAX                    : constant                       := 40;
@@ -48,7 +48,7 @@ procedure PARSE (COMMAND_LINE : String := "") is
            '|');
       Arabic_Present : Boolean :=
         False;                
-      Arabic_J           : Integer := 1;
+      Arabic_J       : Integer := 1;
 
    begin
       WORD_NUMBER   := 0;
@@ -594,12 +594,12 @@ procedure PARSE (COMMAND_LINE : String := "") is
                         end NEXT_WORD;
 
                         function IS_SUM (T : String) return Boolean is
-                           SA : constant array
+                              SA : constant array
                              (MOOD_TYPE range IND .. SUB,
                               TENSE_TYPE range PRES .. FUTP,
                               NUMBER_TYPE range S .. P,
                               PERSON_TYPE range 1 .. 3) of String (1 .. 9) :=
-                             (
+                              (
                               (         --  IND
 
                                (("sum      ", "es       ", "est      "),
@@ -1105,7 +1105,6 @@ XXX_MEANING_COUNTER := 0;  YYY_MEANING_COUNTER := 0; NNN_MEANING_COUNTER := 0;  
 -- INTEGER'IMAGE(PA_LAST));
 
                PA_LAST := 0;
-
             exception
                when others =>
                   PUT_STAT
@@ -1289,31 +1288,44 @@ begin --  PARSE
 
       GET_INPUT_LINES :
       loop
+         
+
+         
          GET_INPUT_LINE :
          begin                    --  Block to manipulate file of lines
-            if (Name (Current_Input) = Name (Standard_Input)) then
-               SCROLL_LINE_NUMBER :=
-                 Integer (Text_IO.Line (Text_IO.Standard_Output));
-               
+            
                PA := (others => NULL_PARSE_RECORD); -- clear PA to prevent exceptions in LIST_STEM
                                                     -- which can occur after a huge result fills the
                                                     -- PA (e.g., arcule will return a full array once
                                                     -- then cause an exception the next time without this)
+                                                    
+               SYPA := (others => NULL_PARSE_RECORD);
+               TRPA := (others => NULL_PARSE_RECORD);
+               PA_LAST := 0; SYPA_LAST := 0; TRPA_LAST  := 0;
+               J := 0; K := 0; L := 0; 
+               LINE := BLANK_LINE;
+           
+            
+                        if (Name (Current_Input) = Name (Standard_Input)) then
+               SCROLL_LINE_NUMBER :=
+                 Integer (Text_IO.Line (Text_IO.Standard_Output));
+               
+               
                PREFACE.NEW_LINE;
                PREFACE.PUT ("=>");
-            end if;
+         end if;
 
-            LINE := BLANK_LINE;
+          
             
             if METHOD = INTERACTIVE
               and then WORDS_MODE(DO_UNICODE_INPUT) then
                Get_Unicode(LINE, L);
-           else 
+           else
                Get_Line(LINE,L);
-           end if;
+end if;
             
             if (L = 0) or else (TRIM (LINE (1 .. L)) = "") then
-               --LINE_NUMBER := LINE_NUMBER + 1;  --  Count blank lines
+LINE_NUMBER := LINE_NUMBER + 1;  --  Count blank lines
                if CL_Arguments(NO_EXIT) then
                   null;
                Elsif (Name (Current_Input) = Name (Standard_Input))
@@ -1321,12 +1333,12 @@ begin --  PARSE
                then   --  INPUT is keyboard
                   PREFACE.PUT ("Blank exits =>");
                   
-                  if METHOD = INTERACTIVE 
-                    and then WORDS_MODE(DO_UNICODE_INPUT) then
-                    Get_Unicode(LINE, L);
-                else 
+                if METHOD = INTERACTIVE 
+                  and then WORDS_MODE(DO_UNICODE_INPUT) then
+                  Get_Unicode(LINE, L);
+               else 
                  Get_Line(LINE,L);
-                end if;
+end if;
                 
                   if (L = 0) or else (TRIM (LINE (1 .. L)) = "")
                   then  -- Two in a row
@@ -1425,7 +1437,8 @@ begin --  PARSE
          end GET_INPUT_LINE;                     --  end Block to manipulate file of lines
 
       end loop GET_INPUT_LINES;          --  Loop on lines
-     return; 
+    
+      return; 
    end if;     --  On command line input
 
    

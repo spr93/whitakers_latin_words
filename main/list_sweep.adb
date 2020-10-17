@@ -769,18 +769,11 @@
             
             JJ := J;
              
-            for JJ in (P_First + 1) .. (PA'Last - 1 ) loop
-               P_LAST := JJ+1;
-               exit when PA(JJ+1).IR.QUAL.POFS /= PA(JJ).IR.QUAL.POFS;             
-            end loop;
 
-            --      The following from Wm. Whitaker's last version can go into into an infinite loop 
-            --      under some circumstances while trim_output is on. 
-            --      It's not clear what the purpose of the code was, but the above loop is equivalent
-            --      and bounded.
-            --                                while PA(JJ+1).IR.QUAL.POFS = PA(JJ).IR.QUAL.POFS  loop
-            --                                P_LAST := JJ + 1;
-            --                                end loop;
+            while PA(JJ+1).IR.QUAL.POFS = PA(JJ).IR.QUAL.POFS  loop
+               P_LAST := JJ + 1;
+               exit when JJ+1 > PA'Last; -- prevent infinite loop
+               end loop;
 
             
              ----Order internal to this set of inflections
@@ -806,9 +799,10 @@
                       (PA(J).IR.QUAL.POFS = X))  and then  --  Kills TRICKS stuff
                (not PW_ON)     then
             --TEXT_IO.PUT_LINE("Killing Tricks stuff  J = " & INTEGER'IMAGE(J));
+            
                PA(P_LAST-DIFF_J+1..PA_LAST-DIFF_J) := PA(P_LAST+1..PA_LAST);
                PA_LAST := PA_LAST - DIFF_J;
-            --PA_LAST := PA_LAST - 1;
+ 
                P_LAST := P_LAST - 1;
             
             
@@ -823,7 +817,9 @@
                   P_LAST := J;
                end if;
                if J = 1  then
- --TEXT_IO.PUT_LINE("SWEEP  J = 1     P_LAST = " & INTEGER'IMAGE(P_LAST));
+               --TEXT_IO.PUT_LINE("SWEEP  J = 1     P_LAST = " & INTEGER'IMAGE(P_LAST));
+
+               
                   ORDER_PARSE_ARRAY(PA(1..P_LAST), DIFF_J); 
                   PA(P_LAST-DIFF_J+1..PA_LAST-DIFF_J) := PA(P_LAST+1..PA_LAST);
                   PA_LAST := PA_LAST - DIFF_J;
