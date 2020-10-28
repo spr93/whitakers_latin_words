@@ -6,7 +6,3 @@ begin
     TEXT_IO.PUT_LINE(STATS, S);
   end if;
 end PUT_STAT;
-
-
-
-

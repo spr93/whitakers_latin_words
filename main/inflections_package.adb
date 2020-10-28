@@ -14,9 +14,7 @@ package body INFLECTIONS_PACKAGE is
       return FALSE;
     end if;
   end "<";
-
-  
-  
+ 
   function "<" (LEFT, RIGHT : QUALITY_RECORD) return BOOLEAN is
   begin
     if LEFT.POFS = RIGHT.POFS  then
@@ -32,7 +30,7 @@ package body INFLECTIONS_PACKAGE is
           LEFT.N.DECL.VAR = RIGHT.N.DECL.VAR  and then
           LEFT.N.NUMBER = RIGHT.N.NUMBER and then
           LEFT.N.CS < RIGHT.N.CS) or else
-         (LEFT.N.DECL.WHICH = RIGHT.N.DECL.WHICH  and then
+          (LEFT.N.DECL.WHICH = RIGHT.N.DECL.WHICH  and then
           LEFT.N.DECL.VAR = RIGHT.N.DECL.VAR  and then
           LEFT.N.NUMBER = RIGHT.N.NUMBER and then
           LEFT.N.CS = RIGHT.N.CS and then
@@ -86,7 +84,7 @@ package body INFLECTIONS_PACKAGE is
           LEFT.ADJ.DECL.VAR = RIGHT.ADJ.DECL.VAR  and then
           LEFT.ADJ.NUMBER = RIGHT.ADJ.NUMBER and then
           LEFT.ADJ.CS < RIGHT.ADJ.CS) or else
-         (LEFT.ADJ.DECL.WHICH = RIGHT.ADJ.DECL.WHICH  and then
+          (LEFT.ADJ.DECL.WHICH = RIGHT.ADJ.DECL.WHICH  and then
           LEFT.ADJ.DECL.VAR = RIGHT.ADJ.DECL.VAR  and then
           LEFT.ADJ.NUMBER = RIGHT.ADJ.NUMBER and then
           LEFT.ADJ.CS = RIGHT.ADJ.CS and then
@@ -314,7 +312,6 @@ LEFT.V.TENSE_VOICE_MOOD.MOOD   = RIGHT.V.TENSE_VOICE_MOOD.MOOD   and then
     end if;
   end "<=";
 
-
   function "<=" (LEFT, RIGHT : PRONOUN_KIND_TYPE)   return BOOLEAN is
   begin
     if (RIGHT = LEFT   or else
@@ -324,7 +321,6 @@ LEFT.V.TENSE_VOICE_MOOD.MOOD   = RIGHT.V.TENSE_VOICE_MOOD.MOOD   and then
       return FALSE;
     end if;
   end "<=";
-
 
   function "<=" (LEFT, RIGHT : VERB_KIND_TYPE)   return BOOLEAN is
   begin
@@ -336,7 +332,6 @@ LEFT.V.TENSE_VOICE_MOOD.MOOD   = RIGHT.V.TENSE_VOICE_MOOD.MOOD   and then
     end if;
   end "<=";
 
-
   function "<=" (LEFT, RIGHT : NUMERAL_SORT_TYPE)   return BOOLEAN is
   begin
     if (RIGHT = LEFT   or else
@@ -346,7 +341,6 @@ LEFT.V.TENSE_VOICE_MOOD.MOOD   = RIGHT.V.TENSE_VOICE_MOOD.MOOD   and then
       return FALSE;
     end if;
   end "<=";
-
 
   function "<=" (LEFT, RIGHT : STEM_KEY_TYPE)   return BOOLEAN is
   begin            --  Only works for 2 stem parts, not verbs
@@ -368,7 +362,6 @@ LEFT.V.TENSE_VOICE_MOOD.MOOD   = RIGHT.V.TENSE_VOICE_MOOD.MOOD   and then
     end if;
   end "<=";
 
-
   function "<=" (LEFT, RIGHT : FREQUENCY_TYPE) return BOOLEAN is
   begin
     if RIGHT = LEFT  or else
@@ -378,8 +371,6 @@ LEFT.V.TENSE_VOICE_MOOD.MOOD   = RIGHT.V.TENSE_VOICE_MOOD.MOOD   and then
       return FALSE;
     end if;
   end "<=";
-  
-  
   
 
 package body STEM_TYPE_IO is
@@ -446,7 +437,7 @@ package body STEM_TYPE_IO is
         
   end STEM_TYPE_IO;  
   
-
+   
 package body DECN_RECORD_IO is
 --  This package will carry the documentation for all the following packages
   --  Must have "use" for _IO for each of the components of the record
@@ -534,6 +525,7 @@ package body DECN_RECORD_IO is
 
 end DECN_RECORD_IO;
 
+   
 package body TENSE_VOICE_MOOD_RECORD_IO is
   use TENSE_TYPE_IO;
   use VOICE_TYPE_IO;
@@ -606,14 +598,13 @@ package body TENSE_VOICE_MOOD_RECORD_IO is
 
 end TENSE_VOICE_MOOD_RECORD_IO;
 
-
+   
 package body NOUN_RECORD_IO is
   use DECN_RECORD_IO;
   use CASE_TYPE_IO;
   use GENDER_TYPE_IO;
   use NUMBER_TYPE_IO;
   SPACER : CHARACTER := ' ';
-
 
   procedure GET(F : in FILE_TYPE; N : out NOUN_RECORD) is
   begin
@@ -780,10 +771,9 @@ package body PRONOUN_RECORD_IO is
     S(M+1..S'LAST) := (others => ' ');
   end PUT;
 
-
 end PRONOUN_RECORD_IO;
 
-
+   
 package body PROPACK_RECORD_IO is
   use DECN_RECORD_IO;
   use CASE_TYPE_IO;
@@ -868,10 +858,9 @@ package body PROPACK_RECORD_IO is
     S(M+1..S'LAST) := (others => ' ');
   end PUT;
 
-
 end PROPACK_RECORD_IO;
 
-
+   
 package body ADJECTIVE_RECORD_IO is
   use DECN_RECORD_IO;
   use GENDER_TYPE_IO;
@@ -879,7 +868,6 @@ package body ADJECTIVE_RECORD_IO is
   use NUMBER_TYPE_IO;
   use COMPARISON_TYPE_IO;
   SPACER : CHARACTER := ' ';
-
 
   procedure GET(F : in FILE_TYPE; A : out ADJECTIVE_RECORD) is
   begin
@@ -972,11 +960,9 @@ package body ADJECTIVE_RECORD_IO is
     S(M+1..S'LAST) := (others => ' ');
   end PUT;
 
-
 end ADJECTIVE_RECORD_IO;
-
-
  
+   
 package body NUMERAL_RECORD_IO is
   use DECN_RECORD_IO;
   use CASE_TYPE_IO;
@@ -985,7 +971,6 @@ package body NUMERAL_RECORD_IO is
   use NUMERAL_SORT_TYPE_IO;
   use GENDER_TYPE_IO;
   SPACER : CHARACTER := ' ';
-
 
   procedure GET(F : in FILE_TYPE; NUM : out NUMERAL_RECORD) is
   begin
@@ -1077,15 +1062,12 @@ package body NUMERAL_RECORD_IO is
     S(M+1..S'LAST) := (others => ' ');
   end PUT;
 
-
 end NUMERAL_RECORD_IO;
 
-
-
+   
 package body ADVERB_RECORD_IO is
   use COMPARISON_TYPE_IO;
   SPACER : CHARACTER := ' ';
-
 
   procedure GET(F : in FILE_TYPE; A : out ADVERB_RECORD) is
   begin
@@ -1122,10 +1104,9 @@ package body ADVERB_RECORD_IO is
     S(M+1..S'LAST) := (others => ' ');
   end PUT;
 
-
 end ADVERB_RECORD_IO;
 
-
+   
 package body VERB_RECORD_IO is
   use DECN_RECORD_IO;
   use TENSE_VOICE_MOOD_RECORD_IO;
@@ -1315,17 +1296,15 @@ package body VPAR_RECORD_IO is
     S(M+1..S'LAST) := (others => ' ');
   end PUT;
 
-
 end VPAR_RECORD_IO;
 
-
+   
 package body SUPINE_RECORD_IO is
   use DECN_RECORD_IO;
   use CASE_TYPE_IO;
   use NUMBER_TYPE_IO;
   use GENDER_TYPE_IO;
   SPACER : CHARACTER := ' ';
-
 
   procedure GET(F : in FILE_TYPE; VP : out SUPINE_RECORD) is
   begin
@@ -1404,10 +1383,9 @@ package body SUPINE_RECORD_IO is
     S(M+1..S'LAST) := (others => ' ');
   end PUT;
 
-
 end SUPINE_RECORD_IO;
 
-
+   
 package body PREPOSITION_RECORD_IO is
   use CASE_TYPE_IO;
   SPACER : CHARACTER := ' ';
@@ -1447,14 +1425,12 @@ package body PREPOSITION_RECORD_IO is
     S(M+1..S'LAST) := (others => ' ');
   end PUT;
 
-
 end PREPOSITION_RECORD_IO;
 
-
+   
 package body CONJUNCTION_RECORD_IO is
   NULL_CONJUNCTION_RECORD : CONJUNCTION_RECORD;
   SPACER : CHARACTER := ' ';
-
 
   procedure GET(F : in FILE_TYPE; C : out CONJUNCTION_RECORD) is
   --  There is actually nothing to a CONJUNCTION_RECORD, no compoonents
@@ -1490,10 +1466,9 @@ package body CONJUNCTION_RECORD_IO is
     S(S'FIRST..S'LAST) := (others => ' ');
   end PUT;
 
-
 end CONJUNCTION_RECORD_IO;
 
-
+   
 package body INTERJECTION_RECORD_IO is
   NULL_INTERJECTION_RECORD : INTERJECTION_RECORD;
   SPACER : CHARACTER := ' ';
@@ -1530,11 +1505,9 @@ package body INTERJECTION_RECORD_IO is
     S(S'FIRST..S'LAST) := (others => ' ');
   end PUT;
 
-
 end INTERJECTION_RECORD_IO;
 
-
-
+   
 package body TACKON_RECORD_IO is
   NULL_TACKON_RECORD : TACKON_RECORD;
   SPACER : CHARACTER := ' ';
@@ -1571,11 +1544,10 @@ package body TACKON_RECORD_IO is
     S(S'FIRST..S'LAST) := (others => ' ');
   end PUT;
 
-
 end TACKON_RECORD_IO;
 
-
-  package body PREFIX_RECORD_IO is
+   
+package body PREFIX_RECORD_IO is
 
     procedure GET(F : in FILE_TYPE; P : out PREFIX_RECORD) is
     begin
@@ -1611,10 +1583,9 @@ end TACKON_RECORD_IO;
 
   end PREFIX_RECORD_IO;
 
-
-  package body SUFFIX_RECORD_IO is
-
-
+   
+package body SUFFIX_RECORD_IO is
+   
     procedure GET(F : in FILE_TYPE; P : out SUFFIX_RECORD) is
     begin
       P := NULL_SUFFIX_RECORD;
@@ -1949,7 +1920,6 @@ package body QUALITY_RECORD_IO is
     return;
   end GET;
 
-
   procedure PUT(S : out STRING; P : in QUALITY_RECORD) is
   --  Note that this does not Put with a uniform width
   --  which would require a constant QUALITY_RECORD_IO.DEFAULT_WIDTH
@@ -2246,7 +2216,6 @@ procedure ESTABLISH_INFLECTIONS_SECTION  is
                         LEL,
                         LEL_SECTION_IO.POSITIVE_COUNT(5));
 
-
     I := 1;
     BELF(0, ' ') := I;
     BELL(0, ' ') := 0;
@@ -2297,9 +2266,7 @@ procedure ESTABLISH_INFLECTIONS_SECTION  is
         exit N1_LOOP;
       end if;
 
-
       I := I + 1;
-
 
     end loop N1_LOOP;
 
@@ -2403,7 +2370,6 @@ procedure ESTABLISH_INFLECTIONS_SECTION  is
 
       I := I + 1;
 
-
     end loop N3_LOOP;
 
     end loop C3_LOOP;
@@ -2470,12 +2436,10 @@ begin
 
     CH := LEL(I).ENDING.SUF(N);
 
-
     XN := N;
     XCH := CH;
     PELF(N,  CH) := I;
     PELL(N,  CH) := 0;
-
 
     C_P_LOOP:
     loop
@@ -2486,7 +2450,6 @@ begin
       N := LEL(I).ENDING.SIZE;
 
       CH := LEL(I).ENDING.SUF(N);
-
 
       if CH /= XCH  then
         PELL(XN, XCH) := I - 1;
@@ -2507,11 +2470,11 @@ begin
     end loop N_P_LOOP;
     end loop C_P_LOOP;
 
-
 exception
   when CONSTRAINT_ERROR => null;
 end;
 
+         
     PELL(XN, XCH) := I - 1;
     NUMBER_OF_INFLECTIONS := NUMBER_OF_INFLECTIONS + I - 1;
     CLOSE(INFLECTIONS_SECTIONS_FILE);
@@ -2521,12 +2484,12 @@ end;
 begin
 
   PREFACE.PUT("INFLECTION ARRAY loading");
-  PREFACE.SET_COL(33);
+  PREFACE.SET_COL(35);
   PREFACE.PUT("--  ");
   LOAD_LEL_INDEXES;                    --  Makes indexes from array
   PREFACE.PUT(NUMBER_OF_INFLECTIONS, 6);
   PREFACE.PUT(" entries");
-  PREFACE.SET_COL(55); PREFACE.PUT_LINE("--  loaded correctly");
+  PREFACE.SET_COL(60); PREFACE.PUT_LINE("--  loaded correctly");
 
 exception
   when Text_IO.Name_Error  =>
@@ -2540,8 +2503,6 @@ exception
     raise GIVE_UP;
 
 end ESTABLISH_INFLECTIONS_SECTION;
-
-
 
 begin  --  initialization of body of INFLECTIONS_PACKAGE
 --TEXT_IO.PUT_LINE("Initializing INFLECTIONS_PACKAGE");
@@ -2629,6 +2590,5 @@ begin  --  initialization of body of INFLECTIONS_PACKAGE
                                         ENDING_RECORD_IO.DEFAULT_WIDTH + 1 +
                                         AGE_TYPE_IO.DEFAULT_WIDTH + 1 +
                                         FREQUENCY_TYPE_IO.DEFAULT_WIDTH;
-
 
 end INFLECTIONS_PACKAGE;

@@ -5,10 +5,9 @@
    with WORD_PARAMETERS; use WORD_PARAMETERS;
    with DEVELOPER_PARAMETERS; use DEVELOPER_PARAMETERS;
    with WORD_PACKAGE; use WORD_PACKAGE;
-
    with PARSE;
 
-   with Ada.Wide_Text_IO;
+   with Ada.Wide_Text_IO; 
    with Ada.Wide_Characters.Handling;
    with Ada.Characters.Conversions;
    with Ada.Interrupts; use Ada.Interrupts;
@@ -16,7 +15,6 @@
    with No_Exit_Handler; use No_Exit_Handler; 
    with Ada.Environment_Variables;
    with Ada.Directories;
-
 
    procedure WORDS is
 
@@ -106,7 +104,7 @@
             
             if CL_Arguments(No_Exit) then 
                loop   -- appears to be memory leak if we recursively call parse from within parse exception handler 
-               PARSE; -- not elegant, but return => infinite loops avoids more complex logic in block exception handler or global handler
+               PARSE; -- return => infinite loop avoids more complex exception logic
                end loop;
             else
                Parse;
@@ -235,7 +233,6 @@ end if;
          exception                 
                when NAME_ERROR  =>                     --  Raised NAME_ERROR therefore
             METHOD := COMMAND_LINE_INPUT;      --  Assume w found word in command line
-            Put_Line(Standard_Output,"Cannot open file.  Falling back to comman-line mode.");
                when others => 
                    if WORDS_MODE(DO_UNICODE_INPUT) then null;  
                    else raise End_Error; 

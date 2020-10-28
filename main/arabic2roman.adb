@@ -11,21 +11,24 @@ package body Arabic2Roman is
      (OUTPUT : in Ada.Text_IO.File_Type; INPUT_WORD : in String)
    is
 
-      type Roman_Record_Type is record
-         Age_X        : Unbounded_String;
-         Age_F        : Unbounded_String;
-         Bar_Reminder : Boolean := False;
+      type Roman_Num_Record_Type is record
+         Age_X              : Unbounded_String;
+         Age_F              : Unbounded_String;
+         Bar_Reminder       : Boolean           := False;
       end record;
 
-      Roman_Num_Record : Roman_Record_Type;
+      Null_Roman_Num_Record : Roman_Num_Record_Type := (Bar_Reminder => False,
+                                                        others       => Null_Unbounded_String);
 
-      Put_Additive         : Boolean          := False;
-      Arabic_String        : String (1 .. 11) := (others => ' ');
-      Arabic_Build_Counter : Integer          := 1;
-      Bar_Length           : Integer          := 0;
-      Input_Counter : Integer := INPUT_WORD'First;
+      Roman_Num_Record      : Roman_Num_Record_Type;
 
-      Is_Negative : Boolean;
+      Put_Additive          : Boolean           := False;
+      Arabic_String         : String (1 .. 11)  := (others => ' ');
+      Arabic_Build_Counter  : Integer           := 1;
+      Bar_Length            : Integer           := 0;
+      Input_Counter         : Integer           := INPUT_WORD'First;
+
+      Is_Negative           : Boolean;
 
    begin
 
@@ -39,9 +42,11 @@ package body Arabic2Roman is
          Arabic_Build_Counter := 1;
          Is_Negative          := False;
          Arabic_String        :=
-           (others => ' ');   -- clear the string so we can build again if we need to
-         Put_Additive := False;
-         Bar_Length   := 0;
+           (others => ' ');
+         Put_Additive         := False;
+         Bar_Length           := 0;
+         Roman_Num_Record     := Null_Roman_Num_Record;
+
 
          if INPUT_WORD (Input_Counter) = '-' then
             Is_Negative := True;
@@ -108,7 +113,6 @@ package body Arabic2Roman is
                return;
             end if;
 
-
             -- build the numerals
             case Arabic_Num is
                when 1 .. 99_999 =>
@@ -157,16 +161,40 @@ package body Arabic2Roman is
                return;
             end if; -- end medieval/uncommon exceptions
 
-            if Bar_Length > 0 then
-              if WORDS_MDEV (DO_PEARSE_CODES) then
-                  Put(Output,"01 ");
-              end if;
+            -- BARS AND REMINDER FOR BIG NUMBERS
+            if Roman_Num_Record.Bar_Reminder = True then
 
-              for I in 1..Bar_Length loop
-                 Put(OUTPUT,'_');
-              end loop;
+              if  WORDS_MDEV (DO_PEARSE_CODES) then
+                  if WORDS_MODE (DO_ONLY_MEANINGS) = False
+                    and then (not (CONFIGURATION = ONLY_MEANINGS))
+                  then
+                     Put (OUTPUT, "06 ");
+                  else
+                     Put
+                       (OUTPUT,
+                        "03 ");  -- Print as the meaning if only showing meanings;  disabling Arabic2Roman is the equivalent here
+                  end if;
+               end if;
 
+               Format (OUTPUT, Inverse);
+                Put
+                 (OUTPUT,
+                  "The -s and |s should be solid lines, forming a three-sided 'box'.");
+               Format (OUTPUT, Reset);
                New_Line(OUTPUT);
+
+               if Bar_Length > 0 then
+                 if WORDS_MDEV (DO_PEARSE_CODES) then
+                     Put(Output,"01 ");
+                 end if;
+
+                 for I in 1..Bar_Length loop
+                    Put(OUTPUT,'_');
+                 end loop;
+
+                  New_Line(OUTPUT);
+               end if;
+
             end if;
 
             if WORDS_MDEV (DO_PEARSE_CODES) then
@@ -233,34 +261,11 @@ package body Arabic2Roman is
             Format (OUTPUT, RESET);
             New_Line (OUTPUT);
 
-            -- BAR REMINDER FOR BIG NUMBERS
-            if Roman_Num_Record.Bar_Reminder = True then
-
-              if  WORDS_MDEV (DO_PEARSE_CODES) then
-                  if WORDS_MODE (DO_ONLY_MEANINGS) = False
-                    and then (not (CONFIGURATION = ONLY_MEANINGS))
-                  then
-                     Put (OUTPUT, "06 ");
-                  else
-                     Put
-                       (OUTPUT,
-                        "03 ");  -- Print as the meaning if only showing meanings;  disabling Arabic2Roman is the equivalent here
-                  end if;
-               end if;
-
-               Format (OUTPUT, Inverse);
-                Put
-                 (OUTPUT,
-                  "NB:  The -s and |s should be solid lines, forming a three-sided 'box'.");
-               Format (OUTPUT, Reset);
-               New_Line(OUTPUT);
-            end if;
-
             if Is_Negative then
                Format(OUTPUT, FAINT);
                Put (OUTPUT, "~ negativum");
                Format(OUTPUT, Reset); New_Line(OUTPUT);
-             end if; -- if enclosing NB
+             end if;
 
             -- if enclosing dictionary-form line
             if
@@ -280,10 +285,10 @@ package body Arabic2Roman is
 
              if Is_Negative then -- subtractive, negative
                   if WORDS_MDEV (SHOW_DICTIONARY_CODES) = True then
-                     Put (OUTPUT, "[HXXFQ]  ");
+                     Put (OUTPUT, "[HXXFQ]");
                   end if;
                   if WORDS_MODE (SHOW_FREQUENCY) = True then
-                     Put (OUTPUT, "very rare");
+                     Put (OUTPUT, "  very rare");
                   end if;
                   -- no additive negatives
 
@@ -291,10 +296,10 @@ package body Arabic2Roman is
                        Arabic_Num in 1 .. 500 | 600 | 700 | 800 | 900 | 10_000 )
                then
                   if WORDS_MDEV (SHOW_DICTIONARY_CODES) = True then
-                     Put (OUTPUT, "[AXXAQ]  ");
+                     Put (OUTPUT, "[AXXAQ]");
                   end if;
                   if WORDS_MODE (SHOW_FREQUENCY) = True then
-                     Put (OUTPUT, "very frequent");
+                     Put (OUTPUT, "  very frequent");
                   end if;
 
              elsif (Put_Additive = False and then
@@ -302,25 +307,25 @@ package body Arabic2Roman is
                then
 
                   if WORDS_MDEV (SHOW_DICTIONARY_CODES) = True then
-                     Put (OUTPUT, "[XXXAQ]  ");
+                     Put (OUTPUT, "[XXXAQ]");
                   end if;
                   if WORDS_MODE (SHOW_FREQUENCY) = True then
-                     Put (OUTPUT, "very frequent");
+                     Put (OUTPUT, "  very frequent");
                   end if;
 
              elsif Put_Additive then
                   if WORDS_MDEV (SHOW_DICTIONARY_CODES) = True then
-                     Put (OUTPUT, "[FXXDQ]  ");
+                     Put (OUTPUT, "[FXXDQ]");
                   end if;
                   if WORDS_MODE (SHOW_FREQUENCY) = True then
-                     Put (OUTPUT, "lesser");
+                     Put (OUTPUT, "  lesser");
                   end if;
              else -- long or complicated number => medieval
                   if WORDS_MDEV (SHOW_DICTIONARY_CODES) = True then
-                     Put (OUTPUT, "[FXXDQ]  ");
+                     Put (OUTPUT, "[FXXDQ]");
                   end if;
                   if WORDS_MODE (SHOW_FREQUENCY) = True then
-                     Put (OUTPUT, "lesser");
+                     Put (OUTPUT, "  lesser");
                   end if;
             end  if;
             Format (Output, Reset); New_Line(OUTPUT);
@@ -404,11 +409,11 @@ package body Arabic2Roman is
                   end if;
 
                   if WORDS_MDEV (SHOW_DICTIONARY_CODES) = True then
-                     Put (OUTPUT, "[CXXAQ]  ");
+                     Put (OUTPUT, "[CXXAQ]");
                   end if;
 
                   if WORDS_MODE (SHOW_FREQUENCY) = True then
-                     Put (OUTPUT, "very frequent");
+                     Put (OUTPUT, "  very frequent");
                   end if;
 
                   Format(Output,Reset); New_Line (OUTPUT);

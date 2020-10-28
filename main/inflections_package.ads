@@ -79,7 +79,6 @@ package INFLECTIONS_PACKAGE is
     procedure PUT(S : out STRING; D : in DECN_RECORD);  
   end DECN_RECORD_IO;  
 
-
   type GENDER_TYPE is (
           X,         --  all, none, or unknown
           M,         --  Masculine
@@ -132,9 +131,7 @@ package INFLECTIONS_PACKAGE is
     
   package STEM_KEY_TYPE_IO is new TEXT_IO.INTEGER_IO(STEM_KEY_TYPE);
   STEM_KEY_TYPE_IO_DEFAULT_WIDTH : INTEGER := 1;
-  
-  
-  
+ 
   type NUMERAL_SORT_TYPE is (
          X,          --  all, none, or unknown
          CARD,       --  CARDinal
@@ -147,8 +144,6 @@ package INFLECTIONS_PACKAGE is
   package NUMERAL_SORT_TYPE_IO is 
     new TEXT_IO.ENUMERATION_IO(NUMERAL_SORT_TYPE);
  
- 
-   
   type TENSE_TYPE is (
           X,         --  all, none, or unknown
           PRES,      --  PRESent
@@ -197,7 +192,6 @@ package INFLECTIONS_PACKAGE is
                                  LAST : out INTEGER);
     procedure PUT(S : out STRING; T : in TENSE_VOICE_MOOD_RECORD);  
   end TENSE_VOICE_MOOD_RECORD_IO;  
-
 
   type NOUN_KIND_TYPE is (
           X,            --  unknown, nondescript
@@ -255,7 +249,6 @@ package INFLECTIONS_PACKAGE is
   package VERB_KIND_TYPE_IO is 
       new TEXT_IO.ENUMERATION_IO(VERB_KIND_TYPE);
 
-  
 type NOUN_RECORD is
   record
     DECL        : DECN_RECORD;
@@ -273,7 +266,6 @@ type NOUN_RECORD is
    procedure GET(S : in STRING; N : out NOUN_RECORD; LAST : out INTEGER);
    procedure PUT(S : out STRING; N : in NOUN_RECORD);  
  end NOUN_RECORD_IO;  
-
 
 type PRONOUN_RECORD is
   record
@@ -293,7 +285,6 @@ type PRONOUN_RECORD is
    procedure PUT(S : out STRING; P : in PRONOUN_RECORD);  
  end PRONOUN_RECORD_IO;  
 
-
 type PROPACK_RECORD is
   record
     DECL        : DECN_RECORD;
@@ -312,7 +303,6 @@ type PROPACK_RECORD is
    procedure PUT(S : out STRING; P : in PROPACK_RECORD);  
  end PROPACK_RECORD_IO;  
 
-
 type ADJECTIVE_RECORD is
   record
     DECL        : DECN_RECORD;
@@ -321,7 +311,6 @@ type ADJECTIVE_RECORD is
     GENDER      : GENDER_TYPE := X;
     CO          : COMPARISON_TYPE := X;
 end record;
-
 
  package ADJECTIVE_RECORD_IO is
    DEFAULT_WIDTH : NATURAL;
@@ -342,7 +331,6 @@ end record;
      GENDER      : GENDER_TYPE := X;
      SORT        : NUMERAL_SORT_TYPE := X;
   end record;
- 
   
   package NUMERAL_RECORD_IO is
     DEFAULT_WIDTH : NATURAL;
@@ -370,7 +358,6 @@ type ADVERB_RECORD is
    procedure PUT(S : out STRING; A : in ADVERB_RECORD);  
  end ADVERB_RECORD_IO;  
 
-
 type VERB_RECORD is
   record
     CON         : DECN_RECORD;
@@ -388,7 +375,6 @@ type VERB_RECORD is
    procedure GET(S : in STRING; V : out VERB_RECORD; LAST : out INTEGER);
    procedure PUT(S : out STRING; V : in VERB_RECORD);  
  end VERB_RECORD_IO;  
-
 
 type VPAR_RECORD is
   record
@@ -408,7 +394,6 @@ type VPAR_RECORD is
    procedure GET(S : in STRING; VP : out VPAR_RECORD; LAST : out INTEGER);
    procedure PUT(S : out STRING; VP : in VPAR_RECORD);  
  end VPAR_RECORD_IO;  
-
 
 type SUPINE_RECORD is
   record
@@ -476,7 +461,6 @@ type INTERJECTION_RECORD is
    procedure PUT(S : out STRING; I : in INTERJECTION_RECORD);  
  end INTERJECTION_RECORD_IO;  
 
-
   --  TACKON, PREFIX, SUFFIX are nulls put in to allow easy printing later
 
   type TACKON_RECORD is
@@ -496,7 +480,6 @@ type INTERJECTION_RECORD is
     procedure PUT(S : out STRING; I : in TACKON_RECORD);  
   end TACKON_RECORD_IO;  
  
-  
   type PREFIX_RECORD is 
     record
       null;
@@ -530,7 +513,6 @@ type INTERJECTION_RECORD is
     procedure GET(S : in STRING; P : out SUFFIX_RECORD; LAST : out INTEGER);
     procedure PUT(S : out STRING; P : in SUFFIX_RECORD);  
   end SUFFIX_RECORD_IO;  
- 
 
   type QUALITY_RECORD(POFS : PART_OF_SPEECH_TYPE := X) is
     record
@@ -611,7 +593,6 @@ type INTERJECTION_RECORD is
   
   NULL_ENDING_RECORD : ENDING_RECORD;
   
-  
   type AGE_TYPE is (
     X,   --              --  In use throughout the ages/unknown -- the default
     A,   --  archaic     --  Very early forms, obsolete by classical times
@@ -625,7 +606,6 @@ type INTERJECTION_RECORD is
                       );
   package AGE_TYPE_IO is new TEXT_IO.ENUMERATION_IO(AGE_TYPE);
   
-
   type FREQUENCY_TYPE is (     --  For dictionary entries
     X,    --              --  Unknown or unspecified
     A,    --  very freq   --  Very frequent, in all Elementry Latin books
@@ -651,10 +631,7 @@ type INTERJECTION_RECORD is
 --  M,    --              --  Presently not used
 --  N     --              --  Presently not used
 
-
   package FREQUENCY_TYPE_IO is new TEXT_IO.ENUMERATION_IO(FREQUENCY_TYPE);
-  
-
 
   type INFLECTION_RECORD is
     record
@@ -683,7 +660,7 @@ type INTERJECTION_RECORD is
   subtype INFLECTIONS_SECTION_3 is CHARACTER range 's'..'s';
   subtype INFLECTIONS_SECTION_4 is CHARACTER range 't'..'u';
 
-  SIZE_OF_BLANK_INFLECTIONS   : constant INTEGER :=  80;    --  ############
+  SIZE_OF_BLANK_INFLECTIONS   : constant INTEGER := 200;    --  ############
   SIZE_OF_INFLECTIONS_SECTION : constant INTEGER := 600;    --  ############
 
   type INFLECTION_ARRAY is array (POSITIVE range <>) of INFLECTION_RECORD;
@@ -708,9 +685,6 @@ type INTERJECTION_RECORD is
  
   procedure ESTABLISH_INFLECTIONS_SECTION;    
 
-
-
-
   --  <=   means for this purpose "contained in"
 
   function "<=" (LEFT, RIGHT : PART_OF_SPEECH_TYPE) return BOOLEAN;  
@@ -726,12 +700,8 @@ type INTERJECTION_RECORD is
   function "<=" (LEFT, RIGHT : STEM_KEY_TYPE)   return BOOLEAN;  -- not verbs  
   function "<=" (LEFT, RIGHT : AGE_TYPE)   return BOOLEAN;  
   function "<=" (LEFT, RIGHT : FREQUENCY_TYPE)   return BOOLEAN;  
-
-       
+    
   GIVE_UP : exception;
-  
 
 end INFLECTIONS_PACKAGE;  
-
-
-                   
+            

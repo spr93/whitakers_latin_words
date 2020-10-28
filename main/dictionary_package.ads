@@ -90,7 +90,7 @@ package DICTIONARY_PACKAGE is
     G,      --  Gildersleeve + Lodge, Latin Grammar 1895 (G+L)
     H,      --  Collatinus Dictionary by Yves Ouvrard 
     I,      --  Leverett, F.P., Lexicon of the Latin Language, Boston 1845
-    J,      --  Bracton: De Legibus Et Consuetudinibus Angliæ
+    J,      --  Bracton: De Legibus Et Consuetudinibus AngliÃ¦
     K,      --  Calepinus Novus, modern Latin, by Guy Licoppe (Cal)
     L,      --  Lewis, C.S., Elementary Latin Dictionary 1891
     M,      --  Latham, Revised Medieval Word List, 1980 (Latham)
@@ -470,5 +470,4 @@ package DICTIONARY_PACKAGE is
       function "<=" (LEFT, RIGHT : AREA_TYPE) return BOOLEAN;  
    
    end DICTIONARY_PACKAGE;
-
 

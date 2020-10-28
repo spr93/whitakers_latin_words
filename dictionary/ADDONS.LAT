@@ -1054,9 +1054,6 @@ SUFFIX i                      --  ?????????????
 V 4 ADV POS 1
 -ly; (use imagination! run -> hastily; strive -> eagerly; stand -> immediately);
 SUFFIX i
-N 2 N 1 1 F T  0
-art or craft done by the person (abstract noun of person); office of, -ship;
-SUFFIX i
 V 2 N 2 2 N T  0
 makes abstract noun of the verb; place/instrument/result of verb action;
 SUFFIX i
@@ -1065,6 +1062,9 @@ ADJ 2 ADJ 0 0 COMP 3
 SUFFIX i
 V   4 ADJ 0 0 COMP 3
 makes a verb PERF PPL into an adjective COMP (amat.ior => more loved);
+SUFFIX i
+N 2 N 1 1 F T  0
+art or craft done by the person (abstract noun of person); office of, -ship;
 --
 --
 --  TACKON is a fragment added to the end of a word, after inflection

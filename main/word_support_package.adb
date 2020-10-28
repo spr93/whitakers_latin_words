@@ -4,7 +4,6 @@ with CONFIG;
 with PREFACE;
 package body WORD_SUPPORT_PACKAGE is
 
-
     function LEN(S : STRING) return INTEGER is
     begin
       return TRIM(S)'LENGTH;
@@ -82,36 +81,6 @@ package body WORD_SUPPORT_PACKAGE is
       return DDLL(WD(WD'FIRST), WD(WD'FIRST+1), D_K);
     end if;
   end  LAST_INDEX;
-
---procedure PUT_INDICES(CH : STRING; 
---                        D_K : DICTIONARY_KIND) is
---    WD : STRING(1..2) := CH(1..2);
---  begin
---    if CH = "  "  then
---      if BBLL(CH(1), CH(2), D_K) >= BBLF(CH(1), CH(2), D_K)  then
---        PUT("CH = ("); PUT(CH); PUT(") index is of range  "); 
---        PUT(BBLF(CH(1), CH(2), D_K)); PUT(".."); PUT(BBLL(CH(1), CH(2), D_K)); 
---        PUT("    number ");
---        PUT(BBLL(CH(1), CH(2), D_K) - BBLF(CH(1), CH(2), D_K) + 1);
---      end if;
---    elsif CH(2) = ' '  then
---      if BDLL(CH(1), CH(2), D_K) >= BDLF(CH(1), CH(2), D_K)  then
---        PUT("CH = ("); PUT(CH); PUT(") index is of range  "); 
---        PUT(BDLF(CH(1), CH(2), D_K)); PUT(".."); PUT(BDLL(CH(1), CH(2), D_K)); 
---        PUT("    number ");
---        PUT(BDLL(CH(1), CH(2), D_K) - BDLF(CH(1), CH(2), D_K) + 1);
---      end if;
---    else
---      if LAST_INDEX(WD, D_K) >= FIRST_INDEX(WD, D_K)  then
---        PUT("CH = ("); PUT(WD); PUT(") index is of range  "); 
---        PUT(FIRST_INDEX(WD, D_K)); PUT(".."); PUT(LAST_INDEX(WD, D_K)); 
---        PUT("    number ");
---        PUT(LAST_INDEX(WD, D_K) - FIRST_INDEX(WD, D_K) + 1);
---      end if;
---    end if;
---    NEW_LINE;
---  end PUT_INDICES;
-
 
   procedure LOAD_BDL_FROM_DISK is
     use STEM_IO;
@@ -204,8 +173,6 @@ end if;
   end LOAD_BDL_FROM_DISK;
 
 
-
-
   procedure LOAD_INDICES_FROM_INDX_FILE(INDXFILE_NAME : STRING;
                                         D_K : DICTIONARY_KIND) is
     use TEXT_IO;
@@ -263,12 +230,12 @@ end if;
       end if;
     end loop;
     CLOSE(INDX_FILE(D_K));
-    PREFACE.SET_COL(33); PREFACE.PUT("--  ");
+    PREFACE.SET_COL(35); PREFACE.PUT("--  ");
         if not CONFIG.SUPPRESS_PREFACE  then
           PUT(STEM_IO.COUNT((NUMBER_OF_NON_BLANK_STEMS)), 6);
         end if;   --  Kludge for when TEXT_IO.COUNT too small
     PREFACE.PUT(" stems");
-    PREFACE.SET_COL(55); PREFACE.PUT_LINE("--  loaded correctly");
+    PREFACE.SET_COL(60); PREFACE.PUT_LINE("--  loaded correctly");
   end LOAD_INDICES_FROM_INDX_FILE;
 
 

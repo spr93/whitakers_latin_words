@@ -1,15 +1,12 @@
 with STRINGS_PACKAGE;      use STRINGS_PACKAGE;
 with DEVELOPER_PARAMETERS; use DEVELOPER_PARAMETERS;
 with PREFACE;
-with INFLECTIONS_PACKAGE;  use INFLECTIONS_PACKAGE;
-with DICTIONARY_PACKAGE;   use DICTIONARY_PACKAGE;
-pragma ELABORATE(INFLECTIONS_PACKAGE);
-pragma ELABORATE(DICTIONARY_PACKAGE);
+
+
 package body ADDONS_PACKAGE is
   use TEXT_IO;
   use PART_OF_SPEECH_TYPE_IO;
   use TARGET_ENTRY_IO;
-  use PART_ENTRY_IO;
   use STEM_KEY_TYPE_IO;
 
   function EQU(C, D : CHARACTER) return BOOLEAN is
@@ -260,9 +257,6 @@ package body ADDONS_PACKAGE is
       PREFACE.PUT_LINE(S(1..LAST));
  end LOAD_ADDONS;
           
-          
-          
-
   function SUBTRACT_TACKON(W : STRING; X : TACKON_ITEM) return STRING is
     WD : constant STRING := TRIM(W);
     L  : constant INTEGER := WD'LENGTH;
@@ -685,7 +679,6 @@ end TACKON_ENTRY_IO;
       GET(F, P.TARGET);
      end GET;
 
-
     procedure GET(P : out PREFIX_ENTRY) is
     begin
       GET(P.ROOT);
@@ -715,7 +708,6 @@ end TACKON_ENTRY_IO;
       GET(S(L+1..S'LAST), P.TARGET, LAST);
     end GET;
 
-
     procedure PUT(S : out STRING; P : in PREFIX_ENTRY) is
       L : INTEGER := S'FIRST - 1;
       M : INTEGER := 0;
@@ -731,8 +723,7 @@ end TACKON_ENTRY_IO;
 
   end PREFIX_ENTRY_IO;
 
-
-
+   
   package body SUFFIX_ENTRY_IO is
     use PART_OF_SPEECH_TYPE_IO;
     use TARGET_ENTRY_IO;

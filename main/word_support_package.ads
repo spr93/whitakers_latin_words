@@ -6,7 +6,6 @@ package WORD_SUPPORT_PACKAGE is
   
   FOLLOWED_BY_PERIOD, FOLLOWS_PERIOD, CAPITALIZED, ALL_CAPS : 
                                                     BOOLEAN := FALSE;
-  
 
   type DICTIONARY_STEM is
     record

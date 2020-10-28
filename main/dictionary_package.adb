@@ -190,12 +190,10 @@ package body NOUN_ENTRY_IO is
 
 end NOUN_ENTRY_IO;
 
-
 package body PRONOUN_ENTRY_IO is
   use DECN_RECORD_IO;
   use PRONOUN_KIND_TYPE_IO;
   SPACER : CHARACTER := ' ';
-
 
   procedure GET(F : in FILE_TYPE; P : out PRONOUN_ENTRY) is
   begin
@@ -246,15 +244,12 @@ package body PRONOUN_ENTRY_IO is
     S(M+1..S'LAST) := (others => ' ');
   end PUT;
 
-
 end PRONOUN_ENTRY_IO;
-
 
 package body PROPACK_ENTRY_IO is
   use DECN_RECORD_IO;
   use PRONOUN_KIND_TYPE_IO;
   SPACER : CHARACTER := ' ';
-
 
   procedure GET(F : in FILE_TYPE; P : out PROPACK_ENTRY) is
   begin
@@ -305,9 +300,7 @@ package body PROPACK_ENTRY_IO is
     S(M+1..S'LAST) := (others => ' ');
   end PUT;
 
-
 end PROPACK_ENTRY_IO;
-
 
 package body ADJECTIVE_ENTRY_IO is
   use DECN_RECORD_IO;
@@ -316,7 +309,6 @@ package body ADJECTIVE_ENTRY_IO is
   use NUMBER_TYPE_IO;
   use COMPARISON_TYPE_IO;
   SPACER : CHARACTER := ' ';
-
 
   procedure GET(F : in FILE_TYPE; A : out ADJECTIVE_ENTRY) is
   begin
@@ -367,10 +359,7 @@ package body ADJECTIVE_ENTRY_IO is
     S(M+1..S'LAST) := (others => ' ');
   end PUT;
 
-
 end ADJECTIVE_ENTRY_IO;
-
-
 
 package body NUMERAL_ENTRY_IO is
   use DECN_RECORD_IO;
@@ -449,14 +438,11 @@ package body NUMERAL_ENTRY_IO is
     S(M+1..S'LAST) := (others => ' ');
   end PUT;
 
-
 end NUMERAL_ENTRY_IO;
-
 
 package body ADVERB_ENTRY_IO is
   use COMPARISON_TYPE_IO;
   SPACER : CHARACTER := ' ';
-
 
   procedure GET(F : in FILE_TYPE; A : out ADVERB_ENTRY) is
   begin
@@ -493,9 +479,7 @@ package body ADVERB_ENTRY_IO is
     S(M+1..S'LAST) := (others => ' ');
   end PUT;
 
-
 end ADVERB_ENTRY_IO;
-
 
 package body VERB_ENTRY_IO is
   use DECN_RECORD_IO;
@@ -552,9 +536,7 @@ package body VERB_ENTRY_IO is
     S(M+1..S'LAST) := (others => ' ');
   end PUT;
 
-
 end VERB_ENTRY_IO;
-
 
 package body PREPOSITION_ENTRY_IO is
   use CASE_TYPE_IO;
@@ -602,7 +584,6 @@ package body CONJUNCTION_ENTRY_IO is
   NULL_CONJUNCTION_ENTRY : CONJUNCTION_ENTRY;
   SPACER : CHARACTER := ' ';
 
-
   procedure GET(F : in FILE_TYPE; C : out CONJUNCTION_ENTRY) is
   begin
     C := NULL_CONJUNCTION_ENTRY;
@@ -635,9 +616,7 @@ package body CONJUNCTION_ENTRY_IO is
     S(S'FIRST..S'LAST) := (others => ' ');
   end PUT;
 
-
 end CONJUNCTION_ENTRY_IO;
-
 
 package body INTERJECTION_ENTRY_IO is
   NULL_INTERJECTION_ENTRY : INTERJECTION_ENTRY;
@@ -675,10 +654,7 @@ package body INTERJECTION_ENTRY_IO is
     S(S'FIRST..S'LAST) := (others => ' ');
   end PUT;
 
-
 end INTERJECTION_ENTRY_IO;
-
-
 
 function "<" (LEFT, RIGHT : PART_ENTRY) return BOOLEAN is
   begin
@@ -740,8 +716,6 @@ function "<" (LEFT, RIGHT : PART_ENTRY) return BOOLEAN is
     when CONSTRAINT_ERROR  =>
       return LEFT.POFS < RIGHT.POFS;
   end "<";
-
-
   
 package body PART_ENTRY_IO is
   use PART_OF_SPEECH_TYPE_IO;
@@ -770,7 +744,6 @@ package body PART_ENTRY_IO is
   INTERJECTION : INTERJECTION_ENTRY;
 
   PR : PART_ENTRY;
-
 
   procedure GET(F : in FILE_TYPE; P : out PART_ENTRY) is
     PS : PART_OF_SPEECH_TYPE := X;
@@ -915,7 +888,6 @@ package body PART_ENTRY_IO is
    return;
   end PUT;
 
-
   procedure PUT(P : in PART_ENTRY) is
     C : POSITIVE := POSITIVE(COL);
   begin
@@ -1056,11 +1028,7 @@ package body PART_ENTRY_IO is
     --S(M+1..S'LAST) := (others => ' ');
   end PUT;
 
-
 end PART_ENTRY_IO;
-
-
- 
 
 package body KIND_ENTRY_IO is
   use NOUN_KIND_TYPE_IO;
@@ -1077,8 +1045,6 @@ package body KIND_ENTRY_IO is
   VPAR_KIND : VERB_KIND_TYPE;
   SUPINE_KIND : VERB_KIND_TYPE;
   NUMERAL_VALUE : NUMERAL_VALUE_TYPE;
-
-
 
   procedure GET(F : in FILE_TYPE; 
                 PS : in PART_OF_SPEECH_TYPE; P : out KIND_ENTRY) is
@@ -1192,8 +1158,6 @@ package body KIND_ENTRY_IO is
     return;
   end GET;
 
-
-
   procedure PUT(F : in FILE_TYPE; 
                 PS : in PART_OF_SPEECH_TYPE; P : in KIND_ENTRY) is 
     C : POSITIVE := POSITIVE(COL(F));
@@ -1245,7 +1209,6 @@ package body KIND_ENTRY_IO is
     return;
   end PUT;
 
-
   procedure GET(S : in STRING; PS : in PART_OF_SPEECH_TYPE; 
                 P : out KIND_ENTRY; LAST : out INTEGER) is
     L : INTEGER := S'FIRST - 1;
@@ -1295,7 +1258,6 @@ package body KIND_ENTRY_IO is
     return;
   end GET;
 
-
   procedure PUT(S : out STRING; 
                 PS : in PART_OF_SPEECH_TYPE; P : in KIND_ENTRY) is
     L : INTEGER := S'FIRST - 1;
@@ -1329,11 +1291,7 @@ package body KIND_ENTRY_IO is
     S(M+1..S'LAST) := (others => ' ');
   end PUT;
 
-
 end KIND_ENTRY_IO;
-
-
-
 
 package body TRANSLATION_RECORD_IO is
     use TEXT_IO;
@@ -1464,8 +1422,6 @@ package body TRANSLATION_RECORD_IO is
 
     end TRANSLATION_RECORD_IO;
 
-
-
 package body DICTIONARY_ENTRY_IO is
   use PART_ENTRY_IO;
   use TRANSLATION_RECORD_IO;
@@ -1594,10 +1550,6 @@ package body DICTIONARY_ENTRY_IO is
 
 end DICTIONARY_ENTRY_IO;
 
-
-
-
-
   function "<=" (LEFT, RIGHT : AREA_TYPE) return BOOLEAN is
   begin
     if RIGHT = LEFT  or else
@@ -1608,13 +1560,11 @@ end DICTIONARY_ENTRY_IO;
     end if;
   end "<=";
 
-
+   
 begin     --  initialization of body of DICTIONARY_PACKAGE
---TEXT_IO.PUT_LINE("Initializing DICTIONARY_PACKAGE");
+          --TEXT_IO.PUT_LINE("Initializing DICTIONARY_PACKAGE");
 
   DICTIONARY_KIND_IO.DEFAULT_WIDTH := DICTIONARY_KIND'WIDTH;
-
-  --NUMERAL_VALUE_TYPE_IO.DEFAULT_WIDTH := 5;
 
   AREA_TYPE_IO.DEFAULT_WIDTH := AREA_TYPE'WIDTH;
 
@@ -1623,8 +1573,6 @@ begin     --  initialization of body of DICTIONARY_PACKAGE
   FREQUENCY_TYPE_IO.DEFAULT_WIDTH := FREQUENCY_TYPE'WIDTH;
 
   SOURCE_TYPE_IO.DEFAULT_WIDTH := SOURCE_TYPE'WIDTH;
-
-
 
   PARSE_RECORD_IO.DEFAULT_WIDTH :=
                                    STEM_TYPE_IO.DEFAULT_WIDTH + 1 +
@@ -1658,22 +1606,17 @@ begin     --  initialization of body of DICTIONARY_PACKAGE
                  NUMERAL_SORT_TYPE_IO.DEFAULT_WIDTH + 1 +
                  NUMERAL_VALUE_TYPE_IO_DEFAULT_WIDTH;
 
-
   PART_ENTRY_IO.DEFAULT_WIDTH := PART_OF_SPEECH_TYPE_IO.DEFAULT_WIDTH + 1 +  
                 NUMERAL_ENTRY_IO.DEFAULT_WIDTH;     --  Largest
 
-  
-
-    --  Should make up a MAX of PART_ENTRY + KIND_ENTRY (same POFS) WIDTHS
-
-                                           
+  --  Should make up a MAX of PART_ENTRY + KIND_ENTRY (same POFS) WIDTHS
+                                        
   TRANSLATION_RECORD_IO.DEFAULT_WIDTH :=
                                          AGE_TYPE_IO.DEFAULT_WIDTH + 1 +
                                          AREA_TYPE_IO.DEFAULT_WIDTH + 1 +
                                          GEO_TYPE_IO.DEFAULT_WIDTH + 1 +
                                          FREQUENCY_TYPE_IO.DEFAULT_WIDTH + 1 +
                                          SOURCE_TYPE_IO.DEFAULT_WIDTH;
-
 
   DICTIONARY_ENTRY_IO.DEFAULT_WIDTH := 4 * (MAX_STEM_SIZE + 1) +
                            PART_ENTRY_IO.DEFAULT_WIDTH + 1 +

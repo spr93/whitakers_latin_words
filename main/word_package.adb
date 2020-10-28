@@ -1,13 +1,13 @@
    with TEXT_IO;
-   with LATIN_FILE_NAMES; use LATIN_FILE_NAMES;
-   with STRINGS_PACKAGE; use STRINGS_PACKAGE;
-   with CONFIG;  use CONFIG;
-   with UNIQUES_PACKAGE; use UNIQUES_PACKAGE;
-   with ADDONS_PACKAGE; use ADDONS_PACKAGE;
-   with WORD_PARAMETERS; use WORD_PARAMETERS;
+   with LATIN_FILE_NAMES;        use LATIN_FILE_NAMES;
+   with STRINGS_PACKAGE;         use STRINGS_PACKAGE;
+   with CONFIG;                  use CONFIG;
+   with UNIQUES_PACKAGE;         use UNIQUES_PACKAGE;
+   with ADDONS_PACKAGE;
+   with WORD_PARAMETERS;         use WORD_PARAMETERS;
    with PREFACE;
-   with DEVELOPER_PARAMETERS; use DEVELOPER_PARAMETERS;
-   with LINE_STUFF; use LINE_STUFF;
+   with DEVELOPER_PARAMETERS;    use DEVELOPER_PARAMETERS;
+   with LINE_STUFF;              use LINE_STUFF;
    with ENGLISH_SUPPORT_PACKAGE; use ENGLISH_SUPPORT_PACKAGE;
    with Ada.Directories;
    with Ada.Environment_Variables;
@@ -654,7 +654,7 @@ package body WORD_PACKAGE is
                                                 DICTIONARY_KIND'IMAGE(D_K)));
                end if;
                DICTIONARY_SEARCH(SSA, PREFIX, SUFFIX, D_K, RESTRICTION);
-               CLOSE(STEM_FILE(D_K));  --??????
+        --       CLOSE(STEM_FILE(D_K));  --??????
             end if;
          end loop;
 
@@ -2245,8 +2245,6 @@ end CHANGE_LANGUAGE;
          end if;
       end; -- declare block  
          
-      
-         --put_line("WORD_PACKAGE INITIALIZED");
       end INITIALIZE_WORD_PACKAGE;
 
   
@@ -2299,7 +2297,6 @@ end CHANGE_LANGUAGE;
         
    exception
         when others => null;  -- Check path silently, don't get hung up on permissions errors or nonexistent directories in PATH
-
 
  end CHECK_PATH_VARIABLE; 
    

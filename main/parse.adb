@@ -1,6 +1,5 @@
-with Text_IO;
+with Text_IO;                 use Text_IO;
 with STRINGS_PACKAGE;         use STRINGS_PACKAGE;
-with LATIN_FILE_NAMES;        use LATIN_FILE_NAMES;
 with WORD_PARAMETERS;         use WORD_PARAMETERS;
 with DEVELOPER_PARAMETERS;    use DEVELOPER_PARAMETERS;
 with INFLECTIONS_PACKAGE;     use INFLECTIONS_PACKAGE;
@@ -15,16 +14,13 @@ with CONFIG;                  use CONFIG;
 with PUT_STAT;
 with ENGLISH_SUPPORT_PACKAGE; use ENGLISH_SUPPORT_PACKAGE;
 with SEARCH_ENGLISH;
-with Ada.Exceptions;
 with Arabic2Roman;
 with Words_Help;              use words_help;
+with Ada.Exceptions;
 
 pragma Elaborate (WORD_PARAMETERS);
 
 procedure PARSE (COMMAND_LINE : String := "") is
-   use INFLECTIONS_PACKAGE.INTEGER_IO;
-   use INFLECTION_RECORD_IO;
-   use Text_IO; 
 
    STORAGE_ERROR_COUNT : Integer := 0;
 
@@ -217,7 +213,6 @@ procedure PARSE (COMMAND_LINE : String := "") is
 
     XXX_MEANING_COUNTER := 1;  YYY_MEANING_COUNTER := 1; NNN_MEANING_COUNTER := 1;  RRR_MEANING_COUNTER := 1; PPP_MEANING_COUNTER := 1;
 
-            
             PARSE_WORD_LATIN_TO_ENGLISH :
             declare
                INPUT_WORD         : constant String := W (J .. K);
@@ -230,10 +225,11 @@ procedure PARSE (COMMAND_LINE : String := "") is
 
                
                procedure ENCLITIC is
-                  SAVE_DO_FIXES      : Boolean := WORDS_MODE (DO_FIXES);
+
                   SAVE_DO_ONLY_FIXES : Boolean := WORDS_MDEV (DO_ONLY_FIXES);
                   ENCLITIC_LIMIT     : Integer := 4;                       
                   TRY : constant String := LOWER_CASE (INPUT_WORD);
+                  
                begin
                              
 --TEXT_IO.PUT_LINE("Entering ENCLITIC  HAVE DONE = " & BOOLEAN'IMAGE(HAVE_DONE_ENCLITIC));
@@ -383,10 +379,10 @@ procedure PARSE (COMMAND_LINE : String := "") is
 
                procedure PASS (INPUT_WORD : in String) is
 --  This is the core logic of the program, everything else is details
-                  SAVE_PA_LAST       : Integer := 0;
+
                   SAVE_DO_FIXES      : Boolean := WORDS_MODE (DO_FIXES);
                   SAVE_DO_ONLY_FIXES : Boolean := WORDS_MDEV (DO_ONLY_FIXES);
-                  SAVE_DO_TRICKS     : Boolean := WORDS_MODE (DO_TRICKS);
+
                begin
 -- TEXT_IO.PUT_LINE("Entering PASS with >" & INPUT_WORD);
                   --  Do straight WORDS without FIXES/TRICKS, is the word in
@@ -1285,11 +1281,8 @@ begin --  PARSE
           PREFACE.NEW_LINE;
        end if;
 
-
       GET_INPUT_LINES :
       loop
-         
-
          
          GET_INPUT_LINE :
          begin                    --  Block to manipulate file of lines
@@ -1441,75 +1434,19 @@ end if;
       return; 
    end if;     --  On command line input
 
-   
-   -- why are we deleting here?
---     begin
---        STEM_IO.Open
---          (STEM_FILE (LOCAL), STEM_IO.In_File,
---           ADD_FILE_NAME_EXTENSION (STEM_FILE_NAME, "LOCAL"));
---        --  Failure to OPEN will raise an exception, to be handled below
---        if STEM_IO.Is_Open (STEM_FILE (LOCAL)) then
---           STEM_IO.Delete (STEM_FILE (LOCAL));
---        end if;
---     exception
---        when others =>
---           null;      --  If cannot OPEN then it does not exist, so is deleted
---     end;
---    
---     
---     --  The rest of this seems like overkill, it might have been done elsewhere
---     begin
---        if DICT_IO.Is_Open (DICT_FILE (LOCAL)) then
---           DICT_IO.Delete (DICT_FILE (LOCAL));
---        else
---           DICT_IO.Open
---             (DICT_FILE (LOCAL), DICT_IO.In_File,
---              ADD_FILE_NAME_EXTENSION (DICT_FILE_NAME, "LOCAL"));
---           DICT_IO.Delete (DICT_FILE (LOCAL));
---        end if;
---     exception
---        when others =>
---           null;
---     end;   --  not there, so don't have to DELETE
---     begin
---        if DICT_IO.Is_Open (DICT_FILE (ADDONS)) then
---           DICT_IO.Delete (DICT_FILE (ADDONS));
---        else
---           DICT_IO.Open
---             (DICT_FILE (ADDONS), DICT_IO.In_File,
---              ADD_FILE_NAME_EXTENSION (DICT_FILE_NAME, "ADDONS"));
---           DICT_IO.Delete (DICT_FILE (ADDONS));
---        end if;
---     exception
---        when others =>
---           null;
---     end;   --  not there, so don't have to DELETE
---  
---     begin
---        if DICT_IO.Is_Open (DICT_FILE (UNIQUE)) then
---           DICT_IO.Delete (DICT_FILE (UNIQUE));
---        else
---           DICT_IO.Open
---             (DICT_FILE (UNIQUE), DICT_IO.In_File,
---              ADD_FILE_NAME_EXTENSION (DICT_FILE_NAME, "UNIQUE"));
---           DICT_IO.Delete (DICT_FILE (UNIQUE));
---        end if;
---     exception
---        when others =>
---           null;
---     end;   --  not there, so don't have to DELETE
-
 exception
 
    when Storage_Error =>    --  Have tried at least twice, fail
       PREFACE.PUT_LINE ("STORAGE_ERROR Exception in PARSE");
    when GIVE_UP =>
       PREFACE.PUT_LINE ("Giving up!");
-   when others =>
+   when Catch_Me: Others =>
     if CL_Arguments(NO_EXIT) 
         then Parse;
         else 
-        PREFACE.PUT_LINE ("Unexpected exception raised in PARSE");
+         PREFACE.PUT_LINE ("Unexpected exception raised in PARSE");
+         Put_Line(Ada.Exceptions.Exception_Message(Catch_Me));
+         Put_Line(Ada.Exceptions.Exception_Information(Catch_Me));
     end if;
      
 end PARSE;

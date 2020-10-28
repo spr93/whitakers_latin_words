@@ -17,5 +17,4 @@ package body LATIN_FILE_NAMES is
     return NAME(Name'First..NAME_LENGTH) & '.' & EXTENSION(Extension'First..EXTENSION_LENGTH);
   end ADD_FILE_NAME_EXTENSION;
 
-
 end LATIN_FILE_NAMES;
