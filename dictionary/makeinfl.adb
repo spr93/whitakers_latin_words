@@ -1,8 +1,10 @@
 with TEXT_IO;
-with STRINGS_PACKAGE; use STRINGS_PACKAGE;
-with LATIN_FILE_NAMES; use LATIN_FILE_NAMES;
+with STRINGS_PACKAGE;     use STRINGS_PACKAGE;
+with LATIN_FILE_NAMES;    use LATIN_FILE_NAMES;
 with INFLECTIONS_PACKAGE; use INFLECTIONS_PACKAGE;
 with IO_EXCEPTIONS;
+
+
 procedure MAKEINFL is
   package INTEGER_IO is new TEXT_IO.INTEGER_IO(INTEGER);
   use TEXT_IO;
@@ -73,7 +75,7 @@ PUT_LINE("Begin  LOAD_INFLECTIONS_LIST");
 
     L_I := NULL_LATIN_INFLECTIONS;
     OPEN(INFLECTIONS_FILE, IN_FILE, INFLECTIONS_FULL_NAME);
-    TEXT_IO.PUT("INFLECTIONS file loading");
+    TEXT_IO.PUT_LINE("INFLECTIONS file loading");
     while not END_OF_FILE(INFLECTIONS_FILE)  loop
 
       READ_A_LINE:
@@ -192,7 +194,6 @@ end if;
     end loop;
     WRITE(INFLECTIONS_SECTIONS_FILE, LEL, 3);
     N3 := J3;
-
 
 NULL_LEL;
 ILC := L_I;                              --  Resetting the list to start over
@@ -357,6 +358,5 @@ PUT(N2);  PUT("    ");
 PUT(N3);  PUT("    ");
 PUT(N4);  PUT("    ");
 NEW_LINE;
-
 
 end MAKEINFL;

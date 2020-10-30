@@ -1,10 +1,11 @@
    with Text_Io; 
    with Ada.Command_Line;
-   with Strings_Package; use Strings_Package;  
-   with Latin_File_Names; use Latin_File_Names;
-   with Inflections_Package; use Inflections_Package;
-   with Dictionary_Package; use Dictionary_Package;
+   with Strings_Package;      use Strings_Package;  
+   with Latin_File_Names;     use Latin_File_Names;
+   with Inflections_Package;  use Inflections_Package;
+   with Dictionary_Package;   use Dictionary_Package;
    with Word_Support_Package; use Word_Support_Package;
+
 
    procedure MAKESTEM is
       use Integer_Io;
@@ -15,8 +16,7 @@
       use MNPC_IO;
       use Part_Entry_IO;
    
-      D_K : Dictionary_Kind := XXX;   --  ######################
-   
+      D_K : Dictionary_Kind := XXX;  
    
       I : STEM_IO.COUNT := 0;
       Line, Blanks : String(1..200) := (others => ' ');
@@ -25,49 +25,49 @@
       Ds : Dictionary_Stem;
       Fc, Ofc : Character := ' ';
       Sc, Osc : Character := ' ';
-   
-      procedure Put_Indices(Ch : String; 
-                            D_K : Dictionary_Kind) is
-         Wd : String(1..2) := Ch(1..2);
-      begin
-      --Put_Line("Put_Indices");
-         if Ch = "  "  then
-            if (Bblf(Ch(1), Ch(2), D_K) > 0)                    and then 
-               (Bbll(Ch(1), Ch(2), D_K) >= Bblf(Ch(1), Ch(2), D_K))  then
-               Put("CH = ("); Put(Ch); Put(") index is of range  "); 
-               Put(Bblf(Ch(1), Ch(2), D_K)); Put(".."); Put(Bbll(Ch(1), Ch(2), D_K)); 
-               Put("    number ");
-               Put(Bbll(Ch(1), Ch(2), D_K) - Bblf(Ch(1), Ch(2), D_K) + 1);
-               New_Line;
-            end if;
-         elsif Ch(2) = ' '  then
-            if (Bdlf(Ch(1), Ch(2), D_K) > 0)                    and then
-               (Bdll(Ch(1), Ch(2), D_K) >= Bdlf(Ch(1), Ch(2), D_K))  then
-               Put("CH = ("); Put(Ch); Put(") index is of range  "); 
-               Put(Bdlf(Ch(1), Ch(2), D_K)); Put(".."); Put(Bdll(Ch(1), Ch(2), D_K)); 
-               Put("    number ");
-               Put(Bdll(Ch(1), Ch(2), D_K) - Bdlf(Ch(1), Ch(2), D_K) + 1);
-               New_Line;
-            end if;
-         else
-            if (First_Index(Wd, D_K) > 0)                and then
-               (Last_Index(Wd, D_K) >= First_Index(Wd, D_K))  then
-               Put("CH = ("); Put(Wd); Put(") index is of range  "); 
-               Put(First_Index(Wd, D_K)); Put(".."); Put(Last_Index(Wd, D_K)); 
-               Put("    number ");
-               Put(Last_Index(Wd, D_K) - First_Index(Wd, D_K) + 1);
-               New_Line;
-            end if;
-         end if;
-      end Put_Indices;
-   
-   begin
-      
+ 
+-- DEBUG
+--        procedure Put_Indices(Ch : String; 
+--                              D_K : Dictionary_Kind) is
+--           Wd : String(1..2) := Ch(1..2);
+--        begin
+--        --Put_Line("Put_Indices");
+--           if Ch = "  "  then
+--              if (Bblf(Ch(1), Ch(2), D_K) > 0)                    and then 
+--                 (Bbll(Ch(1), Ch(2), D_K) >= Bblf(Ch(1), Ch(2), D_K))  then
+--                 Put("CH = ("); Put(Ch); Put(") index is of range  "); 
+--                 Put(Bblf(Ch(1), Ch(2), D_K)); Put(".."); Put(Bbll(Ch(1), Ch(2), D_K)); 
+--                 Put("    number ");
+--                 Put(Bbll(Ch(1), Ch(2), D_K) - Bblf(Ch(1), Ch(2), D_K) + 1);
+--                 New_Line;
+--              end if;
+--           elsif Ch(2) = ' '  then
+--              if (Bdlf(Ch(1), Ch(2), D_K) > 0)                    and then
+--                 (Bdll(Ch(1), Ch(2), D_K) >= Bdlf(Ch(1), Ch(2), D_K))  then
+--                 Put("CH = ("); Put(Ch); Put(") index is of range  "); 
+--                 Put(Bdlf(Ch(1), Ch(2), D_K)); Put(".."); Put(Bdll(Ch(1), Ch(2), D_K)); 
+--                 Put("    number ");
+--                 Put(Bdll(Ch(1), Ch(2), D_K) - Bdlf(Ch(1), Ch(2), D_K) + 1);
+--                 New_Line;
+--              end if;
+--           else
+--              if (First_Index(Wd, D_K) > 0)                and then
+--                 (Last_Index(Wd, D_K) >= First_Index(Wd, D_K))  then
+--                 Put("CH = ("); Put(Wd); Put(") index is of range  "); 
+--                 Put(First_Index(Wd, D_K)); Put(".."); Put(Last_Index(Wd, D_K)); 
+--                 Put("    number ");
+--                 Put(Last_Index(Wd, D_K) - First_Index(Wd, D_K) + 1);
+--                 New_Line;
+--              end if;
+--           end if;
+--        end Put_Indices;
+--  DEBUG
+
+   begin    
    
       Put_Line("Creates STEMFILE.D_K and INDXFILE.D_K from STEMLIST.D_K");
    
-   
-      -- Process command-line arguments
+   -- Process command-line arguments
    if Ada.Command_Line.Argument_Count = 1 then
                  for YY in 1..TRIM (Ada.Command_Line.Argument(1))'length loop
                   case Upper_Case(TRIM(Ada.Command_Line.Argument(1))(YY)) is
@@ -106,8 +106,6 @@
       end if;
    end if;
    
-   
-   
       Open(   STEM_List(D_K), In_File,
               Add_File_Name_Extension(STEM_List_Name, 
                                       Dictionary_Kind'Image(D_K)));
@@ -134,7 +132,7 @@
          Fc := Line(1);
          Sc := Line(2);
          Ds.Stem := Line(1..Max_Stem_Size);
---PUT_LINE("#" & LINE(MAX_STEM_SIZE+1..LAST)); 
+      --PUT_LINE("#" & LINE(MAX_STEM_SIZE+1..LAST)); 
          Get(Line(Max_Stem_Size+1..Last), Ds.Part, Ll); 
       --PUT(DS.PART); NEW_LINE;
       --PUT_LINE("#" & LINE(LL+1..LAST));
@@ -154,7 +152,7 @@
          Put(Indx_File(D_K), ' ');
          New_Line(Indx_File(D_K));
       
-         Put_Indices("  ", General);
+         --Put_Indices("  ", General);
       
       end if;
    ------------------------------------------------------------------
@@ -179,7 +177,7 @@
             while not End_Of_File(STEM_List(D_K))  loop
                Line := Blanks;
                Get_Line(STEM_List(D_K), Line, Last);
- --Put_Line("* " & Line(1..Last));
+   --Put_Line("* " & Line(1..Last));
             
                if Trim(Line(1..Last)) = "" then Put_Line("Trim(Line(1..Last)) BLANK"); end if;
                exit First_Character_Loop when Trim(Line(1..Last)) = "";
@@ -212,25 +210,25 @@
                Write(STEM_File(D_K), Ds);
             
                if Fc /= Ofc   then  --  Jumped FC, effectively must have jumped a SC
-               Put_Line("Jumped FC");
+             --  Put_Line("Jumped FC");
                   if Osc = ' '  then
                      Bdll(Ofc, Osc, D_K) := I - 1;
                   else
                      Ddll(Ofc, Osc, D_K) := I - 1;
                   end if;
-               Put("Sc = '"); Put(Sc); Put("'   Fc = '"); Put(Fc); Put_Line("'");
+             --  Put("Sc = '"); Put(Sc); Put("'   Fc = '"); Put(Fc); Put_Line("'");
                   if Sc = ' '  then 
                   Put("BDLF  "); Put(Bdlf(Fc, Sc, D_K)); New_Line;
                      Bdlf(Fc, Sc, D_K) := I;
                   else
                      Ddlf(Fc, Sc, D_K) := I;
                   end if;
-               Put_Line("if Sc done");
-               Put("Ofc = '"); Put(Ofc); Put("'   Osc = '"); Put(Osc); Put_Line("'");
-                  Put_Indices(Ofc & Osc, D_K);
+             -- Put_Line("if Sc done");
+             --  Put("Ofc = '"); Put(Ofc); Put("'   Osc = '"); Put(Osc); Put_Line("'");
+             --     Put_Indices(Ofc & Osc, D_K);
                   Ofc := Fc;
                   Osc := Sc;
-               Put_Line("exit Second_Character_Loop");
+             -- Put_Line("exit Second_Character_Loop");
                
                   exit Second_Character_Loop;
                else
@@ -242,7 +240,7 @@
                         Ddlf(Fc, Sc, D_K) := I;
                      --DEBUG.PUT(" df1 DDLF("); DEBUG.PUT( FC); DEBUG.PUT( SC); DEBUG.PUT(")  "); 
                      --DEBUG.PUT(DDLF( FC,  SC, D_K)); DEBUG.NEW_LINE;
-                        Put_Indices(Fc & Osc, D_K);
+                      --Put_Indices(Fc & Osc, D_K);
                         Osc := Sc;
                      
                         exit Inner_Loop;
@@ -267,17 +265,16 @@
          --Put_Line("Exitted Inner_Loop");
          
          end loop Second_Character_Loop;
-      --Put_Line("Exitted Second_Character_Loop");
+   --Put_Line("Exitted Second_Character_Loop");
       
       end loop First_Character_Loop;
    --Put_Line("Exitted First_Character_Loop");
       Ddll(Ofc, Osc, D_K) := I;
    
-   --  To reprint correctly the last letter information
+   --To reprint correctly the last letter information
    --Put_Line("--  To reprint correctly the last letter information");
       Put_Indices(Ofc & Osc, D_K);
       Close(STEM_File(D_K));
-   
    
       for I in Character'('a')..Character'('z')  loop
          for J in Character'(' ')..Character'(' ')  loop

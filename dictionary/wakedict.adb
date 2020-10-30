@@ -1,12 +1,14 @@
 with TEXT_IO; 
+with STRINGS_PACKAGE;     use STRINGS_PACKAGE;  
+with LATIN_FILE_NAMES;    use LATIN_FILE_NAMES;
+with INFLECTIONS_PACKAGE; use INFLECTIONS_PACKAGE;
+with DICTIONARY_PACKAGE;  use DICTIONARY_PACKAGE;
 with Ada.Command_Line;
-   with STRINGS_PACKAGE; use STRINGS_PACKAGE;  
-   with LATIN_FILE_NAMES; use LATIN_FILE_NAMES;
-   with INFLECTIONS_PACKAGE; use INFLECTIONS_PACKAGE;
-   with DICTIONARY_PACKAGE; use DICTIONARY_PACKAGE;
-   with LINE_STUFF; use LINE_STUFF;
-   procedure WAKEDICT is 
-      package INTEGER_IO is new TEXT_IO.INTEGER_IO(INTEGER);
+
+ procedure WAKEDICT is 
+
+   
+   package INTEGER_IO is new TEXT_IO.INTEGER_IO(INTEGER);
       use TEXT_IO;
       use STEM_KEY_TYPE_IO;
       use DICTIONARY_ENTRY_IO;
@@ -25,7 +27,6 @@ with Ada.Command_Line;
       BE_VE : VERB_ENTRY := (CON => (5, 1), KIND => TO_BE);
    
       D_K : DICTIONARY_KIND := XXX;       --  ######################
-   
    
       START_STEM_1  : constant := 1;
       START_STEM_2  : constant := START_STEM_1 + MAX_STEM_SIZE + 1;

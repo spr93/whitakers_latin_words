@@ -207,17 +207,15 @@ with Ada.Command_Line;
 --PUT_LINE(INTEGER'IMAGE(LINE_NUMBER) & "    TTT " & S(I) & "  " &  INTEGER'IMAGE(I) & 
 --"  " & INTEGER'IMAGE(WORD_START) & "   " & INTEGER'IMAGE(WORD_END) & "    " & S(WORD_START..WORD_END));
          
-         
          end if;  --  On '|'
-      
       
          --  Set up the output to return
 --PUT('|' & INTEGER'IMAGE(J) & '/' & INTEGER'IMAGE(I));                    
+         Exit when J not in S'Range;
          T(J) := S(I);
          JMAX := JMAX + 1;
          
       end loop;  --  Over S'RANGE
-   
    
 --PUT_LINE("RRR    ->" & INTEGER'IMAGE(LINE_NUMBER) & "   " & T(1..JMAX));
       return T(1..JMAX);         
@@ -234,8 +232,7 @@ with Ada.Command_Line;
          return T(1..JMAX);         
      end ADD_HYPHENATED;
 
- 
-      procedure EXTRACT_WORDS (S : in STRING;
+   procedure EXTRACT_WORDS (S : in STRING;
                                POFS : in PART_OF_SPEECH_TYPE;
                                N : out INTEGER;
                                EWA : out EWDS_ARRAY) is
@@ -272,23 +269,27 @@ with Ada.Command_Line;
       
          while  L <= S'LAST  loop  --  loop over MEAN
             if S(L) = ' '  then  --  Clear initial blanks
-               L := L + 1;
+            L := L + 1;
+           
             end if;
             
           SEMI := NULL_X_MEANING_TYPE;           
           IM := 1;
           SM1 := 1;
-         SM2 := 0;
-         
+          SM2 := 0;
+          exit when L not in S'Range;
           EXTRACT_SEMI:
             loop
-              
+            
+            exit when L not in S'Range;
+            
  --PUT('/');
  --PUT(S(L));
-               if S(L) = '|'  then
-                null;          --  Ignore continuation flag | as word
-	               elsif S(L) in '0'..'9'  then
+ 	      if S(L) in '0'..'9'  then
 	                 null;         --  Ignore numbers
+               elsif S(L) = '|'  then
+                null;          --  Ignore continuation flag | as word
+
                  
                elsif   S(L) = ';'  then     --  Division Terminator
 --PUT(':');
@@ -410,6 +411,7 @@ WW := 20;
                            while SM(IM) /= '>'  loop     
                               exit when SM(IM) = ']'; --  If no >
                               IM := IM + 1;
+                              exit when IM not in SM'Range;
                         end loop;
                      --   Put_Line(SM & "|" & IM'Image & "|" & IC'Image & "|" & M'Image);
                      

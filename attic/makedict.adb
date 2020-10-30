@@ -449,15 +449,8 @@
          end if;
       end loop OVER_LINES;
    
-      
-      
-      
-      
-      
-      
-      
-      
-          if D_K = GENERAL  then
+
+    if D_K = GENERAL  then
          
          J := J + 1;
       
