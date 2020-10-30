@@ -1,8 +1,9 @@
 with LATIN_FILE_NAMES; use LATIN_FILE_NAMES;
 with PREFACE;
+
+
 package body INFLECTIONS_PACKAGE is
   use TEXT_IO;
-
 
   function "<" (LEFT, RIGHT : DECN_RECORD) return BOOLEAN is
   begin
@@ -1192,7 +1193,6 @@ package body VERB_RECORD_IO is
     S(M+1..S'LAST) := (others => ' ');
   end PUT;
 
-
 end VERB_RECORD_IO;
 
 
@@ -2280,7 +2280,6 @@ procedure ESTABLISH_INFLECTIONS_SECTION  is
                         LEL,
                         LEL_SECTION_IO.POSITIVE_COUNT(2));
 
-
     I := 1;
 
     N := LEL(I).ENDING.SIZE;
@@ -2301,8 +2300,6 @@ procedure ESTABLISH_INFLECTIONS_SECTION  is
 
       CH := LEL(I).ENDING.SUF(N);
       exit when CH > 'r';
-
-
 
       if CH /= XCH  then
         LELL(XN, XCH) := I - 1;
@@ -2484,7 +2481,7 @@ end;
 begin
 
   PREFACE.PUT("INFLECTION ARRAY loading");
-  PREFACE.SET_COL(35);
+  PREFACE.SET_COL(40);
   PREFACE.PUT("--  ");
   LOAD_LEL_INDEXES;                    --  Makes indexes from array
   PREFACE.PUT(NUMBER_OF_INFLECTIONS, 6);

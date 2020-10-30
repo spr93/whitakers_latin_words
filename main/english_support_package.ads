@@ -1,10 +1,9 @@
    with Text_IO;   
    with Direct_IO; 
-   with Strings_Package; use Strings_Package;  
-   with LATIN_FILE_NAMES; use LATIN_FILE_NAMES;
    with Inflections_Package; use Inflections_Package;
    with Dictionary_Package; use Dictionary_Package;
-   with WORD_SUPPORT_PACKAGE; use WORD_SUPPORT_PACKAGE;
+
+
    package ENGLISH_SUPPORT_PACKAGE is 
   
       EWORD_SIZE    : constant := 24;
@@ -56,7 +55,4 @@
 
   EWDS_FILE : EWDS_DIRECT_IO.FILE_TYPE;
       
-                 
-
 end ENGLISH_SUPPORT_PACKAGE;
-

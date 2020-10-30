@@ -6,6 +6,7 @@ with WORD_SUPPORT_PACKAGE; use WORD_SUPPORT_PACKAGE;
 with Ada.Directories;
 with Ada.Environment_Variables;
 
+
 package WORD_PACKAGE is
     
   LINE_NUMBER, WORD_NUMBER : INTEGER := 0;

@@ -137,15 +137,11 @@ end PUT;
     S(L) :=  ' ';
     M := L + PRIORITY_WIDTH;
     PUT(S(L+1..M), P.RANK, NWIDTH);
-
-    
-    
     S(M+1..S'LAST) := (others => ' ');
   end PUT;
 
-
 end EWDS_RECORD_IO;
 
-
+   
 end ENGLISH_SUPPORT_PACKAGE;
 

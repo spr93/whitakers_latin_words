@@ -29,6 +29,7 @@ package body DICTIONARY_PACKAGE is
     end case;
   end NUMBER_OF_STEMS;
 
+   
   package body PARSE_RECORD_IO is
     use TEXT_IO;
     use INFLECTION_RECORD_IO;
@@ -246,6 +247,7 @@ package body PRONOUN_ENTRY_IO is
 
 end PRONOUN_ENTRY_IO;
 
+   
 package body PROPACK_ENTRY_IO is
   use DECN_RECORD_IO;
   use PRONOUN_KIND_TYPE_IO;
@@ -302,6 +304,7 @@ package body PROPACK_ENTRY_IO is
 
 end PROPACK_ENTRY_IO;
 
+   
 package body ADJECTIVE_ENTRY_IO is
   use DECN_RECORD_IO;
   use GENDER_TYPE_IO;
@@ -361,6 +364,7 @@ package body ADJECTIVE_ENTRY_IO is
 
 end ADJECTIVE_ENTRY_IO;
 
+   
 package body NUMERAL_ENTRY_IO is
   use DECN_RECORD_IO;
   use NUMERAL_SORT_TYPE_IO;
@@ -481,11 +485,11 @@ package body ADVERB_ENTRY_IO is
 
 end ADVERB_ENTRY_IO;
 
+   
 package body VERB_ENTRY_IO is
   use DECN_RECORD_IO;
   use VERB_KIND_TYPE_IO;
   SPACER : CHARACTER := ' ';
-
 
   procedure GET(F : in FILE_TYPE; V : out VERB_ENTRY) is
   begin
@@ -538,6 +542,7 @@ package body VERB_ENTRY_IO is
 
 end VERB_ENTRY_IO;
 
+   
 package body PREPOSITION_ENTRY_IO is
   use CASE_TYPE_IO;
   SPACER : CHARACTER := ' ';
@@ -575,7 +580,6 @@ package body PREPOSITION_ENTRY_IO is
     PUT(S(L+1..M), P.OBJ);
     S(M+1..S'LAST) := (others => ' ');
   end PUT;
-
 
 end PREPOSITION_ENTRY_IO;
 
@@ -618,6 +622,7 @@ package body CONJUNCTION_ENTRY_IO is
 
 end CONJUNCTION_ENTRY_IO;
 
+   
 package body INTERJECTION_ENTRY_IO is
   NULL_INTERJECTION_ENTRY : INTERJECTION_ENTRY;
   SPACER : CHARACTER := ' ';
@@ -717,7 +722,9 @@ function "<" (LEFT, RIGHT : PART_ENTRY) return BOOLEAN is
       return LEFT.POFS < RIGHT.POFS;
   end "<";
   
+   
 package body PART_ENTRY_IO is
+   
   use PART_OF_SPEECH_TYPE_IO;
   use NOUN_ENTRY_IO;
   use PRONOUN_ENTRY_IO;
@@ -730,7 +737,6 @@ package body PART_ENTRY_IO is
   use CONJUNCTION_ENTRY_IO;
   use INTERJECTION_ENTRY_IO;
   SPACER : CHARACTER := ' ';
-
 
   NOUN : NOUN_ENTRY;
   PRONOUN : PRONOUN_ENTRY;
@@ -1030,6 +1036,7 @@ package body PART_ENTRY_IO is
 
 end PART_ENTRY_IO;
 
+   
 package body KIND_ENTRY_IO is
   use NOUN_KIND_TYPE_IO;
   use PRONOUN_KIND_TYPE_IO;
@@ -1101,7 +1108,6 @@ package body KIND_ENTRY_IO is
     end case;
     return;
   end GET;
-
 
   procedure GET(PS : in PART_OF_SPEECH_TYPE; P : out KIND_ENTRY) is
   begin
@@ -1293,6 +1299,7 @@ package body KIND_ENTRY_IO is
 
 end KIND_ENTRY_IO;
 
+   
 package body TRANSLATION_RECORD_IO is
     use TEXT_IO;
     use AGE_TYPE_IO;
@@ -1422,6 +1429,7 @@ package body TRANSLATION_RECORD_IO is
 
     end TRANSLATION_RECORD_IO;
 
+   
 package body DICTIONARY_ENTRY_IO is
   use PART_ENTRY_IO;
   use TRANSLATION_RECORD_IO;
@@ -1550,7 +1558,7 @@ package body DICTIONARY_ENTRY_IO is
 
 end DICTIONARY_ENTRY_IO;
 
-  function "<=" (LEFT, RIGHT : AREA_TYPE) return BOOLEAN is
+function "<=" (LEFT, RIGHT : AREA_TYPE) return BOOLEAN is
   begin
     if RIGHT = LEFT  or else
        RIGHT = X  then
@@ -1558,12 +1566,11 @@ end DICTIONARY_ENTRY_IO;
     else
       return FALSE;
     end if;
-  end "<=";
+end "<=";
 
    
-begin     --  initialization of body of DICTIONARY_PACKAGE
-          --TEXT_IO.PUT_LINE("Initializing DICTIONARY_PACKAGE");
-
+begin     
+          
   DICTIONARY_KIND_IO.DEFAULT_WIDTH := DICTIONARY_KIND'WIDTH;
 
   AREA_TYPE_IO.DEFAULT_WIDTH := AREA_TYPE'WIDTH;

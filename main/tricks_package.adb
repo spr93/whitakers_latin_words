@@ -326,7 +326,7 @@ with PUT_STAT;
                                     FREQ => A),
                               D_K => RRR,
                               MNPC => NULL_MNPC);
-            RRR_MEANING(RRR_MEANING_COUNTER) := HEAD(INTEGER'IMAGE(ROMAN_NUMBER_W) & " as a ROMAN NUMERAL;", 
+            RRR_MEANING(RRR_MEANING_COUNTER) := HEAD(INTEGER'IMAGE(ROMAN_NUMBER_W) & " as a ROMAN NUMERAL", 
                                 MAX_MEANING_SIZE); RRR_MEANING_COUNTER := RRR_MEANING_COUNTER + 1; 
          else
             null;    --  Is not ROMAN NUMERAL, so go on and try something else

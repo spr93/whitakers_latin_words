@@ -1,14 +1,16 @@
-with TEXT_IO;
-with STRINGS_PACKAGE; use STRINGS_PACKAGE;
-with LATIN_FILE_NAMES; use LATIN_FILE_NAMES;   --  Omit when put name here
-with WORD_PARAMETERS; use WORD_PARAMETERS;
+with TEXT_IO;            use TEXT_IO;
+with STRINGS_PACKAGE;    use STRINGS_PACKAGE;
+with LATIN_FILE_NAMES;   use LATIN_FILE_NAMES; 
+with WORD_PARAMETERS;    use WORD_PARAMETERS;
 with DICTIONARY_PACKAGE; use DICTIONARY_PACKAGE;
 with PREFACE;
-with LINE_STUFF; use LINE_STUFF;
-pragma Elaborate(PREFACE);
-package body DEVELOPER_PARAMETERS is
+with LINE_STUFF;         use LINE_STUFF;
+with CONFIG;             use CONFIG; 
 
-  use TEXT_IO;
+pragma Elaborate(PREFACE);
+
+
+package body DEVELOPER_PARAMETERS is
 
   type HELP_TYPE is array (NATURAL range <>) of STRING(1..70);
   BLANK_HELP_LINE : constant STRING(1..70) := (others => ' ');
@@ -316,8 +318,8 @@ UPDATE_LOCAL_DICTIONARY_HELP : constant HELP_TYPE :=  (
    "the STEM=> prompt will ignore and continue the program.  This option  ",
    "is only for very experienced users and should normally be off.        ",
    "                                                  The default is N(o).");
+   
 --   "      ------    NOT AVAILABLE IN THIS VERSION   -------               " );
-
 --  The code necessary for this does not exist.                                                      
 --  UPDATE_MEANINGS_HELP : constant HELP_TYPE :=  (
 --     "This option instructs the program to invite the user to modify the    ",
@@ -331,7 +333,6 @@ UPDATE_LOCAL_DICTIONARY_HELP : constant HELP_TYPE :=  (
 --     "This option is only for experienced users and should remain off.      ",
 --     "                                                  The default is N(o).",
 --     "      ------    NOT AVAILABLE IN THIS VERSION   -------               " );
-     
 
 MINIMIZE_OUTPUT_HELP : constant HELP_TYPE :=  (
    "This option instructs the program to minimize the output.  This is a  ",
@@ -376,6 +377,7 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
     --  Effectively goes to the end of DICT_LOC to ready for appending
     --  Does this by making a new file and writing the old DICT_LOC into it
     --  If there is not already a DICT_LOC, it creates one
+      
     begin
       OPEN(DICT_LOC_FILE, IN_FILE, DICT_LOC_NAME);
       CREATE(DUMMY, OUT_FILE);
@@ -396,6 +398,7 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
         CREATE(DICT_LOC_FILE, OUT_FILE, DICT_LOC_NAME);
     end READY_DICT_LOC_FILE;
 
+      
     procedure APPEND_TO_DICT_LOC_FILE is
     --  This just appends the 3 lines of a dictionary entry to DICT_LOC
     --  It prepares the file to write at the end, writes, then closes it
@@ -410,7 +413,8 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
 
     end APPEND_TO_DICT_LOC_FILE;
 
-  begin
+   begin
+      
     loop
 
       TEXT_IO.PUT("STEMS =>");
@@ -424,7 +428,8 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
         exit;       --  on no entry, just CR
       end if;
 
-      begin
+    begin
+            
         APPEND_TO_DICT_LOC_FILE;
 
 DICT_LOC := NULL_DICTIONARY;
@@ -624,6 +629,7 @@ LOAD_DICTIONARY(DICT_LOC,
 --      INQUIRE(WRITE_DEBUG_FILE, WRITE_DEBUG_FILE_HELP);
 --    end if;
 
+
     INQUIRE(HAVE_STATISTICS_FILE, HAVE_STATISTICS_FILE_HELP);
     if IS_OPEN(STATS)  and then not WORDS_MDEV(HAVE_STATISTICS_FILE)  then
       DELETE(STATS);
@@ -638,6 +644,7 @@ LOAD_DICTIONARY(DICT_LOC,
       end;
     end if;
 
+      
     if WORDS_MDEV(HAVE_STATISTICS_FILE)  then
       INQUIRE(WRITE_STATISTICS_FILE, WRITE_STATISTICS_FILE_HELP);
     end if;
@@ -649,14 +656,14 @@ LOAD_DICTIONARY(DICT_LOC,
       WORDS_MDEV(FOR_WORD_LIST_CHECK) := FALSE;
     end if;
 
-
-
     INQUIRE(SHOW_DICTIONARY, SHOW_DICTIONARY_HELP);
 
     INQUIRE(SHOW_DICTIONARY_LINE, SHOW_DICTIONARY_LINE_HELP);
-
+  
+    if Cl_Arguments(Meanings_Only) = False then 
     INQUIRE(SHOW_DICTIONARY_CODES, SHOW_DICTIONARY_CODES_HELP);
-
+    end if;
+      
     INQUIRE(DO_PEARSE_CODES, DO_PEARSE_CODES_HELP);
 
 
@@ -670,12 +677,10 @@ LOAD_DICTIONARY(DICT_LOC,
     INQUIRE(USE_SUFFIXES, USE_SUFFIXES_HELP);
     
     INQUIRE(USE_TACKONS, USE_TACKONS_HELP);
-    
-        
+      
     if WORDS_MODE(DO_TRICKS) then
       INQUIRE(DO_MEDIEVAL_TRICKS, DO_MEDIEVAL_TRICKS_HELP);
     end if;
-
 
     INQUIRE(DO_SYNCOPE, DO_SYNCOPE_HELP);
 
@@ -690,24 +695,20 @@ LOAD_DICTIONARY(DICT_LOC,
        --  SPR: OMIT_UNCOMMON is broken.  It's not filtering (or rarely filtering)
        --       and under some circumstances can cause an extraneous raw dictionary 
        --       line to print  
-    -- INQUIRE(OMIT_UNCOMMON, OMIT_UNCOMMON_HELP);
-
+  
+  -- INQUIRE(OMIT_UNCOMMON, OMIT_UNCOMMON_HELP);
 
   --  INQUIRE(DO_I_FOR_J, DO_I_FOR_J_HELP);
 
   --  INQUIRE(DO_U_FOR_V, DO_U_FOR_V_HELP);
 
-
     INQUIRE(PAUSE_IN_SCREEN_OUTPUT, PAUSE_IN_SCREEN_OUTPUT_HELP);
     
     INQUIRE(NO_SCREEN_ACTIVITY, NO_SCREEN_ACTIVITY_HELP);        
-    
+     
     INQUIRE(UPDATE_LOCAL_DICTIONARY, UPDATE_LOCAL_DICTIONARY_HELP);
-
-    --INQUIRE(UPDATE_MEANINGS, UPDATE_MEANINGS_HELP);
-      
+ 
     INQUIRE(MINIMIZE_OUTPUT, MINIMIZE_OUTPUT_HELP);
-
 
     PUT("START_FILE_CHARACTER ?  "); SET_COL(45); PUT("(Currently  '");
     PUT(START_FILE_CHARACTER); PUT("'");
@@ -767,7 +768,7 @@ LOAD_DICTIONARY(DICT_LOC,
       end if;
     end if;
     NEW_LINE;
-
+      
     PUT("Do you wish to save this set of parameters? Y or N (Default) ");
     PUT(" =>");
     GET_LINE(L1, LL);
@@ -785,7 +786,7 @@ LOAD_DICTIONARY(DICT_LOC,
       end if;
     end if;
     NEW_LINE;
-
+      
   exception
     when BLANK_INPUT  =>
       null;
@@ -794,10 +795,8 @@ LOAD_DICTIONARY(DICT_LOC,
 
   end CHANGE_DEVELOPER_MODES;
 
-
 procedure INITIALIZE_DEVELOPER_PARAMETERS is
 begin
-
 
   DO_MDEV_FILE:
   begin

@@ -26,7 +26,6 @@ package INFLECTIONS_PACKAGE is
     procedure PUT(S : out STRING; D : in STEM_TYPE);  
   end STEM_TYPE_IO;  
   
-  
   subtype MEANING_TYPE is STRING(1..MAX_MEANING_SIZE);
   NULL_MEANING_TYPE : constant MEANING_TYPE := (others => ' ');
 

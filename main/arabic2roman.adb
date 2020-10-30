@@ -5,9 +5,10 @@ with DEVELOPER_PARAMETERS;  use DEVELOPER_PARAMETERS;
 with LIST_PACKAGE;          use LIST_PACKAGE;
 with CONFIG;                use CONFIG;
 
+
 package body Arabic2Roman is
 
-   procedure Arabic2Roman
+  procedure Arabic2Roman
      (OUTPUT : in Ada.Text_IO.File_Type; INPUT_WORD : in String)
    is
 
@@ -331,7 +332,6 @@ package body Arabic2Roman is
             Format (Output, Reset); New_Line(OUTPUT);
             end if; -- end of dictionary-form line
 
-
             -- meaning line:
             if WORDS_MDEV (DO_PEARSE_CODES) then
                Put(Output,"03 ");
@@ -343,7 +343,7 @@ package body Arabic2Roman is
                Put (OUTPUT, Arabic_String (C));
             end loop;
 
-            Put (OUTPUT, " as a ROMAN NUMERAL;");
+            Put (OUTPUT, " as a ROMAN NUMERAL");
             Format(OUTPUT, RESET);
 
             New_Line (OUTPUT); -- end output of first result
@@ -427,7 +427,7 @@ package body Arabic2Roman is
                   exit when Arabic_String (C) = ' ';
                   Put (OUTPUT, Arabic_String (C));
                end loop;
-               Put_Line (OUTPUT, " as a ROMAN NUMERAL;");
+               Put_Line (OUTPUT, " as a ROMAN NUMERAL");
                  Format(OUTPUT, Reset); New_Line (OUTPUT);
             end if;  -- if enclosing dictionary line items
 

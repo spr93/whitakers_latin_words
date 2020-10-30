@@ -1,4 +1,6 @@
-   with TEXT_IO; 
+with TEXT_IO; 
+with Ada.Exceptions;
+with Ada.Command_Line;
    with STRINGS_PACKAGE; use STRINGS_PACKAGE;  
    with LATIN_FILE_NAMES; use LATIN_FILE_NAMES;
    with INFLECTIONS_PACKAGE; use INFLECTIONS_PACKAGE;
@@ -132,12 +134,17 @@
                J := J + 1;   
                JMAX := JMAX + 1;
                I := I + 1;
-               while S(I-1..I) /= "=>"  loop
+               
+              -- Put_Line("I is " & I'Image & " and S'Range is is " & S'First'Image & " .. " & S'Last'Image);
+               
+               while S(I-1..I) /= "=>" and S(I-1..I) /=  "];" loop
                   T(J) := S(I);
                   J := J + 1;   
                   JMAX := JMAX + 1;
                   I := I + 1;
+                  exit when I = S'Last;
                end loop;
+               
                WORD_START := I + 2;
                WORD_END   := 0;
 
@@ -200,32 +207,32 @@
 --PUT_LINE(INTEGER'IMAGE(LINE_NUMBER) & "    TTT " & S(I) & "  " &  INTEGER'IMAGE(I) & 
 --"  " & INTEGER'IMAGE(WORD_START) & "   " & INTEGER'IMAGE(WORD_END) & "    " & S(WORD_START..WORD_END));
          
-         
          end if;  --  On '|'
-      
       
          --  Set up the output to return
 --PUT('|' & INTEGER'IMAGE(J) & '/' & INTEGER'IMAGE(I));                    
+         Exit when J not in S'Range;
          T(J) := S(I);
          JMAX := JMAX + 1;
          
       end loop;  --  Over S'RANGE
    
-   
 --PUT_LINE("RRR    ->" & INTEGER'IMAGE(LINE_NUMBER) & "   " & T(1..JMAX));
       return T(1..JMAX);         
    
      exception
-          when others =>
+          when Catch_Me: others =>
                PUT_LINE("ADD_HYPHENATED  Exception    LINE = " & 
                         INTEGER'IMAGE(LINE_NUMBER));
                PUT_LINE(S);
-               PUT(DE); NEW_LINE;
+         PUT(DE); NEW_LINE;
+                  Put_Line(Ada.Exceptions.Exception_Name(Catch_Me));
+         Put_Line(Ada.Exceptions.Exception_Information(Catch_Me));
+         Put_Line(Ada.Exceptions.Exception_Message(Catch_Me));
          return T(1..JMAX);         
      end ADD_HYPHENATED;
 
- 
-      procedure EXTRACT_WORDS (S : in STRING;
+   procedure EXTRACT_WORDS (S : in STRING;
                                POFS : in PART_OF_SPEECH_TYPE;
                                N : out INTEGER;
                                EWA : out EWDS_ARRAY) is
@@ -262,23 +269,27 @@
       
          while  L <= S'LAST  loop  --  loop over MEAN
             if S(L) = ' '  then  --  Clear initial blanks
-               L := L + 1;
+            L := L + 1;
+           
             end if;
             
           SEMI := NULL_X_MEANING_TYPE;           
           IM := 1;
           SM1 := 1;
-         SM2 := 0;
-         
+          SM2 := 0;
+          exit when L not in S'Range;
           EXTRACT_SEMI:
             loop
-              
+            
+            exit when L not in S'Range;
+            
  --PUT('/');
  --PUT(S(L));
-               if S(L) = '|'  then
-                null;          --  Ignore continuation flag | as word
-	               elsif S(L) in '0'..'9'  then
+ 	      if S(L) in '0'..'9'  then
 	                 null;         --  Ignore numbers
+               elsif S(L) = '|'  then
+                null;          --  Ignore continuation flag | as word
+
                  
                elsif   S(L) = ';'  then     --  Division Terminator
 --PUT(':');
@@ -400,17 +411,31 @@ WW := 20;
                            while SM(IM) /= '>'  loop     
                               exit when SM(IM) = ']'; --  If no >
                               IM := IM + 1;
-                           end loop;
-                           IM := IM + 1;    --  Clear the '>' or ']'
-                            if  SM(IM) = ';'  then
-                            --  Foumd COMMA
+                              exit when IM not in SM'Range;
+                        end loop;
+                     --   Put_Line(SM & "|" & IM'Image & "|" & IC'Image & "|" & M'Image);
+                     
+                        
+                        IM := IM + 1;    --  Clear the '>' or ']'
+                        
+                        
+                      
+                        
+                  --     Put_Line("IM is: " & IM'Image & "|" & "M is " & "|" &  M'Image  & "|" &  "IC is "  & "|" &  "SM is " & SM  & "|" & "(SM last is " & SM'Last'Image & " )"); 
+                        if IM < SM'Last and then 
+                          SM(IM) = ';'  then
+                            --  Found COMMA
                                M := M + 1;
                                IC := 1;
-                               IM := IM + 1;       --  Clear ;
+                           
+                           IM := IM + 1;       --  Clear ;
                                exit;
-                          elsif SM(IM) = ' '  then
-                            IM := IM + 1;
-                          end if;
+                           elsif IM < SM'Last and then  SM(IM) = ' '  then
+                           IM := IM + 1;
+                        end if;
+                        
+                        
+                        
                         end if;          --  But could be 2 =>!
  --PUT_LINE("Through ()[] I = " & INTEGER'IMAGE(I));
                         exit when IM > SM'LAST;
@@ -485,7 +510,7 @@ WW := 31;
  WW := 33;                  
                            W_START := IW + 1;
                           else     
-WW := 34;                  
+ WW := 34;                  
                            if (CS(IW) = ' ')  or
                               (CS(IW) = '_')  or
                               (CS(IW) = '-')  or
@@ -690,31 +715,62 @@ WW := 70;
       end loop DROP_DUPES; 
       
         
-      
---PUT_LINE("SEMI loop Processed");
-         if EWA(N) = NULL_EWDS_RECORD  then
+      --PUT_LINE("SEMI loop Processed");
+
+         if N <= EWA'Last and then  EWA(N) = NULL_EWDS_RECORD  then
+            N := N -1;   --  Clean up danglers
+      end if;
+         if N <= EWA'Last and then N > 1 and then EWA(N) = NULL_EWDS_RECORD  then   --  AGAIN!!!!!!
             N := N -1;   --  Clean up danglers
          end if;
-         if EWA(N) = NULL_EWDS_RECORD  then   --  AGAIN!!!!!!
-            N := N -1;   --  Clean up danglers
-         end if;
-       exception
-          when others =>
+
+      exception
+          when Catch_Me: Others =>
             if (S(S'LAST) /= ')') or  (S(S'LAST) /= ']')  then    --  KLUDGE
                NEW_LINE;
                PUT_LINE("Extract Exception    WW = " & INTEGER'IMAGE(WW) & "    LINE = " & 
                         INTEGER'IMAGE(LINE_NUMBER));
                PUT_LINE(S);
                PUT(DE); NEW_LINE;
-             end if;
+         end if;
+         
+         Put_Line(Ada.Exceptions.Exception_Name(Catch_Me));
+         Put_Line(Ada.Exceptions.Exception_Information(Catch_Me));
+         Put_Line(Ada.Exceptions.Exception_Message(Catch_Me));
         end EXTRACT_WORDS;
 
    
    begin
-      PUT_LINE(
+     
+   -- Process command-line arguments
+   if Ada.Command_Line.Argument_Count = 1 then
+                 for YY in 1..TRIM (Ada.Command_Line.Argument(1))'length loop
+                  case Upper_Case(TRIM(Ada.Command_Line.Argument(1))(YY)) is
+            
+                     when '-' => exit when YY > 3;
+                        
+                     when 'G' => D_K := GENERAL;
+                                Put_Line("Working on GENERAL dictionary");
+                                  
+                     when 'S' => D_K := SPECIAL;
+                                Put_Line("Working on GENERAL dictionary");
+                     
+                    when others => 
+                     New_Line;
+                     Put_Line("====== UNKNOWN COMMAND-LINE ARGUMENT(S) - RUNNING INTERACTIVELY  ======");
+                     New_Line;
+                     exit; 
+                  end case;  
+                  end loop;
+             end if;   --  End command-line argument processing    
+
+   if D_K = XXX then
+      
+    PUT_LINE(
               "Takes a DICTLINE.D_K and produces a EWDSLIST.D_K ");
       PUT("What dictionary to list, GENERAL or SPECIAL  =>");
-      GET_LINE(LINE, LAST);
+     
+     GET_LINE(LINE, LAST);
       if LAST > 0  then
          if TRIM(LINE(1..LAST))(1) = 'G'  or else
          TRIM(LINE(1..LAST))(1) = 'g'     then
@@ -728,7 +784,8 @@ WW := 70;
             raise TEXT_IO.DATA_ERROR;
          end if; 
       end if;
-   
+   end if; 
+      
    --PUT_LINE("OPENING   " &                                                 
    --     ADD_FILE_NAME_EXTENSION(DICT_LINE_NAME, DICTIONARY_KIND'IMAGE(D_K))); 
    

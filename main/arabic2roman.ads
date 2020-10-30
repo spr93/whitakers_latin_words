@@ -7,9 +7,10 @@ with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 -- and Hunt, L. N.H., et al., "The Historical Roots of Elementary Mathematics" (1988)
 -- and _especially_ the clear discussions in Menninger, K., "Number Words and Number Symbols: A Cultural History of Numbers" (Eng. tr. 1992).
 
+
 package Arabic2Roman is
 
-   Roman_Nums_CLASSICAL : constant array (1..11) of Unbounded_String  := (
+  Roman_Nums_CLASSICAL : constant array (1..11) of Unbounded_String  := (
                           1         => (To_Unbounded_String("I")),
                           2         => (To_Unbounded_String("V")),
                           3         => (To_Unbounded_String("X")),
@@ -23,7 +24,6 @@ package Arabic2Roman is
                          11         => (To_Unbounded_String("(((|)))"))); -- 100_000
    -- Stop at 100_000 for classical period.  See also Pliny.
 
-
    Arabic_Num : Natural range 0..999_999_999;
 
    procedure Arabic2Roman (OUTPUT : in Ada.Text_IO.File_Type ; INPUT_WORD : in String);
@@ -35,6 +35,5 @@ package Arabic2Roman is
    pragma Inline_Always(Generate_Additive);
    pragma Inline_Always(Generate_Subtractive);
    pragma Inline_Always(Integer_Test);
-
 
 end  Arabic2Roman;
