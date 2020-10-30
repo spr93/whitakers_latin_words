@@ -15,10 +15,11 @@ with PUT_STAT;
 with ENGLISH_SUPPORT_PACKAGE; use ENGLISH_SUPPORT_PACKAGE;
 with SEARCH_ENGLISH;
 with Arabic2Roman;
-with Words_Help;              use words_help;
+with Words_Help;              use Words_Help;
 with Ada.Exceptions;
 
 pragma Elaborate (WORD_PARAMETERS);
+
 
 procedure PARSE (COMMAND_LINE : String := "") is
 
@@ -1209,19 +1210,21 @@ begin --  PARSE
             Preface.Put(Format_Inverse);
          end if;
          
-         Preface.PUT_LINE("The following restrictions are enabled:");
+         Preface.PUT("Restrictions enabled:");
         
          if WORDS_MODE(DO_ANSI_FORMATTING) then
             Preface.PUT(Format_Reset);
             Preface.PUT(Format_Bold);
          end if;
-        
+         
+         Preface.NEW_LINE;
+         
          if CONFIGURATION = ONLY_MEANINGS then
-            Preface.PUT_LINE("- MEANINGS ONLY:   Inflections will not display in Latin-English mode"); end if;
+            Preface.PUT_LINE("- MEANINGS ONLY:   Inflections will not display in Latin-to-English mode"); end if;
          if CL_ARGUMENTS(ENGLISH_ONLY)then
-            Preface.Put_Line("- ENGLISH ONLY :   The program will not enter Latin-English mode"); end if;
+            Preface.Put_Line("- ENGLISH ONLY :   The program will not enter Latin-to-English mode"); end if;
          if CL_ARGUMENTS(LATIN_ONLY) then
-            Preface.Put_Line("- LATIN ONLY   :   The program will not enter English-Latin mode"); end if; 
+            Preface.Put_Line("- LATIN ONLY   :   The program will not enter English-to-Latin mode"); end if; 
          if CL_ARGUMENTS(READ_ONLY) then
             Preface.Put_Line("- READ ONLY    :   Options cannot be changed; no output to file"); end if;
          if CL_ARGUMENTS(NO_FILES) then
@@ -1237,29 +1240,57 @@ begin --  PARSE
       end if;
       -- End restrictions report
       
-    if CL_ARGUMENTS(ENGLISH_ONLY) 
+    --English-to-Latin mode instructions
+    If CL_ARGUMENTS(ENGLISH_ONLY) 
       and then ENGLISH_DICTIONARY_AVAILABLE(GENERAL)
       then LANGUAGE := ENGLISH_TO_LATIN;
+         
     elsif CL_ARGUMENTS(English_ONLY)  then
          Preface.Put_Line("English dictionary not available.  Cannot run in English-to-Latin only mode.");
-         return; 
-    else 
-     PREFACE.PUT
-       ("Input a word or line of Latin and press ENTER");
-      PREFACE.NEW_LINE;
+         raise GIVE_UP; 
+         
+    elsif ENGLISH_DICTIONARY_AVAILABLE (GENERAL) 
+        and then not CL_ARGUMENTS(ENGLISH_ONLY) 
+        and then not CL_Arguments(LATIN_ONLY)
+      then
+          PREFACE.PUT_LINE ("English-to-Latin mode available");
+          PREFACE.PUT_LINE
+            ("   " & CHANGE_LANGUAGE_CHARACTER &
+             "E changes to English-to-Latin mode; " &
+          CHANGE_LANGUAGE_CHARACTER & "L changes back");
+          PREFACE.NEW_LINE;
     end if;
       
-      
+    case LANGUAGE is
+                                   
+       when LATIN_TO_ENGLISH =>
+            PREFACE.PUT 
+              ("Input a word or line of Latin and press ENTER");
+            
+       when ENGLISH_TO_LATIN =>     
+            PREFACE.PUT
+              ("Input a word or line of English and press ENTER");
+            PREFACE.NEW_LINE;
+            PREFACE.PUT
+              ("   or input a word <space> and part of speech restriction [ADJ, ADV, N, V]]");
+           
+      end case;    
+
+      PREFACE.NEW_LINE;
+
     if CL_Arguments(NO_FILES) = False then 
        PREFACE.PUT_LINE
-         ("    Or input " & START_FILE_CHARACTER &
-          " and the name of a file containing words or lines");
+         ("   or input " & START_FILE_CHARACTER &
+            " and the name of a file containing words or lines");
+    end if; 
+    
+    if CL_Arguments(READ_ONLY) = False Then
        PREFACE.PUT_LINE
-         ("    Or input " & CHANGE_PARAMETERS_CHARACTER &
-            " to change parameters and mode of the program");
-         PREFACE.NEW_LINE;
+         ("   or input " & CHANGE_PARAMETERS_CHARACTER &
+            " to change program options");
     end if; 
       
+     PREFACE.NEW_LINE;
       
      PREFACE.PUT_LINE ("Input " & HELP_CHARACTER & " to get help");
      
@@ -1268,18 +1299,6 @@ begin --  PARSE
          ("Two empty lines (just a RETURN/ENTER) from the keyboard exits the program");
          PREFACE.NEW_LINE;
       end if; 
-      
-      if ENGLISH_DICTIONARY_AVAILABLE (GENERAL) 
-        and then not CL_ARGUMENTS(ENGLISH_ONLY) 
-        and then not CL_Arguments(LATIN_ONLY)
-      then
-          PREFACE.PUT_LINE ("English-to-Latin available");
-          PREFACE.PUT_LINE
-            (CHANGE_LANGUAGE_CHARACTER &
-             "E changes to English-to-Latin mode, " &
-          CHANGE_LANGUAGE_CHARACTER & "L changes back");
-          PREFACE.NEW_LINE;
-       end if;
 
       GET_INPUT_LINES :
       loop
@@ -1298,18 +1317,14 @@ begin --  PARSE
                J := 0; K := 0; L := 0; 
                LINE := BLANK_LINE;
            
-            
-                        if (Name (Current_Input) = Name (Standard_Input)) then
+               if (Name (Current_Input) = Name (Standard_Input)) then
                SCROLL_LINE_NUMBER :=
-                 Integer (Text_IO.Line (Text_IO.Standard_Output));
-               
-               
+               Integer (Text_IO.Line (Text_IO.Standard_Output));
+                   
                PREFACE.NEW_LINE;
                PREFACE.PUT ("=>");
          end if;
 
-          
-            
             if METHOD = INTERACTIVE
               and then WORDS_MODE(DO_UNICODE_INPUT) then
                Get_Unicode(LINE, L);

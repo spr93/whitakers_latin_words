@@ -1,5 +1,8 @@
 with TEXT_IO;
+
+
 package WORD_PARAMETERS is
+   
 --  This package defines a number of parameters that areused in the program
 --  The default values are set in the body, so that they may be changed easily
 

@@ -94,7 +94,7 @@
                exit when I > 5;  -- max 5 arguments (-E and -L conflict) 
             end loop; -- while =< argument_counter'length
 
-            -- Still in the "elsif" statement => we're using the - / -- style arguments => continue interactive mode startup
+            -- Still in the "elsif" statement => we're using the - / -- style arguments => INTERACTIVE MODE STARTUP:
             METHOD := INTERACTIVE;      
             SUPPRESS_PREFACE := FALSE;
             SET_OUTPUT(STANDARD_OUTPUT);
@@ -108,6 +108,7 @@
                end loop;
             else
                Parse;
+            return; 
             end if;
       
        exception
@@ -115,7 +116,7 @@
          when Args_Exception =>     -- Parse may raise NO_EXCEPTION_EXCEPTION; handler is outside the block
             Put_Line("Words operates in two modes when using command-line arguments");
             New_Line;
-            Put_Line("[1] NON-INTERACTIVE WORDS:  Maintains compatibility with classic Words.");
+            Put_Line("[1] NON-INTERACTIVE WORDS:  Fully compatible with classic Words.");
             Put_Line("Usage:");
             Put_Line("words [string of Latin words]");
             Put_Line("   => send results for the Latin words to standard output and exit");
@@ -132,6 +133,7 @@
             Put_Line("-x    NO EXIT:       User cannot exit with two returns or control-C");
             Put_Line("                       NOT A SECURE MODE - only blocks SIGINT");
             Put_Line("                       No effect on suspend (SIGSTP) or kill (SIGTERM)"); 
+            Put_Line("                       File system may be readable with " & CHANGE_LANGUAGE_CHARACTER); 
             Put_Line("-l    LATIN ONLY:    User cannot enter English->Latin mode");
             Put_Line("-e    ENGLISH ONLY:  User cannot enter Latin->English mode");
             Put_Line("-m    MEANINGS ONLY: Show only the meanings line (in Latin->English mode)");
@@ -144,16 +146,14 @@
       end; -- block
 
 else -- NOT entering interactive mode; back to classic Words startup
-
---   CLASSIC WORDS INIT
+      
+     --   NON-INTERACTIVE MODE STARTUP SUBSEQUENCE:
      SUPPRESS_PREFACE := TRUE;
      INITIALIZE_WORD_PARAMETERS;
      INITIALIZE_DEVELOPER_PARAMETERS;
      INITIALIZE_WORD_PACKAGE;
 end if; 
- --  Note:  Other than exceptions, prorgram won't get beyond this line 
- --  if either simple interactive mode or new-style command arguments used
-  
+
  -- check for change langauge command line option
  if Ada.Command_Line.Argument_Count > 1 
      and then 

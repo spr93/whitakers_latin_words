@@ -2,6 +2,8 @@ with LATIN_FILE_NAMES; use LATIN_FILE_NAMES;
 with STRINGS_PACKAGE; use STRINGS_PACKAGE;
 with CONFIG;
 with PREFACE;
+
+
 package body WORD_SUPPORT_PACKAGE is
 
     function LEN(S : STRING) return INTEGER is
@@ -172,7 +174,6 @@ end if;
 
   end LOAD_BDL_FROM_DISK;
 
-
   procedure LOAD_INDICES_FROM_INDX_FILE(INDXFILE_NAME : STRING;
                                         D_K : DICTIONARY_KIND) is
     use TEXT_IO;
@@ -198,7 +199,7 @@ end if;
  --"INDXFILE." & EXT(D_K)); --  $$$$$$$$$$$$
 
     PREFACE.PUT(DICTIONARY_KIND'IMAGE(D_K));
-    PREFACE.PUT(" Dictionary loading");
+    PREFACE.PUT(" dictionary loading");
 
     if D_K = GENERAL  then
       GET_LINE(INDX_FILE(D_K), S, LAST);
@@ -230,7 +231,7 @@ end if;
       end if;
     end loop;
     CLOSE(INDX_FILE(D_K));
-    PREFACE.SET_COL(35); PREFACE.PUT("--  ");
+    PREFACE.SET_COL(40); PREFACE.PUT("--  ");
         if not CONFIG.SUPPRESS_PREFACE  then
           PUT(STEM_IO.COUNT((NUMBER_OF_NON_BLANK_STEMS)), 6);
         end if;   --  Kludge for when TEXT_IO.COUNT too small

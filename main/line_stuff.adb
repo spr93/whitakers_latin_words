@@ -2,10 +2,10 @@ with WORD_SUPPORT_PACKAGE; use WORD_SUPPORT_PACKAGE;   --  for STEM_IO
 with STRINGS_PACKAGE; use STRINGS_PACKAGE;
 with LATIN_FILE_NAMES; use LATIN_FILE_NAMES;
 with PREFACE;
-with INFLECTIONS_PACKAGE; use INFLECTIONS_PACKAGE;
-with DICTIONARY_PACKAGE; use DICTIONARY_PACKAGE;
-with ADDONS_PACKAGE; use ADDONS_PACKAGE;
-with UNIQUES_PACKAGE; use UNIQUES_PACKAGE;
+with INFLECTIONS_PACKAGE;
+with DICTIONARY_PACKAGE;
+with ADDONS_PACKAGE;
+with UNIQUES_PACKAGE;
 pragma ELABORATE(INFLECTIONS_PACKAGE);
 pragma ELABORATE(DICTIONARY_PACKAGE);
 pragma ELABORATE(ADDONS_PACKAGE);
@@ -53,7 +53,6 @@ package body LINE_STUFF is
 
     end GET_STEM;
 
-
   begin
 
     OPEN(DICTIONARY_FILE, IN_FILE, DICTIONARY_FILE_NAME);
@@ -92,7 +91,6 @@ package body LINE_STUFF is
         GET_STEM(ST_LINE(LL..LAST), STS(I), LL);
       end loop;
       
-      
 --for I in 1..NUMBER_OF_STEMS(PT.POFS)  loop  
 --  TEXT_IO.PUT(STS(I));      
 --end loop;
@@ -102,8 +100,6 @@ package body LINE_STUFF is
       GET_NON_COMMENT_LINE(DICTIONARY_FILE, LINE, L);         --  MEANING
       MEAN := HEAD(TRIM(LINE(1..L)), MAX_MEANING_SIZE);         
 --TEXT_IO.PUT_LINE("READ MEANING");
-      
-      
       
     --  Now take care of other first letters in a gross way
     FC1 := LOWER_CASE(STS(1)(1));
@@ -122,7 +118,7 @@ package body LINE_STUFF is
       if (STS(2)(1) /= STS(1)(1) and then
          STS(2)(1) /= ' '  and then
          STS(2)(1..3) /= ZZZ_STEM ) then
-        DICT(FC1) :=
+         DICT(FC1) :=
              new DICTIONARY_ITEM'(( (STS(1), ZZZ_STEM, BLK_STEM, BLK_STEM),
                                   --PT, KIND, TRAN, MEAN), DICT(FC1));
                                     PT, TRAN, MEAN), DICT(FC1));
@@ -140,11 +136,11 @@ package body LINE_STUFF is
       if (STS(2)(1) /= STS(1)(1) and then
          STS(2)(1) /= ' '  and then
          STS(2)(1..3) /= ZZZ_STEM ) then
-       DICT(FC1) :=
+         DICT(FC1) :=
              new DICTIONARY_ITEM'(( (STS(1), ZZZ_STEM, BLK_STEM, BLK_STEM),
                                     --PT, KIND, TRAN, MEAN), DICT(FC1));
                                     PT, TRAN, MEAN), DICT(FC1));
-        DICT(FC2) :=
+         DICT(FC2) :=
              new DICTIONARY_ITEM'( ( (ZZZ_STEM, STS(2), BLK_STEM, BLK_STEM),
                                      --PT, KIND, TRAN, MEAN), DICT(FC2) );
                                      PT, TRAN, MEAN), DICT(FC2) );
@@ -362,9 +358,9 @@ package body LINE_STUFF is
       NUMBER_OF_DICTIONARY_ENTRIES := NUMBER_OF_DICTIONARY_ENTRIES + 1;
     end loop;
     CLOSE(DICTIONARY_FILE);
-    PREFACE.SET_COL(33); PREFACE.PUT("--  ");
+    PREFACE.SET_COL(40); PREFACE.PUT("--  ");
     PREFACE.PUT(NUMBER_OF_DICTIONARY_ENTRIES, 6);
-    PREFACE.PUT(" entries"); PREFACE.SET_COL(55);
+    PREFACE.PUT(" entries"); PREFACE.SET_COL(60);
     PREFACE.PUT_LINE("--  loaded correctly");
   exception
       when others   =>
@@ -444,14 +440,11 @@ package body LINE_STUFF is
 --PUT_LINE("L_D_F  44444  M = " & INTEGER'IMAGE(INTEGER(M)));
   end LOAD_STEM_FILE;
 
-
-
   package body TACKON_LINE_IO is
     use PART_OF_SPEECH_TYPE_IO;
     use TACKON_ENTRY_IO;
     use TEXT_IO;
     SPACER : CHARACTER := ' ';
-
 
     procedure GET(F : in FILE_TYPE; P : out TACKON_LINE) is
     begin
@@ -463,7 +456,6 @@ package body LINE_STUFF is
       GET(F, SPACER);
       GET(F, P.MEAN);
    end GET;
-
 
     procedure GET(P : out TACKON_LINE) is
     begin
@@ -516,7 +508,6 @@ package body LINE_STUFF is
       LAST := M;
     end GET;
 
-
     procedure PUT(S : out STRING; P : in TACKON_LINE) is
       L : INTEGER := S'FIRST - 1;
       M : INTEGER := 0;
@@ -546,7 +537,6 @@ package body LINE_STUFF is
     use TEXT_IO;
     SPACER : CHARACTER := ' ';
 
-
     procedure GET(F : in FILE_TYPE; P : out PREFIX_LINE) is
     begin
       GET(F, P.POFS);
@@ -559,7 +549,6 @@ package body LINE_STUFF is
       GET(F, SPACER);
       GET(F, P.MEAN);
      end GET;
-
 
     procedure GET(P : out PREFIX_LINE) is
     begin
@@ -623,7 +612,6 @@ package body LINE_STUFF is
       LAST := M;
     end GET;
 
-
     procedure PUT(S : out STRING; P : in PREFIX_LINE) is
       L : INTEGER := S'FIRST - 1;
       M : INTEGER := 0;
@@ -669,7 +657,6 @@ package body LINE_STUFF is
       GET(F, SPACER);
       GET(F, P.MEAN);
      end GET;
-
 
     procedure GET(P : out SUFFIX_LINE) is
     begin
@@ -782,7 +769,6 @@ package body LINE_STUFF is
       P := UE;
     end GET;
 
-
     procedure GET(P : out UNIQUE_ENTRY) is
       UE : UNIQUE_ENTRY;
     begin
@@ -858,14 +844,9 @@ package body LINE_STUFF is
 
   end UNIQUE_ENTRY_IO;
 
-
-
   procedure LOAD_UNIQUES(UNQ : in out LATIN_UNIQUES; FILE_NAME : in STRING) is
-    use INFLECTIONS_PACKAGE.INTEGER_IO;
     use QUALITY_RECORD_IO;
-    use PART_ENTRY_IO;
     use KIND_ENTRY_IO;
-    use TRANSLATION_RECORD_IO;
     use DICT_IO;
     
     UNIQUES_FILE : TEXT_IO.FILE_TYPE;
@@ -913,7 +894,8 @@ package body LINE_STUFF is
 
       LINE := BLANKS;
       GET_LINE(UNIQUES_FILE, LINE, L);         --  MEAN
-      MEAN := HEAD(TRIM(LINE(1..L)), MAX_MEANING_SIZE);
+         MEAN := HEAD(TRIM(LINE(1..L)), MAX_MEANING_SIZE);
+         
 --@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
       declare
         UNIQUE_DE : DICTIONARY_ENTRY;
@@ -937,8 +919,6 @@ package body LINE_STUFF is
           when others  =>
             PART := NULL_PART_ENTRY;
         end case;
-
-
 
         UNIQUE_DE.STEMS := (STEM, 
                             NULL_STEM_TYPE, NULL_STEM_TYPE, NULL_STEM_TYPE);
@@ -972,10 +952,10 @@ package body LINE_STUFF is
     
     end loop;
     CLOSE(UNIQUES_FILE);
-    PREFACE.SET_COL(33);
+    PREFACE.SET_COL(40);
     PREFACE.PUT("--  "); PREFACE.PUT(NUMBER_OF_UNIQUES_ENTRIES, 6);
     PREFACE.PUT(" entries");
-    PREFACE.SET_COL(55); PREFACE.PUT_LINE("--  loaded correctly");
+    PREFACE.SET_COL(60); PREFACE.PUT_LINE("--  loaded correctly");
   exception
     when TEXT_IO.NAME_ERROR  =>
       PREFACE.PUT_LINE("There is no UNIQUES file");
@@ -989,21 +969,9 @@ package body LINE_STUFF is
     PREFACE.PUT("--  "); PREFACE.PUT(NUMBER_OF_UNIQUES_ENTRIES, 6);
     PREFACE.PUT(" entries");
     PREFACE.SET_COL(55); PREFACE.PUT_LINE("--  Loaded before error");
-      --raise;
     end LOAD_UNIQUES;
     
-    
-    
-    
-
 begin
-
---  PARSE_LINE_IO.DEFAULT_WIDTH :=
---                                   MAX_STEM_SIZE + 1 +
---                                   INFLECTION_RECORD_IO.DEFAULT_WIDTH + 1 +
---                                   DICTIONARY_KIND_IO.DEFAULT_WIDTH + 1 +
---                                   MAX_MEANING_SIZE;
-
 
   PREFIX_LINE_IO.DEFAULT_WIDTH := PART_OF_SPEECH_TYPE_IO.DEFAULT_WIDTH + 1 +
                                   MAX_STEM_SIZE + 1 +

@@ -105,7 +105,7 @@ package body ADDONS_PACKAGE is
   begin
     OPEN(ADDONS_FILE, IN_FILE, FILE_NAME);
     PREFACE.PUT("ADDONS");
-    PREFACE.PUT(" loading ");
+    PREFACE.PUT("  loading ");
 
     while not END_OF_FILE(ADDONS_FILE)  loop                                 
 
@@ -162,7 +162,6 @@ package body ADDONS_PACKAGE is
           GET(S(1..LAST), PM.ENTR, L);
           GET_LINE(ADDONS_FILE, S, LAST);
           MEAN := HEAD(S(1..LAST), MAX_MEANING_SIZE);
-
 
           if  PM.ENTR.ROOT = PACK     then
             TIC := TIC + 1;
@@ -232,17 +231,13 @@ package body ADDONS_PACKAGE is
     end loop;
 
     PREFACE.PUT(TAC, 1); PREFACE.PUT("+");
-    PREFACE.PUT(PAC, 2); PREFACE.PUT(" TACKONS ");
+    PREFACE.PUT(PAC, 2); PREFACE.PUT(" tackons ");
     PREFACE.PUT(TIC, 1); PREFACE.PUT("+");
-    PREFACE.PUT(PRE, 3); PREFACE.PUT(" PREFIXES ");
-    PREFACE.PUT(SUF, 3); PREFACE.PUT(" SUFFIXES ");
+    PREFACE.PUT(PRE, 3); PREFACE.PUT(" prefixes ");
+    PREFACE.PUT(SUF, 3); PREFACE.PUT(" suffixes ");
 
     PREFACE.SET_COL(60); PREFACE.PUT_LINE("--  loaded correctly");
     CLOSE(ADDONS_FILE);
-
---for I in MEANS'RANGE  loop
---  TEXT_IO.PUT(INTEGER'IMAGE(INTEGER(I))); TEXT_IO.PUT_LINE("--" & MEANS(I));
---end loop;  
   
     exception
     when TEXT_IO.NAME_ERROR  =>
@@ -343,21 +338,6 @@ package body ADDONS_PACKAGE is
   end ADD_SUFFIX;
 
 
---  package body TARGET_ENTRY_IO is separate;
-
---  package body TACKON_ENTRY_IO is separate;
-
---  package body TACKON_LINE_IO is separate;
-
---  package body PREFIX_ENTRY_IO is separate;
-
---  package body PREFIX_LINE_IO is separate;
-
---  package body SUFFIX_ENTRY_IO is separate;
-
---  package body SUFFIX_LINE_IO is separate;
-
-
   package body TARGET_ENTRY_IO is
   use PART_OF_SPEECH_TYPE_IO;
   use NOUN_ENTRY_IO;
@@ -367,12 +347,6 @@ package body ADDONS_PACKAGE is
   use NUMERAL_ENTRY_IO;
   use ADVERB_ENTRY_IO;
   use VERB_ENTRY_IO;
---  use KIND_ENTRY_IO;
---
---  use NOUN_KIND_TYPE_IO;
---  use PRONOUN_KIND_TYPE_IO;
---  use INFLECTIONS_PACKAGE.INTEGER_IO;
---  use VERB_KIND_TYPE_IO;
   
   SPACER : CHARACTER := ' ';
 
@@ -384,16 +358,7 @@ package body ADDONS_PACKAGE is
   ADVERB : ADVERB_ENTRY;
   VERB : VERB_ENTRY;
 
---  NOUN_KIND  : NOUN_KIND_TYPE;
---  PRONOUN_KIND : PRONOUN_KIND_TYPE;
---  PROPACK_KIND : PRONOUN_KIND_TYPE;
---  NUMERAL_VALUE : NUMERAL_VALUE_TYPE;
---  VERB_KIND : VERB_KIND_TYPE;
-  
-  --KIND : KIND_ENTRY;
-
   P : TARGET_ENTRY;
-
 
   procedure GET(F : in FILE_TYPE; P : out TARGET_ENTRY) is
     PS : TARGET_POFS_TYPE := X;
@@ -623,6 +588,7 @@ package body ADDONS_PACKAGE is
 
 end TARGET_ENTRY_IO;
 
+   
 package body TACKON_ENTRY_IO is
   SPACER : CHARACTER := ' ';
 
@@ -660,7 +626,6 @@ package body TACKON_ENTRY_IO is
     PUT(S(L+1..M), I.BASE);
     S(S'FIRST..S'LAST) := (others => ' ');
   end PUT;
-
 
 end TACKON_ENTRY_IO;
 

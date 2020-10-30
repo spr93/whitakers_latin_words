@@ -21,11 +21,9 @@ package body WORD_PARAMETERS is
   package REPLY_TYPE_IO is new TEXT_IO.ENUMERATION_IO(REPLY_TYPE);
   REPLY : array (BOOLEAN) of REPLY_TYPE := (N, Y);
   MODE_OF_REPLY : array (REPLY_TYPE) of BOOLEAN := (FALSE, TRUE);
-
   BLANK_INPUT : exception;
 
   BAD_MODE_FILE : exception;
-
 
 TRIM_OUTPUT_HELP : constant HELP_TYPE :=  (
    "This option instructs the program to remove from the output list of   ",
@@ -313,7 +311,6 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
     NEW_LINE;
   end INQUIRE;
 
-
   procedure CHANGE_PARAMETERS is
     L1 : STRING(1..100) := (others => ' ');
     LL : NATURAL;
@@ -356,10 +353,8 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
 
     INQUIRE(TRIM_OUTPUT, TRIM_OUTPUT_HELP);
 
-
     INQUIRE(HAVE_OUTPUT_FILE, HAVE_OUTPUT_FILE_HELP);
-
-
+         
     if IS_OPEN(OUTPUT)  and then not WORDS_MODE(HAVE_OUTPUT_FILE)  then
       CLOSE(OUTPUT);
       WORDS_MODE(WRITE_OUTPUT_TO_FILE) := FALSE;
@@ -373,13 +368,12 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
       end;
       end if;
 
-    if WORDS_MODE(HAVE_OUTPUT_FILE)  then
+    if WORDS_MODE(HAVE_OUTPUT_FILE) then
       INQUIRE(WRITE_OUTPUT_TO_FILE, WRITE_OUTPUT_TO_FILE_HELP);
     end if;
-
-    INQUIRE(DO_UNKNOWNS_ONLY, DO_UNKNOWNS_ONLY_HELP);
-
+    
     INQUIRE(WRITE_UNKNOWNS_TO_FILE, WRITE_UNKNOWNS_TO_FILE_HELP);
+         
     --  If there is an open file then OK
     --  If not open and you now want to start writing to UNKNOWNS, the CREATE
     if not IS_OPEN(UNKNOWNS) and then WORDS_MODE(WRITE_UNKNOWNS_TO_FILE)  then
@@ -390,7 +384,9 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
           PUT_LINE("Cannot CREATE WORD.UNK - Check if it is in use elsewhere");
       end;
       end if;
-
+    
+    INQUIRE(DO_UNKNOWNS_ONLY, DO_UNKNOWNS_ONLY_HELP);
+      
     INQUIRE(IGNORE_UNKNOWN_NAMES, IGNORE_UNKNOWN_NAMES_HELP);
 
     INQUIRE(IGNORE_UNKNOWN_CAPS, IGNORE_UNKNOWN_CAPS_HELP);
@@ -401,17 +397,19 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
 
     INQUIRE(DO_TRICKS, DO_TRICKS_HELP);
 
+    if Cl_Arguments(Meanings_Only) = False then   -- enclosing CL_Arguments(meanings_only) condition
     INQUIRE(DO_DICTIONARY_FORMS, DO_DICTIONARY_FORMS_HELP);
-
+      
     INQUIRE(SHOW_AGE, SHOW_AGE_HELP);
 
     INQUIRE(SHOW_FREQUENCY, SHOW_FREQUENCY_HELP);
-
+    
     INQUIRE(DO_EXAMPLES, DO_EXAMPLES_HELP);
 
     INQUIRE(DO_ONLY_MEANINGS, DO_ONLY_MEANINGS_HELP);
 
     INQUIRE(DO_STEMS_FOR_UNKNOWN, DO_STEMS_FOR_UNKNOWN_HELP);
+    end if;  -- enclosing CL_Arguments(meanings_only) condition
 
     INQUIRE(DO_ARABIC_NUMERALS, DO_ARABIC_NUMERALS_HELP);
       
@@ -451,6 +449,7 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
         PUT_LINE("MODE_ARRAY saved in file " & MODE_FULL_NAME);
       end if;
     end if;
+      
     NEW_LINE;
 
   exception
@@ -462,7 +461,7 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
   end CHANGE_PARAMETERS;
 
   procedure INITIALIZE_WORD_PARAMETERS is
-begin
+  begin
 --  WORDS_MODE := DEFAULT_MODE_ARRAY;
 --TEXT_IO.PUT_LINE("Initializing WORD_PARAMETERS");
 
