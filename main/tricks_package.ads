@@ -1,6 +1,6 @@
 with DICTIONARY_PACKAGE; use DICTIONARY_PACKAGE;
 package TRICKS_PACKAGE is
-    pragma SPARK_Mode (On);
+
   procedure SYNCOPE(W : in STRING;
                     PA : in out PARSE_ARRAY; PA_LAST : in out INTEGER);           
 

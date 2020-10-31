@@ -8,7 +8,7 @@
   with WORD_PACKAGE; use WORD_PACKAGE;
   with ENGLISH_SUPPORT_PACKAGE; use ENGLISH_SUPPORT_PACKAGE;
   with DICTIONARY_FORM;
-  with List_Package; use LIST_PACKAGE; -- for strip_bars and ANSI formatting
+  with List_Package; use LIST_PACKAGE; -- for trim_bars and ANSI formatting
     
  procedure SEARCH_ENGLISH(INPUT_ENGLISH_WORD : in STRING; POFS : in PART_OF_SPEECH_TYPE := X) is
      use EWDS_DIRECT_IO;

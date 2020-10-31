@@ -13,7 +13,7 @@ with LIST_PACKAGE;
             return A; end if; 
          return B;
       end MAX;
-
+   
       function MIN(A, B : in INTEGER) return INTEGER is
       begin
          if A <= B  then 

@@ -5,21 +5,22 @@ with Ada.Strings.Fixed;
 
 package STRINGS_PACKAGE is
 
+   
      NULL_STRING                :   constant STRING(2..1)     
                                 := (others => ' ');
    
      function MAX(A, B          : in INTEGER)    return INTEGER;
      function MIN(A, B          : in INTEGER)    return INTEGER;
 
-     function Upper_Case(Item   : in Character)  return Character renames Ada.Characters.Handling.To_Upper;
-     function Upper_Case(Item   : in String)     return String    renames Ada.Characters.Handling.To_Upper;
+     function Upper_Case(Item   : in Character)  return Character    renames Ada.Characters.Handling.To_Upper;
+     function Upper_Case(Item   : in String)     return String       renames Ada.Characters.Handling.To_Upper;
   
-     function Lower_Case(Item   : in Character)  return Character renames Ada.Characters.Handling.To_Lower;
-     function Lower_Case(Item   : in String)     return String    renames Ada.Characters.Handling.To_Lower;
+     function Lower_Case(Item   : in Character)  return Character    renames Ada.Characters.Handling.To_Lower;
+     function Lower_Case(Item   : in String)     return String       renames Ada.Characters.Handling.To_Lower;
    
      function TRIM    (SOURCE   : in STRING;
                        SIDE     : in TRIM_END  := BOTH)          
-                                                  return STRING   renames Ada.Strings.Fixed.Trim;
+                                                  return STRING      renames Ada.Strings.Fixed.Trim;
 
      function HEAD(SOURCE       : in STRING; 
                     COUNT       : in NATURAL; 

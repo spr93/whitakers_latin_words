@@ -295,7 +295,7 @@ begin    --  PUT_EXAMPLE_LINE
          when ADJ =>
             case IR.QUAL.ADJ.CO is
                when COMP =>
-                  if DE.PART.ADJ.DECL.WHICH /= 5 Then
+                  if IR.QUAL.ADJ.DECL.WHICH /= 5 Then
                   Text_IO.New_Line (OUTPUT);
                   Text_IO.Set_Col (OUTPUT, 6);
                   Text_IO.Put (OUTPUT, "~er; more/too _");

@@ -1,6 +1,6 @@
 #!/bin/sh
 ./sorter D
-./wakedict G
+./makedict G
 ./sorter S
 ./makestem G
 ./makeinfl

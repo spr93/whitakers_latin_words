@@ -3,21 +3,20 @@ with CONFIG;               use CONFIG;
 with STRINGS_PACKAGE;      use STRINGS_PACKAGE;
 with LATIN_FILE_NAMES;     use LATIN_FILE_NAMES;
 with WORD_PARAMETERS;      use WORD_PARAMETERS;
-with INFLECTIONS_PACKAGE;  use INFLECTIONS_PACKAGE;
-with DICTIONARY_PACKAGE;   use DICTIONARY_PACKAGE;
 with ADDONS_PACKAGE;       use ADDONS_PACKAGE;
 with UNIQUES_PACKAGE;      use UNIQUES_PACKAGE;
 with WORD_SUPPORT_PACKAGE; use WORD_SUPPORT_PACKAGE;
 with DEVELOPER_PARAMETERS; use DEVELOPER_PARAMETERS;
 with WORD_PACKAGE;         use WORD_PACKAGE;
+with INFLECTIONS_PACKAGE;
+with DICTIONARY_PACKAGE;
 with DICTIONARY_FORM;
 with PUT_EXAMPLE_LINE;
 with LIST_SWEEP;
 with PUT_STAT;
 
+with Ada.Exceptions;
 package body LIST_PACKAGE is
-
-   package BOOLEAN_IO is new Text_IO.Enumeration_IO (Boolean);
 
    subtype XONS is PART_OF_SPEECH_TYPE range TACKON .. SUFFIX;
 
@@ -1364,6 +1363,10 @@ package body LIST_PACKAGE is
               and then DMA (J).DE.TRAN.SOURCE = DMA (J - 1).DE.TRAN.SOURCE
             then
                Last_Form_Same := True;
+
+            elsif DMA (J).DE.MEAN(1) = '|'
+               then
+                  Last_Form_Same := TRUE;
             end if;
 
          end if;
@@ -1478,13 +1481,15 @@ package body LIST_PACKAGE is
       Skip_Next := false;
 
    exception
-      when others =>
+      when Gotcha: others =>
          Text_IO.Put_Line
            ("Unexpected exception in LIST_STEMS processing " & RAW_WORD);
          Text_IO.Put_Line
            ("EXCEPTION LS at " & HEAD (Integer'IMAGE (LINE_NUMBER), 8) &
             HEAD (Integer'IMAGE (WORD_NUMBER), 4) & "   " & HEAD (W, 20) &
               "   " & PA (I).STEM);
+               Text_IO.Put_Line(Ada.Exceptions.Exception_Information(Gotcha));
+         Text_IO.Put_Line(Ada.Exceptions.Exception_Message(Gotcha));
 
    end LIST_STEMS;
 
@@ -1634,7 +1639,7 @@ package body LIST_PACKAGE is
          end if;
          UNKNOWN_COUNT := DS.MNPC;
 
-         Close (STEM_FILE (D_K));  --??????
+    --     Close (STEM_FILE (D_K));  --??????
       end if;
       -- TEXT_IO.PUT_LINE("Leaving LIST_NEIGHBORHOOD    UNKNOWN_SEARCH");
    end UNKNOWN_SEARCH;
