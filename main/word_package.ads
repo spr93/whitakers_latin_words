@@ -9,8 +9,6 @@ with Ada.Environment_Variables;
 
 package WORD_PACKAGE is
     
-  LINE_NUMBER, WORD_NUMBER : INTEGER := 0;
-
   type STEM_ARRAY_TYPE is array (INTEGER range <>) of STEM_TYPE;
   subtype STEM_ARRAY is STEM_ARRAY_TYPE(0..MAX_STEM_SIZE);
 

@@ -11,7 +11,6 @@ with WORD_PACKAGE;            use WORD_PACKAGE;
 with LIST_PACKAGE;            use LIST_PACKAGE;
 with TRICKS_PACKAGE;          use TRICKS_PACKAGE;
 with CONFIG;                  use CONFIG;
-with PUT_STAT;
 with ENGLISH_SUPPORT_PACKAGE; use ENGLISH_SUPPORT_PACKAGE;
 with SEARCH_ENGLISH;
 with Arabic2Roman;
@@ -48,7 +47,7 @@ procedure PARSE (COMMAND_LINE : String := "") is
       Arabic_J       : Integer := 1;
 
    begin
-      WORD_NUMBER   := 0;
+
       LINE (1 .. L) := TRIM (INPUT_LINE);
 
       ELIMINATE_NOT_LETTERS :
@@ -264,7 +263,7 @@ procedure PARSE (COMMAND_LINE : String := "") is
 
                               SAVE_PA_LAST := PA_LAST;
                               TRY_SLURY
-                                (LESS, PA, PA_LAST, LINE_NUMBER, WORD_NUMBER);
+                                (LESS, PA, PA_LAST);
                               if SAVE_PA_LAST /= 0 then
                                  if (PA_LAST - 1) - SAVE_PA_LAST = SAVE_PA_LAST
                                  then
@@ -359,7 +358,7 @@ procedure PARSE (COMMAND_LINE : String := "") is
                         if LESS /= TRY then       --  LESS is less
                            --PASS(LESS);
                            TRY_TRICKS
-                             (LESS, TRPA, TRPA_LAST, LINE_NUMBER, WORD_NUMBER);
+                             (LESS, TRPA, TRPA_LAST);
                            --TEXT_IO.PUT_LINE("In TRICKS_ENCLITICS after TRY_TRICKS  LESS = " & LESS & "   TRPA_LAST = " & INTEGER'IMAGE(TRPA_LAST));
                            if TRPA_LAST > ENTERING_TRPA_LAST
                            then      --  have a possible word
@@ -402,7 +401,7 @@ procedure PARSE (COMMAND_LINE : String := "") is
 
                   if PA_LAST = 0 then
                      TRY_SLURY
-                       (INPUT_WORD, PA, PA_LAST, LINE_NUMBER, WORD_NUMBER);
+                       (INPUT_WORD, PA, PA_LAST);
                   end if;
 
                   --  Do not SYNCOPE if there is a verb TO_BE or compound
@@ -489,7 +488,6 @@ procedure PARSE (COMMAND_LINE : String := "") is
                PASS_BLOCK :
                begin
                   PA_LAST     := 0;
-                  WORD_NUMBER := WORD_NUMBER + 1;
 
                   PASS (INPUT_WORD);
 
@@ -509,7 +507,7 @@ procedure PARSE (COMMAND_LINE : String := "") is
                      WORDS_MODE (DO_TRICKS) :=
                        False;  --  Turn it off so wont be circular
                      TRY_TRICKS
-                       (INPUT_WORD, TRPA, TRPA_LAST, LINE_NUMBER, WORD_NUMBER);
+                       (INPUT_WORD, TRPA, TRPA_LAST);
 --TEXT_IO.PUT_LINE("DONE_TRICKS    PA_LAST    TRPA_LAST  " & INTEGER'IMAGE(PA_LAST) & "   " & INTEGER'IMAGE(TRPA_LAST));
                      if TRPA_LAST = 0 then
                         TRICKS_ENCLITIC;
@@ -1102,14 +1100,6 @@ XXX_MEANING_COUNTER := 0;  YYY_MEANING_COUNTER := 0; NNN_MEANING_COUNTER := 0;  
 -- INTEGER'IMAGE(PA_LAST));
 
                PA_LAST := 0;
-            exception
-               when others =>
-                  PUT_STAT
-                    ("Exception    at " &
-                     HEAD (Integer'IMAGE (LINE_NUMBER), 8) &
-                     HEAD (Integer'IMAGE (WORD_NUMBER), 4) & "   " &
-                     HEAD (INPUT_WORD, 28) & "   " & INPUT_LINE);
-                  raise;
 
             end PARSE_WORD_LATIN_TO_ENGLISH;
 
@@ -1151,8 +1141,6 @@ XXX_MEANING_COUNTER := 0;  YYY_MEANING_COUNTER := 0; NNN_MEANING_COUNTER := 0;  
             end if;
             Text_IO.Put (UNKNOWNS, INPUT_LINE (J .. K));
             Text_IO.Set_Col (UNKNOWNS, 30);
-            INFLECTIONS_PACKAGE.INTEGER_IO.Put (UNKNOWNS, LINE_NUMBER, 5);
-            INFLECTIONS_PACKAGE.INTEGER_IO.Put (UNKNOWNS, WORD_NUMBER, 3);
             Text_IO.Put_Line (UNKNOWNS, "    ========   ERROR      ");
          end if;
          PA_LAST := 0;
@@ -1324,16 +1312,15 @@ begin --  PARSE
                PREFACE.NEW_LINE;
                PREFACE.PUT ("=>");
          end if;
-
+            
             if METHOD = INTERACTIVE
               and then WORDS_MODE(DO_UNICODE_INPUT) then
                Get_Unicode(LINE, L);
-           else
+            else
                Get_Line(LINE,L);
-end if;
+            end if;
             
             if (L = 0) or else (TRIM (LINE (1 .. L)) = "") then
-LINE_NUMBER := LINE_NUMBER + 1;  --  Count blank lines
                if CL_Arguments(NO_EXIT) then
                   null;
                Elsif (Name (Current_Input) = Name (Standard_Input))
@@ -1341,20 +1328,20 @@ LINE_NUMBER := LINE_NUMBER + 1;  --  Count blank lines
                then   --  INPUT is keyboard
                   PREFACE.PUT ("Blank exits =>");
                   
-                if METHOD = INTERACTIVE 
+                  if METHOD = INTERACTIVE 
                   and then WORDS_MODE(DO_UNICODE_INPUT) then
                   Get_Unicode(LINE, L);
-               else 
-                 Get_Line(LINE,L);
-end if;
+                  else 
+                  Get_Line(LINE,L);
+                  end if;
                 
                   if (L = 0) or else (TRIM (LINE (1 .. L)) = "")
                   then  -- Two in a row
                      exit;
                   end if;
-               elsif End_Of_File (Current_Input)
+                  elsif End_Of_File (Current_Input)
                   then
-                     Exit; 
+                  Exit; 
                end if;
             end if;
 
@@ -1411,7 +1398,6 @@ end if;
                         Text_IO.Put_Line (OUTPUT, LINE (1 .. L));
                      end if;
                   end if;
-                  LINE_NUMBER := LINE_NUMBER + 1;  --  Count lines to be parsed
                   PARSE_LINE (LINE (1 .. L));
                end if;
             end if;

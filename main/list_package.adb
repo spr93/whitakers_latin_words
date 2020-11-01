@@ -13,9 +13,10 @@ with DICTIONARY_PACKAGE;
 with DICTIONARY_FORM;
 with PUT_EXAMPLE_LINE;
 with LIST_SWEEP;
-with PUT_STAT;
 
 with Ada.Exceptions;
+
+
 package body LIST_PACKAGE is
 
    subtype XONS is PART_OF_SPEECH_TYPE range TACKON .. SUFFIX;
@@ -789,48 +790,6 @@ package body LIST_PACKAGE is
 
       LIST_SWEEP (PA (1 .. PA_LAST), PA_LAST);
 
-
---               --  Does STATS
---
---TEXT_IO.PUT_LINE("Before STATING FIXES");
-      if WORDS_MDEV (WRITE_STATISTICS_FILE) then      --  Omit rest of output
-
-         for I in 1 .. PA_LAST loop                       --  Just to PUT_STAT
-            if (PA (I).D_K = ADDONS) then
-               if PA (I).IR.QUAL.POFS = PREFIX then
-                  PUT_STAT
-                    ("ADDON PREFIX at " &
-                     HEAD (Integer'IMAGE (LINE_NUMBER), 8) &
-                     HEAD (Integer'IMAGE (WORD_NUMBER), 4) & "   " &
-                     HEAD (W, 20) & "   " & PA (I).STEM & "  " &
-                     Integer'IMAGE (Integer (PA (I).MNPC)));
-               elsif PA (I).IR.QUAL.POFS = SUFFIX then
-                  PUT_STAT
-                    ("ADDON SUFFIX at " &
-                     HEAD (Integer'IMAGE (LINE_NUMBER), 8) &
-                     HEAD (Integer'IMAGE (WORD_NUMBER), 4) & "   " &
-                     HEAD (W, 20) & "   " & PA (I).STEM & "  " &
-                     Integer'IMAGE (Integer (PA (I).MNPC)));
-               elsif PA (I).IR.QUAL.POFS = TACKON then
-                  PUT_STAT
-                    ("ADDON TACKON at " &
-                     HEAD (Integer'IMAGE (LINE_NUMBER), 8) &
-                     HEAD (Integer'IMAGE (WORD_NUMBER), 4) & "   " &
-                     HEAD (W, 20) & "   " & PA (I).STEM & "  " &
-                     Integer'IMAGE (Integer (PA (I).MNPC)));
-               end if;
-            end if;
-         end loop;
-
-----    --  Just to find the words with long/complicated output at the LIST level
-----    --  This is done with the final PA_LAST, after SWEEP
---       if PA_LAST > FINAL_PA_LAST_MAX   then
---         PUT_STAT("$FINAL_PA_LAST_MAX    for RAW_WORD " & HEAD(RAW_WORD, 24) & "   = " & INTEGER'IMAGE(PA_LAST));
---         FINAL_PA_LAST_MAX := PA_LAST;
---       end if;
-
-      end if;
-
 --TEXT_IO.PUT_LINE("After STATING FIXES");
 
 --  Convert from PARSE_RECORDs to DICTIONARY_MNPC_RECORD and STEM_INFLECTION_RECORD
@@ -1175,30 +1134,6 @@ package body LIST_PACKAGE is
 
       end if;
 
---                --  Does STATS
---
-----TEXT_IO.PUT_LINE("Before STATING FIXES");
---     if  WORDS_MDEV(WRITE_STATISTICS_FILE)    then      --  Omit rest of output
-----
-----       for I in 1..PA_LAST  loop                       --  Just to PUT_STAT
-----         if (PA(I).D_K = ADDONS)  then
-----           if PA(I).IR.QUAL.POFS = PREFIX  then
-----             PUT_STAT("ADDON PREFIX at "
-----                     & HEAD(INTEGER'IMAGE(LINE_NUMBER), 8) & HEAD(INTEGER'IMAGE(WORD_NUMBER), 4)
-----                     & "   " & HEAD(W, 20) & "   "  & PA(I).STEM);
-----           elsif PA(I).IR.QUAL.POFS = SUFFIX  then
-----             PUT_STAT("ADDON SUFFIX at "
-----                     & HEAD(INTEGER'IMAGE(LINE_NUMBER), 8) & HEAD(INTEGER'IMAGE(WORD_NUMBER), 4)
-----                     & "   " & HEAD(W, 20) & "   "  & PA(I).STEM);
-----           elsif PA(I).IR.QUAL.POFS = TACKON  then
-----             PUT_STAT("ADDON TACKON at "
-----                     & HEAD(INTEGER'IMAGE(LINE_NUMBER), 8) & HEAD(INTEGER'IMAGE(WORD_NUMBER), 4)
-----                     & "   " & HEAD(W, 20) & "   "  & PA(I).STEM);
-----           end if;
-----         end if;
-----       end loop;
---
---
 ----    --  Just to find the words with long/complicated output at the LIST level
 ----    --  This is done with the final PA_LAST, after SWEEP
 --       if PA_LAST > FINAL_PA_LAST_MAX   then
@@ -1216,8 +1151,6 @@ package body LIST_PACKAGE is
             end if;
             Text_IO.Put (OUTPUT, RAW_WORD);
             Text_IO.Set_Col (OUTPUT, 30);
-            INFLECTIONS_PACKAGE.INTEGER_IO.Put (OUTPUT, LINE_NUMBER, 7);
-            INFLECTIONS_PACKAGE.INTEGER_IO.Put (OUTPUT, WORD_NUMBER, 7);
             Text_IO.Put_Line (OUTPUT, "    ========   UNKNOWN    ");
             --TEXT_IO.NEW_LINE(OUTPUT);
          else              --  Just screen output
@@ -1243,8 +1176,6 @@ package body LIST_PACKAGE is
             end if;
             Text_IO.Put (UNKNOWNS, RAW_WORD);
             Text_IO.Set_Col (UNKNOWNS, 30);
-            INFLECTIONS_PACKAGE.INTEGER_IO.Put (UNKNOWNS, LINE_NUMBER, 7);
-            INFLECTIONS_PACKAGE.INTEGER_IO.Put (UNKNOWNS, WORD_NUMBER, 7);
             Text_IO.Put_Line (UNKNOWNS, "    ========   UNKNOWN    ");
          end if;
       end if;
@@ -1485,9 +1416,7 @@ package body LIST_PACKAGE is
          Text_IO.Put_Line
            ("Unexpected exception in LIST_STEMS processing " & RAW_WORD);
          Text_IO.Put_Line
-           ("EXCEPTION LS at " & HEAD (Integer'IMAGE (LINE_NUMBER), 8) &
-            HEAD (Integer'IMAGE (WORD_NUMBER), 4) & "   " & HEAD (W, 20) &
-              "   " & PA (I).STEM);
+           ("EXCEPTION LS at " & PA (I).STEM);
                Text_IO.Put_Line(Ada.Exceptions.Exception_Information(Gotcha));
          Text_IO.Put_Line(Ada.Exceptions.Exception_Message(Gotcha));
 

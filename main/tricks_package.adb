@@ -3,10 +3,10 @@
    with WORD_PARAMETERS; use WORD_PARAMETERS;
    with DEVELOPER_PARAMETERS; use DEVELOPER_PARAMETERS;
    with INFLECTIONS_PACKAGE; use INFLECTIONS_PACKAGE;
-   with DICTIONARY_PACKAGE; use DICTIONARY_PACKAGE;
+   with DICTIONARY_PACKAGE;
    with WORD_SUPPORT_PACKAGE; use WORD_SUPPORT_PACKAGE;
    with WORD_PACKAGE; use WORD_PACKAGE;
-with PUT_STAT;
+
 
    package body TRICKS_PACKAGE is    
      
@@ -90,8 +90,7 @@ with PUT_STAT;
    
       function ROMAN_NUMBER(ST : STRING) return NATURAL is
       --  Determines and returns the value of a Roman numeral, or 0 if invalid
-      
-         use TEXT_IO;
+
          TOTAL : NATURAL := 0;
          INVALID : exception;
          J : INTEGER := 0;
@@ -415,10 +414,6 @@ with PUT_STAT;
                                   "Syncopated perfect ivi can drop 'v' without contracting vowel "
                                                         , MAX_MEANING_SIZE); 
          YYY_MEANING_COUNTER := YYY_MEANING_COUNTER + 1; 
-            
-               PUT_STAT("SYNCOPE  ivi at "
-                        & HEAD(INTEGER'IMAGE(LINE_NUMBER), 8) & HEAD(INTEGER'IMAGE(WORD_NUMBER), 4)
-                        & "   " & HEAD(W, 20) & "   "  & PA(PA_SAVE+1).STEM);
                return;
             else
                PA_LAST := PA_SAVE;
@@ -451,9 +446,6 @@ with PUT_STAT;
                YYY_MEANING(YYY_MEANING_COUNTER) := HEAD(
                                   "Syncopated perfect often drops the 'v' and contracts vowel "
                                   , MAX_MEANING_SIZE); YYY_MEANING_COUNTER := YYY_MEANING_COUNTER + 1; 
-               PUT_STAT("SYNCOPE  vis at "
-                        & HEAD(INTEGER'IMAGE(LINE_NUMBER), 8) & HEAD(INTEGER'IMAGE(WORD_NUMBER), 4)
-                        & "   " & HEAD(W, 20) & "   "  & PA(PA_SAVE+1).STEM);
             end if;
          --  end loop;   --  over resulting solutions
             if PA_LAST > PA_SAVE + 1  then
@@ -489,10 +481,6 @@ with PUT_STAT;
                YYY_MEANING(YYY_MEANING_COUNTER) := HEAD(
                                   "Syncopated perfect often drops the 'v' and contracts vowel "
                                   , MAX_MEANING_SIZE); YYY_MEANING_COUNTER := YYY_MEANING_COUNTER + 1; 
-            
-               PUT_STAT("SYNCOPE  ver at "
-                        & HEAD(INTEGER'IMAGE(LINE_NUMBER), 8) & HEAD(INTEGER'IMAGE(WORD_NUMBER), 4)
-                        & "   " & HEAD(W, 20) & "   "  & PA(PA_SAVE+1).STEM);
                return;
             else
                PA_LAST := PA_SAVE;
@@ -519,10 +507,6 @@ with PUT_STAT;
                YYY_MEANING(YYY_MEANING_COUNTER) := HEAD(
                                   "Syncopated perfect often drops the 'v' and contracts vowel "
                                   , MAX_MEANING_SIZE); YYY_MEANING_COUNTER := YYY_MEANING_COUNTER + 1; 
-            
-               PUT_STAT("SYNCOPE  ier at "
-                        & HEAD(INTEGER'IMAGE(LINE_NUMBER), 8) & HEAD(INTEGER'IMAGE(WORD_NUMBER), 4)
-                        & "   " & HEAD(W, 20) & "   "  & PA(PA_SAVE+1).STEM);
                return;
             else
                PA_LAST := PA_SAVE;
@@ -551,9 +535,6 @@ with PUT_STAT;
             YYY_MEANING(YYY_MEANING_COUNTER) := HEAD(
                                   "Syncopated perfect sometimes drops the 'is' after 's' or 'x' "
                                   , MAX_MEANING_SIZE); YYY_MEANING_COUNTER := YYY_MEANING_COUNTER + 1; 
-               PUT_STAT("SYNCOPEx/sis at "
-                        & HEAD(INTEGER'IMAGE(LINE_NUMBER), 8) & HEAD(INTEGER'IMAGE(WORD_NUMBER), 4)
-                        & "   " & HEAD(W, 20) & "   "  & PA(PA_SAVE+1).STEM);
                    return;
             else
                PA_LAST := PA_SAVE;
@@ -589,12 +570,10 @@ with PUT_STAT;
    
    
       procedure TRY_TRICKS(W : STRING;
-                           PA : in out PARSE_ARRAY; PA_LAST : in out INTEGER;
-                           LINE_NUMBER : INTEGER; WORD_NUMBER : INTEGER) is
+                           PA : in out PARSE_ARRAY; PA_LAST : in out INTEGER) is
       --  Since the chances are 1/1000 that we have one,
       --  Ignore the possibility of two in the same word
       --  That is called lying with statistics                
-         use INFLECTIONS_PACKAGE.INTEGER_IO;
          S  : constant STRING(1..W'LENGTH) := W;
          PA_SAVE : INTEGER := PA_LAST;
       
@@ -629,9 +608,6 @@ with PUT_STAT;
                      XXX_MEANING(XXX_MEANING_COUNTER) := HEAD(EXPLANATION, MAX_MEANING_SIZE); 
                      	XXX_MEANING_COUNTER := XXX_MEANING_COUNTER + 1; 
                   end if;
-                  PUT_STAT("TRICK   FLIP at "
-                           & HEAD(INTEGER'IMAGE(LINE_NUMBER), 8) & HEAD(INTEGER'IMAGE(WORD_NUMBER), 4)
-                           & "   " & HEAD(W, 20) & "   "  & PA(PA_SAVE+1).STEM);
                   return;
                else
                   PA_LAST := PA_SAVE;
@@ -670,9 +646,6 @@ with PUT_STAT;
                      XXX_MEANING(XXX_MEANING_COUNTER) := HEAD(EXPLANATION, MAX_MEANING_SIZE); 
                      XXX_MEANING_COUNTER := XXX_MEANING_COUNTER + 1; 
                   end if;
-                  PUT_STAT("TRICK  FLIPF at "
-                           & HEAD(INTEGER'IMAGE(LINE_NUMBER), 8) & HEAD(INTEGER'IMAGE(WORD_NUMBER), 4)
-                           & "   " & HEAD(W, 20) & "   "  & PA(PA_SAVE+1).STEM);
                   return;
                else
                   PA_LAST := PA_SAVE;
@@ -703,9 +676,6 @@ with PUT_STAT;
                      XXX_MEANING(XXX_MEANING_COUNTER) := HEAD(EXPLANATION, MAX_MEANING_SIZE); 
                      XXX_MEANING_COUNTER := XXX_MEANING_COUNTER + 1;
                   end if;
-                  PUT_STAT("TRICK  FFLOP at "
-                           & HEAD(INTEGER'IMAGE(LINE_NUMBER), 8) & HEAD(INTEGER'IMAGE(WORD_NUMBER), 4)
-                           & "   " & HEAD(W, 20) & "   "  & PA(PA_SAVE+1).STEM);
                   return;
                else
                   PA_LAST := PA_SAVE;
@@ -740,9 +710,6 @@ with PUT_STAT;
                         XXX_MEANING(XXX_MEANING_COUNTER) := HEAD(EXPLANATION, MAX_MEANING_SIZE); 
                         XXX_MEANING_COUNTER := XXX_MEANING_COUNTER + 1; 
                      end if;
-                     PUT_STAT("TRICK   INTR at "
-                              & HEAD(INTEGER'IMAGE(LINE_NUMBER), 8) & HEAD(INTEGER'IMAGE(WORD_NUMBER), 4)
-                              & "   " & HEAD(W, 20) & "   "  & PA(PA_SAVE+1).STEM);
                      return;
                   else
                      PA_LAST := PA_SAVE;
@@ -790,9 +757,6 @@ with PUT_STAT;
                      XXX_MEANING(XXX_MEANING_COUNTER) := HEAD(EXPLANATION, MAX_MEANING_SIZE); 
                      XXX_MEANING_COUNTER := XXX_MEANING_COUNTER + 1;
                   end if;
-                  PUT_STAT("TRICK  ADJIS at "
-                           & HEAD(INTEGER'IMAGE(LINE_NUMBER), 8) & HEAD(INTEGER'IMAGE(WORD_NUMBER), 4)
-                           & "   " & HEAD(W, 20) & "   "  & PA(PA_SAVE+1).STEM);
                   return;
                else
                   PA_LAST := PA_SAVE;
@@ -830,9 +794,6 @@ with PUT_STAT;
                         XXX_MEANING(XXX_MEANING_COUNTER) := HEAD(EXPLANATION, MAX_MEANING_SIZE); 
                         XXX_MEANING_COUNTER := XXX_MEANING_COUNTER + 1;
                      end if;
-                     PUT_STAT("TRICK   2CON at "
-                              & HEAD(INTEGER'IMAGE(LINE_NUMBER), 8) & HEAD(INTEGER'IMAGE(WORD_NUMBER), 4)
-                              & "   " & HEAD(W, 20) & "   "  & PA(PA_SAVE+1).STEM);
                      return;
                   else
                      PA_LAST := PA_SAVE;
@@ -975,9 +936,7 @@ with PUT_STAT;
                                            S(S'FIRST..S'FIRST+I-1) & " + " & 
                                            S(S'FIRST+I..S'LAST), MAX_MEANING_SIZE); 
                                            XXX_MEANING_COUNTER := XXX_MEANING_COUNTER + 1;
-                        PUT_STAT("TRICK   2NUM at "
-                                 & HEAD(INTEGER'IMAGE(LINE_NUMBER), 8) & HEAD(INTEGER'IMAGE(WORD_NUMBER), 4)
-                                 & "   " & HEAD(W, 20) & "   "  & S(1..I_MID) & '+' & S(I_MID+1..S'LAST));
+
                      else                
                      XXX_MEANING(XXX_MEANING_COUNTER) := HEAD(
                                            "May be 2 words combined (" &
@@ -985,10 +944,6 @@ with PUT_STAT;
                                            S(S'FIRST+I..S'LAST) & 
                                            ") - if not obvious, probably incorrect", MAX_MEANING_SIZE);
                                             XXX_MEANING_COUNTER := XXX_MEANING_COUNTER + 1;
-                     
-                        PUT_STAT("TRICK   2WDS at "
-                                 & HEAD(INTEGER'IMAGE(LINE_NUMBER), 8) & HEAD(INTEGER'IMAGE(WORD_NUMBER), 4)
-                                 & "   " & HEAD(W, 20) & "   "  & S(1..I_MID) & '+' & S(I_MID+1..S'LAST));
                      end if;
                   else
                      XXX_MEANING(XXX_MEANING_COUNTER) := HEAD(EXPLANATION, MAX_MEANING_SIZE); 
@@ -1588,14 +1543,12 @@ with PUT_STAT;
    
 
       procedure TRY_SLURY(W : STRING;
-                          PA : in out PARSE_ARRAY; PA_LAST : in out INTEGER;
-                          LINE_NUMBER : INTEGER; WORD_NUMBER : INTEGER) is
+                          PA : in out PARSE_ARRAY; PA_LAST : in out INTEGER) is
       --  Since the chances are 1/1000 that we have one,
       --  Ignore the possibility of two in the same word
       --  That is called lying with statistics                
          S  : constant STRING(1..W'LENGTH) := W;
          PA_SAVE : INTEGER := PA_LAST;
-      
       
          procedure TWORD(W : STRING;
                          PA : in out PARSE_ARRAY; PA_LAST : in out INTEGER) is
@@ -1606,7 +1559,6 @@ with PUT_STAT;
             SYNCOPE(W, PA, PA_LAST);
             WORDS_MDEV(USE_PREFIXES) := SAVE_USE_PREFIXES;
          end TWORD;    
-      
       
          procedure FLIP(X1, X2 : STRING; EXPLANATION : STRING := "") is
          --  At the begining of input word, replaces X1 by X2
@@ -1630,9 +1582,6 @@ with PUT_STAT;
                      XXX_MEANING(XXX_MEANING_COUNTER) := HEAD(EXPLANATION, MAX_MEANING_SIZE); 
                      XXX_MEANING_COUNTER := XXX_MEANING_COUNTER + 1;
                   end if;
-                  PUT_STAT("SLURY   FLIP at "
-                           & HEAD(INTEGER'IMAGE(LINE_NUMBER), 8) & HEAD(INTEGER'IMAGE(WORD_NUMBER), 4)
-                           & "   " & HEAD(W, 20) & "   "  & PA(PA_SAVE+1).STEM);
                   return;
                else
                   PA_LAST := PA_SAVE;
@@ -1640,8 +1589,6 @@ with PUT_STAT;
             end if;
             PA_LAST := PA_SAVE;
          end FLIP;
-      
-      
       
          procedure FLIP_FLOP(X1, X2 : STRING; EXPLANATION : STRING := "") is
          --  At the begining of input word, replaces X1 by X2 - then X2 by X1
@@ -1667,9 +1614,6 @@ with PUT_STAT;
                      XXX_MEANING(XXX_MEANING_COUNTER) := HEAD(EXPLANATION, MAX_MEANING_SIZE); 
                      XXX_MEANING_COUNTER := XXX_MEANING_COUNTER + 1;
                   end if;
-                  PUT_STAT("SLURY   FLOP at "
-                           & HEAD(INTEGER'IMAGE(LINE_NUMBER), 8) & HEAD(INTEGER'IMAGE(WORD_NUMBER), 4)
-                           & "   " & HEAD(W, 20) & "   "  & PA(PA_SAVE+1).STEM);
                   return;
                else
                   PA_LAST := PA_SAVE;
@@ -1693,9 +1637,6 @@ with PUT_STAT;
                      XXX_MEANING(XXX_MEANING_COUNTER) := HEAD(EXPLANATION, MAX_MEANING_SIZE); 
                      XXX_MEANING_COUNTER := XXX_MEANING_COUNTER + 1;
                   end if;
-                  PUT_STAT("SLURY   FLOP at "
-                           & HEAD(INTEGER'IMAGE(LINE_NUMBER), 8) & HEAD(INTEGER'IMAGE(WORD_NUMBER), 4)
-                           & "   " & HEAD(W, 20) & "   "  & PA(PA_SAVE+1).STEM);
                   return;
                else
                   PA_LAST := PA_SAVE;
@@ -1729,9 +1670,6 @@ with PUT_STAT;
                         XXX_MEANING(XXX_MEANING_COUNTER) := HEAD(EXPLANATION, MAX_MEANING_SIZE); 
                         XXX_MEANING_COUNTER := XXX_MEANING_COUNTER + 1;
                      end if;
-                     PUT_STAT("SLURY   SLUR at "
-                              & HEAD(INTEGER'IMAGE(LINE_NUMBER), 8) & HEAD(INTEGER'IMAGE(WORD_NUMBER), 4)
-                              & "   " & HEAD(W, 20) & "   "  & PA(PA_SAVE+1).STEM);
                      return;
                   else
                      PA_LAST := PA_SAVE;
@@ -1756,9 +1694,6 @@ with PUT_STAT;
                         XXX_MEANING(XXX_MEANING_COUNTER) := HEAD(EXPLANATION, MAX_MEANING_SIZE); 
                         XXX_MEANING_COUNTER := XXX_MEANING_COUNTER + 1;
                      end if;
-                     PUT_STAT("SLURY   SLUR at "
-                              & HEAD(INTEGER'IMAGE(LINE_NUMBER), 8) & HEAD(INTEGER'IMAGE(WORD_NUMBER), 4)
-                              & "   " & HEAD(W, 20) & "   "  & PA(PA_SAVE+1).STEM);
                      return;
                   else
                      PA_LAST := PA_SAVE;
@@ -1770,8 +1705,6 @@ with PUT_STAT;
          end SLUR;
       
       begin
-      
-      
       
       --  If there is no satisfaction from above, we will try further
       
@@ -1814,13 +1747,11 @@ with PUT_STAT;
             if PA_LAST > 0  then 
                return; end if;
    
-        
          elsif S(S'FIRST) = 'f'  then 
          
             FLIP("f",  "ph");   
             if PA_LAST > 0  then 
             return; end if;  
-         
          
          elsif S(S'FIRST) = 'i'  then
          
@@ -1835,16 +1766,11 @@ with PUT_STAT;
             if PA_LAST > 1 then 
                return; end if;
          
-
-         
          elsif S(S'FIRST) = 'n'  then
          
-
             FLIP("nun",  "non");   
             if PA_LAST > 0  then 
                return; end if;
-         
-         
          
          elsif S(S'FIRST) = 'o'  then
          
@@ -1852,14 +1778,11 @@ with PUT_STAT;
             if PA_LAST > 0  then 
                return; end if;
                   
-         
          elsif S(S'FIRST) = 'q'  then
-         
-         
+                  
             FLIP_FLOP("quadri",  "quadru");   
             if PA_LAST > 0  then 
                return; end if;
-         
          
          elsif S(S'FIRST) = 's'  then
               
@@ -1867,7 +1790,6 @@ with PUT_STAT;
             if PA_LAST > 0  then 
                return; end if; 
               
-         
          end if;   --  if on first letter
       
       ---------------------------------------------
@@ -1880,6 +1802,5 @@ with PUT_STAT;
                TEXT_IO.PUT_LINE(    --  ERROR_FILE,
                                     "Exception in TRY_SLURY processing " & W);
       end TRY_SLURY;
-   
    
    end TRICKS_PACKAGE;
