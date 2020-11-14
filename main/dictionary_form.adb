@@ -1,6 +1,7 @@
-with Strings_Package; use Strings_Package;
+with Strings_Package;     use Strings_Package;
 with Inflections_Package; use Inflections_Package;
-with Dictionary_Package; use Dictionary_Package;
+with Dictionary_Package;  use Dictionary_Package;
+
 function Dictionary_Form(DE      : in     Dictionary_Entry) return String is
 
   Null_OX : constant String(1 .. 24) := (others => ' ');
@@ -56,73 +57,73 @@ begin
 
   if DE.Part.POFS = N then
     if DE.Part.N.DEcl.Which = 1 then
-      if DE.Part.N.DEcl.Var = 1 then
+      if DE.Part.N.Decl.Var = 1 then
         OX(1) := Add(DE.Stems(1), "a");
         OX(2) := Add(DE.Stems(2), "ae");
-      elsif DE.Part.N.DEcl.Var = 6 then
+      elsif DE.Part.N.Decl.Var = 6 then
         OX(1) := Add(DE.Stems(1), "e");
         OX(2) := Add(DE.Stems(2), "es");
-      elsif DE.Part.N.DEcl.Var = 7 then
+      elsif DE.Part.N.Decl.Var = 7 then
         OX(1) := Add(DE.Stems(1), "es");
         OX(2) := Add(DE.Stems(2), "ae");
-      elsif DE.Part.N.DEcl.Var = 8 then
+      elsif DE.Part.N.Decl.Var = 8 then
         OX(1) := Add(DE.Stems(1), "as");
         OX(2) := Add(DE.Stems(2), "ae");
       end if;
 
     elsif DE.Part.N.DEcl.Which = 2 then
-      if DE.Part.N.DEcl.Var = 1 then
+      if DE.Part.N.Decl.Var = 1 then
         OX(1) := Add(DE.Stems(1), "us");
         OX(2) := Add(DE.Stems(2), "i");
-      elsif DE.Part.N.DEcl.Var = 2 then
+      elsif DE.Part.N.Decl.Var = 2 then
         OX(1) := Add(DE.Stems(1), "um");
         OX(2) := Add(DE.Stems(2), "i");
-      elsif DE.Part.N.DEcl.Var = 3 then
+      elsif DE.Part.N.Decl.Var = 3 then
         OX(1) := Add(DE.Stems(1), "");
         OX(2) := Add(DE.Stems(2), "i");
-      elsif DE.Part.N.DEcl.Var = 4 then
+      elsif DE.Part.N.Decl.Var = 4 then
         if DE.Part.N.Gender = N then
           OX(1) := Add(DE.Stems(1), "um");
         else
           OX(1) := Add(DE.Stems(1), "us");
         end if;
         OX(2) := Add(DE.Stems(2), "(i)");
-      elsif DE.Part.N.DEcl.Var = 5 then
+      elsif DE.Part.N.Decl.Var = 5 then
         OX(1) := Add(DE.Stems(1), "us");
         OX(2) := Add(DE.Stems(2), "");
-      elsif DE.Part.N.DEcl.Var = 6 then
+      elsif DE.Part.N.Decl.Var = 6 then
         OX(1) := Add(DE.Stems(1), "os");
         OX(2) := Add(DE.Stems(2), "i");
-      elsif DE.Part.N.DEcl.Var = 7 then
+      elsif DE.Part.N.Decl.Var = 7 then
         OX(1) := Add(DE.Stems(1), "");
         OX(2) := Add(DE.Stems(2), "yos/i");
-      elsif DE.Part.N.DEcl.Var = 8 then
+      elsif DE.Part.N.Decl.Var = 8 then
         OX(1) := Add(DE.Stems(1), "on");
         OX(2) := Add(DE.Stems(2), "i");
-      elsif DE.Part.N.DEcl.Var = 9 then
+      elsif DE.Part.N.Decl.Var = 9 then
         OX(1) := Add(DE.Stems(1), "us");
         OX(2) := Add(DE.Stems(2), "i");
       end if;
 
     elsif DE.Part.N.DEcl.Which = 3 then
       OX(1) := Add(DE.Stems(1), "");
-      if DE.Part.N.DEcl.Var in 7 | 9 then
+      if DE.Part.N.Decl.Var in 7 | 9 then
         OX(2) := Add(DE.Stems(2), "os/is");
       else
         OX(2) := Add(DE.Stems(2), "is");
       end if;
 
     elsif DE.Part.N.DEcl.Which = 4 then
-      if DE.Part.N.DEcl.Var = 1 then
+      if DE.Part.N.Decl.Var = 1 then
         OX(1) := Add(DE.Stems(1), "us");
         OX(2) := Add(DE.Stems(2), "us");
-      elsif DE.Part.N.DEcl.Var = 2 then
+      elsif DE.Part.N.Decl.Var = 2 then
         OX(1) := Add(DE.Stems(1), "u");
         OX(2) := Add(DE.Stems(2), "us");
-      elsif DE.Part.N.DEcl.Var = 3 then
+      elsif DE.Part.N.Decl.Var = 3 then
         OX(1) := Add(DE.Stems(1), "us");
         OX(2) := Add(DE.Stems(2), "u");
-      elsif DE.Part.N.DEcl.Var = 4 then
+      elsif DE.Part.N.Decl.Var = 4 then
         OX(1) := Add(DE.Stems(1), "");
         OX(2) := Add(DE.Stems(2), "u");
       end if;
@@ -150,30 +151,41 @@ begin
     elsif DE.Part.Pron.DEcl.Which = 3 then
       OX(1) := Add(DE.Stems(1), "ic");
       OX(2) := Add(DE.Stems(1), "aec");
-      if DE.Part.Pron.DEcl.Var = 1 then
+      if DE.Part.Pron.Decl.Var = 1 then
         OX(3) := Add(DE.Stems(1), "oc");
-      elsif DE.Part.Pron.DEcl.Var = 2 then
+      elsif DE.Part.Pron.Decl.Var = 2 then
         OX(3) := Add(DE.Stems(1), "uc");
       end if;
 
     elsif DE.Part.Pron.DEcl.Which = 4 then
-      if DE.Part.Pron.DEcl.Var = 1 then
+      if DE.Part.Pron.Decl.Var = 1 then
         OX(1) := Add(DE.Stems(1), "s");
         OX(2) := Add(DE.Stems(2), "a");
         OX(3) := Add(DE.Stems(1), "d");
-      elsif DE.Part.Pron.DEcl.Var = 2 then
+      elsif DE.Part.Pron.Decl.Var = 2 then
         OX(1) := Add(DE.Stems(1), "dem");
         OX(2) := Add(DE.Stems(2), "adem");
         OX(3) := Add(DE.Stems(1), "dem");
       end if;
 
+    elsif DE.Part.Pron.DEcl.Which = 5 then
+      if DE.Part.Pron.Decl.Var = 1 then   
+        OX(1) := Add(DE.Stems(1), "");    
+        OX(2) := Add(DE.Stems(2), "ei");
+      elsif DE.Part.Pron.Decl.Var = 2 then
+        OX(1) := Add(DE.Stems(1), "");
+        OX(2) := Add(DE.Stems(2), "ui");
+      elsif DE.Part.Pron.Decl.Var = 3 then
+        OX(1) := Add(DE.Stems(1), "os");
+        OX(2) := Add(DE.Stems(2), "um (-i)");     
+      end if;
 
     elsif DE.Part.Pron.DEcl.Which = 6 then
       OX(1) := Add(DE.Stems(1), "e");
       OX(2) := Add(DE.Stems(1), "a");
-      if DE.Part.Pron.DEcl.Var = 1 then
+      if DE.Part.Pron.Decl.Var = 1 then
         OX(3) := Add(DE.Stems(1), "ud");
-      elsif DE.Part.Pron.DEcl.Var = 2 then
+      elsif DE.Part.Pron.Decl.Var = 2 then
         OX(3) := Add(DE.Stems(1), "um");
       end if;
 
@@ -214,27 +226,27 @@ begin
 
     elsif DE.Part.Adj.Co = Pos then
       if DE.Part.Adj.DEcl.Which = 1 then
-        if DE.Part.Adj.DEcl.Var = 1 then
+        if DE.Part.Adj.Decl.Var = 1 then
           OX(1) := Add(DE.Stems(1), "us");
           OX(2) := Add(DE.Stems(2), "a");
           OX(3) := Add(DE.Stems(2), "um");
 
-        elsif DE.Part.Adj.DEcl.Var = 2 then
+        elsif DE.Part.Adj.Decl.Var = 2 then
           OX(1) := Add(DE.Stems(1), "");
           OX(2) := Add(DE.Stems(2), "a");
           OX(3) := Add(DE.Stems(2), "um");
 
-        elsif DE.Part.Adj.DEcl.Var = 3 then
+        elsif DE.Part.Adj.Decl.Var = 3 then
           OX(1) := Add(DE.Stems(1), "us");
           OX(2) := Add(DE.Stems(2), "a");
           OX(3) := Add(DE.Stems(2), "um (gen. -ius)");
 
-        elsif DE.Part.Adj.DEcl.Var = 4 then
+        elsif DE.Part.Adj.Decl.Var = 4 then
           OX(1) := Add(DE.Stems(1), "");
           OX(2) := Add(DE.Stems(2), "a");
           OX(3) := Add(DE.Stems(2), "um");
 
-        elsif DE.Part.Adj.DEcl.Var = 5 then
+        elsif DE.Part.Adj.Decl.Var = 5 then
           OX(1) := Add(DE.Stems(1), "us");
           OX(2) := Add(DE.Stems(2), "a");
           OX(3) := Add(DE.Stems(2), "ud");
@@ -244,46 +256,46 @@ begin
         end if;
 
       elsif DE.Part.Adj.DEcl.Which = 2 then
-        if DE.Part.Adj.DEcl.Var = 1 then
+        if DE.Part.Adj.Decl.Var = 1 then
           OX(1) := Add(Null_OX, "-");
           OX(2) := Add(DE.Stems(1), "e");
           OX(3) := Add(Null_OX, "-");
-        elsif DE.Part.Adj.DEcl.Var = 2 then
+        elsif DE.Part.Adj.Decl.Var = 2 then
           OX(1) := Add(Null_OX, "-");
           OX(2) := Add(Null_OX, "a");
           OX(3) := Add(Null_OX, "-");
-        elsif DE.Part.Adj.DEcl.Var = 3 then
+        elsif DE.Part.Adj.Decl.Var = 3 then
           OX(1) := Add(DE.Stems(1), "es");
           OX(2) := Add(DE.Stems(1), "es");
           OX(3) := Add(DE.Stems(1), "es");
-        elsif DE.Part.Adj.DEcl.Var = 6 then
+        elsif DE.Part.Adj.Decl.Var = 6 then
           OX(1) := Add(DE.Stems(1), "os");
           OX(2) := Add(DE.Stems(1), "os");
           OX(3) := Add(Null_OX, "-");
-        elsif DE.Part.Adj.DEcl.Var = 7 then
+        elsif DE.Part.Adj.Decl.Var = 7 then
           OX(1) := Add(DE.Stems(1), "os");
           OX(2) := Add(Null_OX, "-");
           OX(3) := Add(Null_OX, "-");
-        elsif DE.Part.Adj.DEcl.Var = 8 then
+        elsif DE.Part.Adj.Decl.Var = 8 then
           OX(1) := Add(Null_OX, "-");
           OX(2) := Add(Null_OX, "-");
           OX(3) := Add(DE.Stems(2), "on");
         end if;
 
       elsif DE.Part.Adj.DEcl.Which = 3 then
-        if DE.Part.Adj.DEcl.Var = 1 then
+        if DE.Part.Adj.Decl.Var = 1 then
           OX(1) := Add(DE.Stems(1), "");
           OX(2) := Add(DE.Stems(2), "is (gen.)");
           OX(3) := Add(Null_OX, "");
-        elsif DE.Part.Adj.DEcl.Var = 2 then
+        elsif DE.Part.Adj.Decl.Var = 2 then
           OX(1) := Add(DE.Stems(1), "is");
           OX(2) := Add(DE.Stems(2), "is");
           OX(3) := Add(DE.Stems(2), "e");
-        elsif DE.Part.Adj.DEcl.Var = 3 then
+        elsif DE.Part.Adj.Decl.Var = 3 then
           OX(1) := Add(DE.Stems(1), "");
           OX(2) := Add(DE.Stems(2), "is");
           OX(3) := Add(DE.Stems(2), "e");
-        elsif DE.Part.Adj.DEcl.Var = 6 then
+        elsif DE.Part.Adj.Decl.Var = 6 then
           OX(1) := Add(DE.Stems(1), "");
           OX(2) := Add(DE.Stems(2), "os (-is) (gen.)");
           OX(3) := Add(Null_OX, "");
@@ -303,12 +315,12 @@ begin
 
     elsif DE.Part.Adj.Co = X then
       if DE.Part.Adj.DEcl.Which = 1 then
-        if DE.Part.Adj.DEcl.Var = 1 then
+        if DE.Part.Adj.Decl.Var = 1 then
           OX(1) := Add(DE.Stems(1), "us");
           OX(2) := Add(DE.Stems(2), "a -um");
           OX(3) := Add(DE.Stems(3), "or -or -us");
           OX(4) := Add(DE.Stems(4), "mus -a -um");
-        elsif DE.Part.Adj.DEcl.Var = 2 then
+        elsif DE.Part.Adj.Decl.Var = 2 then
           OX(1) := Add(DE.Stems(1), "");
           OX(2) := Add(DE.Stems(2), "a -um");
           OX(3) := Add(DE.Stems(3), "or -or -us");
@@ -316,17 +328,17 @@ begin
         end if;
 
       elsif DE.Part.Adj.DEcl.Which = 3 then
-        if DE.Part.Adj.DEcl.Var = 1 then
+        if DE.Part.Adj.Decl.Var = 1 then
           OX(1) := Add(DE.Stems(1), "");
           OX(2) := Add(DE.Stems(2), "is (gen.)");
           OX(3) := Add(DE.Stems(3), "or -or -us");
           OX(4) := Add(DE.Stems(4), "mus -a -um");
-        elsif DE.Part.Adj.DEcl.Var = 2 then
+        elsif DE.Part.Adj.Decl.Var = 2 then
           OX(1) := Add(DE.Stems(1), "is");
           OX(2) := Add(DE.Stems(2), "e");
           OX(3) := Add(DE.Stems(3), "or -or -us");
           OX(4) := Add(DE.Stems(4), "mus -a -um");
-        elsif DE.Part.Adj.DEcl.Var = 3 then
+        elsif DE.Part.Adj.Decl.Var = 3 then
           OX(1) := Add(DE.Stems(1), "");
           OX(2) := Add(DE.Stems(2), "is -e");
           OX(3) := Add(DE.Stems(3), "or -or -us");
@@ -524,22 +536,22 @@ begin
 
   elsif (DE.Part.POFS = Num) and then (DE.Part.Num.Sort = X) then
     if DE.Part.Num.DEcl.Which = 1 then
-      if DE.Part.Num.DEcl.Var = 1 then
+      if DE.Part.Num.Decl.Var = 1 then
         OX(1) := Add(DE.Stems(1), "us -a -um");
         OX(2) := Add(DE.Stems(2), "us -a -um");
         OX(3) := Add(DE.Stems(3), "i -ae -a");
         OX(4) := Add(DE.Stems(4), "");
-      elsif DE.Part.Num.DEcl.Var = 2 then
+      elsif DE.Part.Num.Decl.Var = 2 then
         OX(1) := Add(DE.Stems(1), "o -ae o");
         OX(2) := Add(DE.Stems(2), "us -a -um");
         OX(3) := Add(DE.Stems(3), "i -ae -a");
         OX(4) := Add(DE.Stems(4), "");
-      elsif DE.Part.Num.DEcl.Var = 3 then
+      elsif DE.Part.Num.Decl.Var = 3 then
         OX(1) := Add(DE.Stems(1), "es -es -ia");
         OX(2) := Add(DE.Stems(2), "us -a -um");
         OX(3) := Add(DE.Stems(3), "i -ae -a");
         OX(4) := Add(DE.Stems(4), "");
-      elsif DE.Part.Num.DEcl.Var = 4 then
+      elsif DE.Part.Num.Decl.Var = 4 then
         OX(1) := Add(DE.Stems(1), "i -ae -a");
         OX(2) := Add(DE.Stems(2), "us -a -um");
         OX(3) := Add(DE.Stems(3), "i -ae -a");
@@ -556,19 +568,19 @@ begin
 
   elsif (DE.Part.POFS = Num) and then (DE.Part.Num.Sort = Card) then
     if DE.Part.Num.DEcl.Which = 1 then
-      if DE.Part.Num.DEcl.Var = 1 then
+      if DE.Part.Num.Decl.Var = 1 then
         OX(1) := Add(DE.Stems(1), "us");
         OX(2) := Add(DE.Stems(1), "a");
         OX(3) := Add(DE.Stems(1), "um");
-      elsif DE.Part.Num.DEcl.Var = 2 then
+      elsif DE.Part.Num.Decl.Var = 2 then
         OX(1) := Add(DE.Stems(1), "o");
         OX(2) := Add(DE.Stems(1), "ae");
         OX(3) := Add(DE.Stems(1), "o");
-      elsif DE.Part.Num.DEcl.Var = 3 then
+      elsif DE.Part.Num.Decl.Var = 3 then
         OX(1) := Add(DE.Stems(1), "es");
         OX(2) := Add(DE.Stems(1), "es");
         OX(3) := Add(DE.Stems(1), "ia");
-      elsif DE.Part.Num.DEcl.Var = 4 then
+      elsif DE.Part.Num.Decl.Var = 4 then
         OX(1) := Add(DE.Stems(1), "i");
         OX(2) := Add(DE.Stems(1), "ae");
         OX(3) := Add(DE.Stems(1), "a");
@@ -671,7 +683,7 @@ begin
 
     --  For DICTPAGE
     if DE.Part.N.DEcl.Which in 1 .. 5 and
-    DE.Part.N.DEcl.Var in 1 .. 5 then
+    DE.Part.N.Decl.Var in 1 .. 5 then
       Add_to(" (" & Fst(DE.Part.N.DEcl.Which) & ")");
     end if;
 
