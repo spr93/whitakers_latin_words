@@ -27,12 +27,6 @@ package body DEVELOPER_PARAMETERS is
   --  with only this being recompiled, not the rest of the with'ing system
   DEFAULT_MDEV_ARRAY : constant MDEV_ARRAY := (
 
-     --               HAVE_DEBUG_FILE             => FALSE,
-     --               WRITE_DEBUG_FILE            => FALSE,
-
-                      HAVE_STATISTICS_FILE        => FALSE,
-                      WRITE_STATISTICS_FILE       => FALSE,
-
                       SHOW_DICTIONARY             => FALSE,
                       SHOW_DICTIONARY_LINE        => FALSE,
                       SHOW_DICTIONARY_CODES       => TRUE,   
@@ -70,24 +64,24 @@ package body DEVELOPER_PARAMETERS is
 
   BAD_MDEV_FILE : exception;
 
-HAVE_STATISTICS_FILE_HELP : constant HELP_TYPE :=  (
-   "This option instructs the program to create a file which can hold     ",
-   "certain statistical information about the process.  The file is       ",
-   "overwritten for new invocation of the program, so old data must be    ",
-   "explicitly saved if it is to be retained.  The statistics are in TEXT ",
-   "format.     The statistics file is named " & STATS_FULL_NAME
-                                & (42+STATS_FULL_NAME'LENGTH..70 => ' '),
-   "This information is only of development use, so the default is N(o).  " );
-
-WRITE_STATISTICS_FILE_HELP : constant HELP_TYPE :=  (
-   "This option instructs the program, with HAVE_STATISTICS_FILE, to put  ",
-   "derived statistics in a file named " & STATS_FULL_NAME
-                                   & (36+STATS_FULL_NAME'LENGTH..70 => ' '),
-   "This option may be turned on and off while running of the program,    ",
-   "thereby capturing only certain desired results.  The file is reset at ",
-   "each invocation of the program, if the HAVE_STATISTICS_FILE is set.   ",
-   "If the option HAVE_STATISTICS_FILE is off, the user will not be given ",
-   "a chance to turn this one on.                Default is N(o).         " );
+--  HAVE_STATISTICS_FILE_HELP : constant HELP_TYPE :=  (
+--     "This option instructs the program to create a file which can hold     ",
+--     "certain statistical information about the process.  The file is       ",
+--     "overwritten for new invocation of the program, so old data must be    ",
+--     "explicitly saved if it is to be retained.  The statistics are in TEXT ",
+--     "format.     The statistics file is named " & STATS_FULL_NAME
+--                                  & (42+STATS_FULL_NAME'LENGTH..70 => ' '),
+--     "This information is only of development use, so the default is N(o).  " );
+--  
+--  WRITE_STATISTICS_FILE_HELP : constant HELP_TYPE :=  (
+--     "This option instructs the program, with HAVE_STATISTICS_FILE, to put  ",
+--     "derived statistics in a file named " & STATS_FULL_NAME
+--                                     & (36+STATS_FULL_NAME'LENGTH..70 => ' '),
+--     "This option may be turned on and off while running of the program,    ",
+--     "thereby capturing only certain desired results.  The file is reset at ",
+--     "each invocation of the program, if the HAVE_STATISTICS_FILE is set.   ",
+--     "If the option HAVE_STATISTICS_FILE is off, the user will not be given ",
+--     "a chance to turn this one on.                Default is N(o).         " );
 
 SHOW_DICTIONARY_HELP : constant HELP_TYPE :=  (
    "This option causes a flag, like 'GEN>' to be put before the meaning   ",
@@ -112,19 +106,6 @@ DO_PEARSE_CODES_HELP : constant HELP_TYPE :=  (
    "03 for meaning. The default choice is N(o).  It is activated by Y(es).",
    "There are no Pearse codes in English mode.                            ");
 
-DO_ONLY_INITIAL_WORD_HELP : constant HELP_TYPE :=  (
-   "This option instructs the program to only analyze the initial word on ",
-   "each line submitted.  This is a tool for checking and integrating new ",
-   "dictionary input, and will be of no interest to the general user.     ",
-   "The default choice is N(o), but it can be turned on with a Y(es).     " );
-
-FOR_WORD_LIST_CHECK_HELP : constant HELP_TYPE :=  (
-   "This option works in conjunction with DO_ONLY_INITIAL_WORD to allow   ",
-   "the processing of scanned dictionarys or text word lists.  It accepts ",
-   "only the forms common in dictionary entries, like NOM S for N or ADJ, ",
-   "or PRES ACTIVE IND 1 S for V.  It is be used only with DO_INITIAL_WORD",
-   "The default choice is N(o), but it can be turned on with a Y(es).     " );
-
 DO_ONLY_FIXES_HELP : constant HELP_TYPE :=  (
    "This option instructs the program to ignore the normal dictionary     ",
    "search and to go direct to attach various prefixes and suffixes before",
@@ -134,7 +115,6 @@ DO_ONLY_FIXES_HELP : constant HELP_TYPE :=  (
    "This is entirely a development and research tool, not to be used in   ",
    "conventional translation situations, so the default choice is N(o).   ",
    "This processing can be turned on with the choice of Y(es).            " );
-
 
 DO_FIXES_ANYWAY_HELP : constant HELP_TYPE :=  (
    "This option instructs the program to do both the normal dictionary    ",
@@ -254,7 +234,6 @@ OMIT_MEDIEVAL_HELP : constant HELP_TYPE :=  (
 --     "While these forms are a significant feature of the program, many users",
 --     "will not want them.  If there is no other possible form, then the     ",
 --     "uncommon (roughly defined) will be reported.   The default is Y(es).  " );
-
    
 --  SPR:  Gen. Whitaker never implemented this option, and it is much less
 --        helpful than treating I and J as equivalent in input (which he did do).
@@ -610,52 +589,6 @@ LOAD_DICTIONARY(DICT_LOC,
   --  Maybe to turn on or off pre/suffix
   --  Maybe to allow the user to look at just all the prefixes that match
 
-
---    INQUIRE(HAVE_DEBUG_FILE, HAVE_DEBUG_FILE_HELP);
---    if IS_OPEN(DBG)  and then not WORDS_MDEV(HAVE_DEBUG_FILE)  then
---      DELETE(DBG);
---      WORDS_MDEV(WRITE_DEBUG_FILE) := FALSE;
---    end if;
---    if not IS_OPEN(DBG) and then WORDS_MDEV(HAVE_DEBUG_FILE)  then
---      begin
---        CREATE(DBG, OUT_FILE, DEBUG_FULL_NAME);
---      exception
---        when others =>
---          PUT_LINE("Cannot CREATE WORD.DBG - Check if it is in use elsewhere");
---      end;
---    end if;
---
---    if WORDS_MDEV(HAVE_DEBUG_FILE)  then
---      INQUIRE(WRITE_DEBUG_FILE, WRITE_DEBUG_FILE_HELP);
---    end if;
-
-
-    INQUIRE(HAVE_STATISTICS_FILE, HAVE_STATISTICS_FILE_HELP);
-    if IS_OPEN(STATS)  and then not WORDS_MDEV(HAVE_STATISTICS_FILE)  then
-      DELETE(STATS);
-      WORDS_MDEV(WRITE_STATISTICS_FILE) := FALSE;
-    end if;
-    if not IS_OPEN(STATS) and then WORDS_MDEV(HAVE_STATISTICS_FILE)  then
-      begin
-        CREATE(STATS, OUT_FILE, STATS_FULL_NAME);
-      exception
-        when others =>
-          PUT_LINE("Cannot CREATE WORD.STA - Check if it is in use elsewhere");
-      end;
-    end if;
-
-      
-    if WORDS_MDEV(HAVE_STATISTICS_FILE)  then
-      INQUIRE(WRITE_STATISTICS_FILE, WRITE_STATISTICS_FILE_HELP);
-    end if;
-
-    INQUIRE(DO_ONLY_INITIAL_WORD, DO_ONLY_INITIAL_WORD_HELP);
-    if WORDS_MDEV(DO_ONLY_INITIAL_WORD)  then
-      INQUIRE(FOR_WORD_LIST_CHECK, FOR_WORD_LIST_CHECK_HELP);
-    else
-      WORDS_MDEV(FOR_WORD_LIST_CHECK) := FALSE;
-    end if;
-
     INQUIRE(SHOW_DICTIONARY, SHOW_DICTIONARY_HELP);
 
     INQUIRE(SHOW_DICTIONARY_LINE, SHOW_DICTIONARY_LINE_HELP);
@@ -665,7 +598,6 @@ LOAD_DICTIONARY(DICT_LOC,
     end if;
       
     INQUIRE(DO_PEARSE_CODES, DO_PEARSE_CODES_HELP);
-
 
     if WORDS_MODE(DO_FIXES) then
       INQUIRE(DO_ONLY_FIXES, DO_ONLY_FIXES_HELP);
@@ -820,15 +752,6 @@ begin
       PREFACE.PUT_LINE("You fix this by setting new parameters.  Enter " & CHANGE_PARAMETERS_CHARACTER& " and then save.");
       WORDS_MDEV := DEFAULT_MDEV_ARRAY;
   end DO_MDEV_FILE;
-
---  if not IS_OPEN(DBG) and then WORDS_MDEV(HAVE_DEBUG_FILE)  then
---    CREATE(DBG, OUT_FILE, DEBUG_FULL_NAME);
---    PREFACE.PUT_LINE("WORD.DBG Created at Initialization");
---  end if;
-  if not IS_OPEN(STATS) and then WORDS_MDEV(HAVE_STATISTICS_FILE)  then
-    CREATE(STATS, OUT_FILE, STATS_FULL_NAME);
-    PREFACE.PUT_LINE("WORD.STA Created at Initialization");
-  end if;
 
 end INITIALIZE_DEVELOPER_PARAMETERS;
 
