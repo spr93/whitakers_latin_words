@@ -284,10 +284,8 @@
               if S(J) = 'I' or S(J) = 'J' or S(J) = 'V' or S(J) = 'U' or S(J) = 'X'  or S(J) = 'L' or S(J) = 'C' or S(J) = 'D'  then raise INVALID; end if;
             end if;
  
-            
         end loop EVALUATE;
-           
-          
+            
        end if;  --  On Only Roman digits
       
          return TOTAL;
@@ -298,8 +296,7 @@
                return 0;
       end ROMAN_NUMBER;
    
-   
-      procedure ROMAN_NUMERALS(INPUT_WORD : STRING;
+    procedure ROMAN_NUMERALS(INPUT_WORD : STRING;
                                PA : in out PARSE_ARRAY; PA_LAST : in out INTEGER) is
       
          W : constant STRING := TRIM(INPUT_WORD);
@@ -456,8 +453,6 @@
                PA_LAST := PA_SAVE;
             end if;
             
-            
-               
          -- aver => ar, ever => er, in perfect 
             for I in reverse S'FIRST+1..S'LAST-2  loop
                if ((S(I..I+1) = "ar")  or
@@ -473,8 +468,7 @@
                end if;
                PA_LAST := PA_SAVE;     --  No luck, or it would have exited above
             end loop;
-            
-            
+                 
             if PA_LAST > PA_SAVE + 1  and then
             PA(PA_LAST).IR.QUAL.POFS = V and then
             PA(PA_LAST).IR.KEY = 3  then          --  Perfect system
@@ -486,8 +480,6 @@
                PA_LAST := PA_SAVE;
             end if;
             
-          
-         
          -- iver => ier,  in perfect 
             for I in reverse S'FIRST..S'LAST-3  loop
                if (S(I..I+2) = "ier")  then
@@ -511,8 +503,6 @@
             else
                PA_LAST := PA_SAVE;
             end if;
-         
-                          
          
 --         -- sis => s, xis => x, in perfect 
             for I in reverse S'FIRST..S'LAST-2  loop     
@@ -1508,7 +1498,7 @@
                         XXX, NULL_MNPC);
                 XXX_MEANING(XXX_MEANING_COUNTER) := NULL_MEANING_TYPE;
                 
-                RRR_MEANING(RRR_MEANING_COUNTER) := HEAD(INTEGER'IMAGE(BAD_ROMAN_NUMBER(W)) & " as a ROMAN NUMERAL in additive form (?);", 
+                RRR_MEANING(RRR_MEANING_COUNTER) := HEAD(INTEGER'IMAGE(BAD_ROMAN_NUMBER(W)) & " as a ROMAN NUMERAL in additive form (?)", 
                                 MAX_MEANING_SIZE); 
                                 RRR_MEANING_COUNTER := RRR_MEANING_COUNTER + 1; 
                     PA_LAST := PA_LAST + 1;

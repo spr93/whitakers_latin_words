@@ -177,7 +177,6 @@ end if;
   procedure LOAD_INDICES_FROM_INDX_FILE(INDXFILE_NAME : STRING;
                                         D_K : DICTIONARY_KIND) is
     use TEXT_IO;
-    use INFLECTIONS_PACKAGE.INTEGER_IO;
     use STEM_IO;
     use COUNT_IO;
     CH : STRING(1..2);

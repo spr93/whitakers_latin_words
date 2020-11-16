@@ -1,7 +1,11 @@
 with TEXT_IO; 
 with DIRECT_IO;
+
+
 package INFLECTIONS_PACKAGE is
   pragma Elaborate_Body;
+ 
+   
   package INTEGER_IO is new TEXT_IO.INTEGER_IO(INTEGER);
   use TEXT_IO;
 
@@ -15,6 +19,7 @@ package INFLECTIONS_PACKAGE is
   subtype STEM_TYPE is STRING(1..MAX_STEM_SIZE);
   NULL_STEM_TYPE : constant STEM_TYPE := (others => ' ');
 
+   
   package STEM_TYPE_IO is
     DEFAULT_WIDTH : NATURAL := MAX_STEM_SIZE;
     procedure GET(F : in FILE_TYPE; D : out STEM_TYPE);
@@ -27,7 +32,8 @@ package INFLECTIONS_PACKAGE is
   end STEM_TYPE_IO;  
   
   subtype MEANING_TYPE is STRING(1..MAX_MEANING_SIZE);
-  NULL_MEANING_TYPE : constant MEANING_TYPE := (others => ' ');
+
+   NULL_MEANING_TYPE : constant MEANING_TYPE := (others => ' ');
 
   type PART_OF_SPEECH_TYPE is (
           X,         --  all, none, or unknown
@@ -48,6 +54,7 @@ package INFLECTIONS_PACKAGE is
           SUFFIX     --  SUFFIX --  here artificial for code
                                 );                                   
 
+   
   package PART_OF_SPEECH_TYPE_IO is 
       new TEXT_IO.ENUMERATION_IO(PART_OF_SPEECH_TYPE);
 
@@ -67,6 +74,7 @@ package INFLECTIONS_PACKAGE is
 
    function "<" (LEFT, RIGHT : DECN_RECORD) return BOOLEAN;
     
+   
     package DECN_RECORD_IO is
     DEFAULT_WIDTH : NATURAL;
     procedure GET(F : in FILE_TYPE; D : out DECN_RECORD);
@@ -76,7 +84,7 @@ package INFLECTIONS_PACKAGE is
     procedure GET(S : in STRING; D : out DECN_RECORD; 
                                  LAST : out INTEGER);
     procedure PUT(S : out STRING; D : in DECN_RECORD);  
-  end DECN_RECORD_IO;  
+    end DECN_RECORD_IO;  
 
   type GENDER_TYPE is (
           X,         --  all, none, or unknown
@@ -86,6 +94,7 @@ package INFLECTIONS_PACKAGE is
           C          --  Common (masculine and/or feminine)
                        );
 
+   
   package GENDER_TYPE_IO is new TEXT_IO.ENUMERATION_IO(GENDER_TYPE);
 
   type CASE_TYPE is (
@@ -99,6 +108,7 @@ package INFLECTIONS_PACKAGE is
           ACC        --  ACCusitive
                      );
 
+   
   package CASE_TYPE_IO is new TEXT_IO.ENUMERATION_IO(CASE_TYPE);
   
   type NUMBER_TYPE is (
@@ -107,9 +117,12 @@ package INFLECTIONS_PACKAGE is
           P          --  Plural
                        );
 
+   
   package NUMBER_TYPE_IO is new TEXT_IO.ENUMERATION_IO(NUMBER_TYPE);
   
   type PERSON_TYPE is range 0..3;
+   
+   
   package PERSON_TYPE_IO is new TEXT_IO.INTEGER_IO(PERSON_TYPE);
   
   type COMPARISON_TYPE is (
@@ -118,6 +131,7 @@ package INFLECTIONS_PACKAGE is
           COMP,      --  COMParative
           SUPER      --  SUPERlative
           );  
+   
    
    package COMPARISON_TYPE_IO is new TEXT_IO.ENUMERATION_IO(COMPARISON_TYPE);
    
@@ -128,6 +142,7 @@ package INFLECTIONS_PACKAGE is
 
   type STEM_KEY_TYPE is new NATURAL range 0..9;
     
+   
   package STEM_KEY_TYPE_IO is new TEXT_IO.INTEGER_IO(STEM_KEY_TYPE);
   STEM_KEY_TYPE_IO_DEFAULT_WIDTH : INTEGER := 1;
  
@@ -161,6 +176,7 @@ package INFLECTIONS_PACKAGE is
           PASSIVE    --  PASSIVE
                       );       
   
+   
   package VOICE_TYPE_IO is new TEXT_IO.ENUMERATION_IO(VOICE_TYPE);
   
   type MOOD_TYPE is (
@@ -171,7 +187,8 @@ package INFLECTIONS_PACKAGE is
           INF,       --  INFinative
           PPL        --  ParticiPLe
                      );                    
-                                        
+                           
+   
   package MOOD_TYPE_IO is new TEXT_IO.ENUMERATION_IO(MOOD_TYPE);
   
   type TENSE_VOICE_MOOD_RECORD is 
@@ -181,6 +198,7 @@ package INFLECTIONS_PACKAGE is
       MOOD  : MOOD_TYPE  := X;
     end record;
   
+   
   package TENSE_VOICE_MOOD_RECORD_IO is
     DEFAULT_WIDTH : NATURAL;
     procedure GET(F : in FILE_TYPE; T : out TENSE_VOICE_MOOD_RECORD);
@@ -205,6 +223,7 @@ package INFLECTIONS_PACKAGE is
           W             --  a place Where
                            ); 
   
+   
   package NOUN_KIND_TYPE_IO is new TEXT_IO.ENUMERATION_IO(NOUN_KIND_TYPE);
 
   type PRONOUN_KIND_TYPE is (
@@ -218,6 +237,7 @@ package INFLECTIONS_PACKAGE is
           ADJECT        --  ADJECTival
                              ); 
 
+   
   package PRONOUN_KIND_TYPE_IO is 
       new TEXT_IO.ENUMERATION_IO(PRONOUN_KIND_TYPE);
   
@@ -245,8 +265,9 @@ package INFLECTIONS_PACKAGE is
                      --  having only perfect stem, but with present force
                           );             
 
-  package VERB_KIND_TYPE_IO is 
-      new TEXT_IO.ENUMERATION_IO(VERB_KIND_TYPE);
+   
+package VERB_KIND_TYPE_IO is 
+  new TEXT_IO.ENUMERATION_IO(VERB_KIND_TYPE);
 
 type NOUN_RECORD is
   record
@@ -256,6 +277,7 @@ type NOUN_RECORD is
     GENDER      : GENDER_TYPE := X;
   end record;
  
+   
  package NOUN_RECORD_IO is
    DEFAULT_WIDTH : NATURAL;
    procedure GET(F : in FILE_TYPE; N : out NOUN_RECORD);
@@ -274,6 +296,7 @@ type PRONOUN_RECORD is
     GENDER      : GENDER_TYPE := X;
   end record;
 
+   
  package PRONOUN_RECORD_IO is
    DEFAULT_WIDTH : NATURAL;
    procedure GET(F : in FILE_TYPE; P : out PRONOUN_RECORD);
@@ -292,6 +315,7 @@ type PROPACK_RECORD is
     GENDER      : GENDER_TYPE := X;
   end record;
 
+   
  package PROPACK_RECORD_IO is
    DEFAULT_WIDTH : NATURAL;
    procedure GET(F : in FILE_TYPE; P : out PROPACK_RECORD);
@@ -311,6 +335,7 @@ type ADJECTIVE_RECORD is
     CO          : COMPARISON_TYPE := X;
 end record;
 
+   
  package ADJECTIVE_RECORD_IO is
    DEFAULT_WIDTH : NATURAL;
    procedure GET(F : in FILE_TYPE; A : out ADJECTIVE_RECORD);
@@ -331,6 +356,7 @@ end record;
      SORT        : NUMERAL_SORT_TYPE := X;
   end record;
   
+   
   package NUMERAL_RECORD_IO is
     DEFAULT_WIDTH : NATURAL;
     procedure GET(F : in FILE_TYPE; NUM : out NUMERAL_RECORD);
@@ -347,6 +373,7 @@ type ADVERB_RECORD is
    GENERATED  : GENERATED_TYPE := X;     -- Indicates record was created by ADJ VOC -> ADV conversion
   end record;                            -- (only matters for examples; unlike X and POS prints "~ly, ~ily")
 
+   
  package ADVERB_RECORD_IO is
    DEFAULT_WIDTH : NATURAL;
    procedure GET(F : in FILE_TYPE; A : out ADVERB_RECORD);
@@ -365,6 +392,7 @@ type VERB_RECORD is
     NUMBER      : NUMBER_TYPE := X;
   end record;
 
+   
  package VERB_RECORD_IO is
    DEFAULT_WIDTH : NATURAL;
    procedure GET(F : in FILE_TYPE; V : out VERB_RECORD);
@@ -384,6 +412,7 @@ type VPAR_RECORD is
     TENSE_VOICE_MOOD  : TENSE_VOICE_MOOD_RECORD;    
   end record;
 
+   
  package VPAR_RECORD_IO is
    DEFAULT_WIDTH : NATURAL;
    procedure GET(F : in FILE_TYPE; VP : out VPAR_RECORD);
@@ -402,6 +431,7 @@ type SUPINE_RECORD is
     GENDER      : GENDER_TYPE := X;
   end record;
 
+   
  package SUPINE_RECORD_IO is
    DEFAULT_WIDTH : NATURAL;
    procedure GET(F : in FILE_TYPE; VP : out SUPINE_RECORD);
@@ -418,6 +448,7 @@ type PREPOSITION_RECORD is
     OBJ : CASE_TYPE := X;
   end record;
 
+   
  package PREPOSITION_RECORD_IO is
    DEFAULT_WIDTH : NATURAL;
    procedure GET(F : in FILE_TYPE; P : out PREPOSITION_RECORD);
@@ -428,12 +459,13 @@ type PREPOSITION_RECORD is
    procedure PUT(S : out STRING; P : in PREPOSITION_RECORD);  
  end PREPOSITION_RECORD_IO;  
 
-
 type CONJUNCTION_RECORD is
   record
     null;
   end record;
 
+   
+   
  package CONJUNCTION_RECORD_IO is
    DEFAULT_WIDTH : NATURAL;
    procedure GET(F : in FILE_TYPE; C : out CONJUNCTION_RECORD);
@@ -444,12 +476,12 @@ type CONJUNCTION_RECORD is
    procedure PUT(S : out STRING; C : in CONJUNCTION_RECORD);  
  end CONJUNCTION_RECORD_IO;  
 
-
 type INTERJECTION_RECORD is
   record
     null;
   end record;
  
+   
  package INTERJECTION_RECORD_IO is
    DEFAULT_WIDTH : NATURAL;
    procedure GET(F : in FILE_TYPE; I : out INTERJECTION_RECORD);
@@ -469,6 +501,7 @@ type INTERJECTION_RECORD is
   
   NULL_TACKON_RECORD : TACKON_RECORD;
 
+   
   package TACKON_RECORD_IO is
     DEFAULT_WIDTH : NATURAL;
     procedure GET(F : in FILE_TYPE; I : out TACKON_RECORD);
@@ -486,6 +519,7 @@ type INTERJECTION_RECORD is
 
   NULL_PREFIX_RECORD : PREFIX_RECORD;
 
+   
   package PREFIX_RECORD_IO is
     DEFAULT_WIDTH : NATURAL;
     procedure GET(F : in FILE_TYPE; P : out PREFIX_RECORD);
@@ -503,6 +537,7 @@ type INTERJECTION_RECORD is
 
   NULL_SUFFIX_RECORD : SUFFIX_RECORD;
  
+   
   package SUFFIX_RECORD_IO is
     DEFAULT_WIDTH : NATURAL;
     procedure GET(F : in FILE_TYPE; P : out SUFFIX_RECORD);
@@ -555,6 +590,7 @@ type INTERJECTION_RECORD is
 
   function "<" (LEFT, RIGHT : QUALITY_RECORD) return BOOLEAN;
 
+   
   package QUALITY_RECORD_IO is
     DEFAULT_WIDTH : NATURAL;
     procedure GET(F : in FILE_TYPE; P : out QUALITY_RECORD);
@@ -580,6 +616,7 @@ type INTERJECTION_RECORD is
       SUF  : ENDING := (others => ' ');
     end record;
 
+   
   package ENDING_RECORD_IO is
     DEFAULT_WIDTH : NATURAL;
     procedure GET(F : in FILE_TYPE; X : out ENDING_RECORD);
@@ -603,6 +640,8 @@ type INTERJECTION_RECORD is
     G,   --  scholar     --  Latin post 15th - Scholarly/Scientific   (16-18)
     H    --  modern      --  Coined recently, words for new things (19-20)
                       );
+ 
+   
   package AGE_TYPE_IO is new TEXT_IO.ENUMERATION_IO(AGE_TYPE);
   
   type FREQUENCY_TYPE is (     --  For dictionary entries
@@ -630,6 +669,7 @@ type INTERJECTION_RECORD is
 --  M,    --              --  Presently not used
 --  N     --              --  Presently not used
 
+   
   package FREQUENCY_TYPE_IO is new TEXT_IO.ENUMERATION_IO(FREQUENCY_TYPE);
 
   type INFLECTION_RECORD is
@@ -643,6 +683,7 @@ type INTERJECTION_RECORD is
 
   NULL_INFLECTION_RECORD : INFLECTION_RECORD;
 
+   
   package INFLECTION_RECORD_IO is
     DEFAULT_WIDTH : NATURAL;
     procedure GET(F : in FILE_TYPE; P : out INFLECTION_RECORD);
@@ -664,6 +705,8 @@ type INTERJECTION_RECORD is
 
   type INFLECTION_ARRAY is array (POSITIVE range <>) of INFLECTION_RECORD;
   subtype LEL_SECTION is INFLECTION_ARRAY(1..SIZE_OF_INFLECTIONS_SECTION);
+
+   
   package LEL_SECTION_IO is new DIRECT_IO(LEL_SECTION);
   
   BEL : INFLECTION_ARRAY(1..SIZE_OF_BLANK_INFLECTIONS);

@@ -3,6 +3,7 @@ with INFLECTIONS_PACKAGE; use INFLECTIONS_PACKAGE;
 with DICTIONARY_PACKAGE;  use DICTIONARY_PACKAGE;
 with CONFIG;              use CONFIG;
 with WORD_PARAMETERS;     use WORD_PARAMETERS;
+
 procedure PUT_EXAMPLE_LINE
   (OUTPUT :    in Text_IO.File_Type; IR : in INFLECTION_RECORD;
    DE     : in DICTIONARY_ENTRY)
@@ -247,7 +248,6 @@ is
          VOICE := ACTIVE;    --  Should only have allowed PASSIVE at this point
       end if;
 
-
       Text_IO.Put (OUTPUT, THEY & SUB & SHALL & HAVE & BEEN & "~" & ED);
 
    end PUT_VERB_EXAMPLE;
@@ -256,7 +256,7 @@ begin    --  PUT_EXAMPLE_LINE
 
    --TEXT_IO.PUT("In EXAMPLES  ");
    --TEXT_IO.PUT("  LKM  "); BOOLEAN_IO.PUT(WORDS_MDEV(LOCK_MEANINGS));
---TEXT_IO.PUT("   /LKM  "); BOOLEAN_IO.PUT((not WORDS_MDEV(LOCK_MEANINGS))  );
+   --TEXT_IO.PUT("   /LKM  "); BOOLEAN_IO.PUT((not WORDS_MDEV(LOCK_MEANINGS))  );
 
    if WORDS_MODE (DO_EXAMPLES) and then (not (CONFIGURATION = ONLY_MEANINGS))
    then

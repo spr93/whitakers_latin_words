@@ -2,10 +2,11 @@ with Text_IO;               use Text_IO;
 with Ada.Strings.Unbounded;
 with WORD_PARAMETERS;       use WORD_PARAMETERS;
 with DEVELOPER_PARAMETERS;  use DEVELOPER_PARAMETERS;
-with LIST_PACKAGE;          use LIST_PACKAGE;
+with STRINGS_PACKAGE;       use STRINGS_PACKAGE;
 with CONFIG;                use CONFIG;
 
 
+-- USES ADA 2012 CONDITIONAL CASE EXPRESSION IN OUTPUT LOOPS
 package body Arabic2Roman is
 
   procedure Arabic2Roman
@@ -15,19 +16,19 @@ package body Arabic2Roman is
       type Roman_Num_Record_Type is record
          Age_X              : Unbounded_String;
          Age_F              : Unbounded_String;
-         Bar_Reminder       : Boolean           := False;
+         Bar_Reminder       : Boolean                := False;
       end record;
 
-      Null_Roman_Num_Record : Roman_Num_Record_Type := (Bar_Reminder => False,
-                                                        others       => Null_Unbounded_String);
+      Null_Roman_Num_Record : Roman_Num_Record_Type  := (Bar_Reminder => False,
+                                                         others       => Null_Unbounded_String);
 
       Roman_Num_Record      : Roman_Num_Record_Type;
 
-      Put_Additive          : Boolean           := False;
-      Arabic_String         : String (1 .. 11)  := (others => ' ');
-      Arabic_Build_Counter  : Integer           := 1;
-      Bar_Length            : Integer           := 0;
-      Input_Counter         : Integer           := INPUT_WORD'First;
+      Put_Additive          : Boolean                := False;
+      Arabic_String         : String (1 .. 11)       := (others => ' ');
+      Arabic_Build_Counter  : Integer                := 1;
+      Bar_Length            : Integer                := 0;
+      Input_Counter         : Integer                := INPUT_WORD'First;
 
       Is_Negative           : Boolean;
 
@@ -47,7 +48,6 @@ package body Arabic2Roman is
          Put_Additive         := False;
          Bar_Length           := 0;
          Roman_Num_Record     := Null_Roman_Num_Record;
-
 
          if INPUT_WORD (Input_Counter) = '-' then
             Is_Negative := True;
@@ -108,7 +108,7 @@ package body Arabic2Roman is
                      Put (OUTPUT, "03 ");
                   end if;
                      Format(OUTPUT, BOLD);
-                  Put (OUTPUT, "nihil; nullum;");
+                  Put (OUTPUT, "nihil; nullum");
                      Format(OUTPUT, Reset);
                   New_Line (OUTPUT);
                return;

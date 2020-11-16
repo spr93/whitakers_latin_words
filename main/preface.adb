@@ -1,4 +1,6 @@
 with CONFIG;
+
+
 package body PREFACE is
 
   procedure PUT(S : in STRING) is
@@ -36,6 +38,5 @@ package body PREFACE is
       INTEGER_IO.PUT(TEXT_IO.CURRENT_OUTPUT, N, WIDTH);
     end if;
   end PUT;
-
 
 end PREFACE;

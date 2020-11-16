@@ -1,6 +1,6 @@
 -- Simple null interrupt handler for implementing NO_EXIT option
 
-package body no_exit_Handler is
+package body No_Exit_Handler is
 
    ---------------------
    -- No_Exit_Handler --

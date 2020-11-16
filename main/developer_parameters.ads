@@ -1,4 +1,6 @@
 with TEXT_IO;
+
+
 package DEVELOPER_PARAMETERS is
 
    
@@ -16,18 +18,10 @@ package DEVELOPER_PARAMETERS is
   MDEV_FILE : TEXT_IO.FILE_TYPE;
   MDEV_FULL_NAME : constant STRING := "WORD.MDV";
 
---  Debug not currently in use
---  --  DBG collects debug output for one entry at a time
---  DBG : TEXT_IO.FILE_TYPE;
---  DEBUG_FULL_NAME : constant STRING := "WORD.DBG";
-
-  --  STATS collects statistics on the program, stems used, inflections, etc.
   STATS : TEXT_IO.FILE_TYPE;
   STATS_FULL_NAME : constant STRING := "WORD.STA";
 
   type MDEV_TYPE is (   
-                      HAVE_STATISTICS_FILE, 
-                      WRITE_STATISTICS_FILE,
 
                       SHOW_DICTIONARY,      
                       SHOW_DICTIONARY_LINE, 
