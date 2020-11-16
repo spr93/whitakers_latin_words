@@ -6,6 +6,7 @@ package words_help is
 
    procedure Put (Help : in Main_Help_Type);
 
+private
 
 GENERAL_HELP: constant MAIN_HELP_TYPE :=  (
   "------------------------------                                                 ",

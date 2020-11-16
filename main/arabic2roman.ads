@@ -10,6 +10,10 @@ with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
 package Arabic2Roman is
 
+  procedure Arabic2Roman (OUTPUT : in Ada.Text_IO.File_Type ; INPUT_WORD : in String);
+
+
+private
   Roman_Nums_CLASSICAL : constant array (1..11) of Unbounded_String  := (
                           1         => (To_Unbounded_String("I")),
                           2         => (To_Unbounded_String("V")),
@@ -25,8 +29,6 @@ package Arabic2Roman is
    -- Stop at 100_000 for classical period.  See also Pliny.
 
    Arabic_Num : Natural range 0..999_999_999;
-
-   procedure Arabic2Roman (OUTPUT : in Ada.Text_IO.File_Type ; INPUT_WORD : in String);
 
    function Generate_Additive (Arabic_Num : in Integer) return Unbounded_String;
    function Generate_Subtractive (Arabic_Num : in Integer) return Unbounded_String;
