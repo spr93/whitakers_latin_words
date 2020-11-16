@@ -9,6 +9,8 @@ with UNIQUES_PACKAGE;
 pragma ELABORATE(INFLECTIONS_PACKAGE);
 pragma ELABORATE(DICTIONARY_PACKAGE);
 pragma ELABORATE(ADDONS_PACKAGE);
+
+
 package body LINE_STUFF is
 
   procedure LOAD_DICTIONARY(DICT : in out DICTIONARY;
@@ -82,7 +84,7 @@ package body LINE_STUFF is
 --  Same for ADJ
 --  If the ADJ or ADV stems have different first letters then make them 
 --  different dictionary entries  --  Do this in LOAD and in DICT.DIC
---TEXT_IO.PUT_LINE("GETTING STEMS IN LOAD_DICTIONARY");
+--  TEXT_IO.PUT_LINE("GETTING STEMS IN LOAD_DICTIONARY");
 
       STS := NULL_STEMS_TYPE;
       LL := 1;
@@ -163,7 +165,7 @@ package body LINE_STUFF is
            STS(4)(1..3) /= ZZZ_STEM ) then
           DICT(FC1) :=
                  new DICTIONARY_ITEM'(( (STS(1), BLK_STEM, BLK_STEM, BLK_STEM),
-             (ADJ, (PT.ADJ.DECL, POS)),
+          (ADJ, (PT.ADJ.DECL, POS)),
              --KIND, TRAN, MEAN), DICT(FC1));
              TRAN, MEAN), DICT(FC1));
           DICT(FC2) :=
@@ -870,12 +872,6 @@ package body LINE_STUFF is
     PREFACE.SET_COL(1);
     PREFACE.PUT("UNIQUES file loading");
 
---    if DICT_IO.IS_OPEN(DICT_FILE(D_K))  then
---      DICT_IO.DELETE(DICT_FILE(D_K));
---    end if;
---    DICT_IO.CREATE(DICT_FILE(D_K), DICT_IO.INOUT_FILE,  "");
---         -- ADD_FILE_NAME_EXTENSION(DICT_FILE_NAME, DICTIONARY_KIND'IMAGE(D_K)));
-
     while not END_OF_FILE(UNIQUES_FILE)  loop
       STEM_LINE := BLANKS;
       GET_LINE(UNIQUES_FILE, STEM_LINE, LAST);      --  STEM 
@@ -896,7 +892,7 @@ package body LINE_STUFF is
       GET_LINE(UNIQUES_FILE, LINE, L);         --  MEAN
          MEAN := HEAD(TRIM(LINE(1..L)), MAX_MEANING_SIZE);
          
---@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+    --@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
       declare
         UNIQUE_DE : DICTIONARY_ENTRY;
         PART      : PART_ENTRY         := NULL_PART_ENTRY;

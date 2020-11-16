@@ -1,4 +1,3 @@
-   with TEXT_IO;
    with STRINGS_PACKAGE; use STRINGS_PACKAGE;
    with WORD_PARAMETERS; use WORD_PARAMETERS;
    with INFLECTIONS_PACKAGE; use INFLECTIONS_PACKAGE;
@@ -12,7 +11,6 @@
    --  before it get turned into SIRAA and DMNPCA in LIST_PACKAGE
    --  Since it does only PARSE_ARRAY it is just checking INFLECTIONS, not DICTIONARY
    
-      use INFLECTION_RECORD_IO;
       use DICT_IO;
       
       PR, OPR : PARSE_RECORD := NULL_PARSE_RECORD;
@@ -40,26 +38,12 @@
            DICT_IO.READ(DICT_FILE(PR.D_K), DE, PR.MNPC);
 
 --TEXT_IO.PUT("ALLOWED? >"); DICTIONARY_ENTRY_IO.PUT(DE); TEXT_IO.NEW_LINE;
-           
-                    
-         -- if PR.D_K in GENERAL..UNIQUE  then
-            -- if (DE.TRAN.AGE = X) or else (DE.TRAN.AGE > A)  then
-               -- NOT_ONLY_ARCHAIC_STEM := TRUE;
-            -- end if;
-            -- if DE.TRAN.AGE < F  then     --  Or E????
-               -- NOT_ONLY_MEDIEVAL_STEM := TRUE;
-            -- end if;
-            -- if DE.TRAN.FREQ < E then  --     --  E for DICTLINE is uncommon  !!!!
-               -- NOT_ONLY_UNCOMMON_STEM := TRUE;
-            -- end if;
-         -- end if; 
       
       --  NOUN CHECKS
       
          case  PR.IR.QUAL.POFS is
          
             when N  =>
-            
             
                if  WORDS_MDEV(FOR_WORD_LIST_CHECK)  then
                   if (NOM <= PR.IR.QUAL.N.CS) and then
@@ -87,12 +71,9 @@
                      ALLOWED := FALSE;
                   end if;
                end if;
-         
-         
+                  
             when  ADJ  =>
-            
-            
-            
+
                if  WORDS_MDEV(FOR_WORD_LIST_CHECK)  then
                   if (NOM <= PR.IR.QUAL.ADJ.CS) and then
                      (S <= PR.IR.QUAL.ADJ.NUMBER) and then
@@ -195,9 +176,7 @@
                      null;
                   end if;
                end if;
-            
-            
-            
+                  
                if  WORDS_MDEV(FOR_WORD_LIST_CHECK)  then
                   if (PR.IR.QUAL.V.PERSON = 1) and then
                      (PR.IR.QUAL.V.NUMBER = S)  then
@@ -227,14 +206,10 @@
                   end if;
                end if;
          
-         
-         
-         
             when  others  =>
                null;
          
          end case;
-      
       
          if  WORDS_MDEV(FOR_WORD_LIST_CHECK)   then       --  Non parts
             if (PR.IR.QUAL.POFS in VPAR..SUPINE)    then
@@ -251,24 +226,17 @@
    
    
       procedure ORDER_PARSE_ARRAY(SL: in out PARSE_ARRAY; DIFF_J : out INTEGER) is
-         use INFLECTION_RECORD_IO;
          use DICT_IO;
       
          HITS : INTEGER := 0;
-         SL_FIRST : INTEGER := SL'FIRST;
          SL_LAST : INTEGER := SL'LAST;
          SL_LAST_INITIAL : INTEGER := SL_LAST;
          SM : PARSE_RECORD;
          --DE, ODE : DICTIONARY_ENTRY;
-         ROMAN_NUMBER      : BOOLEAN := FALSE;
          HAS_NOUN_ABBREVIATION      : BOOLEAN := FALSE;
-      --     HAS_ADJECTIVE_ABBREVIATION  : BOOLEAN := FALSE;
-      --     HAS_VERB_ABBREVIATION  : BOOLEAN := FALSE;
          NOT_ONLY_VOCATIVE : BOOLEAN := FALSE;
          NOT_ONLY_LOCATIVE : BOOLEAN := FALSE;
-       
-      
-         J : INTEGER := SL'FIRST;
+
       
          function DEPR (PR : PARSE_RECORD) return DICTIONARY_ENTRY is
          DE : DICTIONARY_ENTRY;
@@ -291,8 +259,7 @@
                 DE :=  UNIQUES_DE(PR.MNPC);
               end if;
             end if;
---  DICT_IO.SET_INDEX(DICT_FILE(PR.D_K), PR.MNPC);
---               DICT_IO.READ(DICT_FILE(PR.D_K), DE);
+
 --TEXT_IO.PUT_LINE("Returning from DEPR   MNPC = " & INTEGER'IMAGE(INTEGER(PR.MNPC)) & "  ");
 --DICTIONARY_ENTRY_IO.PUT(DE); TEXT_IO.NEW_LINE;
            return DE;
@@ -408,8 +375,6 @@
             exit when HITS = 0;
          end loop HIT_LOOP;
       
-      
-      
       --  Fix up the Archaic/Medieval
          if WORDS_MODE(TRIM_OUTPUT)  then
          --  Remove those inflections if MDEV and there is other valid
@@ -440,33 +405,6 @@
                      ((DE.TRAN.FREQ = X) or else (DE.TRAN.FREQ < D)) then  --     --  E for DICTLINE is uncommon  !!!!
                      NOT_ONLY_UNCOMMON := TRUE;
                   end if;
---   TEXT_IO.PUT_LINE("NOT_ONLY_ARCHAIC = " & BOOLEAN'IMAGE(NOT_ONLY_ARCHAIC));
---   TEXT_IO.PUT_LINE("NOT_ONLY_MEDIEVAL = " & BOOLEAN'IMAGE(NOT_ONLY_MEDIEVAL));
---   TEXT_IO.PUT_LINE("NOT_ONLY_UNCOMMON = " & BOOLEAN'IMAGE(NOT_ONLY_UNCOMMON));
-               
-               
---                  if ((SL(I).IR.QUAL.POFS = N) and then (SL(I).IR.QUAL.N.CS /= VOC))  or 
---                     ((SL(I).IR.QUAL.POFS = ADJ) and then (SL(I).IR.QUAL.ADJ.CS /= VOC))  or 
---                     ((SL(I).IR.QUAL.POFS = VPAR) and then (SL(I).IR.QUAL.VPAR.CS /= VOC))  then
---                     NOT_ONLY_VOCATIVE := TRUE;
---                  end if;
---                  if (SL(I).IR.QUAL.POFS = N) and then (SL(I).IR.QUAL.N.CS /= LOC)  then
---                     NOT_ONLY_LOCATIVE := TRUE;
---                  end if;
---                  if (SL(I).IR.QUAL.POFS = ADJ) and then (SL(I).IR.QUAL.ADJ.CS /= VOC)  then
---                     NOT_ONLY_VOCATIVE := TRUE;
---                  end if;
---                  if (SL(I).IR.QUAL.POFS = ADJ) and then (SL(I).IR.QUAL.ADJ.CS /= LOC)  then
---                     NOT_ONLY_LOCATIVE := TRUE;
---                  end if;
---                  if (SL(I).IR.QUAL.POFS = VPAR) and then (SL(I).IR.QUAL.VPAR.CS /= VOC)  then
---                     NOT_ONLY_VOCATIVE := TRUE;
---                  end if;
---                  if (SL(I).IR.QUAL.POFS = VPAR) and then (SL(I).IR.QUAL.VPAR.CS /= LOC)  then
---                     NOT_ONLY_LOCATIVE := TRUE;
---                  end if;
---    TEXT_IO.PUT_LINE("NOT_ONLY_VOCATIVE = " & BOOLEAN'IMAGE(NOT_ONLY_VOCATIVE));
---    TEXT_IO.PUT_LINE("NOT_ONLY_LOCATIVE = " & BOOLEAN'IMAGE(NOT_ONLY_LOCATIVE));
                
                   if SL(I).IR.QUAL.POFS = N  and then
                   SL(I).IR.QUAL.N.DECL = (9, 8) then
@@ -904,8 +842,6 @@
       
       end loop COMPRESS_LOOP;
    
-
-   
       for I in 1..PA_LAST  loop
       --  Set to 0 the VAR for N            --  DON'T
       --  if PA(I).IR.QUAL.POFS = N  then
@@ -927,7 +863,7 @@
          end if;
       end loop;
    
---                           for I in 1..PA_LAST  loop
+--     for I in 1..PA_LAST  loop
 --         PARSE_RECORD_IO.PUT(PA(I)); TEXT_IO.NEW_LINE;
 --      end loop;
 

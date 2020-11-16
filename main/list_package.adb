@@ -97,14 +97,14 @@ package body LIST_PACKAGE is
 
             -- qui and aliqui (PRON) are frequent enough that they should have dictionary forms
             -- but due to the program's structure we'll use another kludge to get there
-         elsif DE.PART.POFS = PRON then
-            if TRIM (DE.STEMS (1)) = "qu" then
-               Text_IO.Put (OUTPUT, "qui, quae, quod  PRON  ");
-               --   Dhit := True;
-            elsif TRIM (DE.STEMS (1)) = "aliqu" then
-               Text_IO.Put (OUTPUT, "aliqui, aliquae, aliquod  PRON  ");
-               -- Dhit := True;
-            end if;
+--           elsif DE.PART.POFS = PRON then
+--              if TRIM (DE.STEMS (1))    = "qu" then
+--                 Text_IO.Put (OUTPUT,     "qui, quae, quod  PRON  ");
+--                 --   Dhit := True;
+--              elsif TRIM (DE.STEMS (1)) = "aliqu" then
+--                 Text_IO.Put (OUTPUT,     "aliqui, aliquae, aliquod  PRON  ");
+--                 -- Dhit := True;
+--              end if;
 
          end if;
 
@@ -167,8 +167,8 @@ package body LIST_PACKAGE is
       --        end record;
       --  This has involved STEMFILE and INFLECTS, no DICTFILE
 
-   --  PARSE_RECORD is put through the LIST_SWEEP procedure that does TRIMing
-   --  Then, for processing for output, the data is converted to arrays of
+      --  PARSE_RECORD is put through the LIST_SWEEP procedure that does TRIMing
+      --  Then, for processing for output, the data is converted to arrays of
       --      type STEM_INFLECTION_RECORD is
       --        record
       --          STEM : STEM_TYPE          := NULL_STEM_TYPE;
@@ -394,68 +394,6 @@ package body LIST_PACKAGE is
          Text_IO.New_Line (OUTPUT);
       end PUT_INFLECTION;
 
---         procedure PUT_DICTIONARY_FORM(OUTPUT : TEXT_IO.FILE_TYPE;
---                                       DM     : DICTIONARY_MNPC_RECORD) is
---             HIT : BOOLEAN := FALSE;   --  Is anything on this line
---             DICTIONARY_LINE_NUMBER : INTEGER := INTEGER(DM.MNPC);
---             DE : DICTIONARY_ENTRY := DM.DE;
---
---
---         begin                               --  PUT_DICTIONARY_FORM
---               if WORDS_MODE(DO_DICTIONARY_FORMS)  then
---                 if WORDS_MDEV(DO_PEARSE_CODES) then
---                   TEXT_IO.PUT(OUTPUT, "02 ");
---                   HIT := TRUE;
---                end if;
---                if DICTIONARY_FORM(DE)'LENGTH /= 0  then
---                  TEXT_IO.PUT(OUTPUT, DICTIONARY_FORM(DE) & "  ");
---                  HIT := TRUE;
---                end if;
---               end if;
---
---
---
---               if WORDS_MDEV(SHOW_DICTIONARY_CODES) and then
---                  DE.PART.POFS not in XONS              then
---                  TEXT_IO.PUT(OUTPUT, " [");
---                 AGE_TYPE_IO.PUT(OUTPUT, DE.TRAN.AGE);
---                 AREA_TYPE_IO.PUT(OUTPUT, DE.TRAN.AREA);
---                 GEO_TYPE_IO.PUT(OUTPUT, DE.TRAN.GEO);
---                 FREQUENCY_TYPE_IO.PUT(OUTPUT, DE.TRAN.FREQ);
---                 SOURCE_TYPE_IO.PUT(OUTPUT, DE.TRAN.SOURCE);
---                 TEXT_IO.PUT(OUTPUT, "]  ");
---                 HIT := TRUE;
---               end if;
---
---
---               if WORDS_MDEV(SHOW_DICTIONARY) then
---                 TEXT_IO.PUT(OUTPUT, EXT(DM.D_K) & ">");
---                 HIT := TRUE;
---              end if;
---
---
---               if WORDS_MDEV(SHOW_DICTIONARY_LINE)  then
---                 if DICTIONARY_LINE_NUMBER > 0  then
---                   TEXT_IO.PUT(OUTPUT, "("
---                         & TRIM(INTEGER'IMAGE(DICTIONARY_LINE_NUMBER)) & ")");
---                   HIT := TRUE;
---                  end if;
---               end if;
---
---
---
---               PUT_DICTIONARY_FLAGS(DM, HIT);
---
---
---               if HIT   then
---                  TEXT_IO.NEW_LINE(OUTPUT);
---               end if;
---
---            --end if;
---
---         end PUT_DICTIONARY_FORM;
---
---
       procedure PUT_FORM
         (SR : in STEM_INFLECTION_RECORD; DM : in DICTIONARY_MNPC_RECORD)
       is
@@ -495,28 +433,28 @@ package body LIST_PACKAGE is
                   when CARD =>
                      S :=
                        HEAD
-                         (Integer'IMAGE (N) & " - (CARD answers 'how many');",
+                         (Integer'IMAGE (N) & " - (CARD answers 'how many')",
                           MAX_MEANING_SIZE);
                   when ORD =>
                      S :=
                        HEAD
                          (Integer'IMAGE (N) &
                           "th - (ORD, 'in series'); (a/the)" &
-                          Integer'IMAGE (N) & "th (part) (fract. w/ pars?);",
+                          Integer'IMAGE (N) & "th (part) (fract. w/ pars?)",
                           MAX_MEANING_SIZE);
                   when DIST =>
                      S :=
                        HEAD
                          (Integer'IMAGE (N) &
                           " each/apiece/times/fold/together/at a time - 'how many each'; by " &
-                          Integer'IMAGE (N) & "s; ",
+                          Integer'IMAGE (N) & "s ",
                           MAX_MEANING_SIZE);
                   when ADVERB =>
                      S :=
                        HEAD
                          (Integer'IMAGE (N) & " times, on" &
                           Integer'IMAGE (N) &
-                          " occasions - (ADVERB answers 'how often');",
+                          " occasions - (ADVERB answers 'how often')",
                           MAX_MEANING_SIZE);
                   when others =>
                      null;
@@ -551,7 +489,6 @@ package body LIST_PACKAGE is
                PUT_MEANING (OUTPUT, TRIM_BAR (DM.DE.MEAN));
                Text_IO.New_Line (OUTPUT);
             end if;
-
 
          else
             if DM.D_K = RRR then
@@ -779,7 +716,6 @@ package body LIST_PACKAGE is
                   end if;
                end if;
 
-
       --TEXT_IO.PUT_LINE("In the ADJ -> ADV kludge  Done adding PA for ADV");
             end if;           --  PA(I).IR.QUAL.POFS = ADJ
 
@@ -889,13 +825,13 @@ package body LIST_PACKAGE is
                   OSRA := NULL_SRA;
                   ODMA := NULL_DMA;
                   --ODM := NULL_DICTIONARY_MNPC_RECORD;
-                  --DM := NULL_DICTIONARY_MNPC_RECORD;
+                  --DM  := NULL_DICTIONARY_MNPC_RECORD;
                   while PA (I).IR.QUAL.POFS = PACK and I <= PA_LAST loop
                      if PA (I).MNPC /= ODM.MNPC
                      then   --  Encountering new MNPC
                         OSRA := SRA;
                         K    :=
-                          1;                  --  K indexes within the MNPCA array --  Initialize
+                          1;             --  K indexes within the MNPCA array --  Initialize
                         J :=
                           J +
                           1;             --  J indexes the number of MNPCA arrays - Next MNPCA
@@ -1433,7 +1369,8 @@ package body LIST_PACKAGE is
       Format(Output,Bold);
       Text_IO.Put
         (OUTPUT, TRIM_BAR(TRIM (HEAD (DE.MEAN, MM))));  --  so it wont line wrap/put CR
-      Format(Output,Reset); New_Line(Output);
+      Format(Output,Reset);
+      New_Line(Output);
    end LIST_ENTRY;
 
    procedure UNKNOWN_SEARCH
@@ -1617,28 +1554,5 @@ package body LIST_PACKAGE is
       end if;
 
    end LIST_NEIGHBORHOOD;
-
-   procedure Format (OUTPUT : in Text_IO.File_Type; Format : In Format_Command) is
-   begin
-
-      if WORDS_MODE(DO_ANSI_FORMATTING) and then
-        not WORDS_MODE (WRITE_OUTPUT_TO_FILE) then
-        Put (OUTPUT, Format_Reset);
-
-         case Format is
-            when UNDERLINE => Put (OUTPUT, Format_Underline);
-            when INVERSE   => Put (OUTPUT, Format_Inverse);
-            when FAINT     => if WORDS_MODE(DIM_EXAMPLES_TEXT) then
-                               Put (OUTPUT, Format_Faint);
-                                            end if;
-            when BOLD      => Put (OUTPUT, Format_Bold);
-            when RESET     => null;
-         end case;
-
-
-      end if;
-
-
-   end Format;
 
 end LIST_PACKAGE;

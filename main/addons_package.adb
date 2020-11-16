@@ -131,9 +131,6 @@ package body ADDONS_PACKAGE is
             PACKONS (PAC).POFS:= POFS;
             PACKONS(PAC).TACK := TS;
             PACKONS(PAC).ENTR := TN;
---            DICT_IO.SET_INDEX(DICT_FILE(D_K), M);
---            DE.MEAN := MEAN;
---            DICT_IO.WRITE(DICT_FILE(D_K), DE);
             PACKONS (PAC).MNPC := M;
             MEANS(M) := MEAN;
             M := M + 1;
@@ -143,10 +140,6 @@ package body ADDONS_PACKAGE is
             TACKONS (TAC).POFS:= POFS;
             TACKONS(TAC).TACK := TS;
             TACKONS(TAC).ENTR := TN;
---            DICT_IO.SET_INDEX(DICT_FILE(D_K), M);
---            DE.MEAN := MEAN;
---            DICT_IO.WRITE(DICT_FILE(D_K), DE);
---            --DICT_IO.WRITE(DICT_FILE(D_K), MEAN);
             TACKONS (TAC).MNPC := M;
             MEANS(M) := MEAN;
             M := M + 1;
@@ -169,10 +162,6 @@ package body ADDONS_PACKAGE is
             TICKONS(TIC).FIX  := PM.FIX;
             TICKONS(TIC).CONNECT  := PM.CONNECT;
             TICKONS(TIC).ENTR := PM.ENTR;
---            DICT_IO.SET_INDEX(DICT_FILE(D_K), M);
---            DE.MEAN := MEAN;
---            DICT_IO.WRITE(DICT_FILE(D_K), DE);
---            --DICT_IO.WRITE(DICT_FILE(D_K), MEAN);
             TICKONS (TIC).MNPC := M;
             MEANS(M) := MEAN;
             M := M + 1;
@@ -183,10 +172,7 @@ package body ADDONS_PACKAGE is
             PREFIXES(PRE).FIX  := PM.FIX;
             PREFIXES(PRE).CONNECT  := PM.CONNECT;
             PREFIXES(PRE).ENTR := PM.ENTR;
---            DICT_IO.SET_INDEX(DICT_FILE(D_K), M);
             DE.MEAN := MEAN;
---            DICT_IO.WRITE(DICT_FILE(D_K), DE);
---            --DICT_IO.WRITE(DICT_FILE(D_K), MEAN);
             PREFIXES(PRE).MNPC := M;
             MEANS(M) := MEAN;
             M := M + 1;
@@ -211,11 +197,6 @@ package body ADDONS_PACKAGE is
 --TEXT_IO.PUT("@4");
       MEAN := HEAD(S(1..LAST), MAX_MEANING_SIZE);
 --TEXT_IO.PUT("@5");
---
---        DICT_IO.SET_INDEX(DICT_FILE(D_K), M);
---        DE.MEAN := MEAN;
---        DICT_IO.WRITE(DICT_FILE(D_K), DE);
---        --DICT_IO.WRITE(DICT_FILE(D_K), MEAN);
         SUFFIXES(SUF).MNPC := M;
         MEANS(M) := MEAN;
         M := M + 1;
@@ -233,7 +214,7 @@ package body ADDONS_PACKAGE is
     PREFACE.PUT(TAC, 1); PREFACE.PUT("+");
     PREFACE.PUT(PAC, 2); PREFACE.PUT(" tackons ");
     PREFACE.PUT(TIC, 1); PREFACE.PUT("+");
-    PREFACE.PUT(PRE, 3); PREFACE.PUT(" prefixes ");
+    PREFACE.PUT(PRE, 3); PREFACE.PUT(" prefixes  ");
     PREFACE.PUT(SUF, 3); PREFACE.PUT(" suffixes ");
 
     PREFACE.SET_COL(60); PREFACE.PUT_LINE("--  loaded correctly");

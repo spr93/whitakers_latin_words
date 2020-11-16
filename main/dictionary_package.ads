@@ -1,8 +1,7 @@
---  Need KIND_ENTRY and IO
---  Need to modify TRANS
-   with TEXT_IO; 
-   with DIRECT_IO;
-   with INFLECTIONS_PACKAGE; use INFLECTIONS_PACKAGE;
+with TEXT_IO; 
+with DIRECT_IO;
+with INFLECTIONS_PACKAGE; use INFLECTIONS_PACKAGE;
+
 
 package DICTIONARY_PACKAGE is
       pragma Elaborate_Body;
@@ -127,9 +126,8 @@ package DICTIONARY_PACKAGE is
       
      );
 
-   
-      package SOURCE_TYPE_IO is new TEXT_IO.ENUMERATION_IO(SOURCE_TYPE);
-   
+
+package SOURCE_TYPE_IO is new TEXT_IO.ENUMERATION_IO(SOURCE_TYPE);
    
       type KIND_ENTRY(POFS : PART_OF_SPEECH_TYPE := X) is
          record
