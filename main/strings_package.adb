@@ -1,9 +1,10 @@
-with TEXT_IO;         use TEXT_IO;
+with TEXT_IO;     
 with Ada.Wide_Text_IO;
 with Ada.Wide_Characters.Handling;
 with Ada.Characters.Conversions;
 with WORD_PARAMETERS; use WORD_PARAMETERS;
-with LIST_PACKAGE;
+with STRINGS_PACKAGE; use STRINGS_PACKAGE;
+
 
    package body STRINGS_PACKAGE is
    
@@ -58,16 +59,16 @@ with LIST_PACKAGE;
          -- Converts unicode accented forms to basic ASCII 
          -- Useful for input that includes macrons.
          -- E.g., this causes 'ē' to be processed as 'e'
-         -- SPR TO DO; WHEN MAKE SEPARATE PRAGMA ADA_2012 and pragma in_line
+         
+         pragma Wide_Character_Encoding(UTF8);
             
          W_Line : Wide_String := Ada.Wide_Text_IO.Get_Line;
 
-         T_Line : String := Ada.Characters.Conversions.To_String (    
+         T_Line : String := Ada.Characters.Conversions.To_String(    
                             Ada.Wide_Characters.Handling.To_Basic(W_Line));
          
    begin
-      null;
-         
+
               if T_Line'Last <= INPUT_LINE_LENGTH then 
                 LINE(T_LINE'RANGE) := T_LINE;
                 L := T_Line'Length;
@@ -75,16 +76,37 @@ with LIST_PACKAGE;
                 Line := T_Line(T_Line'First..Line'Last);
                 L := Line'Last;
               end if; 
-      
    exception 
       when others =>
-           LIST_PACKAGE.Format(OUTPUT,LIST_PACKAGE.Inverse);
+           Format(OUTPUT,Inverse);
            Text_IO.Put_Line(OUTPUT, "ERROR processing Unicode. Falling back to non-Unicode mode.");
            Text_IO.Put(OUTPUT, "If this resolves the problem, save the current parameters by entering " & CHANGE_PARAMETERS_CHARACTER);
            WORDS_MODE(DO_UNICODE_INPUT) := False;
-           LIST_PACKAGE.Format(Output,LIST_PACKAGE.Reset);
+           Format(Output,Reset);
            New_Line;
       end GET_UNICODE; 
+   
+   
+      procedure Format (OUTPUT : in Text_IO.File_Type; Format : In Format_Command) is
+   begin
+
+      if WORDS_MODE(DO_ANSI_FORMATTING) and then
+        not WORDS_MODE (WRITE_OUTPUT_TO_FILE) then
+        Put (OUTPUT, Format_Reset);
+
+         case Format is
+            when UNDERLINE => Put (OUTPUT, Format_Underline);
+            when INVERSE   => Put (OUTPUT, Format_Inverse);
+            when FAINT     => if WORDS_MODE(DIM_EXAMPLES_TEXT) then
+                               Put (OUTPUT, Format_Faint);
+                                            end if;
+            when BOLD      => Put (OUTPUT, Format_Bold);
+            when RESET     => null;
+         end case;
+
+      end if;
+
+   end Format;
    
    
    end STRINGS_PACKAGE;  

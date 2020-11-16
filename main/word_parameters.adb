@@ -2,11 +2,11 @@ with STRINGS_PACKAGE; use STRINGS_PACKAGE;
 with LATIN_FILE_NAMES; use LATIN_FILE_NAMES;
 with CONFIG; use CONFIG;
 with PREFACE;
+with Ada.Wide_Text_IO;
 pragma Elaborate(PREFACE);
 
- -- FOR WINDOWS TARGETS ONLY
- -- These with's enable Windows vt100 text format support
- with System.OS_Constants;
+ -- FOR WINDOWS TARGETS
+ -- Enables Windows vt100 text format support
  with Windows_Vt100;
  -- END WINDOWS TARGET-SPECIFIC SECTION
 
@@ -381,7 +381,7 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
         CREATE(UNKNOWNS, OUT_FILE, UNKNOWNS_FULL_NAME);
       exception
         when others =>
-          PUT_LINE("Cannot CREATE WORD.UNK - Check if it is in use elsewhere");
+          PUT_LINE("Cannot CREATE WORD.UNK");
       end;
       end if;
     
@@ -414,24 +414,19 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
     INQUIRE(DO_ARABIC_NUMERALS, DO_ARABIC_NUMERALS_HELP);
       
     INQUIRE(DO_ANSI_FORMATTING, DO_ANSI_FORMATTING_HELP);
-
-      declare
-         use System.OS_Constants;
-            Rc : Boolean := False;
-      begin
-         if  Target_OS = Windows and WORDS_MODE(DO_ANSI_FORMATTING) then 
-            
-            Rc := Windows_Vt100.Enable_Windows_Console_Vt100_Codes;
-            if RC = False then 
-               Words_Mode(DO_ANSI_FORMATTING) := FALSE;
-            end If; 
-       
-         end if;
-      end; -- declare block  
+    
+      if WORDS_MODE(DO_ANSI_FORMATTING)
+         and then Windows_Vt100.Is_Windows 
+      then
+         case Windows_Vt100.Enable_Windows_Console_Vt100_Codes is
+            when True => null;
+            when False => Put_Line("ERROR:  Terminal unable to enter vt100 mode.");
+         end case;
+      end if; 
           
-      INQUIRE(DIM_EXAMPLES_TEXT, DIM_EXAMPLES_TEXT_HELP);
+    INQUIRE(DIM_EXAMPLES_TEXT, DIM_EXAMPLES_TEXT_HELP);
       
-      INQUIRE(DO_UNICODE_INPUT, DO_UNICODE_HELP_TEXT);
+    INQUIRE(DO_UNICODE_INPUT, DO_UNICODE_HELP_TEXT);
 
     PUT("Do you wish to save this set of parameters? Y or N (Default) ");
     PUT(" =>");

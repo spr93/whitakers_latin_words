@@ -1,4 +1,4 @@
-with Text_IO;
+with Text_IO; use Text_IO;
 with Ada.Characters.Handling; 
 with Ada.Strings;             use Ada.Strings;
 with Ada.Strings.Fixed;
@@ -34,9 +34,24 @@ package STRINGS_PACKAGE is
 
      procedure GET_UNICODE(LINE : in out String; 
                            L    : in out Integer);
-   
+     pragma Wide_Character_Encoding(UTF8);
      pragma Inline(GET_UNICODE);
    
-     pragma Wide_Character_Encoding(UTF8);
+   ---------------------------
+   -- ANSI Formatting Codes --
+   ---------------------------
+   --  for DO_ANSI_FORMATTING WORDS_PARAMETER
 
+   Format_Underline : constant String := (ASCII.ESC & "[4m");  -- For dictionary line only (corresp. Pearse 02)
+   Format_Bold      : constant String := (ASCII.ESC & "[1m");  -- For definition  (corresp. Pearse 03)
+   Format_Inverse   : constant String := (ASCII.ESC & "[7m");  -- Use sparingly for important notes
+   Format_Faint     : constant String := (ASCII.ESC & "[2m");  -- For examples; they get distracting in long output
+   Format_Reset     : constant String := (ASCII.ESC & "[0m");
+   -- FOR WINDOWS THESE CODES MUST BE ENABLED AT STARTUP WITH THE FUNCTION IN WINDOWS_VT100.ADB
+   
+   type Format_Command is (UNDERLINE, BOLD, INVERSE, FAINT, RESET);
+   procedure Format (OUTPUT : in File_Type; Format : In Format_Command);
+   pragma Inline_Always(Format);
+
+   
 end STRINGS_PACKAGE;  

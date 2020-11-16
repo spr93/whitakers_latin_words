@@ -1,4 +1,5 @@
 with TEXT_IO;
+with ADA.Wide_Text_IO;
 
 
 package WORD_PARAMETERS is
@@ -18,8 +19,9 @@ package WORD_PARAMETERS is
   MODE_FILE : TEXT_IO.FILE_TYPE;
 
   --  OUTPUT is used to write out and save the results of a run
-  OUTPUT : TEXT_IO.FILE_TYPE;
-  INPUT  : TEXT_IO.FILE_TYPE;
+  OUTPUT    : TEXT_IO.FILE_TYPE;
+  INPUT     : TEXT_IO.FILE_TYPE;
+  W_INPUT   : ADA.Wide_Text_IO.File_Type; 
   --  UNKNOWNS is used to record the words that the program fails to find
   UNKNOWNS : TEXT_IO.FILE_TYPE;
 

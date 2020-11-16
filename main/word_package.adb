@@ -13,10 +13,10 @@
    with Ada.Environment_Variables;
 
    -- FOR WINDOWS TARGETS
-   -- These with's enable Windows vt100 text format support
-   with System.OS_Constants;
+   -- Enable Windows vt100 text format support
    with Windows_Vt100;
    -- END WINDOWS TARGET-SPECIFIC SECTION
+
 
 package body WORD_PACKAGE is
 
@@ -27,10 +27,10 @@ package body WORD_PACKAGE is
             PAUSE_LINE : STRING(1..300);
             PAUSE_LAST : INTEGER := 0;
          begin
-         if WORDS_MDEV(PAUSE_IN_SCREEN_OUTPUT)  then
-          if METHOD = INTERACTIVE  then
-           if TEXT_IO.NAME(OUTPUT) =
-              TEXT_IO.NAME(TEXT_IO.STANDARD_OUTPUT)  then
+           if WORDS_MDEV(PAUSE_IN_SCREEN_OUTPUT)  then
+             if METHOD = INTERACTIVE  then
+               if TEXT_IO.NAME(OUTPUT) =
+                  TEXT_IO.NAME(TEXT_IO.STANDARD_OUTPUT)  then
                      
                      TEXT_IO.PUT_LINE(TEXT_IO.STANDARD_OUTPUT,
                  "                          MORE - hit RETURN/ENTER to continue");
@@ -246,7 +246,6 @@ package body WORD_PACKAGE is
       --  Tries all possible inflections against the input word in S
       --  and constructs a STEM_LIST of those that survive SL
          use LEL_SECTION_IO;
-         use INFLECTION_RECORD_IO;
          WORD : constant STRING := LOWER_CASE(TRIM(S));
          LAST_OF_WORD : constant CHARACTER := WORD(WORD'LAST);
          LENGTH_OF_WORD   : constant INTEGER := WORD'LENGTH;
@@ -584,10 +583,6 @@ package body WORD_PACKAGE is
       --        raise;       
       end DICTIONARY_SEARCH;
 
-
-
-
-
       procedure SEARCH_DICTIONARIES(SSA : in STEM_ARRAY_TYPE;
                                     PREFIX : PREFIX_ITEM; SUFFIX : SUFFIX_ITEM;
                                     RESTRICTION : DICT_RESTRICTION := REGULAR) is
@@ -698,7 +693,6 @@ end CHANGE_LANGUAGE;
 
 
          procedure ORDER_STEMS(SX : in out SAL) is
-            use INFLECTION_RECORD_IO;
             use DICT_IO;
             HITS : INTEGER := 0;
             SL : SAL := SX;
@@ -886,19 +880,6 @@ end CHANGE_LANGUAGE;
          --TEXT_IO.PUT(INTEGER'IMAGE(PDL(J).DS.KEY)); TEXT_IO.NEW_LINE;
          --end loop;
          --TEXT_IO.PUT_LINE("****************************");
-
-         --if WORDS_MODE(WRITE_STATISTICS_FILE)  then
-         --declare
-         --  PSTAT : PRUNED_DICTIONARY_LIST := PDL; 
-         --begin
-         --  TEXT_IO.PUT(STATS, "Number of PDL DICT hits");
-         --  TEXT_IO.SET_COL(STATS, 30);
-         --  INTEGER_IO.PUT(STATS, NUMBER_IN_PDL); 
-         --  TEXT_IO.SET_COL(STATS, 40);
-         --  TEXT_IO.PUT(STATS, INPUT_WORD);
-         --  TEXT_IO.NEW_LINE(STATS);
-         --end;
-         --end if;
          -------------------------------------------------------------
 
          --  For the reduced dictionary list PDL
@@ -906,12 +887,9 @@ end CHANGE_LANGUAGE;
          ON_PDL:
             for J in 1..PDL_INDEX  loop
 
-
-
                PDL_PART := PDL(J).DS.PART;
                PDL_KEY := PDL(J).DS.KEY;
                MNPC_PART := PDL(J).DS.MNPC;
-
 
             --  Is there any point in going through the process for this PDL
                PDL_P  := PDL(J).DS.PART.POFS;  --  Used only for FIX logic below
@@ -1268,7 +1246,6 @@ end CHANGE_LANGUAGE;
 
                      end if;
                   end if;
-               <<END_OF_SL_LOOP>> null;
                end loop ON_SL;
             --TEXT_IO.PUT("In RED_ST_L   after loop ON_SL  M = "); 
             --TEXT_IO.PUT(INTEGER'IMAGE(M)); TEXT_IO.NEW_LINE;
@@ -2230,22 +2207,15 @@ end CHANGE_LANGUAGE;
                ENGLISH_DICTIONARY_AVAILABLE(GENERAL) := FALSE;
          end TRY_TO_LOAD_ENGLISH_WORDS;
          
+      if WORDS_MODE(DO_ANSI_FORMATTING)
+        and then Windows_Vt100.Is_Windows
+      then 
+          if not Windows_Vt100.Enable_Windows_Console_Vt100_Codes
+            then  Preface.Put_Line("ERROR:  Terminal unable to enter vt100 mode.");
+          end if; 
+      end if; 
       
-      declare
-         use System.OS_Constants;
-            Rc : Boolean := False;
-      begin
-         if  Target_OS = Windows and WORDS_MODE(DO_ANSI_FORMATTING) then 
-            
-            Rc := Windows_Vt100.Enable_Windows_Console_Vt100_Codes;
-            if RC = False then 
-               Words_Mode(DO_ANSI_FORMATTING) := FALSE;
-            end If; 
-       
-         end if;
-      end; -- declare block  
-         
-      end INITIALIZE_WORD_PACKAGE;
+ end INITIALIZE_WORD_PACKAGE;
 
   
    procedure CHECK_PATH_VARIABLE is
@@ -2293,12 +2263,10 @@ end CHANGE_LANGUAGE;
             Preface.Put_Line("Using data found at " & Current_Directory);
         end if;
         end loop;
-     
-        
+         
    exception
         when others => null;  -- Check path silently, don't get hung up on permissions errors or nonexistent directories in PATH
 
  end CHECK_PATH_VARIABLE; 
    
-   
-   end WORD_PACKAGE;
+ end WORD_PACKAGE;
