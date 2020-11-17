@@ -1209,7 +1209,7 @@ package body LIST_PACKAGE is
 
          Next_Meaning_Same := False;
          Last_Form_Same    := False;
-         Next_Form_Same    := False;
+         Next_Form_Same    := False;  -- only read for UNIQUE
 
         if DMA (J).DE.MEAN = DMA (J + 1).DE.MEAN then
                Next_Meaning_Same := True;
@@ -1238,7 +1238,8 @@ package body LIST_PACKAGE is
 
          end if;
 
-         if DMA(J).DE.STEMS = DMA(J + 1).DE.STEMS
+         if DMA(J).D_K = UNIQUE
+           and then DMA(J).DE.STEMS = DMA(J + 1).DE.STEMS
            and then DMA (J).DE.PART.POFS = DMA (J + 1).DE.PART.POFS
            and then DMA (J).DE.TRAN.AGE = DMA (J + 1).DE.TRAN.AGE
            and then DMA (J).DE.TRAN.AREA = DMA (J + 1).DE.TRAN.AREA
