@@ -1325,15 +1325,6 @@ package body LIST_PACKAGE is
 
       Text_IO.New_Line (OUTPUT);
 
-               if J < PA_LAST and then
-                SRAA(J)(1).stem =  SRAA(J-1)(1).stem
-                   and then DMA(J).DE.STEMS = DMA(J+1).de.STEMS
-                   then
-                  Skip_Next := true;
-               else
-                  skip_next := false;
-              end if;
-
       Skip_Next := false;
 
    exception
