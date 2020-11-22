@@ -1,8 +1,6 @@
 with Strings_Package;     use Strings_Package;
 with Inflections_Package; use Inflections_Package;
 with Dictionary_Package;  use Dictionary_Package;
-with TEXT_IO;
-
 
 function Dictionary_Form(DE      : in     Dictionary_Entry) return String is
 
@@ -41,7 +39,7 @@ begin
     return Trim(DE.Stems(1)) & "  " & Part_of_Speech_Type'Image(DE.Part.POFS) &
     "  " & Case_Type'Image(DE.Part.Prep.Obj);
   end if;
-   
+
   if DE.Stems(2) = Null_Stem_Type and
   DE.Stems(3) = Null_Stem_Type and
   DE.Stems(4) = Null_Stem_Type and not
@@ -52,9 +50,10 @@ begin
   ((DE.Part.POFS = V) and then (DE.Part.V.Con = (9, 8))) or
   ((DE.Part.POFS = V) and then (DE.Part.V.Con = (9, 9))))
   then
-      return Trim(DE.Stems(1)) & "  " & Part_of_Speech_Type'Image(DE.Part.POFS);
+    return Trim(DE.Stems(1)) & "  " & Part_of_Speech_Type'Image(DE.Part.POFS);
     --  For UNIQUES, CONJ, INTERJ, ...
   end if;
+
 
   if DE.Part.POFS = N then
     if DE.Part.N.DEcl.Which = 1 then
@@ -145,18 +144,10 @@ begin
       raise Not_Found;
     end if; --  N
 
-  elsif DE.Part.POFS = PRON then
-         
+  elsif DE.Part.POFS = Pron then
     if DE.Part.Pron.DEcl.Which = 1 then
-            
-      if Trim(De.Stems(1)) = "qu"  or Trim(De.Stems(1)) = "aliqu" then 
-        OX(1) := Add(DE.Stems(1), "i");
-        OX(2) := Add(DE.Stems(1), "ae");
-        OX(3) := Add(DE.Stems(1), "od");    
-      else   
       raise Not_Found;
-      end if; 
-         
+
     elsif DE.Part.Pron.DEcl.Which = 3 then
       OX(1) := Add(DE.Stems(1), "ic");
       OX(2) := Add(DE.Stems(1), "aec");
@@ -205,12 +196,16 @@ begin
     elsif DE.Part.Pron.DEcl = (9, 9) then
       OX(1) := Add(DE.Stems(1), "");
       OX(2) := Add(Null_OX, "undeclined");
-    
+
     else
       raise Not_Found;
     end if; --  PRON
 
   elsif DE.Part.POFS = Adj then
+
+    --TEXT_IO.NEW_LINE;  
+    --DICTIONARY_ENTRY_IO.PUT(DE);
+    --TEXT_IO.NEW_LINE;
 
     if DE.Part.Adj.Co = Comp then
       if DE.Part.Adj.DEcl.Which = 5 then
@@ -606,12 +601,6 @@ begin
     OX(2) := Add(DE.Stems(1), "ae");
     OX(3) := Add(DE.Stems(1), "a");
 
-   elsif (DE.Part.POFS = PACK) then  
-    if  Trim(De.Stems(1)) = "qu"  or Trim(De.Stems(1)) = "aliqu" then 
-    OX(1) := Add(DE.Stems(1), "i");
-    OX(2) := Add(DE.Stems(1), "ae");
-    OX(3) := Add(DE.Stems(1), "od");
-    end if;
   else
     OX(1) := Add(DE.Stems(1), "");
   end if; -- On PART           
