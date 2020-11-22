@@ -1470,8 +1470,8 @@ end PARSE;
                      while not End_Of_File(W_Input) loop
                      
                      PARSE( (Ada.Characters.Conversions.To_String 
-                                      --  (Ada.Wide_Characters.Handling.To_Basic
-                                        (GET_Line(W_INPUT)))); -- );
+                                        (Ada.Wide_Characters.Handling.To_Basic
+                                        (GET_Line(W_INPUT)))));
                      end loop;
                      
                      Close(W_Input);

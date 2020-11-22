@@ -35,30 +35,28 @@ function Dictionary_Form(DE      : in     Dictionary_Entry) return String is
     
       case KIND is
         
-         when INDEF  =>  if TRIM(STEM) = "qu" then
-
-                    
+         when INDEF  =>  if TRIM(STEM) = "aliqu" then
+                                       OX(1) := Add(DE.Stems(1), "is");
+                                       OX(2) := Add(DE.Stems(1), "a (rare)");
+                                       OX(3) := Add(DE.Stems(1), "od (-id rare/late) INDEF");
+                         else
                                        OX(1) := Add(DE.Stems(1), "is");
                                        OX(2) := Add(DE.Stems(1), "a");
-               OX(3) := Add(DE.Stems(1), "id INDEF");          
-                    else
-                                                      OX(1) := Add(DE.Stems(1), "is");
-                                       OX(2) := Add(DE.Stems(1), "a (rare)");
-                                       OX(3) := Add(DE.Stems(1), "od (-id rare) INDEF");
+                                       OX(3) := Add(DE.Stems(1), "id INDEF");            
                          end if;
             
 
         
          when ADJECT =>   OX(1) := Add(DE.Stems(1), "i");
-                                   if TRIM(STEM) = "qu" then
-                                     OX(2) := Add(DE.Stems(1), "ae");
-                                   else 
+                                   if TRIM(STEM) = "aliqu" then
                                      OX(2) := Add(DE.Stems(1), "a");
+                                   else 
+                                     OX(2) := Add(DE.Stems(1), "ae");
                                    end if; 
                                    OX(3) := Add(DE.Stems(1), "od ADJ");
 
         
-          when REL    =>   OX(1) := Add(DE.Stems(1), "i");
+        when REL    =>   OX(1) := Add(DE.Stems(1), "i");
                          OX(2) := Add(DE.Stems(1), "ae");
                          OX(3) := Add(DE.Stems(1), "od REL");
             
