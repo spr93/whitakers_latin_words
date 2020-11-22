@@ -94,18 +94,6 @@ package body LIST_PACKAGE is
          if DICTIONARY_FORM (DE)'LENGTH /= 0 then
             Text_IO.Put (OUTPUT, DICTIONARY_FORM (DE) & "  ");
             DHIT := True;
-
-            -- qui and aliqui (PRON) are frequent enough that they should have dictionary forms
-            -- but due to the program's structure we'll use another kludge to get there
---           elsif DE.PART.POFS = PRON then
---              if TRIM (DE.STEMS (1))    = "qu" then
---                 Text_IO.Put (OUTPUT,     "qui, quae, quod  PRON  ");
---                 --   Dhit := True;
---              elsif TRIM (DE.STEMS (1)) = "aliqu" then
---                 Text_IO.Put (OUTPUT,     "aliqui, aliquae, aliquod  PRON  ");
---                 -- Dhit := True;
---              end if;
-
          end if;
 
          if D_K = UNIQUE and then WORDS_MDEV (SHOW_DICTIONARY) = False then
