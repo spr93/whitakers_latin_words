@@ -30,6 +30,48 @@ function Dictionary_Form(DE      : in     Dictionary_Entry) return String is
     Form := Head(Trim(Form) & Factor, 100);
   end Add_to;
 
+   procedure Process_Qu_Pron (Kind : in PRONOUN_KIND_TYPE; Stem : in STEM_TYPE) is
+   begin
+    
+      case KIND is
+        
+         when INDEF  =>  if TRIM(STEM) = "aliqu" then
+                                       OX(1) := Add(DE.Stems(1), "is");
+                                       OX(2) := Add(DE.Stems(1), "a (rare)");
+                                       OX(3) := Add(DE.Stems(1), "od (-id rare/late) INDEF");
+                         else
+                                       OX(1) := Add(DE.Stems(1), "is");
+                                       OX(2) := Add(DE.Stems(1), "a");
+                                       OX(3) := Add(DE.Stems(1), "id INDEF");            
+                         end if;
+            
+
+        
+         when ADJECT =>   OX(1) := Add(DE.Stems(1), "i");
+                                   if TRIM(STEM) = "aliqu" then
+                                     OX(2) := Add(DE.Stems(1), "a");
+                                   else 
+                                     OX(2) := Add(DE.Stems(1), "ae");
+                                   end if; 
+                                   OX(3) := Add(DE.Stems(1), "od ADJ");
+
+        
+        when REL    =>   OX(1) := Add(DE.Stems(1), "i");
+                         OX(2) := Add(DE.Stems(1), "ae");
+                         OX(3) := Add(DE.Stems(1), "od REL");
+            
+         
+        when INTERR =>   OX(1) := Add(DE.Stems(1), "is");
+                         OX(2) := Add(DE.Stems(1), "is");
+                         OX(3) := Add(DE.Stems(1), "id INTERR");
+            
+        
+         when others => raise Not_Found;
+            
+       end case; 
+    end Process_Qu_Pron;
+   
+   
 begin
   --DICTIONARY_ENTRY_IO.PUT(DE);
   --  So I can call with a NULL_DICTIONARY_ENTRY and not bomb
@@ -149,14 +191,8 @@ begin
          
     if DE.Part.Pron.DEcl.Which = 1 then
             
-      if Trim(De.Stems(1)) = "qu"  or Trim(De.Stems(1)) = "aliqu" then 
-        OX(1) := Add(DE.Stems(1), "i");
-        OX(2) := Add(DE.Stems(1), "ae");
-        OX(3) := Add(DE.Stems(1), "od");    
-      else   
-      raise Not_Found;
-      end if; 
-         
+       Process_Qu_Pron(De.Part.Pron.Kind, De.Stems(1));
+
     elsif DE.Part.Pron.DEcl.Which = 3 then
       OX(1) := Add(DE.Stems(1), "ic");
       OX(2) := Add(DE.Stems(1), "aec");
@@ -210,6 +246,10 @@ begin
       raise Not_Found;
     end if; --  PRON
 
+  elsif DE.Part.POFS = PACK and then
+       DE.Part.Pack.Decl.Var = 1 then
+        Process_Qu_Pron(De.Part.Pack.Kind,De.Stems(1)); 
+      
   elsif DE.Part.POFS = Adj then
 
     if DE.Part.Adj.Co = Comp then
@@ -606,12 +646,6 @@ begin
     OX(2) := Add(DE.Stems(1), "ae");
     OX(3) := Add(DE.Stems(1), "a");
 
-   elsif (DE.Part.POFS = PACK) then  
-    if  Trim(De.Stems(1)) = "qu"  or Trim(De.Stems(1)) = "aliqu" then 
-    OX(1) := Add(DE.Stems(1), "i");
-    OX(2) := Add(DE.Stems(1), "ae");
-    OX(3) := Add(DE.Stems(1), "od");
-    end if;
   else
     OX(1) := Add(DE.Stems(1), "");
   end if; -- On PART           
