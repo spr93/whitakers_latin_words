@@ -36,7 +36,7 @@ Run sorter against modified DICTLINE.GEN.  Input:
 Copy DICTLINE.GEN to CHECK.IN and run CHECK. 
 Review CHECK.OUT.
 
-Run WAKEDICT (note the W) against DICTFILE.GEN
+Run WAKEDICT (note the W) against DICTLINE.GEN
 
 Run SORTER against the resulting STEMLIST.GEN
        SORTER
