@@ -2,7 +2,6 @@ with TEXT_IO;
 
 
 package DEVELOPER_PARAMETERS is
-
    
 --  These are a few strange declarations to be used in diagnostics;
   SRA_MAX, SRAA_MAX, DMA_MAX : INTEGER := 0;
@@ -11,10 +10,11 @@ package DEVELOPER_PARAMETERS is
 --  This package defines a number of parameters that areused in the program
 --  The default values are set in the body, so that they may be changed easily
 
-  --  These files are used by the program if requested, but not necessary
-  --  They are all text files and human readable
+--  These files are used by the program if requested, but not necessary
+--  They are all text files and human readable
 
-  --  DEVELOPER MODE_FILE is used by the program to remember values 
+--  DEVELOPER MODE_FILE is used by the program to remember values 
+
   MDEV_FILE : TEXT_IO.FILE_TYPE;
   MDEV_FULL_NAME : constant STRING := "WORD.MDV";
 

@@ -1,17 +1,14 @@
 with STRINGS_PACKAGE; use STRINGS_PACKAGE;
-with INFLECTIONS_PACKAGE; use INFLECTIONS_PACKAGE;
+with INFLECTIONS_PACKAGE;
 pragma ELABORATE(INFLECTIONS_PACKAGE);
 
 
 package body DICTIONARY_PACKAGE is
-  use STEM_KEY_TYPE_IO;
   use TEXT_IO;
 
   MNPC_IO_DEFAULT_WIDTH : constant NATURAL := 6;
   NUMERAL_VALUE_TYPE_IO_DEFAULT_WIDTH : constant NATURAL := 5;
-  KIND_ENTRY_IO_DEFAULT_WIDTH : constant NATURAL := VERB_KIND_TYPE_IO.DEFAULT_WIDTH;
-  --PART_WIDTH : NATURAL;
-  
+
   function NUMBER_OF_STEMS(P : PART_OF_SPEECH_TYPE) return STEM_KEY_TYPE is
   begin
     case P is
@@ -309,9 +306,6 @@ end PROPACK_ENTRY_IO;
    
 package body ADJECTIVE_ENTRY_IO is
   use DECN_RECORD_IO;
-  use GENDER_TYPE_IO;
-  use CASE_TYPE_IO;
-  use NUMBER_TYPE_IO;
   use COMPARISON_TYPE_IO;
   SPACER : CHARACTER := ' ';
 
@@ -374,7 +368,6 @@ package body NUMERAL_ENTRY_IO is
   SPACER : CHARACTER := ' ';
 
   NUM_OUT_SIZE : constant := 5;    --  Set in spec  !!!!!!!!!!!!!!!!!!!!!!!!!
-
 
   procedure GET(F : in FILE_TYPE; NUM : out NUMERAL_ENTRY) is
   begin
@@ -446,9 +439,9 @@ package body NUMERAL_ENTRY_IO is
 
 end NUMERAL_ENTRY_IO;
 
+   
 package body ADVERB_ENTRY_IO is
   use COMPARISON_TYPE_IO;
-  SPACER : CHARACTER := ' ';
 
   procedure GET(F : in FILE_TYPE; A : out ADVERB_ENTRY) is
   begin
@@ -547,7 +540,6 @@ end VERB_ENTRY_IO;
    
 package body PREPOSITION_ENTRY_IO is
   use CASE_TYPE_IO;
-  SPACER : CHARACTER := ' ';
 
   procedure GET(F : in FILE_TYPE; P : out PREPOSITION_ENTRY) is
   begin
@@ -588,7 +580,6 @@ end PREPOSITION_ENTRY_IO;
 
 package body CONJUNCTION_ENTRY_IO is
   NULL_CONJUNCTION_ENTRY : CONJUNCTION_ENTRY;
-  SPACER : CHARACTER := ' ';
 
   procedure GET(F : in FILE_TYPE; C : out CONJUNCTION_ENTRY) is
   begin
@@ -627,7 +618,6 @@ end CONJUNCTION_ENTRY_IO;
    
 package body INTERJECTION_ENTRY_IO is
   NULL_INTERJECTION_ENTRY : INTERJECTION_ENTRY;
-  SPACER : CHARACTER := ' ';
 
  procedure GET(F : in FILE_TYPE; I : out INTERJECTION_ENTRY) is
   begin
@@ -751,8 +741,6 @@ package body PART_ENTRY_IO is
   CONJUNCTION : CONJUNCTION_ENTRY;
   INTERJECTION : INTERJECTION_ENTRY;
 
-  PR : PART_ENTRY;
-
   procedure GET(F : in FILE_TYPE; P : out PART_ENTRY) is
     PS : PART_OF_SPEECH_TYPE := X;
     C : POSITIVE_COUNT := COL(F);
@@ -860,7 +848,6 @@ package body PART_ENTRY_IO is
   end GET;
 
   procedure PUT(F : in FILE_TYPE; P : in PART_ENTRY) is
-    C : POSITIVE := POSITIVE(COL(F));
   begin
     PUT(F, P.POFS);
     PUT(F, ' ');
@@ -897,7 +884,6 @@ package body PART_ENTRY_IO is
   end PUT;
 
   procedure PUT(P : in PART_ENTRY) is
-    C : POSITIVE := POSITIVE(COL);
   begin
     PUT(P.POFS);
     PUT(' ');
@@ -1018,7 +1004,7 @@ package body PART_ENTRY_IO is
         M := L + VERB_ENTRY_IO.DEFAULT_WIDTH;
         PUT(S(L+1..M), P.V);
       when VPAR =>
-        null;                --  No VAPR entryR
+        null;                --  No VAPR entry
       when SUPINE =>
         null;                --  No SUPINE entry
       when PREP =>
@@ -1035,7 +1021,7 @@ package body PART_ENTRY_IO is
     end case;
     --S(M+1..S'LAST) := (others => ' ');
   end PUT;
-
+      
 end PART_ENTRY_IO;
 
    
@@ -1044,8 +1030,6 @@ package body KIND_ENTRY_IO is
   use PRONOUN_KIND_TYPE_IO;
   use INFLECTIONS_PACKAGE.INTEGER_IO;
   use VERB_KIND_TYPE_IO;
-  SPACER : CHARACTER := ' ';
-
 
   NOUN_KIND  : NOUN_KIND_TYPE;
   PRONOUN_KIND : PRONOUN_KIND_TYPE;
@@ -1310,8 +1294,6 @@ package body TRANSLATION_RECORD_IO is
     use FREQUENCY_TYPE_IO;
     use SOURCE_TYPE_IO;
     SPACER : CHARACTER := ' ';
-    --LINE : STRING(1..250);
-    LAST : INTEGER := 0;
 
     procedure GET(F : in TEXT_IO.FILE_TYPE; TR: out TRANSLATION_RECORD) is
     begin
@@ -1324,9 +1306,6 @@ package body TRANSLATION_RECORD_IO is
       GET(F, TR.FREQ);
       GET(F, SPACER);
       GET(F, TR.SOURCE);
-      --GET(F, SPACER);
-      --GET_LINE(F, LINE, LAST);
-      --TR.MEAN := HEAD(LINE(1..LAST), MAX_MEANING_SIZE);
   end GET;
 
     procedure GET(TR : out TRANSLATION_RECORD) is
@@ -1439,8 +1418,6 @@ package body DICTIONARY_ENTRY_IO is
 
   SPACER : CHARACTER := ' ';
   PART_COL : NATURAL := 0;
-  
-  DE : DICTIONARY_ENTRY;
 
   procedure GET(F : in FILE_TYPE; D : out DICTIONARY_ENTRY) is
   begin
@@ -1464,8 +1441,6 @@ package body DICTIONARY_ENTRY_IO is
       GET(SPACER);
     end loop;
     GET(D.PART);
---    GET(SPACER);
---    GET(D.PART.POFS, D.KIND);
     GET(SPACER);
     GET(D.TRAN);
     GET(SPACER);
@@ -1506,7 +1481,6 @@ package body DICTIONARY_ENTRY_IO is
 
   procedure GET(S : in STRING; D : out DICTIONARY_ENTRY; LAST : out INTEGER) is
     L : INTEGER := S'FIRST - 1;
-    M : INTEGER := 0;
     I : INTEGER := 0;
   begin
     for I in STEM_KEY_TYPE range 1..4  loop
@@ -1559,7 +1533,7 @@ package body DICTIONARY_ENTRY_IO is
   end PUT;
 
 end DICTIONARY_ENTRY_IO;
-
+   
 function "<=" (LEFT, RIGHT : AREA_TYPE) return BOOLEAN is
   begin
     if RIGHT = LEFT  or else
@@ -1588,29 +1562,29 @@ begin
                                    INFLECTION_RECORD_IO.DEFAULT_WIDTH + 1 +
                                    DICTIONARY_KIND_IO.DEFAULT_WIDTH + 1 +
                                    MNPC_IO_DEFAULT_WIDTH;
-  NOUN_ENTRY_IO.DEFAULT_WIDTH :=
+  NOUN_ENTRY_IO.DEFAULT_WIDTH          :=
                    DECN_RECORD_IO.DEFAULT_WIDTH + 1 +
                    GENDER_TYPE_IO.DEFAULT_WIDTH + 1 +
                    NOUN_KIND_TYPE_IO.DEFAULT_WIDTH;
-  PRONOUN_ENTRY_IO.DEFAULT_WIDTH :=
+  PRONOUN_ENTRY_IO.DEFAULT_WIDTH       :=
                    DECN_RECORD_IO.DEFAULT_WIDTH + 1 +
                    PRONOUN_KIND_TYPE_IO.DEFAULT_WIDTH;
-  PROPACK_ENTRY_IO.DEFAULT_WIDTH :=
+  PROPACK_ENTRY_IO.DEFAULT_WIDTH       :=
                    DECN_RECORD_IO.DEFAULT_WIDTH + 1 +
                    PRONOUN_KIND_TYPE_IO.DEFAULT_WIDTH;
-  ADJECTIVE_ENTRY_IO.DEFAULT_WIDTH :=
+  ADJECTIVE_ENTRY_IO.DEFAULT_WIDTH     :=
                    DECN_RECORD_IO.DEFAULT_WIDTH + 1 +
                    COMPARISON_TYPE_IO.DEFAULT_WIDTH;
-  ADVERB_ENTRY_IO.DEFAULT_WIDTH :=
+  ADVERB_ENTRY_IO.DEFAULT_WIDTH       :=
                    COMPARISON_TYPE_IO.DEFAULT_WIDTH;
-  VERB_ENTRY_IO.DEFAULT_WIDTH :=
+  VERB_ENTRY_IO.DEFAULT_WIDTH         :=
                    DECN_RECORD_IO.DEFAULT_WIDTH + 1 +
                    VERB_KIND_TYPE_IO.DEFAULT_WIDTH;
-  PREPOSITION_ENTRY_IO.DEFAULT_WIDTH := 0;
-  CONJUNCTION_ENTRY_IO.DEFAULT_WIDTH := 0;
+  PREPOSITION_ENTRY_IO.DEFAULT_WIDTH  := 0;
+  CONJUNCTION_ENTRY_IO.DEFAULT_WIDTH  := 0;
 
   INTERJECTION_ENTRY_IO.DEFAULT_WIDTH := 0;
-  NUMERAL_ENTRY_IO.DEFAULT_WIDTH :=
+  NUMERAL_ENTRY_IO.DEFAULT_WIDTH      :=
                  DECN_RECORD_IO.DEFAULT_WIDTH + 1 +
                  NUMERAL_SORT_TYPE_IO.DEFAULT_WIDTH + 1 +
                  NUMERAL_VALUE_TYPE_IO_DEFAULT_WIDTH;

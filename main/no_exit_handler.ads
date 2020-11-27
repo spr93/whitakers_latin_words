@@ -2,6 +2,7 @@
 
 with Ada.Interrupts; use Ada.Interrupts;
 
+
 package no_exit_handler is
 
    protected No_Exit_Handler is

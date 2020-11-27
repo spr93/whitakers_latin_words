@@ -10,8 +10,7 @@ with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
 package Arabic2Roman is
 
-  procedure Arabic2Roman (OUTPUT : in Ada.Text_IO.File_Type ; INPUT_WORD : in String);
-
+procedure Arabic2Roman (OUTPUT : in Ada.Text_IO.File_Type ; INPUT_WORD : in String);
 
 private
   Roman_Nums_CLASSICAL : constant array (1..11) of Unbounded_String  := (

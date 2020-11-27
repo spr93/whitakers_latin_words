@@ -21,7 +21,7 @@ is
       MOOD   : constant MOOD_TYPE   := IR.QUAL.V.TENSE_VOICE_MOOD.MOOD;
       VOICE  : VOICE_TYPE           := IR.QUAL.V.TENSE_VOICE_MOOD.VOICE;
       KIND   : VERB_KIND_TYPE       := VK;
-      --  Nothing on  (part), gerund,
+      --  Nothing on  (part), gerund
 
       function THEY return String is
       begin

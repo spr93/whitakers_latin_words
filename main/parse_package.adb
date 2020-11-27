@@ -18,10 +18,9 @@ with Words_Help;              use Words_Help;
 
 with Ada.Exceptions;
 
-pragma Elaborate (WORD_PARAMETERS);
+--pragma Elaborate (WORD_PARAMETERS);
 with Ada.Wide_Text_IO;
 with Ada.Characters.Conversions;
-with Ada.Wide_Characters.Handling;
 
 
 package body Parse_Package is 

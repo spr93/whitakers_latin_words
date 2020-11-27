@@ -54,7 +54,6 @@ with STRINGS_PACKAGE; use STRINGS_PACKAGE;
          LAST := LX;
       end GET_NON_COMMENT_LINE;
    
-     
    procedure GET_UNICODE (LINE : in out String; L : in out Integer) is
          -- Converts unicode accented forms to basic ASCII 
          -- Useful for input that includes macrons.
