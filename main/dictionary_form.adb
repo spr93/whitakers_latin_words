@@ -1,8 +1,6 @@
 with Strings_Package;     use Strings_Package;
 with Inflections_Package; use Inflections_Package;
 with Dictionary_Package;  use Dictionary_Package;
-with TEXT_IO;
-
 
 function Dictionary_Form(DE      : in     Dictionary_Entry) return String is
 
@@ -12,7 +10,7 @@ function Dictionary_Form(DE      : in     Dictionary_Entry) return String is
 
   Fst     : array (Which_Type range 1 .. 5) of String(1 .. 3) :=
   ("1st", "2nd", "3rd", "4th", "5th");
-
+   
   Not_Found: exception;
 
   function Add(Stem, Infl    : in     String) return String is
@@ -35,44 +33,38 @@ function Dictionary_Form(DE      : in     Dictionary_Entry) return String is
     
       case KIND is
         
-         when INDEF  =>  if TRIM(STEM) = "qu" then
-
-                    
-                                       OX(1) := Add(DE.Stems(1), "is");
-                                       OX(2) := Add(DE.Stems(1), "a");
-               OX(3) := Add(DE.Stems(1), "id INDEF");          
-                    else
-                                                      OX(1) := Add(DE.Stems(1), "is");
-                                       OX(2) := Add(DE.Stems(1), "a (rare)");
-                                       OX(3) := Add(DE.Stems(1), "od (-id rare) INDEF");
-                         end if;
+         when INDEF   =>   if TRIM(STEM) = "qu" then
+                           OX(1) := Add(DE.Stems(1), "is");
+                           OX(2) := Add(DE.Stems(1), "a");
+                           OX(3) := Add(DE.Stems(1), "id");          
+                           else
+                           OX(1) := Add(DE.Stems(1), "is");
+                           OX(2) := Add(DE.Stems(1), "-");
+                           OX(3) := Add(DE.Stems(1), "od (-id rare)");
+                           end if;
             
+         when ADJECT  =>   OX(1) := Add(DE.Stems(1), "i");
+                           if TRIM(STEM) = "qu" then
+                                       OX(2) := Add(DE.Stems(1), "ae");
+                           else 
+                                       OX(2) := Add(DE.Stems(1), "a");
+                           end if; 
+                                       OX(3) := Add(DE.Stems(1), "od");
 
         
-         when ADJECT =>   OX(1) := Add(DE.Stems(1), "i");
-                                   if TRIM(STEM) = "qu" then
-                                     OX(2) := Add(DE.Stems(1), "ae");
-                                   else 
-                                     OX(2) := Add(DE.Stems(1), "a");
-                                   end if; 
-                                   OX(3) := Add(DE.Stems(1), "od ADJ");
-
-        
-          when REL    =>   OX(1) := Add(DE.Stems(1), "i");
-                         OX(2) := Add(DE.Stems(1), "ae");
-                         OX(3) := Add(DE.Stems(1), "od REL");
+         when REL     =>   OX(1) := Add(DE.Stems(1), "i");
+                           OX(2) := Add(DE.Stems(1), "ae");
+                           OX(3) := Add(DE.Stems(1), "od");
             
          
-        when INTERR =>   OX(1) := Add(DE.Stems(1), "is");
-                         OX(2) := Add(DE.Stems(1), "is");
-                         OX(3) := Add(DE.Stems(1), "id INTERR");
+         when INTERR  =>   OX(1) := Add(DE.Stems(1), "is");
+                           OX(2) := Add(DE.Stems(1), "is");
+                           OX(3) := Add(DE.Stems(1), "id");
             
-        
-         when others => raise Not_Found;
+        when others => raise Not_Found;
             
-       end case; 
+      end case; 
     end Process_Qu_Pron;
-   
    
 begin
   --DICTIONARY_ENTRY_IO.PUT(DE);
@@ -189,12 +181,12 @@ begin
       raise Not_Found;
     end if; --  N
 
-  elsif DE.Part.POFS = PRON then
+   elsif DE.Part.POFS = PRON then
          
     if DE.Part.Pron.DEcl.Which = 1 then
             
        Process_Qu_Pron(De.Part.Pron.Kind, De.Stems(1));
-
+         
     elsif DE.Part.Pron.DEcl.Which = 3 then
       OX(1) := Add(DE.Stems(1), "ic");
       OX(2) := Add(DE.Stems(1), "aec");
@@ -249,9 +241,8 @@ begin
     end if; --  PRON
 
   elsif DE.Part.POFS = PACK and then
-       DE.Part.Pack.Decl.Var = 1 then
-        Process_Qu_Pron(De.Part.Pack.Kind,De.Stems(1)); 
-      
+         DE.Part.Pack.Decl.Which = 1 then
+         Process_Qu_Pron(De.Part.Pack.Kind,De.Stems(1)); 
   elsif DE.Part.POFS = Adj then
 
     if DE.Part.Adj.Co = Comp then
@@ -411,7 +402,6 @@ begin
     OX(2) := Add(DE.Stems(2), "");
     OX(3) := Add(DE.Stems(3), "");
 
-
   elsif DE.Part.POFS = V then
 
     if DE.Part.V.Kind = DEp then --  all DEP
@@ -431,7 +421,7 @@ begin
         else
           OX(2) := Add(DE.Stems(2), "i");
         end if;
-        --            elsif DE.PART.V.CON.WHICH = 4  then   --  4th amy be 3,4 or 4,1
+        --              elsif DE.PART.V.CON.WHICH = 4  then   --  4th amy be 3,4 or 4,1
         --              OX(1) := ADD(DE.STEMS(1), "or");    --  depending on where in code
         --              OX(2) := ADD(DE.STEMS(2), "iri");   --  In practice there is no problem
       else
@@ -722,10 +712,22 @@ begin
         Add_Up(", " & Trim(OX(4)));
       end if;
   end case;
-
-
-  Add_to("  " & Part_of_Speech_Type'Image(DE.Part.POFS) & "  ");
-
+ 
+   -- The rest of the DICTLiNE
+   if DE.PART.Pofs = PRON
+      -- and then Part.Pron.Decl.Which = 1
+     and then DE.Part.Pron.Kind /= X
+       then 
+           Add_To("  " &DE.Part.PRON.Kind'Image & "   " & Part_Of_Speech_Type'Image(DE.Part.POFS) & "  ");
+   elsif DE.PART.POFS = PACK 
+        and then DE.Part.Pack.Kind /= X
+       -- and then Part.Pron.Decl.Which = 1
+       then
+     Add_To("  " & De.Part.Pack.Kind'Image & "   " & Part_Of_Speech_Type'Image(PRON) & "  ");
+   else 
+     Add_To("   " & Part_Of_Speech_Type'Image(DE.Part.POFS) & "  ");
+   end if;  
+      
   if DE.Part.POFS = N then
 
     --  For DICTPAGE
@@ -757,7 +759,6 @@ begin
   --TEXT_IO.PUT_LINE(">>>>" & TRIM(FORM));
 
   return Trim(Form);
-
 
 exception
   when Not_Found =>

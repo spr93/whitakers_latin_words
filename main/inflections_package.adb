@@ -215,7 +215,6 @@ LEFT.V.TENSE_VOICE_MOOD.MOOD   = RIGHT.V.TENSE_VOICE_MOOD.MOOD   and then
       return LEFT.POFS < RIGHT.POFS;
   end "<";
 
-
   function "<=" (LEFT, RIGHT : PART_OF_SPEECH_TYPE) return BOOLEAN is
   begin
     if RIGHT = LEFT  or else
@@ -373,6 +372,28 @@ LEFT.V.TENSE_VOICE_MOOD.MOOD   = RIGHT.V.TENSE_VOICE_MOOD.MOOD   and then
     end if;
   end "<=";
   
+   Null_Pronoun_Record : PRONOUN_RECORD := ((0,0),X,X,X,X);
+   
+   function Qual_Equ_PRONPACK (Qual : in QUALITY_RECORD) return Boolean is
+   begin
+      if (Qual.Pofs = Pron)
+        or else (Qual.Pofs = Pack) then
+         return True;
+      else 
+         return False;
+      end if; 
+   end Qual_Equ_PRONPACK; 
+  
+   function QR_PACK_TO_PRON (QR : in QUALITY_RECORD   ) return PRONOUN_RECORD is
+      begin
+      if Qr.Pofs = PACK
+        then return (QR.PACK.DECL,QR.PACK.CS,QR.PACK.NUMBER,QR.PACK.GENDER,QR.PACK.KIND);
+         elsif QR.POFS = PRON
+           then return QR.PRON; 
+      end if;    
+      return Null_Pronoun_Record;
+   end QR_PACK_TO_PRON;
+         
 
 package body STEM_TYPE_IO is
     procedure GET(F : in FILE_TYPE; D : out STEM_TYPE) is
@@ -388,8 +409,7 @@ package body STEM_TYPE_IO is
         end if;
       end loop;
     end GET;
-        
-            
+                   
     procedure GET(D : out STEM_TYPE) is
       C : CHARACTER := ' ';
     begin

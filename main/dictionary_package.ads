@@ -213,7 +213,7 @@ package SOURCE_TYPE_IO is new TEXT_IO.ENUMERATION_IO(SOURCE_TYPE);
       type PRONOUN_ENTRY is
          record
             DECL  : DECN_RECORD := (0,0);
-            KIND : PRONOUN_KIND_TYPE := X;
+            KIND  : PRONOUN_KIND_TYPE := X;
          end record;
    
       package PRONOUN_ENTRY_IO is
@@ -230,7 +230,7 @@ package SOURCE_TYPE_IO is new TEXT_IO.ENUMERATION_IO(SOURCE_TYPE);
       type PROPACK_ENTRY is
          record
             DECL  : DECN_RECORD := (0,0);
-            KIND : PRONOUN_KIND_TYPE := X;
+            KIND  : PRONOUN_KIND_TYPE := X;
          end record;
    
       package PROPACK_ENTRY_IO is
@@ -259,14 +259,14 @@ package SOURCE_TYPE_IO is new TEXT_IO.ENUMERATION_IO(SOURCE_TYPE);
          procedure GET(S : in STRING; A : out ADJECTIVE_ENTRY; LAST : out INTEGER);
          procedure PUT(S : out STRING; A : in ADJECTIVE_ENTRY);  
       end ADJECTIVE_ENTRY_IO;  
-   
-   
+    
       type NUMERAL_ENTRY is
          record
             DECL  : DECN_RECORD := (0,0);
             SORT  : NUMERAL_SORT_TYPE := X;
             VALUE : NUMERAL_VALUE_TYPE := 0;
          end record;
+ 
    
       package NUMERAL_ENTRY_IO is
          DEFAULT_WIDTH : NATURAL;
@@ -277,16 +277,13 @@ package SOURCE_TYPE_IO is new TEXT_IO.ENUMERATION_IO(SOURCE_TYPE);
          procedure GET(S : in STRING; NUM : out NUMERAL_ENTRY; LAST : out INTEGER);
          procedure PUT(S : out STRING; NUM : in NUMERAL_ENTRY);  
       end NUMERAL_ENTRY_IO;  
-   
-   
-   
+    
       type ADVERB_ENTRY is
          record
             CO   : COMPARISON_TYPE := X;
          end record;
    
    
-
       package ADVERB_ENTRY_IO is
          DEFAULT_WIDTH : NATURAL;
          procedure GET(F : in FILE_TYPE; A : out ADVERB_ENTRY);
@@ -403,15 +400,14 @@ package SOURCE_TYPE_IO is new TEXT_IO.ENUMERATION_IO(SOURCE_TYPE);
          procedure PUT(P : in PART_ENTRY);
          procedure GET(S : in STRING; P : out PART_ENTRY; LAST : out INTEGER);
          procedure PUT(S : out STRING; P : in PART_ENTRY);  
-      end PART_ENTRY_IO;  
+   end PART_ENTRY_IO;  
    
-      NULL_PART_ENTRY : PART_ENTRY;
-      
-      
-      function "<" (LEFT, RIGHT : PART_ENTRY) return BOOLEAN;
+     NULL_PART_ENTRY : PART_ENTRY;
      
    
-      type DICTIONARY_ENTRY is 
+     function "<" (LEFT, RIGHT : PART_ENTRY) return BOOLEAN;
+     
+     type DICTIONARY_ENTRY is 
          record
             STEMS : STEMS_TYPE         := NULL_STEMS_TYPE;
             PART  : PART_ENTRY         := NULL_PART_ENTRY;

@@ -226,16 +226,16 @@ package INFLECTIONS_PACKAGE is
    
   package NOUN_KIND_TYPE_IO is new TEXT_IO.ENUMERATION_IO(NOUN_KIND_TYPE);
 
-  type PRONOUN_KIND_TYPE is (
-          X,            --  unknown, nondescript
-          PERS,         --  PERSonal
-          REL,          --  RELative
-          REFLEX,       --  REFLEXive
-          DEMONS,       --  DEMONStrative
-          INTERR,       --  INTERRogative
-          INDEF,        --  INDEFinite
-          ADJECT        --  ADJECTival
-                             ); 
+  type PRONOUN_KIND_TYPE is (                        -- Translated in LIST_SWEEP to DECL.VAR by POS, so:
+          X,            --  unknown, nondescript     -- = VAR 0 
+          PERS,         --  PERSonal                 -- = VAR 1
+          REL,          --  RELative                 -- = VAR 2
+          REFLEX,       --  REFLEXive                -- = VAR 3
+          DEMONS,       --  DEMONStrative            -- = VAR 4
+          INTERR,       --  INTERRogative            -- = VAR 5
+          INDEF,        --  INDEFinite               -- = VAR 6
+          ADJECT        --  ADJECTival               -- = VAR 7
+                            ); 
 
    
   package PRONOUN_KIND_TYPE_IO is 
@@ -288,12 +288,19 @@ type NOUN_RECORD is
    procedure PUT(S : out STRING; N : in NOUN_RECORD);  
  end NOUN_RECORD_IO;  
 
+   
+--  type Qu_Pron_Type is (X, Ali_Indef, Ali_Adject, Qu_Indef, Qu_Adject, Qu_Rel, Qu_Interr);
+--  Ali_Stem      : constant Stem_Type := (1 => 'a', 2 => 'l', 3 => 'i', others => ' ');
+--  Qu_Stem       : constant Stem_Type := (1 => 'q', 2 => 'u', others => ' ');
+
+   
 type PRONOUN_RECORD is
   record
     DECL        : DECN_RECORD;
-    CS          : CASE_TYPE := X;
-    NUMBER      : NUMBER_TYPE := X;
-    GENDER      : GENDER_TYPE := X;
+    CS          : CASE_TYPE         := X;
+    NUMBER      : NUMBER_TYPE       := X;
+    GENDER      : GENDER_TYPE       := X;
+    KIND        : PRONOUN_KIND_TYPE := X; 
   end record;
 
    
@@ -310,11 +317,11 @@ type PRONOUN_RECORD is
 type PROPACK_RECORD is
   record
     DECL        : DECN_RECORD;
-    CS          : CASE_TYPE := X;
-    NUMBER      : NUMBER_TYPE := X;
-    GENDER      : GENDER_TYPE := X;
+    CS          : CASE_TYPE         := X;
+    NUMBER      : NUMBER_TYPE       := X;
+    GENDER      : GENDER_TYPE       := X;
+    KIND        : PRONOUN_KIND_TYPE := X; 
   end record;
-
    
  package PROPACK_RECORD_IO is
    DEFAULT_WIDTH : NATURAL;
@@ -463,8 +470,6 @@ type CONJUNCTION_RECORD is
   record
     null;
   end record;
-
-   
    
  package CONJUNCTION_RECORD_IO is
    DEFAULT_WIDTH : NATURAL;
@@ -548,15 +553,16 @@ type INTERJECTION_RECORD is
     procedure PUT(S : out STRING; P : in SUFFIX_RECORD);  
   end SUFFIX_RECORD_IO;  
 
+   
   type QUALITY_RECORD(POFS : PART_OF_SPEECH_TYPE := X) is
     record
       case POFS is
         when N =>
           N : NOUN_RECORD;
         when PRON =>
-          PRON : PRONOUN_RECORD;
+            PRON : PRONOUN_RECORD;
         when PACK =>
-          PACK : PROPACK_RECORD;
+            PACK : PROPACK_RECORD;
         when ADJ =>
           ADJ : ADJECTIVE_RECORD;
         when NUM =>
@@ -583,7 +589,7 @@ type INTERJECTION_RECORD is
           SUFFIX : SUFFIX_RECORD;
         when others =>
           null;
-      end case;
+      end case;   
     end record;
 
   NULL_QUALITY_RECORD : QUALITY_RECORD;
@@ -742,7 +748,10 @@ type INTERJECTION_RECORD is
   function "<=" (LEFT, RIGHT : STEM_KEY_TYPE)   return BOOLEAN;  -- not verbs  
   function "<=" (LEFT, RIGHT : AGE_TYPE)   return BOOLEAN;  
   function "<=" (LEFT, RIGHT : FREQUENCY_TYPE)   return BOOLEAN;  
-    
+  
+  function Qual_Equ_PRONPACK (Qual : in QUALITY_RECORD) return Boolean;
+  function Qr_Pack_To_PRON (QR : in QUALITY_RECORD   ) return PRONOUN_RECORD; 
+   
   GIVE_UP : exception;
 
 end INFLECTIONS_PACKAGE;  

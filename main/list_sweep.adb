@@ -5,11 +5,13 @@
    with UNIQUES_PACKAGE; use UNIQUES_PACKAGE;
    with DEVELOPER_PARAMETERS; use DEVELOPER_PARAMETERS;
    with WORD_SUPPORT_PACKAGE; use WORD_SUPPORT_PACKAGE;
+   with ADDONS_PACKAGE;
 
    procedure LIST_SWEEP(PA : in out PARSE_ARRAY; PA_LAST : in out INTEGER) is
    --  This procedure is supposed to process the output PARSE_ARRAY at PA level
    --  before it get turned into SIRAA and DMNPCA in LIST_PACKAGE
-   --  Since it does only PARSE_ARRAY it is just checking INFLECTIONS, not DICTIONARY
+   --  Since it does only PARSE_ARRAY it is just checking INFLECTIONS, not DICTIONARY  
+   --  (except PRON/PACKs, as noted below)
    
       use DICT_IO;
       
@@ -23,12 +25,13 @@
       NOT_ONLY_MEDIEVAL : BOOLEAN := FALSE;
       NOT_ONLY_UNCOMMON : BOOLEAN := FALSE;
    
+      Has_Qu_Pron       : Boolean := False; 
    
       function ALLOWED_STEM(PR : PARSE_RECORD) return BOOLEAN is
          ALLOWED : BOOLEAN := TRUE;   --  modify as necessary and return it
          --DE : DICTIONARY_ENTRY;
       begin
---TEXT_IO.PUT("ALLOWED? >"); PARSE_RECORD_IO.PUT(PR); TEXT_IO.NEW_LINE;
+   --TEXT_IO.PUT("ALLOWED? >"); PARSE_RECORD_IO.PUT(PR); TEXT_IO.NEW_LINE;
          if PR.D_K not in GENERAL..LOCAL  then 
             return TRUE; end if;
             
@@ -83,8 +86,6 @@
                      ALLOWED := FALSE;
                   end if;
                end if;
-         
-         
 
          --  VERB CHECKS
          
@@ -188,7 +189,7 @@
                             (PR.IR.QUAL.V.TENSE_VOICE_MOOD = (PRES, ACTIVE, IND))) then
                         ALLOWED := TRUE;
                      elsif ((DE.PART.V.KIND = PERFDEF)  and
-                               (PR.IR.QUAL.V.TENSE_VOICE_MOOD = (PERF, ACTIVE, IND))) then
+                            (PR.IR.QUAL.V.TENSE_VOICE_MOOD = (PERF, ACTIVE, IND))) then
                         ALLOWED := TRUE;
                      else
                         ALLOWED := FALSE;
@@ -221,9 +222,7 @@
       
       end ALLOWED_STEM;
    
-   
               -----------------------------------------------------------
-   
    
       procedure ORDER_PARSE_ARRAY(SL: in out PARSE_ARRAY; DIFF_J : out INTEGER) is
          use DICT_IO;
@@ -272,47 +271,16 @@
          return;
          end if;
       
-      
       --  Bubble sort since this list should usually be very small (1-5)
-      HIT_LOOP:
+         HIT_LOOP:
          loop
             HITS := 0;
          
-         
          --------------------------------------------------
-         
          
             SWITCH:
             declare
-            
-               function "<" (LEFT, RIGHT : QUALITY_RECORD) return BOOLEAN is
-               begin
-                  if LEFT.POFS = RIGHT.POFS  and then
-                  LEFT.POFS = PRON        and then
-                  LEFT.PRON.DECL.WHICH = 1    then
-                     return (LEFT.PRON.DECL.VAR < RIGHT.PRON.DECL.VAR);
-                  else
-                     return INFLECTIONS_PACKAGE."<"(LEFT, RIGHT);
-                  end if;
-               end "<";
-            
-               function EQU (LEFT, RIGHT : QUALITY_RECORD) return BOOLEAN is
-               begin
-               
-                  if LEFT.POFS = RIGHT.POFS  and then
-                  LEFT.POFS = PRON        and then
-                  LEFT.PRON.DECL.WHICH = 1    then
-                  
-                     return (LEFT.PRON.DECL.VAR = RIGHT.PRON.DECL.VAR);
-                  else
-                  
-                     return INFLECTIONS_PACKAGE."="(LEFT, RIGHT);
-                  end if;
-               
-               end EQU;
-            
-            
-            
+              
                function MEANING (PR : PARSE_RECORD) return MEANING_TYPE is
                begin
                   return DEPR(PR).MEAN;
@@ -324,11 +292,10 @@
             --  One problem is that it can mix up some of the order of PREFIX, XXX, LOC
             --  I ought to do this for every set of results from different approaches
             --  not just in one fell swoop at the end !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            
-            
+
             INNER_LOOP:
                for I in SL'FIRST..SL_LAST-1  loop
-               --  Maybe <   =  on PR.STEM  -  will have to make up "<"   --  Actually STEM and PART  --  and check that later in print
+
                   if SL(I+1).D_K  > SL(I).D_K   or else  --  Let DICT.LOC list first
                   
                      (SL(I+1).D_K  = SL(I).D_K    and then
@@ -340,23 +307,22 @@
                   
                      (SL(I+1).D_K  = SL(I).D_K    and then
                       SL(I+1).MNPC  = SL(I).MNPC    and then
-                      EQU(SL(I+1).IR.QUAL, SL(I).IR.QUAL)  and then
+                      SL(I+1).IR.QUAL = SL(I).IR.QUAL  and then
                       MEANING(SL(I+1)) < MEANING(SL(I)))  or else   --  | is > letter
                   
                      (SL(I+1).D_K  = SL(I).D_K  and then
                       SL(I+1).MNPC  = SL(I).MNPC    and then
-                      EQU(SL(I+1).IR.QUAL, SL(I).IR.QUAL)  and then
+                      SL(I+1).IR.QUAL = SL(I).IR.QUAL  and then
                       MEANING(SL(I+1)) = MEANING(SL(I))   and then
                       SL(I+1).IR.ENDING.SIZE < SL(I).IR.ENDING.SIZE)    or else
                   
                      (SL(I+1).D_K  = SL(I).D_K  and then
                       SL(I+1).MNPC  = SL(I).MNPC    and then
-                      EQU(SL(I+1).IR.QUAL, SL(I).IR.QUAL)  and then
+                      SL(I+1).IR.QUAL = SL(I).IR.QUAL  and then
                       MEANING(SL(I+1)) = MEANING(SL(I))   and then
                       SL(I+1).IR.ENDING.SIZE = SL(I).IR.ENDING.SIZE  and then
                       INFLECTIONS_PACKAGE."<"(SL(I+1).IR.QUAL, SL(I).IR.QUAL))
                   then
-                  
                   
                      SM := SL(I);
                      SL(I) := SL(I+1);
@@ -367,14 +333,12 @@
                
                end loop INNER_LOOP;
             
-            
             end SWITCH;
          --------------------------------------------------
          
-         
             exit when HITS = 0;
          end loop HIT_LOOP;
-      
+
       --  Fix up the Archaic/Medieval
          if WORDS_MODE(TRIM_OUTPUT)  then
          --  Remove those inflections if MDEV and there is other valid
@@ -542,8 +506,7 @@
              end if;
              I := I - 1;
           end loop; 
-       
-       
+
        
           I := SL_LAST;
           while I >= SL'FIRST  loop
@@ -594,15 +557,13 @@
                I := I - 1;
             end loop; 
          
-         
-         
          end if;   --  On TRIM
       
          DIFF_J := SL_LAST_INITIAL - SL_LAST;
       
+      
       end ORDER_PARSE_ARRAY;
-   
-   
+  
    
    
     begin                               --  LIST_SWEEP
@@ -616,16 +577,8 @@
       if PA'LENGTH = 0              then
          return;
       end if;
-   
-   
---   TEXT_IO.PUT_LINE("PA on entering LIST_SWEEP     PA_LAST = " & INTEGER'IMAGE(PA_LAST));
---   for I in 1..PA_LAST  loop
---   PARSE_RECORD_IO.PUT(PA(I)); TEXT_IO.NEW_LINE;
---   end loop;
-   
-   
-   
-      RESET_PRONOUN_KIND:
+  
+      SET_PRONOUN_Var_KIND:
       declare
          DE : DICTIONARY_ENTRY;
       begin
@@ -633,19 +586,52 @@
             if PA(I).D_K = GENERAL  then
                DICT_IO.SET_INDEX(DICT_FILE(PA(I).D_K), PA(I).MNPC); 
                DICT_IO.READ(DICT_FILE(PA(I).D_K), DE);
-               if DE.PART.POFS = PRON  and then
-               DE.PART.PRON.DECL.WHICH =1  then
-                  PA(I).IR.QUAL.PRON.DECL.VAR := PRONOUN_KIND_TYPE'POS(DE.PART.PRON.KIND);
-               --elsif DE.PART.POFS = PACK  and then
-               -- DE.PART.PACK.DECL.WHICH =1  then
-               -- PA(I).IR.QUAL.PACK.DECL.VAR := PRONOUN_KIND_TYPE'POS(DE.KIND.PRON_KIND);
-               end if;
+                         
+                if 
+                DE.PART.POFS = PRON  and then
+                DE.PART.PRON.DECL.WHICH = 1  then
+                
+                 if
+                 Pa(I).Ir.Qual.Pofs = PRON and then
+                 PA(I).Ir.Qual.Pron.Decl.Which = 1 then
+                  
+                 PA(I).Ir.QUAL.PRON.KIND := DE.PART.PRON.KIND;
+                  PA(I).IR.QUAL.PRON.DECL.VAR :=  PRONOUN_KIND_TYPE'POS(DE.PART.PRON.KIND);
+                 Has_Qu_Pron := True;
+              elsif Pa(I).Ir.Qual.Pofs = PACK and then
+                    PA(I).Ir.Qual.Pack.Decl.Which = 1 Then
+                 PA(I).Ir.QUAL.PACK.KIND := DE.PART.PRON.KIND;
+                  PA(I).IR.QUAL.PACK.DECL.VAR :=  PRONOUN_KIND_TYPE'POS(DE.PART.PRON.KIND);
+                 Has_Qu_Pron := True;
+              
+                end if; 
+            elsif
+                DE.PART.POFS = PACK and then
+                DE.PART.PACK.DECL.WHICH = 1 then 
+                
+               if Pa(I).Ir.Qual.Pofs = PACK and then
+                  PA(I).Ir.Qual.Pack.Decl.Which = 1 Then
+
+                  PA(I).Ir.QUAL.PACK.KIND := DE.PART.PACK.KIND;  
+                  PA(I).IR.QUAL.PACK.DECL.VAR := PRONOUN_KIND_TYPE'POS(DE.PART.PACK.KIND);
+                  Has_Qu_Pron := True;
+               elsif 
+                  Pa(I).Ir.Qual.Pofs = PRON and then
+                  PA(I).Ir.Qual.Pron.Decl.Which = 1 Then
+
+                  PA(I).Ir.QUAL.PRON.KIND := DE.PART.PACK.KIND;  
+                  PA(I).IR.QUAL.PRON.DECL.VAR := PRONOUN_KIND_TYPE'POS(DE.PART.PACK.KIND);
+                  Has_Qu_Pron := True;
+                 
+               end if; 
+            
+            end if;
             end if;
          end loop;
-      end RESET_PRONOUN_KIND;
+      end SET_PRONOUN_Var_KIND;
+
    
    ---------------------------------------------------
-   
    
    
    --  NEED TO REMOVE DISALLOWED BEFORE DOING ANYTHING - BUT WITHOUT REORDERING
@@ -657,6 +643,42 @@
    --  Or they might be identical forms with different meanings (| additional meanings)
    --  I need to group such common inflections - and pass this on somehow
    
+   -- SPR: Most of the "first problems" now are handled by the next_meaning_same, next_form_same, etc. variables in list_package.
+   --      It's not pretty, but it handles almost almost all the corner cases I've identified. ...except qu- PRONs, which are
+   --      handled in a combination of routines here and in list_package.
+   --      
+   --      The qu- pronouns cause the most trouble because they require a 5 dimensional array to fully characterize
+   --      (see INFLECTS.LAT for the explanation) their inflections AND THEN they have the special PACKON feature 
+   --      (-que, -libet, etc.).  Making things even more complicated are two structural issues.  First, Gen. Whitaker maximized 
+   --      flexibility by separating the parse and dictionary arrays (see explanation of those structures in his list_package 
+   --      comments). Second, he used variant records to reduce duplication and use storage efficiently.  But this approach means that  
+   --      parsing qu- pronouns uniquely require information from the dictionary array (namely, the actual meanings, not just the MNPC,
+   --      to prevent duplicates). It also requires treating dictionary objects from ADDONs (PACKONs) as if they were inflection 
+   --      objects.  The variant records make this especially tricky because but the ADDON record variants don't store the information 
+   --      we need in a way that maps 1:1 to PRONs--and there isn't an easy way to re-map them without refactoring.  See "Problem  
+   --      Encountered with the Variant in Ada," Cryptologic Quarterly (1988) (NSA Transparency Case 63853, DOCID 3929124).
+   --      
+   --      The upshot is that we must either change objects and data structure just for qu- stems or run some complicated conditional  
+   --      procedures.  I'm not willing to descend into the object-oriented hell of refactoring the data structures or creating 
+   --      even more special qu- pronoun objects.  
+   --
+   --      It appears Gen. Whitaker didn't want to either. He minimized the processing required by truncating the output of qu- pronoun 
+   --      information.  Put "quique" in his version--it returns only quique PRON, has no promoun_kind information, does not 
+   --      differentiate the possible meanings given the pronoun_kind, returns no dict_form, and duplicates all but one of the
+   --      MEANS.  Try it in this version, you'll get comprehensive results. 
+   --        
+   --      This change sets adds routines here and in list_package; it also defines a couple helper functions in dictionary_package and.
+   --      the inflections package.  The new routines address four areas:  First, that qu- pronouns require special treatment when
+   --      eliminating duplicates and sorting the results.  Gen. Whitaker had routines in both list_sweep and list_package to address 
+   --      aspects of these sweep-and-sort issues.  Several of those routines are removed, one is replaced, and one is added.
+   --      The net changes localize the qu-pronoun-specific code.  They add some overhead, but most of the additional processing
+   --      is triggered only when qu-pronouns exist in the results.  Second, Gen. Whitaker's dictform largely ignored qu- pronouns.  
+   --      Now qu-pronoun results include proper dictforms.  They also provide KIND information (relative, indefinite, adjectival, etc.).  
+   --      Third, list_package's output procedure needs special logic to eliminate duplicate output.  The new dictforms help list_package 
+   --      determine which FORMs are duplicates.  Finally, list_package needs a handful of changes to prevent duplicate or omitted output
+   --      because the volume of qu-pronoun results and the inability to use MNPCs to determine duplicates lead to variety of output problems.
+   --      The new code adds overhead here by adding new checks before outputting a result, but I suspect these new changes eliminate output
+   --      problems that can arise under different circumstances.  See the comment attached to the Saved_Meaning_J code.
    
 --   TEXT_IO.PUT_LINE("PA before SWEEPING in LIST_SWEEP     PA_LAST = " & INTEGER'IMAGE(PA_LAST));
 --   for I in 1..PA_LAST  loop
@@ -673,7 +695,6 @@
          P_LAST  : INTEGER := 0;   
          subtype XONS is PART_OF_SPEECH_TYPE range TACKON..SUFFIX;
       
-      
       begin
       --
 --      TEXT_IO.NEW_LINE;
@@ -683,7 +704,6 @@
          J := PA_LAST;
       
          while J >= 1  loop        --  Sweep backwards over PA
-         
          
          
          --           if (not ALLOWED_STEM(PA(J))   or               --  Remove not ALLOWED_STEM & null
@@ -738,14 +758,14 @@
                (not PW_ON)     then
             --TEXT_IO.PUT_LINE("Killing Tricks stuff  J = " & INTEGER'IMAGE(J));
             
-               PA(P_LAST-DIFF_J+1..PA_LAST-DIFF_J) := PA(P_LAST+1..PA_LAST);
+            PA(P_LAST-DIFF_J+1..PA_LAST-DIFF_J)  := PA(P_LAST+1..PA_LAST);
                PA_LAST := PA_LAST - DIFF_J;
  
                P_LAST := P_LAST - 1;
             
             
             else
---TEXT_IO.PUT_LINE("SWEEP  else  J = " & INTEGER'IMAGE(J) & "  P_LAST = " & INTEGER'IMAGE(P_LAST));
+--  TEXT_IO.PUT_LINE("SWEEP  else  J = " & INTEGER'IMAGE(J) & "  P_LAST = " & INTEGER'IMAGE(P_LAST));                 --DEBUG
 --for I in 1..PA_LAST  loop
 --PARSE_RECORD_IO.PUT(PA(I)); TEXT_IO.NEW_LINE;
 --end loop;            
@@ -761,7 +781,7 @@
                   ORDER_PARSE_ARRAY(PA(1..P_LAST), DIFF_J); 
                   PA(P_LAST-DIFF_J+1..PA_LAST-DIFF_J) := PA(P_LAST+1..PA_LAST);
                   PA_LAST := PA_LAST - DIFF_J;
- --TEXT_IO.PUT_LINE("SWEEP  J = 1 end    PA_LAST = " & INTEGER'IMAGE(PA_LAST) & "  DIFF_J = " & INTEGER'IMAGE(DIFF_J));
+--TEXT_IO.PUT_LINE("SWEEP  J = 1 end    PA_LAST = " & INTEGER'IMAGE(PA_LAST) & "  DIFF_J = " & INTEGER'IMAGE(DIFF_J)); --DEBUG
                end if;
             
             
@@ -773,13 +793,7 @@
          end loop;                          --  loop sweep over PA
       
       end SWEEPING;
-   
---   TEXT_IO.PUT_LINE("PA after SWEEPING  in LIST_STEMS - before COMPRESS_LOOP   PA_LAST = " 
---   & INTEGER'IMAGE(PA_LAST));
---   for I in 1..PA_LAST  loop
---   PARSE_RECORD_IO.PUT(PA(I)); TEXT_IO.NEW_LINE;
---   end loop;
-   
+
       OPR := PA(1);
    --  Last chance to weed out duplicates
       J := 2;
@@ -790,38 +804,32 @@
       if PR /= OPR  then
             SUPRESS_KEY_CHECK:
             declare
-               function "<=" (A, B : in PARSE_RECORD) return BOOLEAN is
+            function "<=" (A, B : in PARSE_RECORD) return BOOLEAN is
             begin                             --  !!!!!!!!!!!!!!!!!!!!!!!!!!
 
-              if A.IR.QUAL = B.IR.QUAL  and
-                 A.MNPC    = B.MNPC     then
-                     return TRUE;
-                  else
+              if A.IR.QUAL = B.IR.QUAL  and then
+                 A.MNPC    = B.MNPC  
+                  
+               then
+                     return TRUE;             
+               else
                      return FALSE;
                   end if;
                end "<=";
-               function "<" (A, B : in PARSE_RECORD) return BOOLEAN is
-               begin                             --  !!!!!!!!!!!!!!!!!!!!!!!!!!
-                  if A.IR.QUAL = B.IR.QUAL  and
-                 A.MNPC   /= B.MNPC     then
-                  return TRUE;
-             
-                  else
-                     return FALSE;
-                  end if;
-               end "<";
-         begin
             
-         if ((PR.D_K /= XXX) and (PR.D_K /= YYY) and  (PR.D_K /= PPP)) then
+            begin
+            
+            if ((PR.D_K /= XXX) and (PR.D_K /= YYY) and  (PR.D_K /= PPP)) then
                if (PR <= OPR) then       
                      PA(J.. PA_LAST-1) := PA(J+1..PA_LAST);  --  Shift PA down 1
-                     PA_LAST := PA_LAST - 1;        --  because found key duplicate
+                     PA_LAST := PA_LAST - 1;                 --  because found key duplicate
                
-                -- SPR:  The elsif that follows stops duplicative entries for suffixes with multiple stems
-                -- SPR:  (for example, 'ludica'); should also prevent other weird duplicate entries
-                elsif (J+1 <= PA_LAST) -- Must include range check or exceptions will be raised 
+                 -- SPR:  The elsif that follows stops duplicative entries for suffixes with multiple stems
+                 -- SPR:  (for example, 'ludica'); should also prevent other weird duplicate entries
+                 elsif (J+1 <= PA_LAST) -- Must include range check or exceptions will be raised 
                                        -- in some situations (e.g., 'fame')
-                  then if (PA(J) = PA(J+1))  then      --  to be extra conservative, add 'and PR.D_K = GENERAL'                                   
+
+               then if (PA(J) = PA(J+1))  then                                    
                      PA(J.. PA_LAST-1) := PA(J+1..PA_LAST); 
                      PA_LAST := PA_LAST - 1;       
                   end if;
@@ -830,48 +838,153 @@
                else
                   J := J + 1;
             end if;
-            
-            
-      end SUPRESS_KEY_CHECK;
+                    
+            end SUPRESS_KEY_CHECK;
       else
             J := J + 1;
          
       end if;
 
       OPR := PR;
-      
+     
       end loop COMPRESS_LOOP;
    
+   if Has_Qu_Pron then
+    Qu_PA_Fix:  
+    declare
+         
+        Qu_PA, OPA    : Parse_Array(PA'Range) := (others => NULL_PARSE_RECORD);
+        Qu_Next, Next : Integer               := PA'First;
+        De_J          : DICTIONARY_ENTRY      := NULL_DICTIONARY_ENTRY; 
+        De_K          : DICTIONARY_ENTRY      := NULL_DICTIONARY_ENTRY;
+        Has_Packon    : BOOLEAN               := FALSE;     
+      begin
+           -- separate Qu PRON/PACKs from everything else
+           for I in PA'range loop                             -- I loop
+                  if ( ( PA(I).Ir.Qual.POFS = Pron or PA(I).Ir.Qual.POFS = PACK)
+                       and then Qr_Pack_To_PRON(PA(I).Ir.qual).Decl.Which = 1 ) 
+                  or else
+                  ( PA(I).D_K = Addons 
+                   and then Addons_Package.Means(Integer(PA(I).Mnpc))(1..6) = "PACKON" )
+                  then
+                     Qu_PA(Qu_Next) := PA(I);  
+                     Qu_Next := Qu_Next+1;    
+                     Has_Packon := True;
+                  else
+                  OPA(Next) := PA(I);
+                  Next := Next+1;
+                 end if;
+              end loop; -- I 
+       
+            for J in Qu_PA'FIRST..(Qu_PA'Last-1) loop     -- remove duplicate PRON 1 X and PACKs
+
+                  if  Qu_PA(J) /= NULL_PARSE_RECORD 
+                         then 
+                         for K in J+1..Qu_PA'Last loop
+                                            
+                  if Qu_PA(J).D_K = General
+                    and then Qu_PA(K).D_K = General 
+                    and then Qr_Pack_To_PRON(Qu_PA(J).IR.qual) = Qr_Pack_To_PRON(Qu_PA(K).IR.qual)
+                  then 
+
+                             De_K := NULL_DICTIONARY_ENTRY; 
+                             De_J := NULL_DICTIONARY_ENTRY;
+                        
+                             DICT_IO.SET_INDEX(DICT_FILE(Qu_PA(K).D_K), Qu_PA(K).MNPC); 
+                              DICT_IO.READ(DICT_FILE(Qu_PA(K).D_K), DE_K);
+                 
+                             DICT_IO.SET_INDEX(DICT_FILE(Qu_PA(J).D_K), Qu_PA(J).MNPC); 
+                             DICT_IO.READ(DICT_FILE(Qu_PA(J).D_K), DE_J);
+                        
+                             If DE_J.stems(1) = De_K.stems(1) 
+                             and then DE_J.mean = De_K.Mean               
+                             then 
+                             Qu_PA(K) := NULL_PARSE_RECORD;                    
+                             end if;             
+                     
+                  elsif Qu_PA(J).D_K = Addons
+                    and then Qu_PA(K).D_K = Addons
+                    and then (QU_PA(J).MNPC = QU_PA(K).MNPC 
+                    or else 
+                              (Addons_Package.Means(Integer(Qu_PA(J).Mnpc)) = Addons_Package.Means(Integer(QU_PA(K).Mnpc))  )) 
+                   then
+                    Qu_PA(K) := NULL_PARSE_RECORD;
+                  
+                  end if; 
+                      
+                  end loop; -- K
+                  end if;   -- J /= null_parse_record
+                     
+            end loop; -- J
+            
+         PA   := (others => NULL_PARSE_RECORD);
+                               
+         Next := PA'First;                           
+         
+         for Z in PRONOUN_KIND_TYPE'Range loop   
+            for X in CASE_TYPE'Range loop
+               for L in Qu_PA'range loop 
+                  for M in Number_Type'range loop 
+                     for N in Gender_type'range loop 
+               if Qu_PA(L) /= Null_Parse_Record then 
+                  if  ( Qu_PA(L).Ir.Qual.POFS = Pron 
+                       and then Qu_PA(L).Ir.Qual.Pron.kind = Z 
+                       and then Qu_PA(L).IR.QUAL.PRON.CS = X 
+                       and then Qu_Pa(L).Ir.Qual.Pron.Number = M
+                       and then Qu_PA(L).Ir.Qual.Pron.GENDER = N)
+                   -- or  
+                   --   ( Qu_PA(L).Ir.Qual.Pofs = Pack 
+                   --    and then Qu_PA(L).Ir.Qual.Pack.Kind = Z )     
+                  or Qu_PA(L).D_K = Addons 
+                  then
+                  PA(Next) := Qu_PA(L);
+                  Next := Next+1;
+                  Qu_PA(L) := NULL_PARSE_RECORD;
+                  
+                  end if; 
+               end if; 
+                     end loop; -- N
+                  end loop; -- M
+               end loop; -- L
+            end loop; -- X
+         end loop; -- Z
+         
+       for M in OPA'Range loop
+          if OPA(M) /=  NULL_PARSE_RECORD  
+          then
+             PA(Next) := OPA(M);
+             Next := Next+1;
+             exit when Next > PA'Last;
+             end if;
+          end loop; --m
+ 
+   end Qu_PA_Fix;
+   end if;  -- has_qu_pron
+
       for I in 1..PA_LAST  loop
-      --  Set to 0 the VAR for N            --  DON'T
-      --  if PA(I).IR.QUAL.POFS = N  then
-      --    PA(I).IR.QUAL.N.DECL.VAR := 0;
-      --  end if;
-      --  Destroy the artificial VAR for PRON 1 X
-         if PA(I).IR.QUAL.POFS = PRON  and then
-         PA(I).IR.QUAL.PRON.DECL.WHICH =1  then
-         PA(I).IR.QUAL.PRON.DECL.VAR := 0;
-         end if;
+
          if PA(I).IR.QUAL.POFS = V   then
             if PA(I).IR.QUAL.V.CON = (3, 4)  then
             --  Fix V 3 4 to be 4th conjugation
             PA(I).IR.QUAL.V.CON := (4, 1);
-            --    else
-            --    --  Set to 0 other VAR for V
-            --      PA(I).IR.QUAL.V.CON.VAR := 0;
             end if;
          end if;
       end loop;
-   
---     for I in 1..PA_LAST  loop
---         PARSE_RECORD_IO.PUT(PA(I)); TEXT_IO.NEW_LINE;
---      end loop;
-
+  
+--DEBUG
+--     declare
+--        De : DICTIONARY_ENTRY;
+--        begin 
 --      TEXT_IO.PUT_LINE("PA after COMPRESS  almost leaving LIST_STEMS    PA_LAST = "  & INTEGER'IMAGE(PA_LAST));
 --      for I in 1..PA_LAST  loop
---         PARSE_RECORD_IO.PUT(PA(I)); TEXT_IO.NEW_LINE;
---      end loop;
-   
---TEXT_IO.PUT("}");
-   
+--        PARSE_RECORD_IO.PUT(PA(I)); TEXT_IO.NEW_LINE;
+--        if PA(I).D_K = General then
+--        DICT_IO.SET_INDEX(DICT_FILE(PA(I).D_K), PA(I).MNPC); 
+--        DICT_IO.READ(DICT_FILE(PA(I).D_K), DE);
+--        end if; 
+--        Text_IO.Put_Line(DE.MEAN);
+--        end loop;
+--        end; -- block
+--DEBUG
+
    end LIST_SWEEP;
