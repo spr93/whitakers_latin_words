@@ -18,7 +18,7 @@ with Words_Help;              use Words_Help;
 
 with Ada.Exceptions;
 
---pragma Elaborate (WORD_PARAMETERS);
+pragma Elaborate (WORD_PARAMETERS);
 with Ada.Wide_Text_IO;
 with Ada.Characters.Conversions;
 
@@ -1392,8 +1392,8 @@ begin --  PARSE
                   end if;
                   if WORDS_MODE (WRITE_OUTPUT_TO_FILE) then
                      if not CONFIG.SUPPRESS_PREFACE then
-                        New_Line (OUTPUT);
-                        Text_IO.Put_Line (OUTPUT, LINE (1 .. L));
+                     Text_IO.Put_Line (OUTPUT, LINE (1 .. L));
+                     New_Line (OUTPUT);
                      end if;
                   end if;
                      PARSE_LINE (LINE (1 .. L));

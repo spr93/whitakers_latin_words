@@ -86,7 +86,7 @@ with STRINGS_PACKAGE; use STRINGS_PACKAGE;
       end GET_UNICODE; 
    
    
-      procedure Format (OUTPUT : in Text_IO.File_Type; Format : In Format_Command) is
+ procedure Format (OUTPUT : in Text_IO.File_Type; Format : In Format_Command) is
    begin
 
       if WORDS_MODE(DO_ANSI_FORMATTING) and then

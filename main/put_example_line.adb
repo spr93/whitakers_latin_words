@@ -12,7 +12,7 @@ is
    VK : VERB_KIND_TYPE;
 
    procedure PUT_VERB_EXAMPLE
-     (OUTPUT :    in Text_IO.File_Type; IR : in INFLECTION_RECORD;
+     (OUTPUT : in Text_IO.File_Type; IR : in INFLECTION_RECORD;
       VK     : in VERB_KIND_TYPE)
    is
       PERSON : constant PERSON_TYPE := IR.QUAL.V.PERSON;
