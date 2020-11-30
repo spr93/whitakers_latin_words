@@ -5,6 +5,7 @@
    with DICTIONARY_PACKAGE; use DICTIONARY_PACKAGE;
    with Ada.Command_Line;
    with Ada.Directories;
+with Ada.Strings; use Ada.Strings;
 
 
    procedure SORTER is   
@@ -25,8 +26,8 @@
       INPUT_NAME : STRING(1..80) := (others => ' ');
    
       LINE_LENGTH : constant := 300;        --  ##################################
-                                        --  Max line length on input file
-                                        --  Shorter => less disk space to sort
+                                            --  Max line length on input file
+                                            --  Shorter => less disk space to sort
       CURRENT_LENGTH : INTEGER := 0;
       subtype TEXT_TYPE is STRING(1..LINE_LENGTH);
    --type LINE_TYPE is 
@@ -92,6 +93,7 @@
       NO_APPENDIX_SECTION : constant APPENDIX_SECTION_TYPE := 
          (NONE, (0, 0, 0, 0, 0));
    
+   -- DEBUG
    --  procedure PUT(OUTPUT : TEXT_IO.FILE_TYPE; S : SECTION_TYPE);
    --  procedure PUT(S : SECTION_TYPE);  
    --  procedure GET(FROM : in STRING; 
@@ -103,9 +105,8 @@
    --  procedure GET(FROM : in STRING; 
    --                   S : out APPENDIX_SECTION_TYPE; LAST : out POSITIVE);  
    --  function "<"(A, B : APPENDIX_SECTION_TYPE) return BOOLEAN;  
-   -- 
-   
-   
+   -- DEBUG   
+
       procedure PUT(OUTPUT : TEXT_IO.FILE_TYPE; S : SECTION_TYPE) is
          LEVEL : INTEGER := 0;
       
@@ -369,35 +370,6 @@
                   L := FT - 2;
          end;
       
-      --    PUT("B");
-      --    GET(FROM(L+2..LT), S.SECTION.FIRST_LEVEL, L);
-      --    if L+1 >= LT  then
-      --      LAST := L;
-      --      return;
-      --    end if;
-      --PUT("C");
-      --    GET(FROM(L+2..LT), S.SECTION.SECOND_LEVEL, L);
-      --    if L+1 >= LT  then
-      --      LAST := L;
-      --      return;
-      --    end if;
-      --PUT("D");
-      --    GET(FROM(L+2..LT), S.SECTION.THIRD_LEVEL, L);
-      --    if L+1 >= LT  then
-      --      LAST := L;
-      --      return;
-      --    end if;
-      --PUT("E");
-      --    GET(FROM(L+2..LT), S.SECTION.FOURTH_LEVEL, L);
-      --    if L+1 >= LT  then
-      --      LAST := L;
-      --      return;
-      --    end if;
-      --PUT("F");
-      --    GET(FROM(L+2..LT), S.SECTION.FIFTH_LEVEL, L);
-      --    LAST := L;
-      --PUT("G");
-      
       
          GET(FROM(L+2..LT), S.SECTION, L);
       --PUT("F");
@@ -468,7 +440,6 @@
          PUT("  with optional sort type and way  => ");
       end PROMPT_FOR_ENTRY;
    
-   
       procedure GET_ENTRY (MX, NX  : out NATURAL;
                            SX  : out SORT_TYPE;
                            WX  : out WAY_TYPE ) is
@@ -514,11 +485,8 @@
             SORT_TYPE_IO.GET(ENTER_LINE(LAST+1..LS), S, LAST);
             WAY_TYPE_IO.GET(ENTER_LINE(LAST+1..LS), W, LAST);
             MX := M; NX := N;  SX := S; WX := W;
-        
          
-         ECHO_ENTRY;
-         
-         
+            ECHO_ENTRY;
          
             return;
             exception
@@ -986,11 +954,9 @@
       end GRAPHIC;
    
             procedure PROCESS_COMMAND_LINE_ARGUMENTS is 
-          --   Args_Exception : exception;
-            
+
             begin 
 
-      
                for ZZ in 1..Ada.Command_Line.Argument_Count Loop
 
                  for YY in 1..TRIM (Ada.Command_Line.Argument(1))'length loop
@@ -1077,7 +1043,7 @@
                                    W4 := I;   
          			               
          			   M5 := 58;
-                                   N5 := N5+(1-1);
+                                   N5 := M5+(1-1);
                                    S5 := A;
                                    W5 := I;               
                         
@@ -1088,7 +1054,8 @@
                      New_Line;
                      Put_Line("====== UNKNOWN COMMAND-LINE OPTION: " & TRIM(Ada.Command_Line.Argument(1))(YY) & " ======");
                      New_Line;
-                     exit; 
+                  --exit;
+                  return; 
                      end case;  
               
                end loop; 
@@ -1096,7 +1063,7 @@
                   
                end loop; -- while =< argument_counter'length
       
-      Text_IO.Put_Line("Input file is " & CLARG_FILENAME);
+         Text_IO.Put_Line("Input file is " & CLARG_FILENAME);
       
          end PROCESS_COMMAND_LINE_ARGUMENTS;
    
