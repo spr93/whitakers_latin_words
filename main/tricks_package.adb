@@ -222,7 +222,6 @@
             if S(J) = 'I' or S(J) = 'J' or S(J) = 'V' or S(J) = 'U' or S(J) = 'X'  or S(J) = 'L'  then raise INVALID; end if;
             end if;
               
-          
             if S(J) = 'C'  then
               TOTAL := TOTAL + 100;
               J := J - 1;
@@ -240,8 +239,6 @@
               end if;
               if S(J) = 'I' or S(J) = 'J' or S(J) = 'V' or S(J) = 'U' or S(J) = 'X'  or S(J) = 'L'  then raise INVALID; end if;
             end if;
-            
-
     
           if S(J) = 'D'  then
             TOTAL := TOTAL + 500;
@@ -265,7 +262,6 @@
             if S(J) = 'I' or S(J) = 'J' or S(J) = 'V' or S(J) = 'U' or S(J) = 'X'  or S(J) = 'L' or S(J) = 'C' or S(J) = 'D'  then raise INVALID; end if;
           end if;
          
-
             if S(J) = 'M'  then
               TOTAL := TOTAL + 1000;
               J := J - 1;
@@ -676,8 +672,6 @@
             PA_LAST := PA_SAVE;
          end FLIP_FLOP;
       
-      
-      
          procedure INTERNAL(X1, X2 : STRING; EXPLANATION : STRING := "") is
          --  Replaces X1 with X2 anywhere in word and tries it for validity
             PA_SAVE : INTEGER := PA_LAST;
@@ -754,8 +748,6 @@
             end if;
             PA_LAST := PA_SAVE;
          end ADJ_TERMINAL_IIS;
-      
-      
       
          procedure DOUBLE_CONSONANTS(EXPLANATION : STRING := "") is
             PA_SAVE : INTEGER := PA_LAST;

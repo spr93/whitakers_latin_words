@@ -6,6 +6,7 @@
    with DEVELOPER_PARAMETERS; use DEVELOPER_PARAMETERS;
    with WORD_SUPPORT_PACKAGE; use WORD_SUPPORT_PACKAGE;
    with ADDONS_PACKAGE;
+with Text_IO;
 
    procedure LIST_SWEEP(PA : in out PARSE_ARRAY; PA_LAST : in out INTEGER) is
    --  This procedure is supposed to process the output PARSE_ARRAY at PA level
@@ -280,7 +281,36 @@
          
             SWITCH:
             declare
-              
+            
+            function "<" (LEFT, RIGHT : QUALITY_RECORD) return BOOLEAN is
+               begin
+--                    if LEFT.POFS = RIGHT.POFS  and then
+--                    LEFT.POFS = PRON        and then
+--                    LEFT.PRON.DECL.WHICH = 1    then
+--                       return (LEFT.PRON.DECL.VAR < RIGHT.PRON.DECL.VAR);
+--                    else
+                     return INFLECTIONS_PACKAGE."<"(LEFT, RIGHT);
+--                  end if;
+               end "<";
+            
+               function EQU (LEFT, RIGHT : QUALITY_RECORD) return BOOLEAN is
+               begin
+               
+--                    if LEFT.POFS = RIGHT.POFS  and then
+--                    LEFT.POFS = PRON        and then
+--                    LEFT.PRON.DECL.WHICH = 1    then
+--                    
+--                       return (LEFT.PRON.DECL.VAR = RIGHT.PRON.DECL.VAR);
+--                    else
+--                    
+                     return INFLECTIONS_PACKAGE."="(LEFT, RIGHT);
+   --               end if;
+               
+               end EQU;
+            
+            
+            
+            
                function MEANING (PR : PARSE_RECORD) return MEANING_TYPE is
                begin
                   return DEPR(PR).MEAN;
@@ -292,10 +322,11 @@
             --  One problem is that it can mix up some of the order of PREFIX, XXX, LOC
             --  I ought to do this for every set of results from different approaches
             --  not just in one fell swoop at the end !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
+            
+            
             INNER_LOOP:
                for I in SL'FIRST..SL_LAST-1  loop
-
+               --  Maybe <   =  on PR.STEM  -  will have to make up "<"   --  Actually STEM and PART  --  and check that later in print
                   if SL(I+1).D_K  > SL(I).D_K   or else  --  Let DICT.LOC list first
                   
                      (SL(I+1).D_K  = SL(I).D_K    and then
@@ -307,22 +338,23 @@
                   
                      (SL(I+1).D_K  = SL(I).D_K    and then
                       SL(I+1).MNPC  = SL(I).MNPC    and then
-                      SL(I+1).IR.QUAL = SL(I).IR.QUAL  and then
+                      EQU(SL(I+1).IR.QUAL, SL(I).IR.QUAL)  and then
                       MEANING(SL(I+1)) < MEANING(SL(I)))  or else   --  | is > letter
                   
                      (SL(I+1).D_K  = SL(I).D_K  and then
                       SL(I+1).MNPC  = SL(I).MNPC    and then
-                      SL(I+1).IR.QUAL = SL(I).IR.QUAL  and then
+                      EQU(SL(I+1).IR.QUAL, SL(I).IR.QUAL)  and then
                       MEANING(SL(I+1)) = MEANING(SL(I))   and then
                       SL(I+1).IR.ENDING.SIZE < SL(I).IR.ENDING.SIZE)    or else
                   
                      (SL(I+1).D_K  = SL(I).D_K  and then
                       SL(I+1).MNPC  = SL(I).MNPC    and then
-                      SL(I+1).IR.QUAL = SL(I).IR.QUAL  and then
+                      EQU(SL(I+1).IR.QUAL, SL(I).IR.QUAL)  and then
                       MEANING(SL(I+1)) = MEANING(SL(I))   and then
                       SL(I+1).IR.ENDING.SIZE = SL(I).IR.ENDING.SIZE  and then
                       INFLECTIONS_PACKAGE."<"(SL(I+1).IR.QUAL, SL(I).IR.QUAL))
                   then
+                  
                   
                      SM := SL(I);
                      SL(I) := SL(I+1);
@@ -332,6 +364,7 @@
                   end if;
                
                end loop INNER_LOOP;
+            
             
             end SWITCH;
          --------------------------------------------------
@@ -751,8 +784,7 @@
                (FIX_ON)     then               --  another FIX
 --TEXT_IO.PUT_LINE("SWEEP  Another FIX/TRICK  J = " & INTEGER'IMAGE(J));
                null;
-            
-            
+                
             elsif ((PA(J).D_K in ADDONS..YYY)  or
                       (PA(J).IR.QUAL.POFS = X))  and then  --  Kills TRICKS stuff
                (not PW_ON)     then
@@ -762,7 +794,6 @@
                PA_LAST := PA_LAST - DIFF_J;
  
                P_LAST := P_LAST - 1;
-            
             
             else
 --  TEXT_IO.PUT_LINE("SWEEP  else  J = " & INTEGER'IMAGE(J) & "  P_LAST = " & INTEGER'IMAGE(P_LAST));                 --DEBUG

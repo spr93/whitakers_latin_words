@@ -34,7 +34,7 @@ begin
    StdOutMode := StdOutMode or ENABLE_VIRTUAL_TERMINAL_PROCESSING; --or DISABLE_NEWLINE_AUTO_RETURN;
    Result := SetConsoleMode (StdOut, StdOutMode);
 
- --  put_line(result'image);
+ --  put_line(result'image);  -- DEBUG
 
    if result /= 0 then return true;
    else return false;
