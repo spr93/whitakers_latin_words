@@ -520,7 +520,6 @@ package body ADDONS_PACKAGE is
     return;
   end GET;
 
-
   procedure PUT(S : out STRING; P : in TARGET_ENTRY) is
     L : INTEGER := S'FIRST - 1;
     M : INTEGER := 0;

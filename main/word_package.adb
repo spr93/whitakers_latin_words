@@ -382,11 +382,11 @@ package body WORD_PACKAGE is
                                   D_K : DICTIONARY_KIND;
                                   RESTRICTION : DICT_RESTRICTION := REGULAR) is
                      --  Prepares a PDL list of possible dictionary hits   
-      --  Search a dictionary (D_K) looking for all stems that match
-      --  any of the stems that are physically possible with Latin inflections 
+      -- Search a dictionary (D_K) looking for all stems that match
+      -- any of the stems that are physically possible with Latin inflections 
          use STEM_IO;
 
-      --type NAT_32 is range 0..2**31-1;   --###############
+      -- type NAT_32 is range 0..2**31-1;   --###############
          J, J1, J2, JJ : STEM_IO.COUNT := 0;
 
          INDEX_ON : constant STRING := SSA(SSA'LAST);
@@ -459,7 +459,6 @@ package body WORD_PACKAGE is
             end case;
 
          end LOAD_PDL;
-
 
       begin
       --  Now go through the dictionary list DL for the first letters
@@ -903,6 +902,12 @@ end CHANGE_LANGUAGE;
                   (PDL_P = ADJ  and then PDL_PART.ADJ.DECL = (9, 8)) then  --  abbreviations
                --   Can be no suffix on abbreviation");
                   goto END_OF_PDL_LOOP;
+              
+               elsif ( Len(PDL(J).DS.STEM) = 1 and Len(Suffix.FIX) > 2) then      
+                     goto END_OF_PDL_LOOP;     -- e.g., vellum, rellum => -ell suffixes on v (vis) and r (re)
+                                               -- vellum demonstrates how this is problematic because the vellum result
+                                               -- suppresses a much more likely set of results (v/b trick => bellum)
+                
                else                      --  There is SUFFIX, see if it agrees with PDL
                   if PDL_P <= SUFFIX.ENTR.ROOT  and then     --  Does SUFFIX agree in ROOT
                      ((PDL_KEY <= SUFFIX.ENTR.ROOT_KEY)  or else
@@ -986,13 +991,13 @@ end CHANGE_LANGUAGE;
             ON_SL:
                for I in SL'RANGE loop
                   exit when SL(I) = NULL_PARSE_RECORD;
-
-               --TEXT_IO.PUT("SL(I)  "); PARSE_RECORD_IO.PUT(SL(I)); TEXT_IO.NEW_LINE;
-               --TEXT_IO.PUT("    PDL    "); TEXT_IO.PUT(PDL(J).DS.STEM); 
-               --PART_ENTRY_IO.PUT(PDL(J).DS.PART);
-               --TEXT_IO.PUT(INTEGER'IMAGE(PDL(J).DS.KEY)); TEXT_IO.NEW_LINE;
-               --TEXT_IO.PUT("LS  "); TEXT_IO.PUT(INTEGER'IMAGE(LS)); 
-               --TEXT_IO.PUT("  LEN SL(I).STEM   "); TEXT_IO.PUT_LINE(INTEGER'IMAGE(LEN(SL(I).STEM))); 
+--  
+--  TEXT_IO.PUT("SL(I)  "); PARSE_RECORD_IO.PUT(SL(I)); TEXT_IO.NEW_LINE;
+--  TEXT_IO.PUT("    PDL    "); TEXT_IO.PUT(PDL(J).DS.STEM); 
+--  PART_ENTRY_IO.PUT(PDL(J).DS.PART);
+--  Text_IO.PUT(INTEGER(PDL(J).DS.KEY)'image); TEXT_IO.NEW_LINE;
+--  TEXT_IO.PUT("LS  "); TEXT_IO.PUT(INTEGER'IMAGE(LS)); 
+--  TEXT_IO.PUT("  LEN SL(I).STEM   "); TEXT_IO.PUT_LINE(INTEGER'IMAGE(LEN(SL(I).STEM))); 
 
                   if LS  = LEN(SL(I).STEM)  then
 
@@ -1055,7 +1060,8 @@ end CHANGE_LANGUAGE;
                                                               PDL_PART.PRON.DECL,
                                                               SL(I).IR.QUAL.PRON.CS,
                                                               SL(I).IR.QUAL.PRON.NUMBER,
-                                                              SL(I).IR.QUAL.PRON.GENDER  )  ),
+                                                              SL(I).IR.QUAL.PRON.GENDER,
+                                                              Kind => SL(I).IR.QUAL.PRON.KIND)  ),
                                               KEY => SL(I).IR.KEY,
                                               ENDING => SL(I).IR.ENDING,
                                               AGE => SL(I).IR.AGE,
@@ -1144,7 +1150,7 @@ end CHANGE_LANGUAGE;
                                               QUAL => (
                                                       POFS => ADV,
                                                       ADV => (
-                                                             CO => COM, GENERATED => X) ),
+                                                      CO => COM, GENERATED => X) ),
                                               KEY => SL(I).IR.KEY,
                                               ENDING => SL(I).IR.ENDING,
                                               AGE => SL(I).IR.AGE,
@@ -1333,26 +1339,37 @@ end CHANGE_LANGUAGE;
             SSA : STEM_ARRAY;
             L : INTEGER :=  0;
             SUFFIX_HIT : INTEGER := 0;
---            use TEXT_IO;
---            use INFLECTIONS_PACKAGE.INTEGER_IO;
-            
+         
+--  DEBUG
+--          use TEXT_IO;
+--          use INFLECTIONS_PACKAGE.INTEGER_IO;
+--  DEBUG
+
          begin
-         --PUT_LINE("Entering APPLY_SUFFIX");
-         --PUT(NUMBER_OF_SUFFIXES); PUT(INTEGER(SA'LENGTH)); PUT(SA'LAST); NEW_LINE;
-            for I in 1..NUMBER_OF_SUFFIXES  loop       --  Loop through SUFFIXES 
+
+--  DEBUG
+--         Text_IO.PUT_LINE("Entering APPLY_SUFFIX");
+--         Text_IO.PUT(NUMBER_OF_SUFFIXES'image); PUT(INTEGER(SA'LENGTH)); PUT(SA'LAST); NEW_LINE;
+--  DEBUG
+
+          for I in 1..NUMBER_OF_SUFFIXES  loop       --  Loop through SUFFIXES 
                L :=  0;                                 --  Take as many as fit
 
                for J in SA'RANGE  loop                  --  Loop through stem array
                   if SUBTRACT_SUFFIX(SA(J), SUFFIXES(I)) /=
                   HEAD(SA(J), MAX_STEM_SIZE)  then
-                  --PUT("Hit on suffix  " & SUFFIXES(I).FIX & "    " & SUFFIXES(I).CONNECT & "  ");
-                  --PUT(SUFFIXES(I).ENTR); NEW_LINE;
-                  --PUT("I = "); PUT(I); PUT("  "); PUT(SUFFIXES(I).FIX); PUT("  "); 
-                  --PUT("J = "); PUT(J); PUT("  "); PUT(SA(J)); NEW_LINE;
+                  
+                  -- DEBUG
+                  --TEXT_IO.PUT("Hit on suffix  " & SUFFIXES(I).FIX & "    " & SUFFIXES(I).CONNECT & "  ");
+                  --SUFFIX_ENTRY_IO.PUT(SUFFIXES(I).ENTR); NEW_LINE;
+                  -- TEXT_IO.PUT("I = "); PUT(I); PUT("  "); PUT(SUFFIXES(I).FIX); PUT("  "); 
+                  -- TEXT_IO.PUT("J = "); PUT(J); PUT("  "); PUT(SA(J)); NEW_LINE;
+                  -- DEBUG
+                  
                      L := L + 1;            --  We have a hit, make new stem array item
                      SSA(L) := HEAD(SUBTRACT_SUFFIX(SA(J), SUFFIXES(I)),
                                     MAX_STEM_SIZE);  --  And that has prefix subtracted to match dict
-                  --PUT("L = "); PUT(L); PUT("   "); PUT_LINE(SUBTRACT_SUFFIX(SA(J), SUFFIXES(I)));
+                  --TEXT_IO.PUT("L = "); PUT(L); PUT("   "); PUT_LINE(SUBTRACT_SUFFIX(SA(J), SUFFIXES(I)));
                   end if;
                end loop;    --  Loop on J through SA
 
@@ -1362,23 +1379,23 @@ end CHANGE_LANGUAGE;
                --  For suffixes we allow as many as match 
                
                   if  PDL_INDEX /= 0     then                  --  Dict search was successful
-                  --PUT_LINE("IN APPLY_SUFFIX -  PDL_INDEX not 0     after suffix  " & SUFFIXES(I).FIX);
+                  --TEXT_IO.PUT_LINE("IN APPLY_SUFFIX -  PDL_INDEX not 0     after suffix  " & SUFFIXES(I).FIX);
 
-                  --PUT_LINE("REDUCE_STEM_LIST called from APPLY_SUFFIX");
+                  --TEXT_IO.PUT_LINE("REDUCE_STEM_LIST called from APPLY_SUFFIX");
                      SUFFIX_HIT := I;
 
                      REDUCE_STEM_LIST(SX, SXX, NULL_PREFIX_ITEM, SUFFIXES(I));
 
                      if SXX(1) /= NULL_PARSE_RECORD  then    --  There is reduced stem result
                         PA_LAST := PA_LAST + 1;        --  So add suffix line to parse array
-                     --PUT_LINE("REDUCE_STEM_LIST is not null so add suffix to parse array");
+                  --   TEXT_IO.PUT_LINE("REDUCE_STEM_LIST is not null so add suffix to parse array");
                         PA(PA_LAST).IR :=
                               ((SUFFIX, NULL_SUFFIX_RECORD), 0, NULL_ENDING_RECORD, X, X);
                         PA(PA_LAST).STEM := HEAD(
                                                 SUFFIXES(SUFFIX_HIT).FIX, MAX_STEM_SIZE);
                      --  Maybe it would better if suffix.fix was of stem size
                         PA(PA_LAST).MNPC := DICT_IO.COUNT(SUFFIXES(SUFFIX_HIT).MNPC);
-                     --PUT("SUFFIX MNPC  "); PUT(SUFFIXES(SUFFIX_HIT).MNPC); NEW_LINE;
+                  --   TEXT_IO.PUT("SUFFIX MNPC  "); PUT(SUFFIXES(SUFFIX_HIT).MNPC); NEW_LINE;
                         PA(PA_LAST).D_K  := ADDONS;
                      ---
                         for I in SXX'RANGE  loop
@@ -1392,20 +1409,27 @@ end CHANGE_LANGUAGE;
 
                   else   --  there is suffix (L /= 0) but no dictionary hit
                      SUFFIX_HIT := I;
-                  --PUT_LINE("   --  there is suffix (L /= 0) but no dictionary hit");
-                  --PUT("L = "); PUT(L); PUT("    "); 
-                  --PUT("SUFFIX_HIT = "); PUT(SUFFIXES(I).FIX); NEW_LINE;
-                     APPLY_PREFIX(SSA(1..L), SUFFIXES(I), SX, SXX, PA, PA_LAST);
-                  --PUT_LINE("PREFIXES applied from APPLY_SUFFIXES");
+                 
+                  --  DEBUG
+--                    TEXT_IO.PUT_LINE("   --  there is suffix (L /= 0) but no dictionary hit");
+--                    TEXT_IO.PUT("L = "); PUT(L); PUT("    "); 
+--                    TEXT_IO.PUT("SUFFIX_HIT = "); PUT(SUFFIXES(I).FIX); NEW_LINE;
+                  --  DEBUG
+                  
+                  APPLY_PREFIX(SSA(1..L), SUFFIXES(I), SX, SXX, PA, PA_LAST);
+
+                  -- TEXT_IO.PUT_LINE("PREFIXES applied from APPLY_SUFFIXES");
+
+                  
                      if SXX(1) /= NULL_PARSE_RECORD  then    --  There is reduced stem result
                         PA_LAST := PA_LAST + 1;        --  So add suffix line to parse array
-                     --PUT_LINE("REDUCE_STEM_LIST is not null so add suffix to parse array");
+                  --   TEXT_IO.PUT_LINE("REDUCE_STEM_LIST is not null so add suffix to parse array");
                         PA(PA_LAST).IR :=
                               ((SUFFIX, NULL_SUFFIX_RECORD), 0, NULL_ENDING_RECORD, X, X);
                         PA(PA_LAST).STEM := HEAD(
                                                 SUFFIXES(SUFFIX_HIT).FIX, MAX_STEM_SIZE);
                         PA(PA_LAST).MNPC := DICT_IO.COUNT(SUFFIXES(SUFFIX_HIT).MNPC);
-                     --PUT("SUFFIX MNPC  "); PUT(SUFFIXES(SUFFIX_HIT).MNPC); NEW_LINE;
+                   --  TEXT_IO.PUT("SUFFIX MNPC  "); PUT(SUFFIXES(SUFFIX_HIT).MNPC); NEW_LINE;
                         PA(PA_LAST).D_K  := ADDONS;
 
                         for I in SXX'RANGE  loop    --  Set this set of results
@@ -1465,8 +1489,7 @@ end CHANGE_LANGUAGE;
            
  
 --              ---------------------------------------------------------------
---TEXT_IO.PUT_LINE("PRUNE_STEMS   below  NOT DO_ONLY_FIXES  PA_LAST = " 
---& INTEGER'IMAGE(PA_LAST));
+--TEXT_IO.PUT_LINE("PRUNE_STEMS   below  NOT DO_ONLY_FIXES  PA_LAST = " & INTEGER'IMAGE(PA_LAST));
 
             if (((PA_LAST = 0)  and            --  No Uniques or Syncope
                 (PDL_INDEX = 0))  --)   and then    --  No dictionary match
@@ -1513,7 +1536,7 @@ end CHANGE_LANGUAGE;
                end if;       --  First search passed but SXX null
             end if;         --  First search failed
 
---TEXT_IO.PUT_LINE("End of PRUNE_STEMS   PA_LAST = " & INTEGER'IMAGE(PA_LAST))
+--TEXT_IO.PUT_LINE("End of PRUNE_STEMS   PA_LAST = " & INTEGER'IMAGE(PA_LAST));
          end PRUNE_STEMS;
 
 
@@ -1605,8 +1628,6 @@ end CHANGE_LANGUAGE;
                         end if;
                      end loop ON_INFLECTS;
 
-
-
                   --  Only one stem will emerge
                      PDL_INDEX := 0;
                      SEARCH_DICTIONARIES(SSA(1..1), NULL_PREFIX_ITEM, NULL_SUFFIX_ITEM,
@@ -1673,7 +1694,8 @@ end CHANGE_LANGUAGE;
                                                                             PDL(J).DS.PART.PACK.DECL,
                                                                             SL(M).IR.QUAL.PRON.CS,
                                                                             SL(M).IR.QUAL.PRON.NUMBER,
-                                                                            SL(M).IR.QUAL.PRON.GENDER )),
+                                                                            SL(M).IR.QUAL.PRON.GENDER,
+                                                                            SL(M).IR.QUAL.PRON.KIND)),
                                                             KEY => SL(M).IR.KEY,
                                                             ENDING => SL(M).IR.ENDING,
                                                             AGE => SL(M).IR.AGE,
@@ -1777,7 +1799,8 @@ end CHANGE_LANGUAGE;
                                                              PDL(J).DS.PART.PRON.DECL,
                                                              SL(M).IR.QUAL.PRON.CS,
                                                              SL(M).IR.QUAL.PRON.NUMBER,
-                                                             SL(M).IR.QUAL.PRON.GENDER )),
+                                                             SL(M).IR.QUAL.PRON.GENDER,
+                                                             SL(M).IR.QUAL.PRON.KIND)),
                                              KEY => SL(M).IR.KEY,
                                              ENDING => SL(M).IR.ENDING,
                                              AGE => SL(M).IR.AGE,
@@ -2084,8 +2107,6 @@ end CHANGE_LANGUAGE;
             end loop;
 
             WORDS_MODE := SAVED_MODE_ARRAY;
-
-
 
             exception
                when others =>
