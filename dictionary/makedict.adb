@@ -6,7 +6,6 @@ with DICTIONARY_PACKAGE;  use DICTIONARY_PACKAGE;
 with Ada.Command_Line;
 
  procedure WAKEDICT is 
-
    
    package INTEGER_IO is new TEXT_IO.INTEGER_IO(INTEGER);
       use TEXT_IO;

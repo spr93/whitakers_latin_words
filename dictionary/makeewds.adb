@@ -137,7 +137,7 @@ with Ada.Command_Line;
                
               -- Put_Line("I is " & I'Image & " and S'Range is is " & S'First'Image & " .. " & S'Last'Image);
                
-               while S(I-1..I) /= "=>" and S(I-1..I) /=  "];" loop
+               while S(I-1..I) /= "=>" and S(I-1..I) /=  "]" loop
                   T(J) := S(I);
                   J := J + 1;   
                   JMAX := JMAX + 1;
