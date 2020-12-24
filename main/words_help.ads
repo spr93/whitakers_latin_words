@@ -1,17 +1,22 @@
+with WORD_PARAMETERS; use WORD_PARAMETERS;
+
 package words_help is
 
    type Main_Help_Type is array(Natural range<>) of String(1..79);
 
    procedure SHOW_HELP (Line: in String);
 
-   procedure Put (Help : in Main_Help_Type);
+
 
 private
+
+procedure Put (Help : in Main_Help_Type);
 
 GENERAL_HELP: constant MAIN_HELP_TYPE :=  (
   "------------------------------                                                 ",
   "HOW TO READ AN INFLECTION LINE                                                 ",
   "------------------------------                                                 ",
+  "                                                                               ",
   "Example:                                                                       ",
   "am.o             V          1 1 PRES ACTIVE  IND 1 S  Always  mostfreq         ",
   "[root].[inflect] [pt.spch.] [grammar]                 [age]   [infl. freq.]    ",
@@ -22,6 +27,7 @@ GENERAL_HELP: constant MAIN_HELP_TYPE :=  (
   "-----------------------------                                                  ",
   "HOW TO READ A DICTIONARY LINE                                                  ",
   "-----------------------------                                                  ",
+  "                                                                               ",
   "amo, amare, amavi, amatus   V          (1st)       [XXXAO]      veryfreq       ",
   "[standard dictionary forms] [pt.spch.] [decl/conj] [dict. code] [word freq.]   ",
   "     TYPE ? CODES to learn more about the [dict. codes] columns                ",
@@ -30,13 +36,21 @@ GENERAL_HELP: constant MAIN_HELP_TYPE :=  (
   "--------------------------------------------------------                       ",
   "HOW TO READ ABBREVIATIONS IN A MEANING (DEFINITION) LINE                       ",
   "--------------------------------------------------------                       ",
-  "TYPE ? MEANING for the abbreviations used in word meaning (definition) lines.  ");
-
+  "                                                                               ",
+  "TYPE ? MEANING for the abbreviations used in word meaning (definition) lines.  ",
+  "                                                                               ",
+  "--------------                                                                 ",
+  "OTHER FEATURES                                                                 ",
+  "--------------                                                                 ",
+  "                                                                               ",
+  "TYPE ? ARG to learn about command-line arguments and operation modes           ",
+  "TYPE # to set 'user' parameters.  TYPE ! to set advanced ('developer') options ");
 
 GRAMMAR_HELP : constant MAIN_HELP_TYPE :=  (
   "-------------------------------------                                          ",
   "GRAMMAR COLUMNS IN INFLECTION RESULTS                                          ",
   "-------------------------------------                                          ",
+  "                                                                               ",
   "COMMON FEATURES:                                                               ",
   "In most contexts you should read an 'X' as 'all/none/unknown'.                 ",
   "     You should not infer anything from an 'X'.                                ",
@@ -79,6 +93,7 @@ CODES_HELP : constant MAIN_HELP_TYPE :=  (
   "----------------                                                               ",
   "DICTIONARY CODES                                                               ",
   "----------------                                                               ",
+  "                                                                               ",
   "E.g.,                                                                          ",
   "[CDXAO]  =>       C     D              X           A             O             ",
   "The sequence is:  [age] [subject-area] [geography] [word freq.] [source]       ",
@@ -189,9 +204,9 @@ FREQ_HELP : constant MAIN_HELP_TYPE :=  (
   "code short name   meaning                                                      ",
   "X    unknown      unknown or unspecified                                       ",
   "A    very freq    very frequent; common in basic textbooks                     ",
-  "B    frequent     top 10 percent                                               ",
-  "C    common       in the top 10,000 words                                      ",
-  "D    lesser       in the top 20,000 words                                      ",
+  "B    frequent     top 10 percent (guestimate)                                  ",
+  "C    common       top 50 percent (guestimate)                                  ",
+  "D    lesser       bottom 40 percent (guestimate)                               ",
   "E    uncommon     2 or 3 citations found                                       ",
   "F    very rare    having only single citation in OLD or L+S                    ",
   "I    inscription  only citation is inscription                                 ",
@@ -388,5 +403,38 @@ MEANING_HELP : constant MAIN_HELP_TYPE :=  (
   "      subsequent meanings that follow a comma but before a semicolon.          ",
   "                                                                               ",
   "  ***No scholarly rigor is assured.  This dictionary is an amateur project***  ");
+
+ Param_Help  : constant MAIN_HELP_TYPE :=  (
+  "----------------------                                                         ",
+  "COMMAND-LINE ARGUMENTS                                                         ",
+  "----------------------                                                         ",
+  "                                                                               ",
+  "Words operates in two modes when using command-line arguments                  ",
+  "                                                                               ",
+  "[1] NON-INTERACTIVE WORDS:  Fully compatible with Wm. Whitaker's classic Words.",
+  "Usage:                                                                         ",
+  "words [string of Latin words]                                                  ",
+  "   => send results for the Latin words to standard output and exit             ",
+  "words [in_file] [out_file]                                                     ",
+  "   => take Latin words from the in_file and put the results in out_file        ",
+  "words " & CHANGE_LANGUAGE_CHARACTER & "e [(POS) English word(s)string]                                         ",
+  "   => returns Latin translation options                                        ",
+  "   POS uses abbreviations in ? GRAMMAR; applies only to first English word     ",
+  "                                                                               ",
+  "[2] MODIFY INTERACTIVE-MODE:  Set limits on interactive mode.                  ",
+  "Options:                                                                       ",
+  "-r    READ ONLY:     User cannot change settings or direct output to file      ",
+  "-n    NO FILES:      User cannot load a file or direct output to file          ",
+  "-x    NO EXIT:       User cannot exit with two returns or control-C            ",
+  "           NOT A SECURE MODE - only blocks SIGINT                              ",
+  "           No effect on suspend (SIGSTP) or kill (SIGTERM)                     ",
+  "           File system may be readable with " & CHANGE_LANGUAGE_CHARACTER & "                                  ",
+  "-l    LATIN ONLY:    User cannot enter English->Latin mode                     ",
+  "-e    ENGLISH ONLY:  User cannot enter Latin->English mode                     ",
+  "-m    MEANINGS ONLY: Show only the meanings line (in Latin->English mode)      ",
+  "E.g., words -rnlm limits the user the functionality of a paper dictionary      ",
+  "                                                                               ",
+  "These options are overrides; non-conflicting settings (WORD.MOD) still apply   ");
+
 
 end words_help;

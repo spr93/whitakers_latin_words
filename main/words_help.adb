@@ -25,24 +25,26 @@ package body words_help is
          Help_Param := Line(Line'First..(Line'First + 2));
       end if;
 
-      if    Help_Param = "COD"                          then
+      if    Help_Param    = "COD"                        then
             Put(CODES_HELP);
-         elsif Help_Param = "SOU"                       then
+         elsif Help_Param = "SOU"                        then
             Put(SOURCE_HELP);
-         elsif Help_Param = "GRA"                       then
+         elsif Help_Param = "GRA"                        then
             Put(GRAMMAR_HELP);
-         elsif Help_Param = "AGE" or Help_Param = "ERA" then
+         elsif Help_Param = "AGE" or Help_Param = "ERA"  then
             Put(AGE_HELP);
-         elsif Help_Param = "ARE"                       then
+         elsif Help_Param = "ARE"                        then
             Put(AREA_HELP);
-         elsif Help_Param = "GEO"                       then
+         elsif Help_Param = "GEO"                        then
             Put(GEO_HELP);
-         elsif Help_Param = "FRE"                       then
+         elsif Help_Param = "FRE"                        then
             Put(FREQ_HELP);
-         elsif Help_Param = "MEA" or Help_Param = "ABB" then
+         elsif Help_Param = "MEA" or Help_Param = "ABB"  then
             Put (MEANING_HELP);
-         elsif Help_Param = "PEA"                       then
-            Put(PEARSE_HELP);
+         elsif Help_Param = "PEA"                        then
+         Put(PEARSE_HELP);
+         elsif Help_Param = "PAR" or Help_Param = "ARG"  then
+         Put(PARAM_HELP);
          Else
             Put(GENERAL_HELP);
      end if;

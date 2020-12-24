@@ -10,44 +10,44 @@
    with Ada.Interrupts; use Ada.Interrupts;
    with Ada.Interrupts.Names; use Ada.Interrupts.Names;
    with No_Exit_Handler; use No_Exit_Handler; 
+   with Words_Help;
    with Ada.Environment_Variables;
    with Ada.Directories;
+   with Ada.Wide_Text_IO;
+
+   with Ada.Exceptions;
 
    procedure WORDS is
-
-   Argument_Offset : INTEGER := 0;  
    
    begin
-      --  The language shift in arguments must take place here
-      --  since later parsing of line ignores non-letter characters
-      CONFIGURATION := DEVELOPER_VERSION;
      
-      -- FIND DATA FILES
+   -- FIND DATA FILES
       -- If the always-necessary INFLECTS.SEC isn't in the working directory, see if we can find them
-      if not Ada.Directories.Exists("INFLECTS.SEC") then
-         if Ada.Environment_Variables.Exists("LATINWORDS") then
+      if (not Ada.Directories.Exists("INFLECTS.SEC") 
+         and then Ada.Environment_Variables.Exists("LATINWORDS")) then
          Put_Line("LATINWORDS environment variable set; using data files at " & Ada.Environment_Variables.Value("LATINWORDS"));
          Ada.Directories.Set_Directory(Ada.Environment_Variables.Value("LATINWORDS"));
-         else
+      else
          CHECK_PATH_VARIABLE;
-         end if;
       end if;
-   --  END FIND WORDS DATA FILES
                
    --  SIMPLE INTERACTIVE MODE 
-   if Ada.Command_Line.ARGUMENT_COUNT = 0  then       --  Simple WORDS
-         METHOD := INTERACTIVE;                          --  Interactive
+   if Ada.Command_Line.ARGUMENT_COUNT = 0  then    
+         METHOD := INTERACTIVE;                         
          SUPPRESS_PREFACE := FALSE;
          SET_OUTPUT(STANDARD_OUTPUT);
          INITIALIZE_WORD_PARAMETERS;
          INITIALIZE_DEVELOPER_PARAMETERS;
          INITIALIZE_WORD_PACKAGE;
          PARSE;
-
+         return; 
+   
    --  COMMAND-LINE ARGUMENTS ("new" style to modify interactive mode)
-   elsif TRIM(Ada.Command_Line.Argument(1))(1) = '-'  
+   elsif ( TRIM(Ada.Command_Line.Argument(1))(1) = '-'  
+           or TRIM(Ada.Command_Line.Argument(1))(1) = HELP_CHARACTER )
         then 
 
+        New_Style_Arguments:
         declare 
              Args_Exception : exception;
 
@@ -85,7 +85,7 @@
                     when others => 
                      New_Line;
                      Put_Line("====== UNKNOWN COMMAND-LINE OPTION: " & TRIM(Ada.Command_Line.Argument(I))(J) & " ======");
-                     New_Line;
+                     raise Args_Exception;
                     end case;  
                
                end loop; 
@@ -102,7 +102,7 @@
             INITIALIZE_WORD_PACKAGE;
             
             if CL_Arguments(No_Exit) then 
-               loop   -- appears to be memory leak if we recursively call parse from within parse exception handler 
+               loop  
                PARSE; -- return => infinite loop avoids more complex exception logic
                end loop;
             else
@@ -113,153 +113,128 @@
        exception
          
          when Args_Exception =>     -- Parse may raise NO_EXCEPTION_EXCEPTION; handler is outside the block
-            Put_Line("Words operates in two modes when using command-line arguments");
-            New_Line;
-            Put_Line("[1] NON-INTERACTIVE WORDS:  Fully compatible with classic Words.");
-            Put_Line("Usage:");
-            Put_Line("words [string of Latin words]");
-            Put_Line("   => send results for the Latin words to standard output and exit");
-            Put_Line("words [in_file] [out_file]");
-            PUT_LINE("   => take Latin words from the in_file and put the results in out_file");
-            Put_Line("words " & CHANGE_LANGUAGE_CHARACTER & "e [string of English words]");
-            Put_Line("   => returns Latin translation options");
-            New_Line;
-            Put_Line("[2] MODIFY INTERACTIVE-MODE:  Set limits on interactive mode.");
-            Put_Line("Options:");
-            Put_Line("-r    READ ONLY:     User cannot change settings or direct output to file"); 
-            Put_Line("-n    NO FILES:      User cannot load a file or direct output to file");  
-            Put_Line("-x    NO EXIT:       User cannot exit with two returns or control-C");
-            Put_Line("                       NOT A SECURE MODE - only blocks SIGINT");
-            Put_Line("                       No effect on suspend (SIGSTP) or kill (SIGTERM)"); 
-            Put_Line("                       File system may be readable with " & CHANGE_LANGUAGE_CHARACTER); 
-            Put_Line("-l    LATIN ONLY:    User cannot enter English->Latin mode");
-            Put_Line("-e    ENGLISH ONLY:  User cannot enter Latin->English mode");
-            Put_Line("-m    MEANINGS ONLY: Show only the meanings line (in Latin->English mode)");
-            New_Line;
-            Put_Line("E.g., words -rnlm limits the user the functionality of a paper dictionary");
-            New_Line;
-            Put_Line("These options are overrides; non-conflicting settings (WORD.MOD) still apply");
-            New_Line;
-            Return; 
-      end; -- block
+                Words_Help.Show_Help("ARG");
+            return; 
+      end New_Style_Arguments;
 
-else -- NOT entering interactive mode; back to classic Words startup
+   end if; -- enclosing interactive mode
+
+  -- NOT entering interactive mode; no '-'-style parameters; back to classic Words startup
       
-     -- NON-INTERACTIVE MODE STARTUP SUBSEQUENCE:
      SUPPRESS_PREFACE := TRUE;
      INITIALIZE_WORD_PARAMETERS;
      INITIALIZE_DEVELOPER_PARAMETERS;
      INITIALIZE_WORD_PACKAGE;
-end if; 
 
- -- check for change langauge command line option
- if Ada.Command_Line.Argument_Count > 1 
-     and then 
-       Ada.Command_Line.Argument(1)(1) = CHANGE_LANGUAGE_CHARACTER
-        and then 
-            Ada.Command_Line.Argument(1)'length > 1
-   then 
-      CHANGE_LANGUAGE(Trim(Ada.Command_Line.Argument(1))(2));
-      Argument_Offset := 1;  -- i.e., start processing at argument 2
-   end if; 
-      
-   --  choose a non-interactive mode: 
-   --  when 1 argument     => either a simple Latin word or an input file.
-   --  when 2 arguments    => two words in-line
-   --  when more arguments => command-line of words   
-   if (Ada.Command_Line.Argument_Count - Argument_Offset) in 1..2
+  --  choose a non-interactive mode: 
+  --  when 1 argument     => either a simple Latin word or an input file.
+  --  when 2 arguments    => two words in-line OR language switch and word or input file
+  --  when more arguments => command-line of words   
+   
+   if Ada.Command_Line.Argument_Count > 1  
+     and then Ada.Command_Line.Argument(1)(1) = CHANGE_LANGUAGE_CHARACTER
      then 
-         declare  -- block for I/O exceptions
-              INPUT_NAME   : constant STRING := TRIM(Ada.Command_Line.Argument(1+Argument_Offset));
---            W_INPUT      : Ada.Wide_Text_IO.File_Type;
---            begin
---           
---            -- Set up the correct input
---            -- First try to open the file; if it's invalid name_error is raised
---            if WORDS_MODE(DO_UNICODE_INPUT) then
---                    Ada.Wide_Text_IO.OPEN(W_INPUT, Ada.Wide_Text_IO.IN_FILE, INPUT_NAME);   
---                    Ada.Wide_Text_IO.SET_INPUT(W_INPUT);
---               else 
---                    OPEN(INPUT, IN_FILE, INPUT_NAME); 
---                    SET_INPUT(INPUT);
---            end if; 
---            
-           --set up output
-          begin 
-          if (Ada.Command_Line.Argument_Count - Argument_Offset) = 1
-             then  --output to screen
-               SET_OUTPUT(Standard_Output);  -- text_io standard output   
-               
-          else --output to file
-            WORDS_MODE(DO_ANSI_FORMATTING) := False; 
-            --If the outfile exists then append
-            begin --handle exception on open
-              Open(OUTPUT, APPEND_FILE, TRIM(Ada.Command_Line.Argument(2+Argument_Offset)));
-            exception
-                  when Name_Error => CREATE(OUTPUT, OUT_FILE, TRIM(Ada.Command_Line.Argument(2+Argument_Offset)));
-            end; -- end append/create  
-           SET_OUTPUT(OUTPUT);           -- text_io file output
-         end if;   
-            
-         -- start parsing
-         if  WORDS_MODE(DO_UNICODE_INPUT) 
-         then  
---               METHOD := COMMAND_LINE_INPUT; --Reading unicode from file always simulates command-line input
---                                             --(repeatedly calls parse)
---  --              while not Ada.Wide_Text_IO.End_Of_File(W_INPUT) loop
---  --  
---  --                    declare    
---  --                      W_Line : Wide_String := Ada.Wide_Text_IO.Get_Line(W_Input);
---  --   
---  --                      T_Line : String      := Ada.Characters.Conversions.To_String (    
---  --                                              Ada.Wide_Characters.Handling.To_Basic(W_Line));
---  --                    begin  
---  --                    PARSE(Trim(T_Line));   
---  --                 end;
---  --               end loop; 
---  --  
---  --               Ada.Wide_Text_IO.Close(W_INPUT);  
---              
---         
-           Parse_Unicode_File(INPUT_NAME);
-            
-         else
-           METHOD := COMMAND_LINE_FILES;
-           PARSE;
-           Close(Input);
-         end if;
-         
-         SET_INPUT(STANDARD_INPUT);    
-         SET_OUTPUT(STANDARD_OUTPUT);
-         return; 
-      
-         exception                 
-               when NAME_ERROR  =>                     --  Raised NAME_ERROR therefore
-            METHOD := COMMAND_LINE_INPUT;      --  Assume w found word in command line
-               when others => 
-                   if WORDS_MODE(DO_UNICODE_INPUT) then null;  
-                   else raise End_Error; 
-                   end if; 
-                        Put_Line("I/O ERROR");
-                       if Words_MODE(DO_UNICODE_INPUT) then 
-                       Put_Line("Unicode input processing is on (DO_UNICODE_INPUT).  Try turning it off.");
-                       end if;                     
-                    return;
-         end; --  file I/O and unicode exception block
-    
-   else   -- More than 2 arguments (after possible language switch) => translate all words on the command line
-       METHOD := COMMAND_LINE_INPUT;
-   end if; 
 
-   --  Process words in command line
-   if METHOD = COMMAND_LINE_INPUT  then            --  Process words in command line
-         for I in (1 + Argument_Offset)..Ada.Command_Line.Argument_Count  loop  --  Assemble input words 
-            declare
-            INPUT_LINE : String := HEAD(TRIM(Ada.Command_Line.Argument(I)), 250);
+         CHANGE_LANGUAGE('E');
+          METHOD := COMMAND_LINE_INPUT;
+      
+      English_Command_Line_Input:
+      declare
+         Input_String   : String(1..250) := (others => ' ');
+         Length_Counter : Natural        := 0;
+         begin 
+         for I in 2..(Ada.Command_Line.Argument_Count) loop 
+            exit when (Length_Counter+1) + Ada.Command_Line.Argument(I)'length > 250;
+          
+            --to get the same result as interactive mode and classic Words command-line, we pass a single string (because of POFS option)
+            Input_String( (Length_Counter+1)..(Length_Counter+(Ada.Command_Line.Argument(I)'Length)) ) := Ada.Command_Line.Argument(I);
+                    
+            Length_Counter := (Length_Counter+1+(Ada.Command_Line.Argument(I)'Length));
+         end loop;
+   
+         PARSE(Trim(Input_String));                
+         return; 
+      end English_Command_Line_Input; 
+      
+      
+  elsif Ada.Command_Line.Argument_Count > 2  
+  
+     then 
+
+        METHOD := COMMAND_LINE_INPUT;
+      
+   else -- Ada.Command_Line.Argument_Count = 1 or 2 w/o language change
+      
+        SETUP_INPUT:
+        declare 
+        begin
+
+           if WORDS_MODE(DO_UNICODE_INPUT) then
+            Ada.Wide_Text_IO.OPEN(W_INPUT, Ada.Wide_Text_IO.IN_FILE, (Ada.Command_Line.Argument(1))); 
+            Ada.Wide_Text_IO.CLOSE(W_INPUT); 
+          else 
+         
+          OPEN(INPUT, IN_FILE, TRIM(Ada.Command_Line.Argument(1))); 
+                SET_INPUT(INPUT);
+               Method := Command_Line_Files;
+          end if; 
+        exception 
+           when Name_Error => 
+             Method := COMMAND_LINE_INPUT;  
+        end SETUP_INPUT;           
+
+      if Ada.Command_Line.Argument_Count = 2
+        and then Method /= COMMAND_LINE_INPUT
+          
+      Then 
+            SETUP_OUTPUT:
+            begin 
+              WORDS_MODE(DO_ANSI_FORMATTING) := False; 
+              Open(OUTPUT, APPEND_FILE, TRIM(Ada.Command_Line.Argument(2)));
+              SET_OUTPUT(Output);
+            exception
+            when Name_Error => CREATE(OUTPUT, OUT_FILE, TRIM(Ada.Command_Line.Argument(2)));
+               SET_OUTPUT(Output);
+            end SETUP_OUTPUT;   
+      end if;   
+
+   end if;
+        
+   if Method = COMMAND_LINE_INPUT then
+                  
+            for I in 1..Ada.Command_Line.Argument_Count  loop  
+            declare                                           
+            INPUT_LINE : String := TRIM(Ada.Command_Line.Argument(I));
             begin 
             PARSE(TRIM(INPUT_LINE));
             end; --block 
-         end loop; 
+           end loop; 
+          
+   else  
+        
+       METHOD := COMMAND_LINE_FILES;
+      
+      if WORDS_MODE(DO_UNICODE_INPUT) 
+      then
+         Parse_Unicode_File((Ada.Command_Line.Argument(1)));
+      else
+         PARSE;
+      end if; 
+  
+      if Name(Current_Output) /= Name(Standard_Output)
+        then 
+        SET_OUTPUT(STANDARD_OUTPUT);
+        CLOSE(OUTPUT);
+        Put_Line("Wrote output to file " & TRIM(Ada.Command_Line.Argument(2)));
+        end if; 
+      
    end if;
 
+   exception
+      when Catch_Me: Others =>
+
+         Text_IO.Put_Line(Ada.Exceptions.Exception_Message(Catch_ME));
+         Text_IO.Put_Line(Ada.Exceptions.Exception_Information(Catch_ME));
+
+       
 end  WORDS;
