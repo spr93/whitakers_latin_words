@@ -1,6 +1,6 @@
 with Text_IO; use Text_IO;
 with Ada.Characters.Handling; 
-with Ada.Strings;             use Ada.Strings;
+with Ada.Strings; use Ada.Strings;
 with Ada.Strings.Fixed;
 
 package STRINGS_PACKAGE is
@@ -41,7 +41,6 @@ package STRINGS_PACKAGE is
    -- ANSI Formatting Codes --
    ---------------------------
    --  for DO_ANSI_FORMATTING WORDS_PARAMETER
-
    Format_Underline : constant String := (ASCII.ESC & "[4m");  -- For dictionary line only (corresp. Pearse 02)
    Format_Bold      : constant String := (ASCII.ESC & "[1m");  -- For definition  (corresp. Pearse 03)
    Format_Inverse   : constant String := (ASCII.ESC & "[7m");  -- Use sparingly for important notes

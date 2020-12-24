@@ -6,7 +6,6 @@
    with DEVELOPER_PARAMETERS; use DEVELOPER_PARAMETERS;
    with WORD_SUPPORT_PACKAGE; use WORD_SUPPORT_PACKAGE;
    with ADDONS_PACKAGE;
-with Text_IO;
 
    procedure LIST_SWEEP(PA : in out PARSE_ARRAY; PA_LAST : in out INTEGER) is
    --  This procedure is supposed to process the output PARSE_ARRAY at PA level
@@ -20,7 +19,6 @@ with Text_IO;
       DE : DICTIONARY_ENTRY := NULL_DICTIONARY_ENTRY;
       I, J, JJ : INTEGER := 0;
       DIFF_J : INTEGER := 0;
-   
    
       NOT_ONLY_ARCHAIC  : BOOLEAN := FALSE;
       NOT_ONLY_MEDIEVAL : BOOLEAN := FALSE;
@@ -487,8 +485,7 @@ with Text_IO;
 ----
 ----
            
-         
-         --  SPR:  No exceptions or warnings on modern GNAT; see no reason why this would raise an exception; reactivating for now
+         --  SPR:  Should be solved; see long comment below
          
           I := SL_LAST;
 -- .PUT_LINE("Checking VOC/LOC    SL_LAST = " & INTEGER'IMAGE(SL_LAST));
@@ -678,7 +675,7 @@ with Text_IO;
    
    -- SPR: Most of the "first problems" now are handled by the next_meaning_same, next_form_same, etc. variables in list_package.
    --      It's not pretty, but it handles almost almost all the corner cases I've identified. ...except qu- PRONs, which are
-   --      handled in a combination of routines here and in list_package.
+   --      handled in a combination of routines here and in list_package.  
    --      
    --      The qu- pronouns cause the most trouble because they require a 5 dimensional array to fully characterize
    --      (see INFLECTS.LAT for the explanation) their inflections AND THEN they have the special PACKON feature 
@@ -689,7 +686,8 @@ with Text_IO;
    --      to prevent duplicates). It also requires treating dictionary objects from ADDONs (PACKONs) as if they were inflection 
    --      objects.  The variant records make this especially tricky because but the ADDON record variants don't store the information 
    --      we need in a way that maps 1:1 to PRONs--and there isn't an easy way to re-map them without refactoring.  See "Problem  
-   --      Encountered with the Variant in Ada," Cryptologic Quarterly (1988) (NSA Transparency Case 63853, DOCID 3929124).
+   --      Encountered with the Variant in Ada," Cryptologic Quarterly (1988) (NSA Transparency Case 63853, DOCID 3929124); Whitaker's
+   --      note above re generating exceptions due to POFS variants.
    --      
    --      The upshot is that we must either change objects and data structure just for qu- stems or run some complicated conditional  
    --      procedures.  I'm not willing to descend into the object-oriented hell of refactoring the data structures or creating 

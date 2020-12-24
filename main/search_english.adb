@@ -89,7 +89,7 @@
      begin
   --TEXT_IO.PUT_LINE("DUMP_OUTPUT");             
       if NUMBER_OF_HITS = 0  then
-         TEXT_IO.PUT_LINE(OUTPUT, "No Match");             
+         TEXT_IO.PUT_LINE(OUTPUT, "No match");             
        else
 --  PUT_LINE("Unsorted EWDS");
 --  for I in 1..NUMBER_TO_SHOW  loop
@@ -264,7 +264,7 @@ DICT_IO.READ(DICT_FILE(GENERAL), DE, DICT_IO.COUNT(OUTPUT_ARRAY(I).N));
                               if "="(LOWER_CASE(EWDS.W), INPUT_WORD)  then
                                  JJ := I;
 --      PUT(INTEGER'IMAGE(INTEGER(I))); PUT("-"); EWDS_RECORD_IO.PUT(EWDS); NEW_LINE;
-   LOAD_OUTPUT_ARRAY(EWDS);
+                              LOAD_OUTPUT_ARRAY(EWDS);
 
                               else
                                  exit;
@@ -279,7 +279,7 @@ DICT_IO.READ(DICT_FILE(GENERAL), DE, DICT_IO.COUNT(OUTPUT_ARRAY(I).N));
                                 JJ := I;
 
 --        PUT(INTEGER'IMAGE(INTEGER(I))); PUT("+"); EWDS_RECORD_IO.PUT(EWDS);  NEW_LINE;
-   LOAD_OUTPUT_ARRAY(EWDS);
+                              LOAD_OUTPUT_ARRAY(EWDS);
 
                               else
                                  exit BINARY_SEARCH;
@@ -289,8 +289,6 @@ DICT_IO.READ(DICT_FILE(GENERAL), DE, DICT_IO.COUNT(OUTPUT_ARRAY(I).N));
 
                         end if;
                      end loop BINARY_SEARCH;
-                          
-          
                     
           if  WORDS_MODE(WRITE_OUTPUT_TO_FILE)      then
             DUMP_OUTPUT_ARRAY(OUTPUT);
@@ -309,8 +307,4 @@ DICT_IO.READ(DICT_FILE(GENERAL), DE, DICT_IO.COUNT(OUTPUT_ARRAY(I).N));
         INTEGER'IMAGE(NUMBER_OF_HITS));
               raise;       
       end SEARCH_ENGLISH;
-
-
-
-
 

@@ -374,8 +374,7 @@ package body WORD_PACKAGE is
                DICTIONARY_AVAILABLE(D_K) := FALSE;
       end TRY_TO_LOAD_DICTIONARY;
 
-
-
+   
       procedure DICTIONARY_SEARCH(SSA : STEM_ARRAY_TYPE;
                                   PREFIX : PREFIX_ITEM;
                                   SUFFIX : SUFFIX_ITEM;
@@ -393,7 +392,6 @@ package body WORD_PACKAGE is
          INDEX_FIRST, INDEX_LAST : STEM_IO.COUNT := 0;
          DS : DICTIONARY_STEM;
          FIRST_TRY, SECOND_TRY : BOOLEAN := TRUE;
-
 
          function FIRST_TWO(W : STRING) return STRING is
          --  'v' could be represented by 'u', like the new Oxford Latin Dictionary

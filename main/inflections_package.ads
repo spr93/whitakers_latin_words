@@ -750,7 +750,7 @@ type INTERJECTION_RECORD is
   function "<=" (LEFT, RIGHT : FREQUENCY_TYPE)   return BOOLEAN;  
   
   function Qual_Equ_PRONPACK (Qual : in QUALITY_RECORD) return Boolean;
-  function Qr_Pack_To_PRON (QR : in QUALITY_RECORD   ) return PRONOUN_RECORD; 
+  function Qr_Pack_To_PRON   (QR : in QUALITY_RECORD  ) return PRONOUN_RECORD; 
    
   GIVE_UP : exception;
 

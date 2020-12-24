@@ -16,7 +16,7 @@ package CONFIG is
 
   SUPPRESS_PREFACE   : BOOLEAN := FALSE;  
   
-  Type CL_Arguments_Type is (READ_ONLY, 
+  type CL_Arguments_Type is (READ_ONLY, 
                              NO_FILES,
                              NO_EXIT,
 
@@ -25,10 +25,10 @@ package CONFIG is
                        
                              MEANINGS_ONLY); 
    
-   type CL_Arguments_Array_Type is array(CL_Arguments_Type) of BOOLEAN; 
+  type CL_Arguments_Array_Type is array(CL_Arguments_Type) of BOOLEAN; 
    
-   Null_CL_Arguments : constant CL_Arguments_Array_Type := (others => False);
+  Null_CL_Arguments : constant CL_Arguments_Array_Type := (others => False);
    
-   CL_Arguments      : CL_Arguments_Array_Type := Null_CL_Arguments;
+  CL_Arguments      : CL_Arguments_Array_Type := Null_CL_Arguments;
    
 end CONFIG;

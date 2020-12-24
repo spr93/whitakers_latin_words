@@ -10,6 +10,7 @@ pragma Elaborate(PREFACE);
  with Windows_Vt100;
  -- END WINDOWS TARGET-SPECIFIC SECTION
 
+
 package body WORD_PARAMETERS is
    use TEXT_IO;
 
@@ -317,7 +318,6 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
     R  : REPLY_TYPE;
 
   begin
-
     
     PUT_LINE("To set/change parameters reply Y/y or N/n.  Return accepts current value.");
     PUT_LINE("A '?' reply gives information/help on that parameter.  A space skips the rest.");
@@ -478,7 +478,7 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
       PUT_LINE("You can set new parameters with CHANGE PARAMETERS and save.");
       WORDS_MODE := DEFAULT_MODE_ARRAY;
   when others  =>
-      PUT_LINE("MODE_FILE  others ERROR");
+      PUT_LINE("MODE_FILE others ERROR");
       WORDS_MODE := DEFAULT_MODE_ARRAY;
     end DO_MODE_FILE;
 

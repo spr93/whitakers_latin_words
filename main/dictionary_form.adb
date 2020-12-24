@@ -2,7 +2,7 @@ with Strings_Package;     use Strings_Package;
 with Inflections_Package; use Inflections_Package;
 with Dictionary_Package;  use Dictionary_Package;
 
-function Dictionary_Form(DE      : in     Dictionary_Entry) return String is
+function Dictionary_Form(DE : in     Dictionary_Entry) return String is
 
   Null_OX : constant String(1 .. 24) := (others => ' ');
   OX      : array (1 .. 4) of String (1 .. 24) := (others => Null_OX);
@@ -13,7 +13,7 @@ function Dictionary_Form(DE      : in     Dictionary_Entry) return String is
    
   Not_Found: exception;
 
-  function Add(Stem, Infl    : in     String) return String is
+  function Add(Stem, Infl  : in     String) return String is
   begin
     return Head(Trim(Stem) & Trim(Infl), 24);
   end Add;
@@ -45,11 +45,11 @@ function Dictionary_Form(DE      : in     Dictionary_Entry) return String is
             
          when ADJECT  =>   OX(1) := Add(DE.Stems(1), "i");
                            if TRIM(STEM) = "qu" then
-                                       OX(2) := Add(DE.Stems(1), "ae");
+                           OX(2) := Add(DE.Stems(1), "ae");
                            else 
-                                       OX(2) := Add(DE.Stems(1), "a");
+                           OX(2) := Add(DE.Stems(1), "a");
                            end if; 
-                                       OX(3) := Add(DE.Stems(1), "od");
+                           OX(3) := Add(DE.Stems(1), "od");
 
         
          when REL     =>   OX(1) := Add(DE.Stems(1), "i");
@@ -67,7 +67,7 @@ function Dictionary_Form(DE      : in     Dictionary_Entry) return String is
     end Process_Qu_Pron;
    
 begin
-  --DICTIONARY_ENTRY_IO.PUT(DE);
+  --  DICTIONARY_ENTRY_IO.PUT(DE);
   --  So I can call with a NULL_DICTIONARY_ENTRY and not bomb
   if DE = Null_Dictionary_Entry then
     return "";
@@ -79,8 +79,8 @@ begin
   end if;
    
   if DE.Stems(2) = Null_Stem_Type and
-  DE.Stems(3) = Null_Stem_Type and
-  DE.Stems(4) = Null_Stem_Type and not
+     DE.Stems(3) = Null_Stem_Type and
+     DE.Stems(4) = Null_Stem_Type and not
   (((DE.Part.POFS = N) and then (DE.Part.N.DEcl.Which = 9)) or
   ((DE.Part.POFS = Adj) and then
   ((DE.Part.Adj.DEcl.Which = 9) or
@@ -185,7 +185,7 @@ begin
          
     if DE.Part.Pron.DEcl.Which = 1 then
             
-       Process_Qu_Pron(De.Part.Pron.Kind, De.Stems(1));
+    Process_Qu_Pron(De.Part.Pron.Kind, De.Stems(1));
          
     elsif DE.Part.Pron.DEcl.Which = 3 then
       OX(1) := Add(DE.Stems(1), "ic");
@@ -623,7 +623,7 @@ begin
         OX(3) := Add(DE.Stems(1), "a");
       end if;
 
-    elsif DE.Part.Num.DEcl.Which = 2 then
+    elsif DE.Part.Num.Decl.Which = 2 then
       OX(1) := Add(DE.Stems(1), "");
 
     end if;
@@ -756,13 +756,12 @@ begin
 
   end if;
 
+  --DEBUG
   --TEXT_IO.PUT_LINE(">>>>" & TRIM(FORM));
-
+ 
   return Trim(Form);
 
 exception
-  when Not_Found =>
-    return "";
   when others =>
     return "";
 end Dictionary_Form;

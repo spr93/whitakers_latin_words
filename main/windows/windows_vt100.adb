@@ -13,9 +13,9 @@ function Enable_Windows_Console_vt100_codes return boolean is
    Std_Output_nString : Interfaces.C.unsigned_long := Interfaces.C.unsigned_long'mod(-11);
    Enable_Virtual_Terminal_Processing  : constant := 16#0004#;
 
-   StdOut  :   handle;
+   StdOut     : handle;
    StdOutMode : aliased dword;
-   Result      : bool;
+   Result     : bool;
 
    function GetStdHandle (Std_nString : Interfaces.C.unsigned_long) return handle;
    pragma Import (stdcall, GetStdHandle, "GetStdHandle");

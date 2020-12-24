@@ -15,12 +15,13 @@ with ENGLISH_SUPPORT_PACKAGE; use ENGLISH_SUPPORT_PACKAGE;
 with SEARCH_ENGLISH;
 with Arabic2Roman;
 with Words_Help;              use Words_Help;
+with Ada.Wide_Text_IO;
+with Ada.Characters.Conversions;
+with Ada.Wide_Characters.Handling;
 
 with Ada.Exceptions;
 
 pragma Elaborate (WORD_PARAMETERS);
-with Ada.Wide_Text_IO;
-with Ada.Characters.Conversions;
 
 
 package body Parse_Package is 
@@ -1454,12 +1455,15 @@ exception
 end PARSE;
 
       
- --  RELIES ON ADA2020 FEATURE WIDE_CHARACTERS.HANDLING.TO_BASIC  
+ --  RELIES ON ADA202X FEATURE WIDE_CHARACTERS.HANDLING.TO_BASIC  
    procedure Parse_Unicode_File (W_Input_String : String) is
       
      use Ada.Wide_Text_IO;
 
      pragma Wide_Character_Encoding(UTF8);
+      
+      Old_Method : METHOD_TYPE := METHOD;
+      
                      begin 
 
      Open(W_INPUT, In_File, W_Input_String);
@@ -1469,17 +1473,17 @@ end PARSE;
                      while not End_Of_File(W_Input) loop
                      
                      PARSE( (Ada.Characters.Conversions.To_String 
-                                      --  (Ada.Wide_Characters.Handling.To_Basic
-                                        (GET_Line(W_INPUT)))); -- );
+                                        (Ada.Wide_Characters.Handling.To_Basic
+                                        (GET_Line(W_INPUT)))) );
                      end loop;
                      
                      Close(W_Input);
                      WORDS_MODE(DO_UNICODE_INPUT) := True; 
-                     Method := INTERACTIVE;
+                     Method := Old_Method;
                      exception
                      when Ada.Wide_Text_IO.End_Error | Ada.Wide_Text_IO.Status_Error | Ada.Wide_Text_IO.Name_Error  =>
                       --  WORDS_MODE(DO_UNICODE_INPUT) := False; 
-                        Method := INTERACTIVE;
+                        Method := Old_Method;
                      if Is_Open(W_INPUT) then
                         Close(W_Input);
                      end if; 

@@ -1,4 +1,4 @@
-with Ada.Text_IO;           use ADA.Text_IO;
+with Ada.Text_IO;           use Ada.Text_IO;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
 -- Forms and age codes guided by sources incl.
