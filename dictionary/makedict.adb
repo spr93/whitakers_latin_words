@@ -5,7 +5,7 @@ with INFLECTIONS_PACKAGE; use INFLECTIONS_PACKAGE;
 with DICTIONARY_PACKAGE;  use DICTIONARY_PACKAGE;
 with Ada.Command_Line;
 
- procedure WAKEDICT is 
+ procedure MAKEDICT is 
    
    package INTEGER_IO is new TEXT_IO.INTEGER_IO(INTEGER);
       use TEXT_IO;
@@ -110,14 +110,14 @@ with Ada.Command_Line;
                                                  DICTIONARY_KIND'IMAGE(D_K)));
    
 --      if D_K = GENERAL  then
---         PUT_LINE("WAKEDICT reads DICTLINE.d_k and produces DICTFILE.d_k");
---         PUT_LINE("WAKEDICT also produces STEMLIST.d_k");
+--         PUT_LINE("MAKEDICT reads DICTLINE.d_k and produces DICTFILE.d_k");
+--         PUT_LINE("MAKEDICT also produces STEMLIST.d_k");
 --         PUT_LINE("This version inserts ESSE when d_k = GEN");
 --      
 --         J := J + 1;
 --      
 --      --  First construct ESSE
---         DE.STEMS(1) := "s                 ";
+--         DE.STEMS(1) := "s             MAKEDI    ";
 --         DE.STEMS(2) := "                  ";
 --         DE.STEMS(3) := "fu                ";
 --         DE.STEMS(4) := "fut               ";
@@ -503,4 +503,4 @@ with Ada.Command_Line;
             INTEGER_IO.PUT(INTEGER(J)); NEW_LINE;
             CLOSE(STEMLIST);
    
-   end WAKEDICT;
+   end MAKEDICT;
