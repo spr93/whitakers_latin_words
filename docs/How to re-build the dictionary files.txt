@@ -1,10 +1,12 @@
 Below is a simplified version of Wm. Whitaker's instructions for fully rebuilding the dictionary system
 
+IMPORTANT NOTE:  The "wakedict"-"makedict" distinction has been abandoned in this version
+				 Always run makedict.
 
 *****
 EVEN EASIER:
 
-The sorter, wakedict, makestem, makeewds, and makeefil in this repository have been modified to accept command line options to automated the steps below.
+The sorter, makedict, makestem, makeewds, and makeefil in this repository have been modified to accept command line options to automated the steps below.
 
 sorter will take D, S, and E, which will sort dictline, stemlist, and ewdsfile, respectively
 
@@ -13,7 +15,7 @@ the other programs accept G (or S) to sort the GEN files
 so you can distill all the following steps to these commands.  rebuild.sh in tools runs 'em for you:
 
 ./sorter D
-./wakedict G
+./makedict G
 ./sorter S
 ./makestem G
 ./makeinfl
@@ -36,7 +38,7 @@ Run sorter against modified DICTLINE.GEN.  Input:
 Copy DICTLINE.GEN to CHECK.IN and run CHECK. 
 Review CHECK.OUT.
 
-Run WAKEDICT (note the W) against DICTLINE.GEN
+Run MAKEDICT against DICTLINE.GEN
 
 Run SORTER against the resulting STEMLIST.GEN
        SORTER
