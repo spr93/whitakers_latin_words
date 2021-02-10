@@ -5,7 +5,6 @@ with PREFACE;
 with INFLECTIONS_PACKAGE;
 with DICTIONARY_PACKAGE;
 with ADDONS_PACKAGE;
-with UNIQUES_PACKAGE;
 pragma ELABORATE(INFLECTIONS_PACKAGE);
 pragma ELABORATE(DICTIONARY_PACKAGE);
 pragma ELABORATE(ADDONS_PACKAGE);
@@ -445,7 +444,6 @@ package body LINE_STUFF is
   package body TACKON_LINE_IO is
     use PART_OF_SPEECH_TYPE_IO;
     use TACKON_ENTRY_IO;
-    use TEXT_IO;
     SPACER : CHARACTER := ' ';
 
     procedure GET(F : in FILE_TYPE; P : out TACKON_LINE) is
@@ -536,7 +534,6 @@ package body LINE_STUFF is
   package body PREFIX_LINE_IO is
     use PART_OF_SPEECH_TYPE_IO;
     use PREFIX_ENTRY_IO;
-    use TEXT_IO;
     SPACER : CHARACTER := ' ';
 
     procedure GET(F : in FILE_TYPE; P : out PREFIX_LINE) is
@@ -644,7 +641,6 @@ package body LINE_STUFF is
   package body SUFFIX_LINE_IO is
     use PART_OF_SPEECH_TYPE_IO;
     use SUFFIX_ENTRY_IO;
-    use TEXT_IO;
     SPACER : CHARACTER := ' ';
 
     procedure GET(F : in FILE_TYPE; P : out SUFFIX_LINE) is
@@ -852,7 +848,8 @@ package body LINE_STUFF is
     use DICT_IO;
     
     UNIQUES_FILE : TEXT_IO.FILE_TYPE;
-    LINE, STEM_LINE, BLANKS : STRING(1..100) := (others => ' ');
+    LINE, STEM_LINE : STRING(1..100) := (others => ' ');
+      BLANKS : constant STRING(1..100) := (others => ' ');
     LAST, L : INTEGER := 0;
     STEM : STEM_TYPE := NULL_STEM_TYPE;
     QUAL : QUALITY_RECORD;

@@ -1,5 +1,3 @@
-with Text_IO;               use Text_IO;
-with Ada.Strings.Unbounded;
 with WORD_PARAMETERS;       use WORD_PARAMETERS;
 with DEVELOPER_PARAMETERS;  use DEVELOPER_PARAMETERS;
 with STRINGS_PACKAGE;       use STRINGS_PACKAGE;
@@ -19,7 +17,7 @@ package body Arabic2Roman is
          Bar_Reminder       : Boolean                := False;
       end record;
 
-      Null_Roman_Num_Record : Roman_Num_Record_Type  := (Bar_Reminder => False,
+      Null_Roman_Num_Record : constant Roman_Num_Record_Type  := (Bar_Reminder => False,
                                                          others       => Null_Unbounded_String);
 
       Roman_Num_Record      : Roman_Num_Record_Type;
@@ -234,21 +232,22 @@ package body Arabic2Roman is
                   elsif Arabic_Num in 1 .. 500 | 600 | 700 | 800 | 900 | 10_000 then
 
                      case Put_Additive is
-                        when True => Put
+                        when True =>  Put
                                       (OUTPUT,
                                              "Archaic");  -- additive is different from subtractive; small or simple roman numerals
-                        when False =>                       Put
+                        when False => Put
                                       (OUTPUT,
-                                             "Always");   --- additive and subtractive the same; small or simple roman numerals
+                                             "Always");   -- additive and subtractive the same; small or simple roman numerals
                       end case;
 
-                  else     -- long or complicated roman numerals => medieval
+                  else                                   -- long or complicated roman numerals => medieval
                      Put (OUTPUT, "Medieval");
 
                   end if;
                end if;
 
-               if WORDS_MODE (SHOW_FREQUENCY) = True then
+               if WORDS_MODE (SHOW_FREQUENCY) = True
+               then
                   Set_Col (OUTPUT, 69);
                   if Is_Negative and Put_Additive = False then
                      Put (OUTPUT, "very rare");
@@ -293,7 +292,7 @@ package body Arabic2Roman is
                   end if;
                   -- no additive negatives
 
-             elsif (Put_Additive = True and then
+               elsif (Put_Additive and then
                        Arabic_Num in 1 .. 500 | 600 | 700 | 800 | 900 | 10_000 )
                then
                   if WORDS_MDEV (SHOW_DICTIONARY_CODES) = True then
@@ -449,7 +448,7 @@ package body Arabic2Roman is
       built_string   : Unbounded_String;
       Counter        : Integer          := 1;
       Frame          : Unbounded_String;
-      Arabic_String2 : String           := Integer'Image (Arabic_Num);
+      Arabic_String2 : constant String           := Integer'Image (Arabic_Num);
    begin
 
       for I in reverse 2 .. (Arabic_String2'Length)

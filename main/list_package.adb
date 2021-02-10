@@ -1,4 +1,3 @@
-with Text_IO;              use Text_IO;
 with CONFIG;               use CONFIG;
 with STRINGS_PACKAGE;      use STRINGS_PACKAGE;
 with LATIN_FILE_NAMES;     use LATIN_FILE_NAMES;
@@ -8,13 +7,11 @@ with UNIQUES_PACKAGE;      use UNIQUES_PACKAGE;
 with WORD_SUPPORT_PACKAGE; use WORD_SUPPORT_PACKAGE;
 with DEVELOPER_PARAMETERS; use DEVELOPER_PARAMETERS;
 with WORD_PACKAGE;         use WORD_PACKAGE;
-with INFLECTIONS_PACKAGE;
-with DICTIONARY_PACKAGE;
-with DICTIONARY_FORM;
+with Dictionary_Form;
 with PUT_EXAMPLE_LINE;
 with LIST_SWEEP;
 
-with Ada.Exceptions;
+--with Ada.Exceptions;
 
 package body LIST_PACKAGE is
 
@@ -30,27 +27,26 @@ package body LIST_PACKAGE is
 
    MAX_MEANING_PRINT_SIZE : constant := 79;
    MM                     : Integer  := MAX_MEANING_SIZE;
-   I, J, K,
-   Saved_Meaning_J        : Integer  := 0;
+   I, Saved_Meaning_J     : Integer  := 0;
 
-   Next_Meaning_Same, Next_Form_Same,
-   Last_Form_Same, Put_Meaning_Anyway : Boolean := False;
+   Next_Meaning_Same, Next_Form_Same, Last_Form_Same,
+   Put_Meaning_Anyway : Boolean := False;
 
    function TRIM_BAR (S : String) return String is
-      --  Takes vertical bars from beginning of MEAN and TRIMs
-      begin
+   --  Takes vertical bars from beginning of MEAN and TRIMs
+   begin
 
-         if S'LENGTH > 3 and then S (S'FIRST .. S'FIRST + 3) = "||||" then
-            return TRIM (S (S'FIRST + 4 .. S'LAST));
-         elsif S'LENGTH > 2 and then S (S'FIRST .. S'FIRST + 2) = "|||" then
-            return TRIM (S (S'FIRST + 3 .. S'LAST));
-         elsif S'LENGTH > 1 and then S (S'FIRST .. S'FIRST + 1) = "||" then
-            return TRIM (S (S'FIRST + 2 .. S'LAST));
-         elsif S (S'FIRST) = '|' then
-            return TRIM (S (S'FIRST + 1 .. S'LAST));
-         else
-            return TRIM (S);
-         end if;
+      if S'LENGTH > 3 and then S (S'FIRST .. S'FIRST + 3) = "||||" then
+         return TRIM (S (S'FIRST + 4 .. S'LAST));
+      elsif S'LENGTH > 2 and then S (S'FIRST .. S'FIRST + 2) = "|||" then
+         return TRIM (S (S'FIRST + 3 .. S'LAST));
+      elsif S'LENGTH > 1 and then S (S'FIRST .. S'FIRST + 1) = "||" then
+         return TRIM (S (S'FIRST + 2 .. S'LAST));
+      elsif S (S'FIRST) = '|' then
+         return TRIM (S (S'FIRST + 1 .. S'LAST));
+      else
+         return TRIM (S);
+      end if;
    end TRIM_BAR;
 
    procedure PUT_DICTIONARY_FLAGS
@@ -90,9 +86,9 @@ package body LIST_PACKAGE is
             DHIT := True;
          end if;
 
-         Format(Output,Underline);
-         if DICTIONARY_FORM (DE)'LENGTH /= 0 then
-            Text_IO.Put (OUTPUT, DICTIONARY_FORM (DE) & "  ");
+         Format (OUTPUT, UNDERLINE);
+         if Dictionary_Form (DE)'LENGTH /= 0 then
+            Text_IO.Put (OUTPUT, Dictionary_Form (DE) & "  ");
             DHIT := True;
          end if;
 
@@ -130,7 +126,7 @@ package body LIST_PACKAGE is
 
       PUT_DICTIONARY_FLAGS (OUTPUT, DE, FHIT);
 
-      Format(OUTPUT,Reset);
+      Format (OUTPUT, RESET);
 
       if (CHIT or DHIT or EHIT or FHIT or LHIT) then
          Text_IO.New_Line (OUTPUT);
@@ -139,10 +135,10 @@ package body LIST_PACKAGE is
    end PUT_DICTIONARY_FORM;
 
    procedure LIST_STEMS
-     (OUTPUT :    in Text_IO.File_Type; RAW_WORD : in String; INPUT_LINE : in String;
-      PA     :    in out PARSE_ARRAY; PA_LAST : in out Integer)
+     (OUTPUT     : in     Text_IO.File_Type; RAW_WORD : in String;
+      INPUT_LINE : in     String; PA : in out PARSE_ARRAY;
+      PA_LAST    : in out Integer)
    is
-      use Text_IO;
       use DICT_IO;
 
       --  The main WORD processing has been to produce an array of PARSE_RECORD
@@ -155,8 +151,9 @@ package body LIST_PACKAGE is
       --        end record;
       --  This has involved STEMFILE and INFLECTS, no DICTFILE
 
-      --  PARSE_RECORD is put through the LIST_SWEEP procedure that does TRIMing
-      --  Then, for processing for output, the data is converted to arrays of
+      --  PARSE_RECORD is put through the LIST_SWEEP procedure that does
+      --  TRIMing Then, for processing for output, the data is converted
+      --  to arrays of
       --      type STEM_INFLECTION_RECORD is
       --        record
       --          STEM : STEM_TYPE          := NULL_STEM_TYPE;
@@ -169,9 +166,9 @@ package body LIST_PACKAGE is
       --          MNPC : MNPC_TYPE;
       --          DE   : DICTIONARY_ENTRY;
       --        end record;
-      --  containing the same data plus the DICTFILE data DICTIONARY_ENTRY
-      --  but breaking it into two arrays allows different manipulation
-      --  These are only within this routine, used to clean up the output
+      --  containing the same data plus the DICTFILE data DICTIONARY_ENTRY but
+      --  breaking it into two arrays allows different manipulation These are
+      --  only within this routine, used to clean up the output
 
       type STEM_INFLECTION_RECORD is record
          STEM : STEM_TYPE         := NULL_STEM_TYPE;
@@ -181,7 +178,9 @@ package body LIST_PACKAGE is
 
       STEM_INFLECTION_ARRAY_SIZE       : constant := 12;
       STEM_INFLECTION_ARRAY_ARRAY_SIZE : constant := 40;
-      -- SPR:  Increased inflection array size to prevent raising exception when a single record generates too many QUALs (e.g., 'ludica' generates 12 QUALs
+      -- SPR: Increased inflection array size to prevent raising exception when
+      -- a single record generates too many QUALs (e.g., 'ludica' generates 12
+      -- QUALs
       --       However, this exposed an issue where QUALs could be duplicated (ludica does this)
       --       -> corrected this by deleting duplicate quals in list_sweep
 
@@ -192,11 +191,14 @@ package body LIST_PACKAGE is
           (Integer range <>) of STEM_INFLECTION_ARRAY
           (1 .. STEM_INFLECTION_ARRAY_SIZE);
 
-      SRA, OSRA,
-      NULL_SRA : STEM_INFLECTION_ARRAY (1 .. STEM_INFLECTION_ARRAY_SIZE) :=
+      SRA, OSRA : STEM_INFLECTION_ARRAY (1 .. STEM_INFLECTION_ARRAY_SIZE) :=
         (others => (NULL_STEM_TYPE, NULL_INFLECTION_RECORD));
-      SRAA,
-      NULL_SRAA : STEM_INFLECTION_ARRAY_ARRAY
+      NULL_SRA : constant STEM_INFLECTION_ARRAY (1 .. STEM_INFLECTION_ARRAY_SIZE) :=
+        (others => (NULL_STEM_TYPE, NULL_INFLECTION_RECORD));
+      SRAA : STEM_INFLECTION_ARRAY_ARRAY
+        (1 .. STEM_INFLECTION_ARRAY_ARRAY_SIZE) :=
+        (others => NULL_SRA);
+      NULL_SRAA : constant STEM_INFLECTION_ARRAY_ARRAY
         (1 .. STEM_INFLECTION_ARRAY_ARRAY_SIZE) :=
         (others => NULL_SRA);
 
@@ -213,14 +215,16 @@ package body LIST_PACKAGE is
 
       type DICTIONARY_MNPC_ARRAY is
         array (1 .. DICTIONARY_MNPC_ARRAY_SIZE) of DICTIONARY_MNPC_RECORD;
-      DMA, ODMA, NULL_DMA : DICTIONARY_MNPC_ARRAY := (others => NULL_DICTIONARY_MNPC_RECORD);
+      DMA, ODMA : DICTIONARY_MNPC_ARRAY :=
+        (others => NULL_DICTIONARY_MNPC_RECORD);
+      NULL_DMA : constant DICTIONARY_MNPC_ARRAY :=
+        (others => NULL_DICTIONARY_MNPC_RECORD);
 
       --MEANING_ARRAY_SIZE : constant := 5;
       --MEANING_ARRAY : array (1..MEANING_ARRAY_SIZE) of MEANING_TYPE;
 
       DEA : DICTIONARY_ENTRY := NULL_DICTIONARY_ENTRY;
 
-      W                  : constant String := RAW_WORD;
       J, J1, J2, K       : Integer         := 0;
       THERE_IS_AN_ADVERB : Boolean         := False;
 
@@ -236,7 +240,8 @@ package body LIST_PACKAGE is
                (SR.IR.AGE /= X)) and     --  Warn even if not to show AGE
               TRIM (INFLECTION_AGE (SR.IR.AGE))'LENGTH /= 0
             then
-               Text_IO.Put (File => OUTPUT, Item => "  " & INFLECTION_AGE (SR.IR.AGE));
+               Text_IO.Put
+                 (File => OUTPUT, Item => "  " & INFLECTION_AGE (SR.IR.AGE));
             end if;
             if
               (WORDS_MODE (SHOW_FREQUENCY) or
@@ -304,13 +309,14 @@ package body LIST_PACKAGE is
                     (others => ' ');
                begin
 
---  TEXT_IO.PUT_LINE("PASSIVE_START   = " & INTEGER'IMAGE(PASSIVE_START));
---  TEXT_IO.PUT_LINE("PASSIVE_FINISH  = " & INTEGER'IMAGE(PASSIVE_FINISH));
---  TEXT_IO.PUT_LINE("PPL_START   =  " & INTEGER'IMAGE(PPL_START));
---  TEXT_IO.PUT_LINE("PPL_FINISH   =  " & INTEGER'IMAGE(PPL_FINISH));
+--  TEXT_IO.PUT_LINE("PASSIVE_START = " & INTEGER'IMAGE(PASSIVE_START));
+--  TEXT_IO.PUT_LINE("PASSIVE_FINISH = " & INTEGER'IMAGE(PASSIVE_FINISH));
+--  TEXT_IO.PUT_LINE("PPL_START = " & INTEGER'IMAGE(PPL_START));
+--  TEXT_IO.PUT_LINE("PPL_FINISH = " & INTEGER'IMAGE(PPL_FINISH));
 --
 
--- TEXT_IO.PUT_LINE("START PRINT MODIFIED QUAL " );      --  Prints the line(s) that explain each inflected form
+-- TEXT_IO.PUT_LINE("START PRINT MODIFIED QUAL " ); -- Prints the line(s) that
+-- explain each inflected form
                   QUALITY_RECORD_IO.PUT
                     (OUT_STRING,
                      SR.IR
@@ -318,8 +324,7 @@ package body LIST_PACKAGE is
 
                   if (DM.D_K in GENERAL .. LOCAL) then  --  UNIQUES has no DE
 
-                     if (SR.IR.QUAL.POFS = V)
-                       and then (Dm.De.Part.Pofs= V)
+                     if (SR.IR.QUAL.POFS = V) and then (DM.DE.PART.POFS = V)
                        and then (DM.DE.PART.V.KIND = DEP)
                        and then
                        (SR.IR.QUAL.V.TENSE_VOICE_MOOD.MOOD in IND .. INF)
@@ -328,7 +333,7 @@ package body LIST_PACKAGE is
                         OUT_STRING (PASSIVE_START + 1 .. PASSIVE_FINISH) :=
                           PASSIVE_BLANK;
                      elsif (SR.IR.QUAL.POFS = VPAR)
-                       and then (DM.DE.Part.Pofs = VPAR)
+                       and then (DM.DE.PART.POFS = VPAR)
                        and then (DM.DE.PART.V.KIND = DEP)
                        and then (SR.IR.QUAL.VPAR.TENSE_VOICE_MOOD.MOOD = PPL)
                      then
@@ -338,7 +343,7 @@ package body LIST_PACKAGE is
                      end if;
 
                   end if;
-               Text_IO.Put (OUTPUT, OUT_STRING);
+                  Text_IO.Put (OUTPUT, OUT_STRING);
 
 --             TEXT_IO.PUT_LINE("PRINT MODIFIED QUAL 4" );
 
@@ -346,8 +351,8 @@ package body LIST_PACKAGE is
 
                PUT_INFLECTION_FLAGS;
 
-              -- PUT EXAMPLE LINE;
-               Format(Output,Faint);
+               -- PUT EXAMPLE LINE;
+               Format (OUTPUT, FAINT);
 
                if DM.DE.PART /= NULL_DICTIONARY_ENTRY.PART
                then  -- SPR:  Added because some UNIQUES won't generate a DE,
@@ -356,7 +361,7 @@ package body LIST_PACKAGE is
 
                end if;                                       --
 
-               Format(Output,Reset);
+               Format (OUTPUT, RESET);
                --  END PUT EXAMPLE LINE
             end if;
          end if;
@@ -447,11 +452,12 @@ package body LIST_PACKAGE is
                Text_IO.Put (OUTPUT, "03 ");
             end if;
 
-            Format(Output,BOLD);
+            Format (OUTPUT, BOLD);
             if DM.DE.PART.POFS = NUM and then DM.DE.PART.NUM.VALUE > 0 then
                Text_IO.Put--_Line
                  (OUTPUT,
-                  CONSTRUCTED_MEANING (SR, DM));    --  Constructed MEANING
+                  CONSTRUCTED_MEANING
+                    (SR, DM));    --  Constructed MEANING
                Text_IO.New_Line (OUTPUT);
             elsif DM.D_K = UNIQUE then
                PUT_MEANING (OUTPUT, UNIQUES_DE (DM.MNPC).MEAN);
@@ -464,18 +470,22 @@ package body LIST_PACKAGE is
          else
             if DM.D_K = RRR then
 
-               if RRR_MEANING(RRR_MEANING_COUNTER+1) /= NULL_MEANING_TYPE then
+               if RRR_MEANING (RRR_MEANING_COUNTER + 1) /= NULL_MEANING_TYPE
+               then
                   --PUT_DICTIONARY_FLAGS;
 
                   if WORDS_MDEV (DO_PEARSE_CODES) then
                      Text_IO.Put (OUTPUT, "03 ");
                   end if;
 
-                  Format(Output,BOLD);
+                  Format (OUTPUT, BOLD);
 
-                  PUT_MEANING (OUTPUT, RRR_MEANING(RRR_MEANING_COUNTER+1));      --  Roman Numeral
+                  PUT_MEANING
+                    (OUTPUT,
+                     RRR_MEANING
+                       (RRR_MEANING_COUNTER + 1));      --  Roman Numeral
                   --RRR_MEANING := NULL_MEANING_TYPE;
-                  RRR_MEANING_COUNTER := RRR_MEANING_COUNTER+1;
+                  RRR_MEANING_COUNTER := RRR_MEANING_COUNTER + 1;
                   Text_IO.New_Line (OUTPUT);
                   -- Text_IO.Put_Line("-----------");
 
@@ -483,70 +493,91 @@ package body LIST_PACKAGE is
 
             elsif DM.D_K = NNN then
 
-               if NNN_MEANING(NNN_MEANING_COUNTER+1) /= NULL_MEANING_TYPE then
+               if NNN_MEANING (NNN_MEANING_COUNTER + 1) /= NULL_MEANING_TYPE
+               then
                   --PUT_DICTIONARY_FLAGS;
                   if WORDS_MDEV (DO_PEARSE_CODES) then
                      Text_IO.Put (OUTPUT, "03 ");
                   end if;
 
-                  Format(Output,BOLD);
+                  Format (OUTPUT, BOLD);
 
-                  PUT_MEANING (OUTPUT, NNN_MEANING(NNN_MEANING_COUNTER+1));  --  Unknown Name
+                  PUT_MEANING
+                    (OUTPUT,
+                     NNN_MEANING (NNN_MEANING_COUNTER + 1));  --  Unknown Name
                   -- NNN_MEANING := NULL_MEANING_TYPE;
-                  NNN_MEANING_COUNTER := NNN_MEANING_COUNTER +1;
+                  NNN_MEANING_COUNTER := NNN_MEANING_COUNTER + 1;
                   Text_IO.New_Line (OUTPUT);
                end if;
 
             elsif DM.D_K = XXX then
 
-               if XXX_MEANING(XXX_MEANING_COUNTER+1) = NULL_MEANING_TYPE and then
-                  XXX_MEANING(XXX_MEANING_COUNTER+2) /= NULL_MEANING_TYPE then
-                  XXX_MEANING_COUNTER := XXX_MEANING_COUNTER+1;
+               if XXX_MEANING (XXX_MEANING_COUNTER + 1) = NULL_MEANING_TYPE
+                 and then XXX_MEANING (XXX_MEANING_COUNTER + 2) /=
+                   NULL_MEANING_TYPE
+               then
+                  XXX_MEANING_COUNTER := XXX_MEANING_COUNTER + 1;
                end if;
 
-               if XXX_MEANING(XXX_MEANING_COUNTER+1) /= NULL_MEANING_TYPE then
+               if XXX_MEANING (XXX_MEANING_COUNTER + 1) /= NULL_MEANING_TYPE
+               then
                   if WORDS_MDEV (DO_PEARSE_CODES) then
-                     Text_IO.Put (OUTPUT, "06 ");  -- from here onward it's 06's => inverse
+                     Text_IO.Put
+                       (OUTPUT,
+                        "06 ");  -- from here onward it's 06's => inverse
                   end if;                          -- so we must issue vt100 RESET before the new line
-                  Format(Output,Inverse);          -- otherwise the Windows and OS/2 terminals print blank spaces
-                                                   -- to then end of the line (until LF on terminals that use CRLF)
-                  PUT_MEANING (OUTPUT, XXX_MEANING(XXX_MEANING_COUNTER+1));  --  TRICKS
+                  Format
+                    (OUTPUT,
+                     INVERSE);          -- otherwise the Windows and OS/2 terminals print blank spaces
+                  -- to then end of the line (until LF on terminals that use
+                  -- CRLF)
+                  PUT_MEANING
+                    (OUTPUT,
+                     XXX_MEANING (XXX_MEANING_COUNTER + 1));  --  TRICKS
                   -- XXX_MEANING := NULL_MEANING_TYPE;
-                  XXX_MEANING_COUNTER := XXX_MEANING_COUNTER +1;
-                  Format(Output,Reset);
-                  Text_IO.New_Line(OUTPUT);
+                  XXX_MEANING_COUNTER := XXX_MEANING_COUNTER + 1;
+                  Format (OUTPUT, RESET);
+                  Text_IO.New_Line (OUTPUT);
                end if;
 
             elsif DM.D_K = YYY then
-               if YYY_MEANING(YYY_MEANING_COUNTER+1) = NULL_MEANING_TYPE and then
-                  YYY_MEANING(YYY_MEANING_COUNTER+2) /= NULL_MEANING_TYPE then
-                  YYY_MEANING_COUNTER := YYY_MEANING_COUNTER+1;
+               if YYY_MEANING (YYY_MEANING_COUNTER + 1) = NULL_MEANING_TYPE
+                 and then YYY_MEANING (YYY_MEANING_COUNTER + 2) /=
+                   NULL_MEANING_TYPE
+               then
+                  YYY_MEANING_COUNTER := YYY_MEANING_COUNTER + 1;
                end if;
 
-               if YYY_MEANING(YYY_MEANING_COUNTER+1) /= NULL_MEANING_TYPE then
+               if YYY_MEANING (YYY_MEANING_COUNTER + 1) /= NULL_MEANING_TYPE
+               then
                   if WORDS_MDEV (DO_PEARSE_CODES) then
                      Text_IO.Put (OUTPUT, "06 ");
                   end if;
-                  Format(Output,Inverse);
-                  PUT_MEANING (OUTPUT, YYY_MEANING(YYY_MEANING_COUNTER+1));  --  Syncope
-                  Format(Output,Reset);
+                  Format (OUTPUT, INVERSE);
+                  PUT_MEANING
+                    (OUTPUT,
+                     YYY_MEANING (YYY_MEANING_COUNTER + 1));  --  Syncope
+                  Format (OUTPUT, RESET);
                   -- YYY_MEANING := NULL_MEANING_TYPE;
-                  YYY_MEANING_COUNTER := YYY_MEANING_COUNTER +1;
+                  YYY_MEANING_COUNTER := YYY_MEANING_COUNTER + 1;
                   Text_IO.New_Line (OUTPUT);
                end if;
 
             elsif DM.D_K = PPP then
-               if PPP_MEANING(PPP_MEANING_COUNTER+1) /= NULL_MEANING_TYPE then
+               if PPP_MEANING (PPP_MEANING_COUNTER + 1) /= NULL_MEANING_TYPE
+               then
                   if WORDS_MDEV (DO_PEARSE_CODES) then
                      Text_IO.Put (OUTPUT, "06 ");
                   end if;
 
-                  Format(Output,Inverse);
-                  PUT_MEANING (OUTPUT, PPP_MEANING(PPP_MEANING_COUNTER+1)); --  Compounds
-                  Format(Output,Reset);
+                  Format (OUTPUT, INVERSE);
+                  PUT_MEANING
+                    (OUTPUT,
+                     PPP_MEANING (PPP_MEANING_COUNTER + 1)); --  Compounds
+                  Format (OUTPUT, RESET);
                   --PPP_MEANING := NULL_MEANING_TYPE;
-                  PPP_MEANING_COUNTER := PPP_MEANING_COUNTER+1;
-                  Text_IO.New_Line(OUTPUT);
+                  PPP_MEANING_COUNTER := PPP_MEANING_COUNTER + 1;
+                  Text_IO.New_Line (OUTPUT);
                end if;
 
             elsif DM.D_K = ADDONS then
@@ -554,25 +585,27 @@ package body LIST_PACKAGE is
                   Text_IO.Put (OUTPUT, "06 ");
                end if;
 
-               Format(Output,Inverse);
+               Format (OUTPUT, INVERSE);
                PUT_MEANING (OUTPUT, MEANS (Integer (DM.MNPC)));
-               Format(Output,Reset);
+               Format (OUTPUT, RESET);
                Text_IO.New_Line (OUTPUT);
 
             end if;
 
          end if;
 
-         Format(Output,Reset); --required for 03 branches above; belt and suspenders for 06
-        -- Text_IO.New_Line(OUTPUT);
+         Format
+           (OUTPUT,
+            RESET); --required for 03 branches above; belt and suspenders for 06
+         -- Text_IO.New_Line(OUTPUT);
       end PUT_MEANING_LINE;
 
    begin
       TRIMMED := False;
 
       --  Since this procedure weeds out possible parses, if it weeds out all
-      --  (or all of a class) it must fix up the rest of the parse array,
-      --  e.g., it must clean out dangling prefixes and suffixes
+      --  (or all of a class) it must fix up the rest of the parse array, e.g.,
+      --  it must clean out dangling prefixes and suffixes
 
 --    --  Just to find the words with long/complicated output at the processing level
 --    --  This is done with the final PA_LAST, entering LIST_STEM, before SWEEP
@@ -581,10 +614,9 @@ package body LIST_PACKAGE is
 --         PA_LAST_MAX := PA_LAST;
 --       end if;
 
---  TEXT_IO.PUT_LINE("PA on entering LIST_STEMS    PA_LAST = " & INTEGER'IMAGE(PA_LAST));
---  for I in 1..PA_LAST  loop
---  PARSE_RECORD_IO.PUT(PA(I)); TEXT_IO.NEW_LINE;
---  end loop;
+--  TEXT_IO.PUT_LINE("PA on entering LIST_STEMS PA_LAST =
+--  " & INTEGER'IMAGE(PA_LAST)); for I in 1..PA_LAST loop
+--  PARSE_RECORD_IO.PUT(PA(I)); TEXT_IO.NEW_LINE; end loop;
 
       if (Text_IO.Name (OUTPUT) = Text_IO.Name (Text_IO.Standard_Output)) then
          MM :=
@@ -652,37 +684,39 @@ package body LIST_PACKAGE is
 
                PA_LAST := PA_LAST + 1;
 
-
-            if PA (J2 + 1).IR.QUAL.POFS = ADJ then
-               if PA (J2 + 1).IR.QUAL.ADJ.CO = POS then
+               if PA (J2 + 1).IR.QUAL.POFS = ADJ then
+                  if PA (J2 + 1).IR.QUAL.ADJ.CO = POS then
 
 --TEXT_IO.PUT_LINE("In the ADJ -> ADV kludge  Adding POS for ADV");
-                  PA (PA_LAST) :=
-                    (PA (J2 + 1).STEM,
-                     ((POFS => ADV,
-                       ADV  =>
-                         (CO        => PA (J2 + 1).IR.QUAL.ADJ.CO,
-                          GENERATED => ADJADV)),
-                      KEY => 0, ENDING => (1, "e      "), AGE => X, FREQ => B),
-                     PA (J2 + 1).D_K, PA (J2 + 1).MNPC);
-                  --PARSE_RECORD_IO.PUT(PA(PA_LAST)); TEXT_IO.NEW_LINE;
-                  PPP_MEANING(PPP_MEANING_COUNTER+1) :=
-                    HEAD
-                      ("Suffix may indicate ADV formed from ADJ (caution: the ADV form may not exist)",
-                       MAX_MEANING_SIZE);
-               elsif PA (J2 + 1).IR.QUAL.ADJ.CO = SUPER then
-                  PA (PA_LAST) :=
-                    (PA (J2 + 1).STEM,
-                     ((POFS => ADV,
-                       ADV  =>
-                         (CO        => PA (J2 + 1).IR.QUAL.ADJ.CO,
-                          GENERATED => ADJADV)),
-                      KEY => 0, ENDING => (2, "me     "), AGE => X, FREQ => B),
-                     PA (J2 + 1).D_K, PA (J2 + 1).MNPC);
-                  PPP_MEANING(PPP_MEANING_COUNTER+1) :=
-                    HEAD
-                      ("Suffix may indicate ADV formed from ADJ (caution: the ADV form may not exist)",
-                       MAX_MEANING_SIZE); PPP_MEANING_COUNTER := PPP_MEANING_COUNTER + 1;
+                     PA (PA_LAST) :=
+                       (PA (J2 + 1).STEM,
+                        ((POFS => ADV,
+                          ADV  =>
+                            (CO        => PA (J2 + 1).IR.QUAL.ADJ.CO,
+                             GENERATED => ADJADV)),
+                         KEY  => 0, ENDING => (1, "e      "), AGE => X,
+                         FREQ => B),
+                        PA (J2 + 1).D_K, PA (J2 + 1).MNPC);
+                     --PARSE_RECORD_IO.PUT(PA(PA_LAST)); TEXT_IO.NEW_LINE;
+                     PPP_MEANING (PPP_MEANING_COUNTER + 1) :=
+                       HEAD
+                         ("Suffix may indicate ADV formed from ADJ (caution: the ADV form may not exist)",
+                          MAX_MEANING_SIZE);
+                  elsif PA (J2 + 1).IR.QUAL.ADJ.CO = SUPER then
+                     PA (PA_LAST) :=
+                       (PA (J2 + 1).STEM,
+                        ((POFS => ADV,
+                          ADV  =>
+                            (CO        => PA (J2 + 1).IR.QUAL.ADJ.CO,
+                             GENERATED => ADJADV)),
+                         KEY  => 0, ENDING => (2, "me     "), AGE => X,
+                         FREQ => B),
+                        PA (J2 + 1).D_K, PA (J2 + 1).MNPC);
+                     PPP_MEANING (PPP_MEANING_COUNTER + 1) :=
+                       HEAD
+                         ("Suffix may indicate ADV formed from ADJ (caution: the ADV form may not exist)",
+                          MAX_MEANING_SIZE);
+                     PPP_MEANING_COUNTER := PPP_MEANING_COUNTER + 1;
 
                   end if;
                end if;
@@ -693,32 +727,34 @@ package body LIST_PACKAGE is
          end loop;
 
       end if;           --  not THERE_IS_AN_ADVERB
--- TEXT_IO.PUT_LINE("In the ADJ -> ADV kludge  FINISHED");
+-- TEXT_IO.PUT_LINE("In the ADJ -> ADV kludge FINISHED");
 
       LIST_SWEEP (PA (1 .. PA_LAST), PA_LAST);
 
---  TEXT_IO.PUT_LINE("PA after leaving LIST_SWEEP    PA_LAST = "  & INTEGER'IMAGE(PA_LAST));
---  for I in 1..PA_LAST  loop
---  PARSE_RECORD_IO.PUT(PA(I)); TEXT_IO.NEW_LINE;
---  end loop;
+--  TEXT_IO.PUT_LINE("PA after leaving LIST_SWEEP PA_LAST
+--  = " & INTEGER'IMAGE(PA_LAST)); for I in 1..PA_LAST loop
+--  PARSE_RECORD_IO.PUT(PA(I)); TEXT_IO.NEW_LINE; end loop;
 
 -- TEXT_IO.PUT_LINE("After STATING FIXES");
 
---  Convert from PARSE_RECORDs to DICTIONARY_MNPC_RECORD and STEM_INFLECTION_RECORD
--- TEXT_IO.PUT_LINE("Doing arrays in LIST_STEMS    PA_LAST = "  & INTEGER'IMAGE(PA_LAST));
+--  Convert from PARSE_RECORDs to DICTIONARY_MNPC_RECORD and
+--  STEM_INFLECTION_RECORD
+-- TEXT_IO.PUT_LINE("Doing arrays in LIST_STEMS PA_LAST = " &
+-- INTEGER'IMAGE(PA_LAST));
       I    := 1;           --  I cycles on PA
-      J    := 0;           --  J indexes the number of DMA arrays  --  Initialize
+      J := 0;           --  J indexes the number of DMA arrays  --  Initialize
       SRAA := NULL_SRAA;
       DMA  := NULL_DMA;
       CYCLE_OVER_PA :
       while I <= PA_LAST loop       --  I cycles over full PA array
--- TEXT_IO.PUT_LINE("Starting loop for I    I = " & INTEGER'IMAGE(I));
+-- TEXT_IO.PUT_LINE("Starting loop for I I = " & INTEGER'IMAGE(I));
          ODM := NULL_DICTIONARY_MNPC_RECORD;
 
          if PA (I).D_K = UNIQUE then
             J            := J + 1;
             SRAA (J) (1) := (PA (I).STEM, PA (I).IR);
--- TEXT_IO.PUT_LINE("UNIQUE   I = " & INTEGER'IMAGE(I) & "  J = " & INTEGER'IMAGE(J));
+-- TEXT_IO.PUT_LINE("UNIQUE I = " & INTEGER'IMAGE(I) & " J = " &
+-- INTEGER'IMAGE(J));
             DM      := NULL_DICTIONARY_MNPC_RECORD;
             DM.D_K  := UNIQUE;
             DM.MNPC := PA (I).MNPC;
@@ -735,7 +771,8 @@ package body LIST_PACKAGE is
                   --ODM := NULL_DICTIONARY_MNPC_RECORD;
                   --DM := NULL_DICTIONARY_MNPC_RECORD;
                   while PA (I).IR.QUAL.POFS = N and I <= PA_LAST loop
--- TEXT_IO.PUT_LINE("Starting loop for N    I = " & INTEGER'IMAGE(I) & "   K = " & INTEGER'IMAGE(K));
+-- TEXT_IO.PUT_LINE("Starting loop for N I = " & INTEGER'IMAGE(I) & " K = " &
+-- INTEGER'IMAGE(K));
                      if PA (I).MNPC /= ODM.MNPC
                      then   --  Encountering new MNPC
                         OSRA := SRA;
@@ -770,16 +807,18 @@ package body LIST_PACKAGE is
                   --ODM := NULL_DICTIONARY_MNPC_RECORD;
                   --DM := NULL_DICTIONARY_MNPC_RECORD;
 
-
-                  while Qual_Equ_PRONPACK(PA(I).IR.QUAL)  and then I <= PA_LAST loop
+                  while Qual_Equ_PRONPACK (PA (I).IR.QUAL)
+                    and then I <= PA_LAST
+                  loop
 
                      if PA (I).MNPC /= ODM.MNPC
-                     and then
-                          ( (ODM.De.Part.Pofs /= Pron
-                          or Else
-                             Pa(I).Ir.Qual.Pron.Kind /= Odm.De.Part.Pron.Kind
-                           or else Odm.De.Part.Pofs /= Pack) )
-                          --or else ODM.DE.MEAN(1) /= '|' )
+                       and then
+                       ((ODM.DE.PART.POFS /= PRON
+                         or else PA (I).IR.QUAL.PRON.KIND /=
+                           ODM.DE.PART.PRON.KIND
+                         or else ODM.DE.PART.POFS /= PACK))
+                        --or else ODM.DE.MEAN(1) /= '|' )
+
                      then   --  Encountering new MNPC
 
                         OSRA := SRA;
@@ -818,9 +857,11 @@ package body LIST_PACKAGE is
                      if PA (I).MNPC /= ODM.MNPC
                      then   --  Encountering new MNPC
                         OSRA := SRA;
-                        K    := 1;                  --  K indexes within the MNPCA array --  Initialize
+                        K    :=
+                          1;                  --  K indexes within the MNPCA array --  Initialize
                         J :=
-                          J + 1;             --  J indexes the number of MNPCA arrays - Next MNPCA
+                          J +
+                          1;             --  J indexes the number of MNPCA arrays - Next MNPCA
                         SRAA (J) (K) := (PA (I).STEM, PA (I).IR);
                         DICT_IO.Set_Index
                           (DICT_FILE (PA (I).D_K), PA (I).MNPC);
@@ -830,12 +871,14 @@ package body LIST_PACKAGE is
                         ODM     := DM;
 --TEXT_IO.PUT_LINE("I is" & i'image & "J is " & J'image & "IR: "); INFLECTION_RECORD_IO.Put(PA(I).IR); Text_IO.New_Line;
                      else
-                        K := K + 1;              --  K indexes within the MNPCA array  - Next MNPC
+                        K :=
+                          K +
+                          1;              --  K indexes within the MNPCA array  - Next MNPC
                         SRAA (J) (K) := (PA (I).STEM, PA (I).IR);
                      end if;
 --TEXT_IO.PUT_LINE("SRAA  + ADJ");
                      I := I + 1;              --  I cycles over full PA array
- --                  TEXT_IO.PUT_LINE("I is" & i'image & "J is " & J'image & "IR: "); INFLECTION_RECORD_IO.Put(PA(I).IR); Text_IO.New_Line;
+                     --                  TEXT_IO.PUT_LINE("I is" & i'image & "J is " & J'image & "IR: "); INFLECTION_RECORD_IO.Put(PA(I).IR); Text_IO.New_Line;
                   end loop;
 
                when NUM =>
@@ -862,8 +905,11 @@ package body LIST_PACKAGE is
                      elsif (PA (I).MNPC /= ODM.MNPC)
                      then            --  Encountering new MNPC
                         OSRA := SRA;
-                        K    := 1;                 --  K indexes within the MNPCA array --  Initialize
-                        J    := J + 1;             --  J indexes the number of MNPCA arrays - Next MNPCA
+                        K    :=
+                          1;                 --  K indexes within the MNPCA array --  Initialize
+                        J :=
+                          J +
+                          1;             --  J indexes the number of MNPCA arrays - Next MNPCA
                         SRAA (J) (K) := (PA (I).STEM, PA (I).IR);
                         DICT_IO.Set_Index
                           (DICT_FILE (PA (I).D_K), PA (I).MNPC);
@@ -872,7 +918,9 @@ package body LIST_PACKAGE is
                         DMA (J) := DM;
                         ODM     := DM;
                      else
-                        K :=  K + 1;              --  K indexes within the MNPCA array  - Next MNPC
+                        K :=
+                          K +
+                          1;              --  K indexes within the MNPCA array  - Next MNPC
                         SRAA (J) (K) := (PA (I).STEM, PA (I).IR);
                      end if;
 
@@ -889,14 +937,18 @@ package body LIST_PACKAGE is
                      PA (I).IR.QUAL.POFS = SUPINE) and
                     I <= PA_LAST
                   loop
--- TEXT_IO.PUT_LINE("Starting loop for VPAR I = " & INTEGER'IMAGE(I) & "   K = " & INTEGER'IMAGE(K));
+-- TEXT_IO.PUT_LINE("Starting loop for VPAR I = " & INTEGER'IMAGE(I) & " K = "
+-- & INTEGER'IMAGE(K));
                      if (PA (I).MNPC /= ODM.MNPC) and (PA (I).D_K /= PPP)
                      then   --  Encountering new MNPC
                         OSRA :=
                           SRA;                                               --  But not for compound
-                        K := 1;                  --  K indexes within the MNPCA array --  Initialize
+                        K :=
+                          1;                  --  K indexes within the MNPCA array --  Initialize
 --TEXT_IO.PUT_LINE("Starting IRA for VPAR I = " & INTEGER'IMAGE(I) & "   K = " & INTEGER'IMAGE(K));
-                        J :=  J + 1;             --  J indexes the number of MNPCA arrays - Next MNPCA
+                        J :=
+                          J +
+                          1;             --  J indexes the number of MNPCA arrays - Next MNPCA
 --TEXT_IO.PUT_LINE("Shifting J for VPAR I = " & INTEGER'IMAGE(I) & "   J = " & INTEGER'IMAGE(J));
                         SRAA (J) (K) := (PA (I).STEM, PA (I).IR);
                         if PA (I).D_K /= PPP then
@@ -908,7 +960,9 @@ package body LIST_PACKAGE is
                         DMA (J) := DM;
                         ODM     := DM;
                      else
-                        K :=   K + 1;              --  K indexes within the MNPCA array  - Next MNPC
+                        K :=
+                          K +
+                          1;              --  K indexes within the MNPCA array  - Next MNPC
 --TEXT_IO.PUT_LINE("Continuing IRA for VPAR  I = " & INTEGER'IMAGE(I) & "   K = " & INTEGER'IMAGE(K)   & "   J = " & INTEGER'IMAGE(J));
                         SRAA (J) (K) := (PA (I).STEM, PA (I).IR);
                      end if;
@@ -927,9 +981,12 @@ package body LIST_PACKAGE is
                      if (ODM.D_K /= PA (I).D_K) or (ODM.MNPC /= PA (I).MNPC)
                      then   --  Encountering new single (K only 1)
                         OSRA := SRA;
-                        K    :=  1;                 --  K indexes within the MNPCA array --  Initialize
+                        K    :=
+                          1;                 --  K indexes within the MNPCA array --  Initialize
                         --TEXT_IO.PUT_LINE("Starting IRA for OTHER I = " & INTEGER'IMAGE(I) & "   K = " & INTEGER'IMAGE(K));
-                        J    :=  J + 1;             --  J indexes the number of MNPCA arrays - Next MNPCA
+                        J :=
+                          J +
+                          1;             --  J indexes the number of MNPCA arrays - Next MNPCA
                         --TEXT_IO.PUT_LINE("Shifting J for OTHER I = " & INTEGER'IMAGE(I) & "   J = " & INTEGER'IMAGE(J));
                         SRAA (J) (K) := (PA (I).STEM, PA (I).IR);
                         if PA (I).MNPC /= NULL_MNPC then
@@ -948,8 +1005,8 @@ package body LIST_PACKAGE is
                         DMA (J) := DM;
                         ODM     := DM;
                         --else
---  K := K + 1;              --  K indexes within the MNPCA array  - Next MNPC
---  SRAA(J)(K) := (PA(I).STEM, PA(I).IR);
+--  K := K + 1; -- K indexes within the MNPCA array - Next MNPC SRAA(J)(K) :=
+--  (PA(I).STEM, PA(I).IR);
                      end if;
 
                      I := I + 1;              --  I cycles over full PA array
@@ -959,8 +1016,7 @@ package body LIST_PACKAGE is
             end case;
 
          end if;
---  --  This just for developer test, will be commented out
---  if K > SRA_MAX  then
+--  -- This just for developer test, will be commented out if K > SRA_MAX then
 --    SRA_MAX := K;
 --PUT_STAT("*SRA_MAX for RAW_WORD " & HEAD(RAW_WORD, 26) & "   = " & INTEGER'IMAGE(SRA_MAX));
 --  end if;
@@ -973,13 +1029,13 @@ package body LIST_PACKAGE is
 
 --TEXT_IO.PUT_LINE("Made QA");
 
-   --  Sets + if capitalized
-   --  Strangely enough, it may enter LIST_STEMS with PA_LAST /= 0
-   --  but be weeded and end up with no parse after LIST_SWEEP  -  PA_LAST = 0
+      --  Sets + if capitalized
+      --  Strangely enough, it may enter LIST_STEMS with PA_LAST /= 0 but be
+      --  weeded and end up with no parse after LIST_SWEEP - PA_LAST = 0
       if PA_LAST = 0 then  --  WORD failed
    --????      (DMA(1).D_K in ADDONS..YYY  and then TRIM(DMA(1).DE.STEMS(1)) /= "que")  then  --  or used FIXES/TRICKS
          if WORDS_MODE (IGNORE_UNKNOWN_NAMES) and CAPITALIZED then
-            NNN_MEANING(NNN_MEANING_COUNTER) :=
+            NNN_MEANING (NNN_MEANING_COUNTER) :=
               HEAD
                 ("Assume this is capitalized proper name/abbr, under MODE IGNORE_UNKNOWN_NAME ",
                  MAX_MEANING_SIZE);
@@ -993,7 +1049,7 @@ package body LIST_PACKAGE is
             SRAA (1) (1) := (PA (1).STEM, PA (1).IR);
             DMA (1)      := (NNN, 0, NULL_DICTIONARY_ENTRY);
          elsif WORDS_MODE (IGNORE_UNKNOWN_CAPS) and ALL_CAPS then
-            NNN_MEANING(NNN_MEANING_COUNTER) :=
+            NNN_MEANING (NNN_MEANING_COUNTER) :=
               HEAD
                 ("(Unknown capitalized word; assuming proper name or abbrev.)",
                  MAX_MEANING_SIZE);
@@ -1028,7 +1084,7 @@ package body LIST_PACKAGE is
             Text_IO.Put_Line (OUTPUT, "    ========   UNKNOWN    ");
             --TEXT_IO.NEW_LINE(OUTPUT);
          else              --  Just screen output
-           -- TEXT_IO.NEW_LINE(OUTPUT);
+            -- TEXT_IO.NEW_LINE(OUTPUT);
             if WORDS_MDEV (DO_PEARSE_CODES) then
                Text_IO.Put (OUTPUT, "04 ");
             end if;
@@ -1090,7 +1146,6 @@ package body LIST_PACKAGE is
          return;
       end if;
 
-
 --TEXT_IO.PUT_LINE("PUTting INFLECTIONS");
       J    := 1;
       OSRA := NULL_SRA;
@@ -1106,53 +1161,61 @@ package body LIST_PACKAGE is
 --                                                                                         --!!!!!!!!!!!!!!!!!!!!!!!!
 -- --!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-         if SRAA (J) /= OSRA Then
-         --  Skips one identical SRA
-         --  no matter what comes next
+         if SRAA (J) /= OSRA then
+            --  Skips one identical SRA
+            --  no matter what comes next
 
-            if J = PA_LAST and then DMA(J).D_K  in ADDONS..YYY
-              and then DMA(J+1).D_K = X
-              then
-            -- Prevent situation where two TRICKS and syncope could result in duplicated lines; e.g., admorunt
+            if J = PA_LAST and then DMA (J).D_K in ADDONS .. YYY
+              and then DMA (J + 1).D_K = X
+            then
+               -- Prevent situation where two TRICKS and syncope could result
+               -- in duplicated lines; e.g., admorunt
                null;
 
-            --  PPP version of the same issue wrt TRICKS and SYNCOPE above
-            --  More complicated because the ADJ => ADV "kludge" part of LIST_PACKAGE inserts entries into the
-            --  PA (e.g., arcule), so we have to look forward and behind to make sure there are really dupes
-            elsif DMA(J).D_K = PPP
-              and then J > 2
-                and then SRAA(J)(1).stem =  SRAA(J-2)(1).stem
-                 and then DMA(J).DE.STEMS = DMA(J-2).de.STEMS
-               then
-                 return;
+               --  PPP version of the same issue wrt TRICKS and SYNCOPE above
+               --  More complicated because the ADJ => ADV "kludge" part of
+               --  LIST_PACKAGE inserts entries into the PA (e.g., arcule), so
+               --  we have to look forward and behind to make sure there are
+               --  really dupes
+            elsif DMA (J).D_K = PPP and then J > 2
+              and then SRAA (J) (1).STEM = SRAA (J - 2) (1).STEM
+              and then DMA (J).DE.STEMS = DMA (J - 2).DE.STEMS
+            then
+               return;
 
             else
                PUT_INFLECTION_ARRAY_J :
-               for K in SRAA(J)'RANGE loop
+               for K in SRAA (J)'RANGE loop
 
-                   exit when SRAA (J) (K) =  NULL_STEM_INFLECTION_RECORD;
-                  if K > 1 and then
-                    ( DMA(J).DE.PART.POFS = Pron or DMA(J).DE.PART.POFS = Pack )
-                      then
-                           if SRAA(J)(K) /= SRAA(J)(K - 1)
-                           then
-                            PUT_INFLECTION (SRAA (J) (K), DMA (J));
-                            end if;
+                  exit when SRAA (J) (K) = NULL_STEM_INFLECTION_RECORD;
+                  if K > 1
+                    and then
+                    (DMA (J).DE.PART.POFS = PRON or
+                     DMA (J).DE.PART.POFS = PACK)
+                  then
+                     if SRAA (J) (K) /= SRAA (J) (K - 1) then
+                        PUT_INFLECTION (SRAA (J) (K), DMA (J));
+                     end if;
 
                   else
 
-                  PUT_INFLECTION (SRAA (J) (K), DMA (J));
+                     PUT_INFLECTION (SRAA (J) (K), DMA (J));
 
-                   if SRAA (J) (K).STEM (1 .. 3) = "PPL" then
-                     if PPP_MEANING(PPP_MEANING_COUNTER+1) /= NULL_MEANING_TYPE then
-                        Text_IO.Put_Line (OUTPUT, HEAD (PPP_MEANING(PPP_MEANING_COUNTER+1), MM));
-                        PPP_MEANING_COUNTER := PPP_MEANING_COUNTER + 1;
+                     if SRAA (J) (K).STEM (1 .. 3) = "PPL" then
+                        if PPP_MEANING (PPP_MEANING_COUNTER + 1) /=
+                          NULL_MEANING_TYPE
+                        then
+                           Text_IO.Put_Line
+                             (OUTPUT,
+                              HEAD
+                                (PPP_MEANING (PPP_MEANING_COUNTER + 1), MM));
+                           PPP_MEANING_COUNTER := PPP_MEANING_COUNTER + 1;
+                        end if;
                      end if;
-                   end if;
 
                   end if; -- k > 1
 
-            end loop PUT_INFLECTION_ARRAY_J;
+               end loop PUT_INFLECTION_ARRAY_J;
             end if;
 
             OSRA := SRAA (J);
@@ -1163,100 +1226,113 @@ package body LIST_PACKAGE is
          Last_Form_Same    := False;
          Next_Form_Same    := False;  -- only for UNIQUE
 
-        if Trim_Bar(DMA (J).DE.MEAN) = Trim_Bar(DMA (J + 1).DE.MEAN) then
-               Next_Meaning_Same := True;
-        end if;
+         if TRIM_BAR (DMA (J).DE.MEAN) = TRIM_BAR (DMA (J + 1).DE.MEAN) then
+            Next_Meaning_Same := True;
+         end if;
 
-       if DMA (J).DE.MEAN = DMA (J + 1).DE.MEAN then
-               Next_Meaning_Same := True;
-        end if;
-         If DMA(J).D_K = UNIQUE
-           and then DMA(J).DE.STEMS = DMA(J + 1).DE.STEMS
+         if DMA (J).DE.MEAN = DMA (J + 1).DE.MEAN then
+            Next_Meaning_Same := True;
+         end if;
+         if DMA (J).D_K = UNIQUE
+           and then DMA (J).DE.STEMS = DMA (J + 1).DE.STEMS
            and then DMA (J).DE.PART.POFS = DMA (J + 1).DE.PART.POFS
            and then DMA (J).DE.TRAN.AGE = DMA (J + 1).DE.TRAN.AGE
            and then DMA (J).DE.TRAN.AREA = DMA (J + 1).DE.TRAN.AREA
            and then DMA (J).DE.TRAN.GEO = DMA (J + 1).DE.TRAN.GEO
            and then DMA (J).DE.TRAN.FREQ = DMA (J + 1).DE.TRAN.FREQ
-          -- and then DMA (J).DE.TRAN.SOURCE = DMA (J + 1).DE.TRAN.SOURCE
-           then
-            Next_Form_Same := TRUE;
-        elsif ( Dma(J).DE.PART.POFS = Pron or Dma(J).DE.PART.POFS = Pack )
-           and then ( Dma(J+1).DE.PART.POFS = Pron or Dma(J+1).DE.PART.POFS = Pack)
-              and then  ( DICTIONARY_FORM(DMA(J).DE) = DICTIONARY_FORM(DMA(J+1).DE) )
-            then
-               Next_Form_Same := True;
+            -- and then DMA (J).DE.TRAN.SOURCE = DMA (J + 1).DE.TRAN.SOURCE
+
+         then
+            Next_Form_Same := True;
+         elsif (DMA (J).DE.PART.POFS = PRON or DMA (J).DE.PART.POFS = PACK)
+           and then
+           (DMA (J + 1).DE.PART.POFS = PRON or DMA (J + 1).DE.PART.POFS = PACK)
+           and then
+           (Dictionary_Form (DMA (J).DE) = Dictionary_Form (DMA (J + 1).DE))
+         then
+            Next_Form_Same := True;
          end if;
 
          if J > 1 then
 
-            if (Dma(J).DE.PART.POFS = Pron or Dma(J).DE.PART.POFS = Pack)
-              and then (Dma(J-1).DE.PART.POFS = Pron or Dma(J-1).DE.PART.POFS = Pack)
+            if (DMA (J).DE.PART.POFS = PRON or DMA (J).DE.PART.POFS = PACK)
+              and then
+              (DMA (J - 1).DE.PART.POFS = PRON or
+               DMA (J - 1).DE.PART.POFS = PACK)
             then
                if
-              (DICTIONARY_FORM((DMA(J).DE)) = DICTIONARY_FORM(DMA(J-1).DE))
+                 (Dictionary_Form ((DMA (J).DE)) =
+                  Dictionary_Form (DMA (J - 1).DE))
                then
-               Last_Form_Same := True;
+                  Last_Form_Same := True;
                end if;
 
-            elsif DMA(J).DE.STEMS = DMA(J - 1).DE.STEMS
+            elsif DMA (J).DE.STEMS = DMA (J - 1).DE.STEMS
               and then DMA (J).DE.PART.POFS = DMA (J - 1).DE.PART.POFS
               and then
-               --  Checking .TRAN will always return false
-               --  but checking individual elements works
-              DMA (J).DE.TRAN.AGE = DMA (J - 1).DE.TRAN.AGE
+               --  Checking .TRAN will always return false but checking
+               --  individual elements works
+               DMA (J).DE.TRAN.AGE = DMA (J - 1).DE.TRAN.AGE
               and then DMA (J).DE.TRAN.AREA = DMA (J - 1).DE.TRAN.AREA
               and then DMA (J).DE.TRAN.GEO = DMA (J - 1).DE.TRAN.GEO
               and then DMA (J).DE.TRAN.FREQ = DMA (J - 1).DE.TRAN.FREQ
-             -- and then DMA (J).DE.TRAN.SOURCE = DMA (J - 1).DE.TRAN.SOURCE
+               -- and then DMA (J).DE.TRAN.SOURCE = DMA (J - 1).DE.TRAN.SOURCE
+
             then
                Last_Form_Same := True;
 
             end if;
 
-            if  Next_Form_Same                         -- The final consequence of qu- pronoun data structure
-                 and then not Put_Meaning_Anyway       -- Same issue probably occurs in other contexts
-                 and then DMA(J).DE.Mean(1) /= '|'
-                 and then not Next_Meaning_Same
-              --   and then not (DMA(J).De.Mean /= DMA(J+1).De.Mean)
-            then Saved_Meaning_J := J;
-             --    if Last_Form_Same then J := J +1; end if;
+            if Next_Form_Same                         -- The final consequence of qu- pronoun data structure
+              and then not Put_Meaning_Anyway       -- Same issue probably occurs in other contexts
+              and then DMA (J).DE.MEAN (1) /= '|'
+              and then not Next_Meaning_Same
+               --   and then not (DMA(J).De.Mean /= DMA(J+1).De.Mean)
+
+            then
+               Saved_Meaning_J := J;
+               --    if Last_Form_Same then J := J +1; end if;
             end if;
 
          end if; -- J > 1
 
-       --TEXT_IO.PUT_LINE("PUTting FORM");
+         --TEXT_IO.PUT_LINE("PUTting FORM");
          PUTTING_FORM :
          begin
 
-            if ( Dma(J).DE.PART.POFS = Pron or Dma(J).DE.PART.POFS = Pack) then
+            if (DMA (J).DE.PART.POFS = PRON or DMA (J).DE.PART.POFS = PACK)
+            then
                if not Next_Form_Same
-                -- and Then not Next_Meaning_Same
+                  -- and Then not Next_Meaning_Same
                   -- and then Saved_Meaning_J = 0
-                   Then
-                   PUT_FORM (SRAA (J) (1), DMA (J));
+                  then
+                  PUT_FORM (SRAA (J) (1), DMA (J));
                end if;
 
             elsif DMA (J).D_K = GENERAL
               and then Last_Form_Same                  -- therefore J > 1, so no explicit check
-               then
-               if
-               SRAA (J - 1) /= SRAA (J) then           -- Special tests here address rare issue that occurs
-               PUT_FORM (SRAA (J) (1), DMA (J));       -- when there are multiple UNIQUE hits (e.g., quae, eadem, bobus)
-               Put_Meaning_Anyway := True;             -- Make sure dictionary line always prints after inflections.
+            then
+               if SRAA (J - 1) /= SRAA (J)
+               then           -- Special tests here address rare issue that occurs
+                  PUT_FORM
+                    (SRAA (J) (1),
+                     DMA
+                       (J));       -- when there are multiple UNIQUE hits (e.g., quae, eadem, bobus)
+                  Put_Meaning_Anyway :=
+                    True;             -- Make sure dictionary line always prints after inflections.
                end if;
 
-           elsif DMA (J).D_K = UNIQUE then
-               if not Next_Meaning_Same
-                and then not Next_Form_Same then
+            elsif DMA (J).D_K = UNIQUE then
+               if not Next_Meaning_Same and then not Next_Form_Same then
                   PUT_FORM (SRAA (J) (1), DMA (J));
                end if;
 
-          elsif Last_Form_Same then
-           null;
+            elsif Last_Form_Same then
+               null;
 
-           else
+            else
                PUT_FORM (SRAA (J) (1), DMA (J));
-           end if;
+            end if;
 
          end PUTTING_FORM;
 
@@ -1282,34 +1358,37 @@ package body LIST_PACKAGE is
                PUT_MEANING_LINE (SRAA (J) (1), DMA (J));
                Put_Meaning_Anyway := False;
 
-            elsif (DMA(J).DE.Part.pofs = Pron or DMA(J).DE.PART.pofs = Pron) then
+            elsif (DMA (J).DE.PART.POFS = PRON or DMA (J).DE.PART.POFS = PRON)
+            then
 
-                   if not Next_Form_Same
-                   then PUT_MEANING_LINE (SRAA (J) (1), DMA (J));
-                   end if;
-            elsif not Next_Meaning_Same
-                   or DMA (J).D_K not in General..UNIQUE
-                                                            -- Make sure no Roman numerals or syncopes, tricks, etc are missed
-               then                                         -- because they can have two NULL_MEANINGs in a row
+               if not Next_Form_Same then
+                  PUT_MEANING_LINE (SRAA (J) (1), DMA (J));
+               end if;
+            elsif not Next_Meaning_Same or DMA (J).D_K not in GENERAL .. UNIQUE
+               -- Make sure no Roman numerals or syncopes, tricks, etc are
+               -- missed
+
+            then                                         -- because they can have two NULL_MEANINGs in a row
                PUT_MEANING_LINE (SRAA (J) (1), DMA (J));
 
             end if;
 
-           if  Saved_Meaning_J /= 0
-                 and then Last_Form_same
-                 and then not Next_Form_Same
-                 and then ( (DMA(Saved_Meaning_J).De.Mean  /= DMA(J).De.MEAN ) or else Put_Meaning_Anyway)
-                 then
+            if Saved_Meaning_J /= 0 and then Last_Form_Same
+              and then not Next_Form_Same
+              and then
+              ((DMA (Saved_Meaning_J).DE.MEAN /= DMA (J).DE.MEAN)
+               or else Put_Meaning_Anyway)
+            then
 
-                 PUT_MEANING_LINE (SRAA (Saved_Meaning_J) (1), DMA (Saved_Meaning_J));
+               PUT_MEANING_LINE
+                 (SRAA (Saved_Meaning_J) (1), DMA (Saved_Meaning_J));
 
-                Saved_Meaning_J  := 0;
-             end if;
-
+               Saved_Meaning_J := 0;
+            end if;
 
          end PUTTING_MEANING;
 
-        -- Skip_Next := false;
+         -- Skip_Next := false;
 
          DO_PAUSE :
          begin
@@ -1321,37 +1400,34 @@ package body LIST_PACKAGE is
             then
                PAUSE (OUTPUT);
                SCROLL_LINE_NUMBER := Integer (Text_IO.Line (OUTPUT));
- --            Text_IO.New_Line(OUTPUT);
+               --            Text_IO.New_Line(OUTPUT);
             end if;
          end DO_PAUSE;
- --   TEXT_IO.PUT_LINE("End of OUTPUT_LOOP with J = " & INTEGER'IMAGE(J));
+      --   TEXT_IO.PUT_LINE("End of OUTPUT_LOOP with J = " & INTEGER'IMAGE(J));
 
          J := J + 1;
 
-      if  ((WORDS_MODE(DO_ANSI_FORMATTING) = FALSE) or
-              WORDS_MODE (WRITE_OUTPUT_TO_FILE))
-           and then not Next_Form_Same
-           and then not Next_Meaning_Same
+         if
+           ((WORDS_MODE (DO_ANSI_FORMATTING) = False) or
+            WORDS_MODE (WRITE_OUTPUT_TO_FILE))
+           and then not Next_Form_Same and then not Next_Meaning_Same
            and then not Put_Meaning_Anyway
-           and then not ( DMA(J+1).De.Mean(1) /= '|' )
-           and then (Dma(J).De.Part.Pofs /= DMA(J+1).De.Part.Pofs)
-           then
-             Text_IO.New_Line(OUTPUT);
+           and then not (DMA (J + 1).DE.MEAN (1) /= '|')
+           and then (DMA (J).DE.PART.POFS /= DMA (J + 1).DE.PART.POFS)
+         then
+            Text_IO.New_Line (OUTPUT);
          end if;
 
       end loop OUTPUT_LOOP;
- --   TEXT_IO.PUT_LINE("Finished OUTPUT_LOOP");
+      --   TEXT_IO.PUT_LINE("Finished OUTPUT_LOOP");
 
-    Text_IO.New_Line (OUTPUT);
+      Text_IO.New_Line (OUTPUT);
 
    exception
-      when Catch_Me: Others =>
+      when others =>
          Text_IO.Put_Line
            ("Unexpected exception in LIST_STEMS processing " & RAW_WORD);
-        Text_IO.Put_Line
-           ("EXCEPTION LS at " & PA (I).STEM);
-         Text_IO.Put_Line(Ada.Exceptions.Exception_Message(Catch_ME));
-          Text_IO.Put_Line(Ada.Exceptions.Exception_Information(Catch_ME));
+         Text_IO.Put_Line ("EXCEPTION LS at " & PA (I).STEM);
 
    end LIST_STEMS;
 
@@ -1363,11 +1439,13 @@ package body LIST_PACKAGE is
       DICT_IO.Read (DICT_FILE (D_K), DE, MN);
       Text_IO.Put (OUTPUT, "=>  ");
       PUT_DICTIONARY_FORM (OUTPUT, D_K, MN, DE);
-      Format(Output,Bold);
+      Format (OUTPUT, BOLD);
       Text_IO.Put
-        (OUTPUT, TRIM_BAR(TRIM (HEAD (DE.MEAN, MM))));  --  so it wont line wrap/put CR
-      Format(Output,Reset);
-      Text_IO.New_Line(Output);
+        (OUTPUT,
+         TRIM_BAR
+           (TRIM (HEAD (DE.MEAN, MM))));  --  so it wont line wrap/put CR
+      Format (OUTPUT, RESET);
+      Text_IO.New_Line (OUTPUT);
    end LIST_ENTRY;
 
    procedure UNKNOWN_SEARCH
@@ -1380,16 +1458,17 @@ package body LIST_PACKAGE is
       J, J1, J2, JJ : STEM_IO.Count            := 0;
 
       INDEX_ON : constant String :=
-        LOWER_CASE
+        Lower_Case
           (UNKNOWN); -- SPR:  Fixes bug that prevented unknown_search from working if ignore_unknown's were set to N, do_unknowns_only set to Y, and input had a capital letter
       INDEX_FIRST, INDEX_LAST : STEM_IO.Count := 0;
       DS                      : DICTIONARY_STEM;
       FIRST_TRY, SECOND_TRY   : Boolean       := True;
 
       function FIRST_TWO (W : String) return String is
-      --  'v' could be represented by 'u', like the new Oxford Latin Dictionary
-      --  Fixes the first two letters of a word/stem which can be done right
-         S  : constant String  := LOWER_CASE (W);
+         --  'v' could be represented by 'u', like the new Oxford Latin
+         --  Dictionary Fixes the first two letters of a word/stem which can
+         --  be done right
+         S  : constant String  := Lower_Case (W);
          SS : String (W'RANGE) := W;
 
          function UI (C : Character) return Character is
@@ -1462,10 +1541,10 @@ package body LIST_PACKAGE is
                Set_Index (STEM_FILE (D_K), STEM_IO.Count (J));
                Read (STEM_FILE (D_K), DS);
 
-               if LTU (LOWER_CASE (DS.STEM), UNKNOWN) then
+               if LTU (Lower_Case (DS.STEM), UNKNOWN) then
                   J1 := J;
                   J  := (J1 + J2) / 2;
-               elsif GTU (LOWER_CASE (DS.STEM), UNKNOWN) then
+               elsif GTU (Lower_Case (DS.STEM), UNKNOWN) then
                   J2 := J;
                   J  := (J1 + J2) / 2;
                else
@@ -1473,7 +1552,7 @@ package body LIST_PACKAGE is
                      Set_Index (STEM_FILE (D_K), STEM_IO.Count (I));
                      Read (STEM_FILE (D_K), DS);
 
-                     if EQU (LOWER_CASE (DS.STEM), UNKNOWN) then
+                     if EQU (Lower_Case (DS.STEM), UNKNOWN) then
                         JJ := I;
 
                      else
@@ -1485,7 +1564,7 @@ package body LIST_PACKAGE is
                      Set_Index (STEM_FILE (D_K), STEM_IO.Count (I));
                      Read (STEM_FILE (D_K), DS);
 
-                     if EQU (LOWER_CASE (DS.STEM), UNKNOWN) then
+                     if EQU (Lower_Case (DS.STEM), UNKNOWN) then
                         JJ := I;
 
                      else
@@ -1502,9 +1581,9 @@ package body LIST_PACKAGE is
          end if;
          UNKNOWN_COUNT := DS.MNPC;
 
-    --     Close (STEM_FILE (D_K));  --??????
+         --     Close (STEM_FILE (D_K));  --??????
       end if;
-      -- TEXT_IO.PUT_LINE("Leaving LIST_NEIGHBORHOOD    UNKNOWN_SEARCH");
+      -- TEXT_IO.PUT_LINE("Leaving LIST_NEIGHBORHOOD UNKNOWN_SEARCH");
    end UNKNOWN_SEARCH;
 
    procedure LIST_NEIGHBORHOOD
@@ -1529,22 +1608,24 @@ package body LIST_PACKAGE is
 -- TEXT_IO.PUT_LINE("UNK_MNPC = " & INTEGER'IMAGE(INTEGER(UNK_MNPC)));
       if Integer (UNK_MNPC) > 0 then
 
-         Text_Io.New_Line(OUTPUT); Format(Output,Inverse);
+         Text_IO.New_Line (OUTPUT);
+         Format (OUTPUT, INVERSE);
          Text_IO.Put
            (OUTPUT,
             "----------  Entries in GENERAL Dictionary around the UNKNOWN  ----------");
-         Format(Output,Reset); Text_Io.New_Line(OUTPUT);
+         Format (OUTPUT, RESET);
+         Text_IO.New_Line (OUTPUT);
 
          PAUSE (OUTPUT);
 
          for MN in
-              DICT_IO.Count (Integer (UNK_MNPC) - 5) ..
-              DICT_IO.Count (Integer (UNK_MNPC) + 3)
-            loop
-            exit when integer(MN) > integer(LAST_MNPC)
-              and then integer(LAST_MNPC) /= integer(null_mnpc);
+           DICT_IO.Count (Integer (UNK_MNPC) - 5) ..
+             DICT_IO.Count (Integer (UNK_MNPC) + 3)
+         loop
+            exit when Integer (MN) > Integer (LAST_MNPC)
+              and then Integer (LAST_MNPC) /= Integer (NULL_MNPC);
 
-               LIST_ENTRY (OUTPUT, D_K, MN);
+            LIST_ENTRY (OUTPUT, D_K, MN);
          end loop;
 
       end if;

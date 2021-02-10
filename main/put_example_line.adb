@@ -5,7 +5,7 @@ with CONFIG;              use CONFIG;
 with WORD_PARAMETERS;     use WORD_PARAMETERS;
 
 procedure PUT_EXAMPLE_LINE
-  (OUTPUT :    in Text_IO.File_Type; IR : in INFLECTION_RECORD;
+  (OUTPUT : in Text_IO.File_Type; IR : in INFLECTION_RECORD;
    DE     : in DICTIONARY_ENTRY)
 is
 
@@ -20,8 +20,8 @@ is
       TENSE  : constant TENSE_TYPE  := IR.QUAL.V.TENSE_VOICE_MOOD.TENSE;
       MOOD   : constant MOOD_TYPE   := IR.QUAL.V.TENSE_VOICE_MOOD.MOOD;
       VOICE  : VOICE_TYPE           := IR.QUAL.V.TENSE_VOICE_MOOD.VOICE;
-      KIND   : VERB_KIND_TYPE       := VK;
-      --  Nothing on  (part), gerund
+      KIND   : constant VERB_KIND_TYPE       := VK;
+      --  Nothing on (part), gerund
 
       function THEY return String is
       begin
@@ -256,7 +256,7 @@ begin    --  PUT_EXAMPLE_LINE
 
    --TEXT_IO.PUT("In EXAMPLES  ");
    --TEXT_IO.PUT("  LKM  "); BOOLEAN_IO.PUT(WORDS_MDEV(LOCK_MEANINGS));
-   --TEXT_IO.PUT("   /LKM  "); BOOLEAN_IO.PUT((not WORDS_MDEV(LOCK_MEANINGS))  );
+--TEXT_IO.PUT("   /LKM  "); BOOLEAN_IO.PUT((not WORDS_MDEV(LOCK_MEANINGS))  );
 
    if WORDS_MODE (DO_EXAMPLES) and then (not (CONFIGURATION = ONLY_MEANINGS))
    then
@@ -295,10 +295,10 @@ begin    --  PUT_EXAMPLE_LINE
          when ADJ =>
             case IR.QUAL.ADJ.CO is
                when COMP =>
-                  if IR.QUAL.ADJ.DECL.WHICH /= 5 Then
-                  Text_IO.New_Line (OUTPUT);
-                  Text_IO.Set_Col (OUTPUT, 6);
-                  Text_IO.Put (OUTPUT, "~er; more/too _");
+                  if IR.QUAL.ADJ.DECL.WHICH /= 5 then
+                     Text_IO.New_Line (OUTPUT);
+                     Text_IO.Set_Col (OUTPUT, 6);
+                     Text_IO.Put (OUTPUT, "~er; more/too _");
                   end if;
                when SUPER =>
                   Text_IO.New_Line (OUTPUT);
@@ -322,24 +322,24 @@ begin    --  PUT_EXAMPLE_LINE
                   Text_IO.Put (OUTPUT, "most/very ~(ly)");
 
                when POS =>
-                   case IR.QUAL.ADV.GENERATED is
-                       when ADJADV =>
+                  case IR.QUAL.ADV.GENERATED is
+                     when ADJADV =>
                         Text_IO.New_Line (OUTPUT);
                         Text_IO.Set_Col (OUTPUT, 6);
                         Text_IO.Put (OUTPUT, "~ily, ~ly");
-                        when others =>
+                     when others =>
                         null;
-                   end case;
+                  end case;
 
                when others =>
                   null;
             end case;
 
          when V =>
-               TEXT_IO.NEW_LINE(OUTPUT);
-               TEXT_IO.SET_COL(OUTPUT, 6);
-               VK := DE.PART.V.KIND;
-               PUT_VERB_EXAMPLE (OUTPUT, IR, VK);
+            Text_IO.New_Line (OUTPUT);
+            Text_IO.Set_Col (OUTPUT, 6);
+            VK := DE.PART.V.KIND;
+            PUT_VERB_EXAMPLE (OUTPUT, IR, VK);
 
          when VPAR =>
 

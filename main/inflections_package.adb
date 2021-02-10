@@ -3,7 +3,6 @@ with PREFACE;
 
 
 package body INFLECTIONS_PACKAGE is
-  use TEXT_IO;
 
   function "<" (LEFT, RIGHT : DECN_RECORD) return BOOLEAN is
   begin
@@ -372,7 +371,7 @@ LEFT.V.TENSE_VOICE_MOOD.MOOD   = RIGHT.V.TENSE_VOICE_MOOD.MOOD   and then
     end if;
   end "<=";
   
-   Null_Pronoun_Record : PRONOUN_RECORD := ((0,0),X,X,X,X);
+   Null_Pronoun_Record : constant PRONOUN_RECORD := ((0,0),X,X,X,X);
    
    function Qual_Equ_PRONPACK (Qual : in QUALITY_RECORD) return Boolean is
    begin
@@ -990,7 +989,6 @@ package body NUMERAL_RECORD_IO is
   use NUMBER_TYPE_IO;
   use GENDER_TYPE_IO;
   use NUMERAL_SORT_TYPE_IO;
-  use GENDER_TYPE_IO;
   SPACER : CHARACTER := ' ';
 
   procedure GET(F : in FILE_TYPE; NUM : out NUMERAL_RECORD) is
@@ -2010,10 +2008,10 @@ end QUALITY_RECORD_IO;
 
 package body ENDING_RECORD_IO is
   use INTEGER_IO;
-  use TEXT_IO;
   SPACER : CHARACTER := ' ';
 
-  SF, BLANKS : ENDING := (others => ' ');
+  SF : ENDING := (others => ' ');
+  BLANKS : constant ENDING := (others => ' ');
   N : ENDING_SIZE_TYPE := 0;
 
   procedure GET(F : in FILE_TYPE; X : out ENDING_RECORD) is
@@ -2217,7 +2215,6 @@ procedure ESTABLISH_INFLECTIONS_SECTION  is
 --  Loads the inflection array from the file prepared in FILE_INFLECTIONS_SECTION
 --  If N = 0 (an artifical flag for the section for blank inflections = 5) 
 --  computes the LELL..LELF indices for use in WORD
-  use TEXT_IO;
   use INFLECTION_RECORD_IO;
   use LEL_SECTION_IO;
 

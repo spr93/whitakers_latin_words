@@ -1,15 +1,10 @@
 with STRINGS_PACKAGE; use STRINGS_PACKAGE;
 with LATIN_FILE_NAMES; use LATIN_FILE_NAMES;
-with CONFIG; use CONFIG;
+with CONFIG;           use CONFIG;
 with PREFACE;
-with Ada.Wide_Text_IO;
+with Windows_Vt100; -- src/nonwindows placeholder package for non-Windows target
+
 pragma Elaborate(PREFACE);
-
- -- FOR WINDOWS TARGETS
- -- Enables Windows vt100 text format support
- with Windows_Vt100;
- -- END WINDOWS TARGET-SPECIFIC SECTION
-
 
 package body WORD_PARAMETERS is
    use TEXT_IO;

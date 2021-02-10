@@ -1,4 +1,3 @@
-with TEXT_IO;     
 with Ada.Wide_Text_IO;
 with Ada.Wide_Characters.Handling;
 with Ada.Characters.Conversions;
@@ -61,9 +60,9 @@ with STRINGS_PACKAGE; use STRINGS_PACKAGE;
          
          pragma Wide_Character_Encoding(UTF8);
             
-         W_Line : Wide_String := Ada.Wide_Text_IO.Get_Line;
+      W_Line : constant Wide_String := Ada.Wide_Text_IO.Get_Line;
 
-         T_Line : String := Ada.Characters.Conversions.To_String(    
+      T_Line : constant String := Ada.Characters.Conversions.To_String(    
                             Ada.Wide_Characters.Handling.To_Basic(W_Line));
          
    begin

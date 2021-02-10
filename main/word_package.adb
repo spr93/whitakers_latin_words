@@ -1,9 +1,7 @@
-   with TEXT_IO;
    with LATIN_FILE_NAMES;        use LATIN_FILE_NAMES;
    with STRINGS_PACKAGE;         use STRINGS_PACKAGE;
    with CONFIG;                  use CONFIG;
    with UNIQUES_PACKAGE;         use UNIQUES_PACKAGE;
-   with ADDONS_PACKAGE;
    with WORD_PARAMETERS;         use WORD_PARAMETERS;
    with PREFACE;
    with DEVELOPER_PARAMETERS;    use DEVELOPER_PARAMETERS;
@@ -23,7 +21,6 @@ package body WORD_PACKAGE is
       INFLECTIONS_SECTIONS_FILE : LEL_SECTION_IO.FILE_TYPE;
 
        procedure PAUSE(OUTPUT : TEXT_IO.FILE_TYPE) is
-            use CONFIG;
             PAUSE_LINE : STRING(1..300);
             PAUSE_LAST : INTEGER := 0;
          begin
@@ -385,7 +382,6 @@ package body WORD_PACKAGE is
       -- any of the stems that are physically possible with Latin inflections 
          use STEM_IO;
 
-      -- type NAT_32 is range 0..2**31-1;   --###############
          J, J1, J2, JJ : STEM_IO.COUNT := 0;
 
          INDEX_ON : constant STRING := SSA(SSA'LAST);
@@ -959,13 +955,15 @@ end CHANGE_LANGUAGE;
                      (PDL_PART.POFS = PREFIX.ENTR.ROOT)  then  --  or part mod by suf
                   --PUT_LINE("PREFIX in REDUCE  PART HIT"); 
                      null;
-                  elsif (PREFIX.ENTR.ROOT = X)  then  --   or ROOT = X
-                     if PDL_P = N or PDL_P = PRON or
-                     PDL_P = ADJ or PDL_P = ADV or PDL_P = V  then
-                                          --  Dont prefix PREP, CONJ, ...
-                     -- PUT_LINE("PREFIX in REDUCE  X    HIT"); 
-                        null;
-                     end if;
+                 elsif (PREFIX.ENTR.ROOT = X)  then  --   or ROOT = X
+                  null;
+--DEBUG                  
+--                       if PDL_P = N or PDL_P = PRON or
+--                       PDL_P = ADJ or PDL_P = ADV or PDL_P = V  then
+--                                            --  Dont prefix PREP, CONJ, ...
+--                       -- PUT_LINE("PREFIX in REDUCE  X    HIT"); 
+--                          null;
+--                       end if;
                   else
                      goto END_OF_PDL_LOOP;
                   --PUT_LINE("In REDUCE_STEM_LIST   There is no legal prefix");
