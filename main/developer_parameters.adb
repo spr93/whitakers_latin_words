@@ -7,7 +7,7 @@ with PREFACE;
 with LINE_STUFF;         use LINE_STUFF;
 with CONFIG;             use CONFIG; 
 
-pragma Elaborate(PREFACE);
+-- pragma Elaborate(PREFACE);
 
 
 package body DEVELOPER_PARAMETERS is
@@ -58,7 +58,7 @@ package body DEVELOPER_PARAMETERS is
                       NO_SCREEN_ACTIVITY          => FALSE,
                       
                       UPDATE_LOCAL_DICTIONARY     => FALSE,
-                    --  UPDATE_MEANINGS             => FALSE,
+                 --    UPDATE_MEANINGS             => FALSE,
 
                       MINIMIZE_OUTPUT             => FALSE    );
 
@@ -272,7 +272,7 @@ OMIT_MEDIEVAL_HELP : constant HELP_TYPE :=  (
 PAUSE_IN_SCREEN_OUTPUT_HELP : constant HELP_TYPE :=  (
    "This option instructs the program to pause if a result is longer than ",
    "about 16 lines--the maximum for certain legacy terminals and OSes.    ",
-                                                      "                                                  The default is N(o).");
+   "                                                  The default is N(o).");
    
 NO_SCREEN_ACTIVITY_HELP : constant HELP_TYPE :=  (
    "This option instructs the program not to keep a running screen of the ",
@@ -341,8 +341,7 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
   end PUT;
 
   procedure UPDATE_LOCAL_DICTIONARY_FILE is
-    use TEXT_IO;
-    BLANK_LINE : STRING(1..80) := (others => ' ');
+      BLANK_LINE : constant STRING(1..80) := (others => ' ');
     LINE, STEM_LINE, PART_LINE, MEAN_LINE : STRING(1..80) := BLANK_LINE;
     L, SL, PL, ML : INTEGER := 0;    --  SL BAD NAME !!!!!!!!!!!
     --DICT_LOC : DICTIONARY;   --  Def in LINE_STUFF

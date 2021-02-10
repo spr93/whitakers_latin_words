@@ -4,7 +4,6 @@ with PREFACE;
 
 
 package body ADDONS_PACKAGE is
-  use TEXT_IO;
   use PART_OF_SPEECH_TYPE_IO;
   use TARGET_ENTRY_IO;
   use STEM_KEY_TYPE_IO;
@@ -38,11 +37,9 @@ package body ADDONS_PACKAGE is
   end EQU;
 
   procedure LOAD_ADDONS (FILE_NAME : in STRING) is
-    use PART_OF_SPEECH_TYPE_IO;
     use TACKON_ENTRY_IO;
     use PREFIX_ENTRY_IO;
     use SUFFIX_ENTRY_IO;
-    --use DICT_IO;
 
     S : STRING(1..100);
     L, LAST, TIC, PRE, SUF, TAC, PAC : INTEGER := 0;
@@ -320,7 +317,6 @@ package body ADDONS_PACKAGE is
 
 
   package body TARGET_ENTRY_IO is
-  use PART_OF_SPEECH_TYPE_IO;
   use NOUN_ENTRY_IO;
   use PRONOUN_ENTRY_IO;
   use PROPACK_ENTRY_IO;
@@ -611,8 +607,6 @@ end TACKON_ENTRY_IO;
 
 
   package body PREFIX_ENTRY_IO is
-    use PART_OF_SPEECH_TYPE_IO;
-    use TEXT_IO;
     SPACER : CHARACTER := ' ';
 
     PE : PREFIX_ENTRY;
@@ -670,9 +664,6 @@ end TACKON_ENTRY_IO;
 
    
   package body SUFFIX_ENTRY_IO is
-    use PART_OF_SPEECH_TYPE_IO;
-    use TARGET_ENTRY_IO;
-    use TEXT_IO;
     SPACER : CHARACTER := ' ';
 
     PE : SUFFIX_ENTRY;

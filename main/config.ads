@@ -1,34 +1,30 @@
 package CONFIG is
-   
-  OUTPUT_SCREEN_SIZE : INTEGER            := 20;
 
-  type CONFIGURATION_TYPE is (DEVELOPER_VERSION, USER_VERSION, ONLY_MEANINGS); 
-                              
-  CONFIGURATION      : CONFIGURATION_TYPE := DEVELOPER_VERSION;
+   OUTPUT_SCREEN_SIZE : Integer := 20;
 
-  type METHOD_TYPE is (INTERACTIVE, COMMAND_LINE_INPUT, COMMAND_LINE_FILES);
+   type CONFIGURATION_TYPE is (DEVELOPER_VERSION, USER_VERSION, ONLY_MEANINGS);
 
-  METHOD             : METHOD_TYPE        := INTERACTIVE;
+   CONFIGURATION : CONFIGURATION_TYPE := DEVELOPER_VERSION;
 
-  type LANGUAGE_TYPE is (LATIN_TO_ENGLISH, ENGLISH_TO_LATIN);
+   type METHOD_TYPE is (INTERACTIVE, COMMAND_LINE_INPUT, COMMAND_LINE_FILES);
 
-  LANGUAGE           : LANGUAGE_TYPE      := LATIN_TO_ENGLISH;
+   METHOD : METHOD_TYPE := INTERACTIVE;
 
-  SUPPRESS_PREFACE   : BOOLEAN := FALSE;  
-  
-  type CL_Arguments_Type is (READ_ONLY, 
-                             NO_FILES,
-                             NO_EXIT,
+   type LANGUAGE_TYPE is (LATIN_TO_ENGLISH, ENGLISH_TO_LATIN);
 
-                             ENGLISH_ONLY,      
-                             LATIN_ONLY, 
-                       
-                             MEANINGS_ONLY); 
-   
-  type CL_Arguments_Array_Type is array(CL_Arguments_Type) of BOOLEAN; 
-   
-  Null_CL_Arguments : constant CL_Arguments_Array_Type := (others => False);
-   
-  CL_Arguments      : CL_Arguments_Array_Type := Null_CL_Arguments;
-   
+   LANGUAGE : LANGUAGE_TYPE := LATIN_TO_ENGLISH;
+
+   SUPPRESS_PREFACE : Boolean := False;
+
+   type CL_Arguments_Type is
+     (READ_ONLY, NO_FILES, NO_EXIT,
+      ENGLISH_ONLY, LATIN_ONLY,
+      MEANINGS_ONLY);
+
+   type CL_Arguments_Array_Type is array (CL_Arguments_Type) of Boolean;
+
+   Null_CL_Arguments : constant CL_Arguments_Array_Type := (others => False);
+
+   CL_Arguments : CL_Arguments_Array_Type := Null_CL_Arguments;
+
 end CONFIG;

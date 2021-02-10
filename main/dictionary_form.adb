@@ -8,7 +8,7 @@ function Dictionary_Form(DE : in     Dictionary_Entry) return String is
   OX      : array (1 .. 4) of String (1 .. 24) := (others => Null_OX);
   Form    : String(1 .. 100) := (others => ' ');
 
-  Fst     : array (Which_Type range 1 .. 5) of String(1 .. 3) :=
+   Fst     : constant array (Which_Type range 1 .. 5) of String(1 .. 3) :=
   ("1st", "2nd", "3rd", "4th", "5th");
    
   Not_Found: exception;

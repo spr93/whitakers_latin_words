@@ -6,7 +6,6 @@
   package INTEGER_IO is new TEXT_IO.INTEGER_IO(INTEGER);
   use PART_OF_SPEECH_TYPE_IO;
   use FREQUENCY_TYPE_IO;
-  use TEXT_IO;
   use INTEGER_IO;
   SPACER : CHARACTER := ' ';
   NWIDTH : constant := 5;

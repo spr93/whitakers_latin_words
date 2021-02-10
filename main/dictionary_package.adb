@@ -4,7 +4,6 @@ pragma ELABORATE(INFLECTIONS_PACKAGE);
 
 
 package body DICTIONARY_PACKAGE is
-  use TEXT_IO;
 
   MNPC_IO_DEFAULT_WIDTH : constant NATURAL := 6;
   NUMERAL_VALUE_TYPE_IO_DEFAULT_WIDTH : constant NATURAL := 5;
@@ -28,9 +27,8 @@ package body DICTIONARY_PACKAGE is
     end case;
   end NUMBER_OF_STEMS;
 
-   
+
   package body PARSE_RECORD_IO is
-    use TEXT_IO;
     use INFLECTION_RECORD_IO;
     use DICTIONARY_KIND_IO;
     use MNPC_IO;
@@ -97,13 +95,13 @@ package body DICTIONARY_PACKAGE is
       M : INTEGER := 0;
     begin
       M := L + MAX_STEM_SIZE;
-      pragma Warnings(Off);  
+      pragma Warnings(Off);
       S(L+1..M) := PR.STEM;
       L := M + 1;
       S(L) :=  ' ';
       M := L + INFLECTION_RECORD_IO.DEFAULT_WIDTH;
       PUT(S(L+1..M), PR.IR);
-      pragma Warnings(On);  
+      pragma Warnings(On);
       L := M + 1;
       S(L) :=  ' ';
       M := L + DICTIONARY_KIND_IO.DEFAULT_WIDTH;
@@ -246,7 +244,7 @@ package body PRONOUN_ENTRY_IO is
 
 end PRONOUN_ENTRY_IO;
 
-   
+
 package body PROPACK_ENTRY_IO is
   use DECN_RECORD_IO;
   use PRONOUN_KIND_TYPE_IO;
@@ -303,7 +301,7 @@ package body PROPACK_ENTRY_IO is
 
 end PROPACK_ENTRY_IO;
 
-   
+
 package body ADJECTIVE_ENTRY_IO is
   use DECN_RECORD_IO;
   use COMPARISON_TYPE_IO;
@@ -360,7 +358,7 @@ package body ADJECTIVE_ENTRY_IO is
 
 end ADJECTIVE_ENTRY_IO;
 
-   
+
 package body NUMERAL_ENTRY_IO is
   use DECN_RECORD_IO;
   use NUMERAL_SORT_TYPE_IO;
@@ -418,7 +416,7 @@ package body NUMERAL_ENTRY_IO is
     GET(S(L+1..S'LAST), NUM.VALUE, LAST);
 --TEXT_IO.PUT("+4");
  end GET;
-                     
+
   procedure PUT(S : out STRING; NUM : in NUMERAL_ENTRY) is
     L : INTEGER := S'FIRST - 1;
     M : INTEGER := 0;
@@ -439,7 +437,7 @@ package body NUMERAL_ENTRY_IO is
 
 end NUMERAL_ENTRY_IO;
 
-   
+
 package body ADVERB_ENTRY_IO is
   use COMPARISON_TYPE_IO;
 
@@ -480,7 +478,7 @@ package body ADVERB_ENTRY_IO is
 
 end ADVERB_ENTRY_IO;
 
-   
+
 package body VERB_ENTRY_IO is
   use DECN_RECORD_IO;
   use VERB_KIND_TYPE_IO;
@@ -513,7 +511,7 @@ package body VERB_ENTRY_IO is
     PUT(' ');
     PUT(V.KIND);
   end PUT;
-  
+
   procedure GET(S : in STRING; V : out VERB_ENTRY; LAST : out INTEGER) is
     L : INTEGER := S'FIRST - 1;
   begin
@@ -537,7 +535,7 @@ package body VERB_ENTRY_IO is
 
 end VERB_ENTRY_IO;
 
-   
+
 package body PREPOSITION_ENTRY_IO is
   use CASE_TYPE_IO;
 
@@ -615,7 +613,7 @@ package body CONJUNCTION_ENTRY_IO is
 
 end CONJUNCTION_ENTRY_IO;
 
-   
+
 package body INTERJECTION_ENTRY_IO is
   NULL_INTERJECTION_ENTRY : INTERJECTION_ENTRY;
 
@@ -661,7 +659,7 @@ function "<" (LEFT, RIGHT : PART_ENTRY) return BOOLEAN is
         if LEFT.N.DECL < RIGHT.N.DECL  or else
           (LEFT.N.DECL = RIGHT.N.DECL  and then
            LEFT.N.GENDER < RIGHT.N.GENDER)  or else
-         ((LEFT.N.DECL = RIGHT.N.DECL  and 
+         ((LEFT.N.DECL = RIGHT.N.DECL  and
            LEFT.N.GENDER = RIGHT.N.GENDER)  and then
            LEFT.N.KIND < RIGHT.N.KIND)  then
          return TRUE;
@@ -673,7 +671,7 @@ function "<" (LEFT, RIGHT : PART_ENTRY) return BOOLEAN is
           return TRUE;
         end if;
       when PACK =>
-        if LEFT.PACK.DECL < RIGHT.PACK.DECL  or else 
+        if LEFT.PACK.DECL < RIGHT.PACK.DECL  or else
           (LEFT.PACK.DECL = RIGHT.PACK.DECL  and then
            LEFT.PACK.KIND < RIGHT.PACK.KIND)  then
          return TRUE;
@@ -713,10 +711,10 @@ function "<" (LEFT, RIGHT : PART_ENTRY) return BOOLEAN is
     when CONSTRAINT_ERROR  =>
       return LEFT.POFS < RIGHT.POFS;
   end "<";
-  
-   
+
+
 package body PART_ENTRY_IO is
-   
+
   use PART_OF_SPEECH_TYPE_IO;
   use NOUN_ENTRY_IO;
   use PRONOUN_ENTRY_IO;
@@ -1021,10 +1019,10 @@ package body PART_ENTRY_IO is
     end case;
     --S(M+1..S'LAST) := (others => ' ');
   end PUT;
-      
+
 end PART_ENTRY_IO;
 
-   
+
 package body KIND_ENTRY_IO is
   use NOUN_KIND_TYPE_IO;
   use PRONOUN_KIND_TYPE_IO;
@@ -1039,7 +1037,7 @@ package body KIND_ENTRY_IO is
   SUPINE_KIND : VERB_KIND_TYPE;
   NUMERAL_VALUE : NUMERAL_VALUE_TYPE;
 
-  procedure GET(F : in FILE_TYPE; 
+  procedure GET(F : in FILE_TYPE;
                 PS : in PART_OF_SPEECH_TYPE; P : out KIND_ENTRY) is
   begin
     case PS is
@@ -1150,8 +1148,8 @@ package body KIND_ENTRY_IO is
     return;
   end GET;
 
-  procedure PUT(F : in FILE_TYPE; 
-                PS : in PART_OF_SPEECH_TYPE; P : in KIND_ENTRY) is 
+  procedure PUT(F : in FILE_TYPE;
+                PS : in PART_OF_SPEECH_TYPE; P : in KIND_ENTRY) is
     C : POSITIVE := POSITIVE(COL(F));
   begin
     case P.POFS is
@@ -1176,7 +1174,7 @@ package body KIND_ENTRY_IO is
     return;
   end PUT;
 
-  procedure PUT(PS : in PART_OF_SPEECH_TYPE; P : in KIND_ENTRY) is 
+  procedure PUT(PS : in PART_OF_SPEECH_TYPE; P : in KIND_ENTRY) is
     C : POSITIVE := POSITIVE(COL);
   begin
     case P.POFS is
@@ -1201,7 +1199,7 @@ package body KIND_ENTRY_IO is
     return;
   end PUT;
 
-  procedure GET(S : in STRING; PS : in PART_OF_SPEECH_TYPE; 
+  procedure GET(S : in STRING; PS : in PART_OF_SPEECH_TYPE;
                 P : out KIND_ENTRY; LAST : out INTEGER) is
     L : INTEGER := S'FIRST - 1;
   begin
@@ -1244,13 +1242,13 @@ package body KIND_ENTRY_IO is
         P := (POFS => PREFIX);
       when SUFFIX =>
         P := (POFS => SUFFIX);
-      when X =>      
+      when X =>
         P := (POFS => X);
     end case;
     return;
   end GET;
 
-  procedure PUT(S : out STRING; 
+  procedure PUT(S : out STRING;
                 PS : in PART_OF_SPEECH_TYPE; P : in KIND_ENTRY) is
     L : INTEGER := S'FIRST - 1;
     M : INTEGER := 0;
@@ -1285,7 +1283,7 @@ package body KIND_ENTRY_IO is
 
 end KIND_ENTRY_IO;
 
-   
+
 package body TRANSLATION_RECORD_IO is
     use TEXT_IO;
     use AGE_TYPE_IO;
@@ -1382,7 +1380,7 @@ package body TRANSLATION_RECORD_IO is
       M : INTEGER := 0;
     begin
       M := L + AGE_TYPE_IO.DEFAULT_WIDTH;
-      pragma Warnings(Off);   
+      pragma Warnings(Off);
       PUT(S(L+1..M), TR.AGE);
       pragma Warnings(On);
       L := M + 1;
@@ -1410,7 +1408,7 @@ package body TRANSLATION_RECORD_IO is
 
     end TRANSLATION_RECORD_IO;
 
-   
+
 package body DICTIONARY_ENTRY_IO is
   use PART_ENTRY_IO;
   use TRANSLATION_RECORD_IO;
@@ -1497,12 +1495,12 @@ package body DICTIONARY_ENTRY_IO is
     while S(I) = ' ' loop
       I := I + 1;
     end loop;
-    while (S(I) not in 'A'..'Z') and 
+    while (S(I) not in 'A'..'Z') and
           (S(I) not in 'a'..'z')     loop
       LAST := I;
       I := I + 1;
       exit;
-    end loop;     
+    end loop;
   end GET;
 
   procedure PUT(S : out STRING; D : in DICTIONARY_ENTRY) is
@@ -1533,7 +1531,7 @@ package body DICTIONARY_ENTRY_IO is
   end PUT;
 
 end DICTIONARY_ENTRY_IO;
-   
+
 function "<=" (LEFT, RIGHT : AREA_TYPE) return BOOLEAN is
   begin
     if RIGHT = LEFT  or else
@@ -1544,9 +1542,9 @@ function "<=" (LEFT, RIGHT : AREA_TYPE) return BOOLEAN is
     end if;
 end "<=";
 
-   
-begin     
-          
+
+begin
+
   DICTIONARY_KIND_IO.DEFAULT_WIDTH := DICTIONARY_KIND'WIDTH;
 
   AREA_TYPE_IO.DEFAULT_WIDTH := AREA_TYPE'WIDTH;
@@ -1589,11 +1587,11 @@ begin
                  NUMERAL_SORT_TYPE_IO.DEFAULT_WIDTH + 1 +
                  NUMERAL_VALUE_TYPE_IO_DEFAULT_WIDTH;
 
-  PART_ENTRY_IO.DEFAULT_WIDTH := PART_OF_SPEECH_TYPE_IO.DEFAULT_WIDTH + 1 +  
+  PART_ENTRY_IO.DEFAULT_WIDTH := PART_OF_SPEECH_TYPE_IO.DEFAULT_WIDTH + 1 +
                 NUMERAL_ENTRY_IO.DEFAULT_WIDTH;     --  Largest
 
   --  Should make up a MAX of PART_ENTRY + KIND_ENTRY (same POFS) WIDTHS
-                                        
+
   TRANSLATION_RECORD_IO.DEFAULT_WIDTH :=
                                          AGE_TYPE_IO.DEFAULT_WIDTH + 1 +
                                          AREA_TYPE_IO.DEFAULT_WIDTH + 1 +
