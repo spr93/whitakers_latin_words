@@ -1,7 +1,7 @@
 project Words_2 is
 
    for Languages use ("Ada");
-   for Source_Dirs use ("src", "src/nonwindows");
+   for Source_Dirs use ("main", "main/nonwindows");
    for Main use ("words.adb");
    for Object_Dir use "obj";
    for Exec_Dir use "obj";

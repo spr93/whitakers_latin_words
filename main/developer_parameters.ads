@@ -4,7 +4,7 @@ with TEXT_IO;
 package DEVELOPER_PARAMETERS is
    
 --  These are a few strange declarations to be used in diagnostics;
-  SRA_MAX, SRAA_MAX, DMA_MAX : INTEGER := 0;
+  SRA_MAX, SRAA_MAX, DMA_MAX     : INTEGER := 0;
   PA_LAST_MAX, FINAL_PA_LAST_MAX : INTEGER := 0;
   
 --  This package defines a number of parameters that areused in the program

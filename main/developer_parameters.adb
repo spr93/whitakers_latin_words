@@ -7,8 +7,6 @@ with PREFACE;
 with LINE_STUFF;         use LINE_STUFF;
 with CONFIG;             use CONFIG; 
 
--- pragma Elaborate(PREFACE);
-
 
 package body DEVELOPER_PARAMETERS is
 

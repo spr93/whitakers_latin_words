@@ -51,8 +51,7 @@ package body WORD_SUPPORT_PACKAGE is
         when 4  => return ADVERB;
         when others  => return X;
       end case;
-  end NUM_SORT_FROM_KEY;
-
+  end NUM_SORT_FROM_KEY;   
 
   function FIRST_INDEX(INPUT_WORD : STRING;
                   D_K : DICTIONARY_FILE_KIND := DEFAULT_DICTIONARY_FILE_KIND)
