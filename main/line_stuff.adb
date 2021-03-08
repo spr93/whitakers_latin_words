@@ -19,16 +19,17 @@ package body LINE_STUFF is
    
     DICTIONARY_FILE : FILE_TYPE;
     BLK_STEM : constant STEM_TYPE := NULL_STEM_TYPE;
-    STS : STEMS_TYPE := NULL_STEMS_TYPE;
-    PT  : PART_ENTRY  := NULL_PART_ENTRY;
-    TRAN : TRANSLATION_RECORD := NULL_TRANSLATION_RECORD;
-    KIND : KIND_ENTRY := NULL_KIND_ENTRY;
-    VALUE : NUMERAL_VALUE_TYPE := 0;
-    MEAN : MEANING_TYPE := NULL_MEANING_TYPE;
+    STS   : STEMS_TYPE := NULL_STEMS_TYPE;
+    PT    : PART_ENTRY  := NULL_PART_ENTRY;
+    TRAN  : TRANSLATION_RECORD := NULL_TRANSLATION_RECORD;
+    VALUE : constant NUMERAL_VALUE_TYPE := 0;
+    MEAN  : MEANING_TYPE := NULL_MEANING_TYPE;
     
     FC1, FC2, FC3, FC4 : CHARACTER;
 
-    LINE, ST_LINE, BLANK_LINE : STRING(1..100) := (others => ' ');
+    LINE, ST_LINE : STRING(1..100) := (others => ' ');
+    BLANK_LINE    : constant STRING(1..100) := (others => ' ');
+    
     L, LL, LLL, LAST    : INTEGER := 0;
     NUMBER_OF_DICTIONARY_ENTRIES : INTEGER := 0;
 
@@ -117,8 +118,7 @@ package body LINE_STUFF is
     if FC4 = 'j'  then FC4 := 'i';  end if;
     if PT.POFS = N  then
       if (STS(2)(1) /= STS(1)(1) and then
-         STS(2)(1) /= ' '  and then
-         STS(2)(1..3) /= ZZZ_STEM ) then
+         STS(2)(1) /= ' ') then
          DICT(FC1) :=
              new DICTIONARY_ITEM'(( (STS(1), ZZZ_STEM, BLK_STEM, BLK_STEM),
                                   --PT, KIND, TRAN, MEAN), DICT(FC1));
@@ -135,8 +135,7 @@ package body LINE_STUFF is
 
     elsif (PT.POFS = PRON) or (PT.POFS = PACK)  then
       if (STS(2)(1) /= STS(1)(1) and then
-         STS(2)(1) /= ' '  and then
-         STS(2)(1..3) /= ZZZ_STEM ) then
+         STS(2)(1) /= ' ')  then
          DICT(FC1) :=
              new DICTIONARY_ITEM'(( (STS(1), ZZZ_STEM, BLK_STEM, BLK_STEM),
                                     --PT, KIND, TRAN, MEAN), DICT(FC1));
@@ -154,14 +153,11 @@ package body LINE_STUFF is
     elsif PT.POFS = ADJ  then
       if PT.ADJ.CO   = X  then   --  X for all KINDs
         if (STS(2)(1) /= STS(1)(1) and then
-           STS(2)(1) /= ' '  and then
-           STS(2)(1..3) /= ZZZ_STEM ) or
+           STS(2)(1) /= ' '  ) or
           (STS(3)(1) /= STS(1)(1) and then
-           STS(3)(1) /= ' '  and then
-           STS(3)(1..3) /= ZZZ_STEM ) or
+           STS(3)(1) /= ' '  ) or
           (STS(4)(1) /= STS(1)(1) and then
-           STS(4)(1) /= ' '  and then
-           STS(4)(1..3) /= ZZZ_STEM ) then
+           STS(4)(1) /= ' '  ) then
           DICT(FC1) :=
                  new DICTIONARY_ITEM'(( (STS(1), BLK_STEM, BLK_STEM, BLK_STEM),
           (ADJ, (PT.ADJ.DECL, POS)),
@@ -216,11 +212,9 @@ package body LINE_STUFF is
     elsif PT.POFS = ADV  then
       if PT.ADV.CO   = X  then   --  X for all KINDs
         if (STS(2)(1) /= STS(1)(1) and then
-           STS(2)(1) /= ' '  and then
-           STS(2)(1..3) /= ZZZ_STEM ) or
+           STS(2)(1) /= ' ')  or
           (STS(3)(1) /= STS(1)(1) and then
-           STS(3)(1) /= ' '  and then
-           STS(3)(1..3) /= ZZZ_STEM ) then
+           STS(3)(1) /= ' ')  then
           DICT(FC1) :=
                  new DICTIONARY_ITEM'(( (STS(1), BLK_STEM, BLK_STEM, BLK_STEM),
                              --(ADV, (CO => POS)), KIND, TRAN, MEAN), DICT(FC1));
@@ -260,14 +254,11 @@ package body LINE_STUFF is
 
     elsif PT.POFS = V  then
       if (STS(2)(1) /= STS(1)(1) and then
-         STS(2)(1) /= ' '  and then
-         STS(2)(1..3) /= ZZZ_STEM ) or
+         STS(2)(1) /= ' ' ) or
         (STS(3)(1) /= STS(1)(1) and then
-         STS(3)(1) /= ' '  and then
-         STS(3)(1..3) /= ZZZ_STEM ) or
+         STS(3)(1) /= ' ' ) or
         (STS(4)(1) /= STS(1)(1) and then
-         STS(4)(1) /= ' '  and then
-         STS(4)(1..3) /= ZZZ_STEM ) then
+         STS(4)(1) /= ' ' )  then
          DICT(FC1) :=
                new DICTIONARY_ITEM'(( (STS(1), ZZZ_STEM, ZZZ_STEM, ZZZ_STEM),
                            --PT, KIND, TRAN, MEAN), DICT(FC1) );
@@ -292,32 +283,28 @@ package body LINE_STUFF is
 
     elsif PT.POFS = NUM  then
       if PT.NUM.SORT = X  then   --  X for all KINDs
-        if (STS(1)(1) /= ' '  and then
-            STS(1)(1..3) /= ZZZ_STEM ) then
+        if (STS(1)(1) /= ' ' )  then
           DICT(FC1) :=
         new DICTIONARY_ITEM'(( (STS(1), BLK_STEM, BLK_STEM, BLK_STEM),
                              --(NUM, (PT.NUM.DECL, CARD)), KIND, TRAN, MEAN),
                              (NUM, (PT.NUM.DECL, CARD, VALUE)), TRAN, MEAN),
                               DICT(FC1));
         end if;
-        if (STS(2)(1) /= ' '  and then
-            STS(2)(1..3) /= ZZZ_STEM ) then
+        if (STS(2)(1) /= ' ')  then
            DICT(FC2) :=
            new DICTIONARY_ITEM'(( (ZZZ_STEM, STS(2), BLK_STEM, BLK_STEM),
                        --(NUM, ((0, 0), ORD)), KIND, TRAN, MEAN),
                        (NUM, ((0, 0), ORD, VALUE)), TRAN, MEAN),
                         DICT(FC2));
         end if;
-        if (STS(3)(1) /= ' '  and then
-            STS(3)(1..3) /= ZZZ_STEM ) then
+        if (STS(3)(1) /= ' ')  then
           DICT(FC3) :=
             new DICTIONARY_ITEM'(( (ZZZ_STEM, ZZZ_STEM, STS(3), BLK_STEM),
                               --(NUM, (PT.NUM.DECL, DIST)), KIND, TRAN, MEAN),
                               (NUM, (PT.NUM.DECL, DIST, VALUE)), TRAN, MEAN),
                                 DICT(FC3));
         end if;
-        if (STS(4)(1) /= ' '  and then
-            STS(4)(1..3) /= ZZZ_STEM ) then
+        if (STS(4)(1) /= ' ')   then
           DICT(FC4) :=
               new DICTIONARY_ITEM'(( (ZZZ_STEM, ZZZ_STEM, ZZZ_STEM, STS(4)),
                           --(NUM, (PT.NUM.DECL, ADVERB)), KIND, TRAN, MEAN),
@@ -388,7 +375,7 @@ package body LINE_STUFF is
     M : DICT_IO.POSITIVE_COUNT := 1;
     DLC : DICTIONARY := DICT_LOC;
     --DS : DICTIONARY_STEM;
-    --ZZZ_STEM : constant STEM_TYPE := "zzz" & (4..MAX_STEM_SIZE => ' '); --####
+
   begin
 --PUT_LINE("LOAD_STEM_FILE for LOC");
     if IS_OPEN(STEM_FILE(D_K))  then
@@ -408,27 +395,22 @@ package body LINE_STUFF is
 
     for FC in CHARACTER range 'a'..'z'  loop
     --  LOAD_DICTIONARY should have assured that all v were in u
---LATIN_DEBUG.PUT_LINE("L_D_F  Entering FC loop");
+
       DDLF(FC, 'a', D_K) := I;
       DDLL(FC, 'a', D_K) := 0;
       while DLC(FC) /= null  loop
 --PUT_LINE("L_D_F  Setting Dictfile index M = " & INTEGER'IMAGE(INTEGER(M)));
         DICT_IO.SET_INDEX(DICT_FILE(D_K), M);
--- %%%%%%%%%%%!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!%%%%%%%%%%%%%%%%%%%%%%%
---PUT_LINE(DLC(FC).DE.TRAN.MEAN); 
-       -- M_P_R := DLC(FC).DE.TRAN.MEAN; 
-        --DICT_IO.WRITE(DICT_FILE(D_K), M_P_R);   --@@@@@@@@@@@@@@@@@@@@@
+
         DICT_IO.WRITE(DICT_FILE(D_K), DLC(FC).DE);
         for K in STEM_KEY_TYPE range 1..4  loop
           if DLC(FC).DE.STEMS(K) /= NULL_STEM_TYPE  and
              DLC(FC).DE.STEMS(K) /= ZZZ_STEM  then
---LATIN_DEBUG.PUT(DLC(FC).DE.STEMS(K)); LATIN_DEBUG.PUT("  ..  ");
---LATIN_DEBUG.PUT(DLC(FC).DE.PART); LATIN_DEBUG.PUT("  ..  "); LATIN_DEBUG.PUT(K); 
---LATIN_DEBUG.PUT("  ..  "); LATIN_DEBUG.PUT(INTEGER(M)); LATIN_DEBUG.NEW_LINE;
+
              WRITE(STEM_FILE(D_K),
                    (DLC(FC).DE.STEMS(K), DLC(FC).DE.PART, K, M));
             DDLL(FC, 'a', D_K) := I;
---LATIN_DEBUG.PUT_LINE("L_D_F DDLL(FC, 'a', D_K) := I  = " & INTEGER'IMAGE(I));
+
             I := I + 1;
           end if;
         end loop;
@@ -600,7 +582,6 @@ package body LINE_STUFF is
       P.FIX := S(L+1..M);
       L := M;
       L := L + 1;
-      M := L + 1;
       P.CONNECT := S(L+1);
       L := L + 1;
       M := L + PREFIX_ENTRY_IO.DEFAULT_WIDTH;
@@ -623,7 +604,6 @@ package body LINE_STUFF is
       S(L+1..M) := P.FIX;
       L := M + 1;
       S(L) :=  ' ';
-      M := L + 1;
       S(L+1) := P.CONNECT;
       M := L + PREFIX_ENTRY_IO.DEFAULT_WIDTH;
       PUT(S(L+1..M), P.ENTR);
@@ -707,7 +687,6 @@ package body LINE_STUFF is
       P.FIX := S(L+1..M);
       L := M;
       L := L + 1;
-      M := L + 1;
       P.CONNECT := S(L+1);
       L := L + 1;
       M := L + SUFFIX_ENTRY_IO.DEFAULT_WIDTH;
@@ -751,8 +730,6 @@ package body LINE_STUFF is
     use KIND_ENTRY_IO;
     use TRANSLATION_RECORD_IO;
     SPACER : CHARACTER;
-
-    PE : UNIQUE_ENTRY;
 
     procedure GET(F : in FILE_TYPE; P : out UNIQUE_ENTRY) is
       UE : UNIQUE_ENTRY;
@@ -803,18 +780,12 @@ package body LINE_STUFF is
 
     procedure GET(S : in STRING; P : out UNIQUE_ENTRY; LAST : out INTEGER) is
       L : INTEGER := S'FIRST - 1;
-      M : INTEGER := 0;
     begin
-      M := L + MAX_STEM_SIZE;
-      P.STEM := S(L+1..M);
       L := L + 1;
-      M := L + QUALITY_RECORD_IO.DEFAULT_WIDTH;
       GET(S(L+1..S'LAST), P.QUAL, L);
       L := L + 1;
-      M := L + KIND_ENTRY_IO.DEFAULT_WIDTH;
       GET(S(L+1..S'LAST), P.QUAL.POFS, P.KIND, L);
       L := L + 1;
-      M := L + MAX_MEANING_SIZE;
       GET(S(L+1..S'LAST), P.TRAN, LAST);
     end GET;
 
@@ -854,12 +825,10 @@ package body LINE_STUFF is
     STEM : STEM_TYPE := NULL_STEM_TYPE;
     QUAL : QUALITY_RECORD;
     KIND : KIND_ENTRY;
-    --PART : PART_ENTRY := NULL_PART_ENTRY;
     TRAN : TRANSLATION_RECORD := NULL_TRANSLATION_RECORD;
     MNPC : MNPC_TYPE := NULL_MNPC;
     MEAN : MEANING_TYPE := NULL_MEANING_TYPE;
     M : DICT_IO.POSITIVE_COUNT := 1;
-    D_K : constant DICTIONARY_KIND := UNIQUE;
 
     NUMBER_OF_UNIQUES_ENTRIES : INTEGER := 0;
 
@@ -916,12 +885,8 @@ package body LINE_STUFF is
         UNIQUE_DE.STEMS := (STEM, 
                             NULL_STEM_TYPE, NULL_STEM_TYPE, NULL_STEM_TYPE);
         UNIQUE_DE.PART  :=  PART;
-        --UNIQUE_DE.KIND  :=  KIND;
         UNIQUE_DE.TRAN  :=  TRAN;
         UNIQUE_DE.MEAN  :=  MEAN;
-                                          
---        DICT_IO.SET_INDEX(DICT_FILE(D_K), M);
---        DICT_IO.WRITE(DICT_FILE(D_K), UNIQUE_DE);
         
         UNIQUES_DE(M) := UNIQUE_DE;
       end;
@@ -954,7 +919,7 @@ package body LINE_STUFF is
       PREFACE.PUT_LINE("There is no UNIQUES file");
     when others   =>
     PREFACE.NEW_LINE;
-    PREFACE.PUT_LINE("LOAD_UNIQUES exception        !!!!!!!!!!!!!!!!!!!!!");
+    PREFACE.PUT_LINE("ERROR loading UNIQUES file");
     PREFACE.PUT_LINE(STEM_LINE(1..LAST));
     PREFACE.PUT_LINE(LINE(1..L));
       CLOSE(UNIQUES_FILE);

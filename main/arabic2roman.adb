@@ -17,7 +17,8 @@ package body Arabic2Roman is
          Bar_Reminder       : Boolean                := False;
       end record;
 
-      Null_Roman_Num_Record : constant Roman_Num_Record_Type  := (Bar_Reminder => False,
+      Null_Roman_Num_Record : constant Roman_Num_Record_Type
+                                                     := (Bar_Reminder => False,
                                                          others       => Null_Unbounded_String);
 
       Roman_Num_Record      : Roman_Num_Record_Type;
@@ -170,9 +171,8 @@ package body Arabic2Roman is
                      Put (OUTPUT, "06 ");
                   else
                      Put
-                       (OUTPUT,
-                        "03 ");  -- Print as the meaning if only showing meanings;  disabling Arabic2Roman is the equivalent here
-                  end if;
+                         (OUTPUT,  "03 ");  -- Print as the meaning if only showing meanings;
+                  end if;                   -- disabling Arabic2Roman is the equivalent here
                end if;
 
                Format (OUTPUT, Inverse);
@@ -240,7 +240,7 @@ package body Arabic2Roman is
                                              "Always");   -- additive and subtractive the same; small or simple roman numerals
                       end case;
 
-                  else                                   -- long or complicated roman numerals => medieval
+                  else                                    -- long or complicated roman numerals => medieval
                      Put (OUTPUT, "Medieval");
 
                   end if;
@@ -460,20 +460,11 @@ package body Arabic2Roman is
             when '1' =>
                built_string := Roman_Nums_CLASSICAL (Counter) & built_string;
             when '2' =>
-               built_string :=
-                 Roman_Nums_CLASSICAL (Counter) &
-                 Roman_Nums_CLASSICAL (Counter) & built_string;
+               built_string := (2 *  Roman_Nums_CLASSICAL (Counter)) & Built_String;
             when '3' =>
-               built_string :=
-                 Roman_Nums_CLASSICAL (Counter) &
-                 Roman_Nums_CLASSICAL (Counter) &
-                 Roman_Nums_CLASSICAL (Counter) & built_string;
+               built_string := (3 *  Roman_Nums_CLASSICAL (Counter)) & Built_String;
             when '4' =>
-               built_string :=
-                 Roman_Nums_CLASSICAL (Counter) &
-                 Roman_Nums_CLASSICAL (Counter) &
-                 Roman_Nums_CLASSICAL (Counter) &
-                 Roman_Nums_CLASSICAL (Counter) & built_string;
+               built_string := (4 *  Roman_Nums_CLASSICAL (Counter)) & Built_String;
             when '5' =>
                built_string :=
                  Roman_Nums_CLASSICAL (Counter + 1) & built_string;
@@ -483,27 +474,18 @@ package body Arabic2Roman is
                  Roman_Nums_CLASSICAL (Counter) & built_string;
             when '7' =>
                built_string :=
-                 Roman_Nums_CLASSICAL (Counter + 1) &
-                 Roman_Nums_CLASSICAL (Counter) &
-                 Roman_Nums_CLASSICAL (Counter) & built_string;
+                 Roman_Nums_CLASSICAL (Counter + 1) & (2 *  Roman_Nums_CLASSICAL (Counter)) & Built_String;
             when '8' =>
                built_string :=
-                 Roman_Nums_CLASSICAL (Counter + 1) &
-                 Roman_Nums_CLASSICAL (Counter) &
-                 Roman_Nums_CLASSICAL (Counter) &
-                 Roman_Nums_CLASSICAL (Counter) & built_string;
+                 Roman_Nums_CLASSICAL (Counter + 1) & (3 *  Roman_Nums_CLASSICAL (Counter)) & Built_String;
             when '9' =>
                built_string :=
-                 Roman_Nums_CLASSICAL (Counter + 1) &
-                 Roman_Nums_CLASSICAL (Counter) &
-                 Roman_Nums_CLASSICAL (Counter) &
-                 Roman_Nums_CLASSICAL (Counter) &
-                 Roman_Nums_CLASSICAL (Counter) & built_string;
+                 Roman_Nums_CLASSICAL (Counter + 1) & (4 *  Roman_Nums_CLASSICAL (Counter)) & Built_String;
             when others =>
                null;
          end case;
          Counter :=
-           Counter + 2;  -- Move two positions down the Roman numeral array each time
+           Counter + 2;           -- Move two positions down the Roman numeral array each time
          exit when Counter > 11;  -- shouldnt ever hit this, but just in case
       end loop;
 
