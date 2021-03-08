@@ -2237,8 +2237,8 @@ end CHANGE_LANGUAGE;
   
    procedure CHECK_PATH_VARIABLE is
 
-      Path_String : String := Ada.Environment_Variables.Value("PATH");
-      Start_Char : Natural := Path_String'First;
+      Path_String : constant String := Ada.Environment_Variables.Value("PATH");
+      Start_Char  : Natural := Path_String'First;
       use Ada.Directories;
 
       begin

@@ -17,7 +17,7 @@
        
      OUTPUT_ARRAY : EWDS_ARRAY(1..500) := (others => NULL_EWDS_RECORD);
      NUMBER_OF_HITS : INTEGER := 0;
-     J1, J2, J, JJ : EWDS_DIRECT_IO.COUNT := 0;
+     J1, J2, J : EWDS_DIRECT_IO.COUNT := 0;
      
      D_K : DICTIONARY_KIND := GENERAL;    --  For the moment
      
@@ -77,17 +77,12 @@
       end loop HIT_LOOP;
          
      end SORT_OUTPUT_ARRAY;
-       
---     begin
---       SORT_OUTPUT_ARRAY;
---      end TRIM_OUTPUT_ARRAY;
-       
+
      procedure DUMP_OUTPUT_ARRAY(OUTPUT : in TEXT_IO.FILE_TYPE) is
        DE : DICTIONARY_ENTRY := NULL_DICTIONARY_ENTRY;
        NUMBER_TO_SHOW : INTEGER := NUMBER_OF_HITS;
-       ONE_SCREEN : INTEGER := 6;
-     begin
-  --TEXT_IO.PUT_LINE("DUMP_OUTPUT");             
+       ONE_SCREEN : constant INTEGER := 6;
+     begin            
       if NUMBER_OF_HITS = 0  then
          TEXT_IO.PUT_LINE(OUTPUT, "No match");             
        else
@@ -234,13 +229,12 @@ DICT_IO.READ(DICT_FILE(GENERAL), DE, DICT_IO.COUNT(OUTPUT_ARRAY(I).N));
                               SECOND_TRY := FALSE;
                            else
 --   TEXT_IO.PUT_LINE("THIRD_TRY   exit BINARY_SEARCH");
-                              JJ := J;
                               exit BINARY_SEARCH;
                            end if;
                         end if;
                                             
                            --  Should D_K
-                        SET_INDEX(EWDS_FILE, EWDS_DIRECT_IO.COUNT(J));
+                        SET_INDEX(EWDS_FILE, J);
                         READ(EWDS_FILE, EWDS);
 --   EWDS_RECORD_IO.PUT(EWDS);
 --   TEXT_IO.NEW_LINE;
@@ -262,7 +256,6 @@ DICT_IO.READ(DICT_FILE(GENERAL), DE, DICT_IO.COUNT(OUTPUT_ARRAY(I).N));
                              READ(EWDS_FILE, EWDS);    --  Reads and advances index!!
                         
                               if "="(LOWER_CASE(EWDS.W), INPUT_WORD)  then
-                                 JJ := I;
 --      PUT(INTEGER'IMAGE(INTEGER(I))); PUT("-"); EWDS_RECORD_IO.PUT(EWDS); NEW_LINE;
                               LOAD_OUTPUT_ARRAY(EWDS);
 
@@ -276,7 +269,6 @@ DICT_IO.READ(DICT_FILE(GENERAL), DE, DICT_IO.COUNT(OUTPUT_ARRAY(I).N));
                         READ(EWDS_FILE, EWDS);
                         
                               if "="(LOWER_CASE(EWDS.W), INPUT_WORD)  then
-                                JJ := I;
 
 --        PUT(INTEGER'IMAGE(INTEGER(I))); PUT("+"); EWDS_RECORD_IO.PUT(EWDS);  NEW_LINE;
                               LOAD_OUTPUT_ARRAY(EWDS);

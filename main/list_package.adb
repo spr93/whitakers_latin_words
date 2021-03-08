@@ -11,7 +11,6 @@ with Dictionary_Form;
 with PUT_EXAMPLE_LINE;
 with LIST_SWEEP;
 
---with Ada.Exceptions;
 
 package body LIST_PACKAGE is
 
@@ -22,7 +21,7 @@ package body LIST_PACKAGE is
       MNPC : MNPC_TYPE        := NULL_MNPC;
       DE   : DICTIONARY_ENTRY := NULL_DICTIONARY_ENTRY;
    end record;
-   NULL_DICTIONARY_MNPC_RECORD : DICTIONARY_MNPC_RECORD :=
+   NULL_DICTIONARY_MNPC_RECORD : constant DICTIONARY_MNPC_RECORD :=
      (X, NULL_MNPC, NULL_DICTIONARY_ENTRY);
 
    MAX_MEANING_PRINT_SIZE : constant := 79;
@@ -1016,14 +1015,6 @@ package body LIST_PACKAGE is
             end case;
 
          end if;
---  -- This just for developer test, will be commented out if K > SRA_MAX then
---    SRA_MAX := K;
---PUT_STAT("*SRA_MAX for RAW_WORD " & HEAD(RAW_WORD, 26) & "   = " & INTEGER'IMAGE(SRA_MAX));
---  end if;
---  if J > DMA_MAX  then
---    DMA_MAX := J;
---PUT_STAT("*DMA_MAX for RAW_WORD " & HEAD(RAW_WORD, 26) & "   = " & INTEGER'IMAGE(DMA_MAX));
---  end if;
 
       end loop CYCLE_OVER_PA;
 
@@ -1581,7 +1572,6 @@ package body LIST_PACKAGE is
          end if;
          UNKNOWN_COUNT := DS.MNPC;
 
-         --     Close (STEM_FILE (D_K));  --??????
       end if;
       -- TEXT_IO.PUT_LINE("Leaving LIST_NEIGHBORHOOD UNKNOWN_SEARCH");
    end UNKNOWN_SEARCH;
@@ -1598,7 +1588,7 @@ package body LIST_PACKAGE is
 
       if (Text_IO.Name (OUTPUT) = Text_IO.Name (Text_IO.Standard_Output)) then
          MM :=
-           MAX_MEANING_PRINT_SIZE;   --  to keep from overflowing screen line
+           MAX_MEANING_PRINT_SIZE;    --  to keep from overflowing screen line
       else
          MM := MAX_MEANING_SIZE;
       end if;

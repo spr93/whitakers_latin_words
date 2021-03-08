@@ -296,7 +296,7 @@
                                PA : in out PARSE_ARRAY; PA_LAST : in out INTEGER) is
       
          W : constant STRING := TRIM(INPUT_WORD);
-         ROMAN_NUMBER_W : INTEGER := ROMAN_NUMBER(W);
+      ROMAN_NUMBER_W : constant INTEGER := ROMAN_NUMBER(W);
       
       begin
          if ONLY_ROMAN_DIGITS(W) and then (ROMAN_NUMBER_W /= 0)  then

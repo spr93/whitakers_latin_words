@@ -920,7 +920,6 @@ then
          Qu_Next, Next : Integer                := PA'First;
          De_J          : DICTIONARY_ENTRY       := NULL_DICTIONARY_ENTRY;
          De_K          : DICTIONARY_ENTRY       := NULL_DICTIONARY_ENTRY;
-         Has_Packon    : Boolean                := False;
       begin
          -- separate Qu PRON/PACKs from everything else
          for I in PA'range loop                             -- I loop
@@ -934,7 +933,6 @@ then
             then
                Qu_PA (Qu_Next) := PA (I);
                Qu_Next         := Qu_Next + 1;
-               Has_Packon      := True;
             else
                OPA (Next) := PA (I);
                Next       := Next + 1;
