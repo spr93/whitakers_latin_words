@@ -848,7 +848,6 @@ ADJ   2 0 ACC P N POS   2 1 a     X A
 ADJ   2 0 VOC P N POS   2 1 a     X A
 
 
-
 --  THIRD DECLENSION ADJECTIVES
 
 --  Adjectives of third declension - one ending  - ADJ 3 1
@@ -888,13 +887,11 @@ ADJ   3 0 ACC P N POS   2 2 ia       X A
 ADJ   3 0 VOC P N POS   2 2 ia       X A
 
 
-
 --  Adjectives of third declension - two endings 
 --  Ex: brevis breve  =>  brev brev brevi brevissi
 --  Ex: facil facil   =>  facil facil facili facilli
 ADJ   3 2 NOM S C POS   1 2 is       X A
 ADJ   3 2 VOC S C POS   1 2 is       X A
-
 
 
 ADJ   3 2 NOM S N POS   2 1 e        X A
@@ -906,7 +903,7 @@ ADJ   3 2 ACC P C POS   2 3 eis      F B -- Erasmus and neoLatin (JFW)
 
 
 --  Adjectives of third declension - three endings 
---  Ex: celer celeris  celere  =>  celer celer celeri celerri
+--  Ex: celer celeris celere  =>  celer celer celeri celerri
 --  Ex: acer acris acre  =>  acer acr acri acerri
 ADJ   3 3 NOM S M POS   1 0          X A
 ADJ   3 3 VOC S M POS   1 0          X A

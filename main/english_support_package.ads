@@ -1,7 +1,7 @@
    with Text_IO;   
    with Direct_IO; 
    with Inflections_Package; use Inflections_Package;
-   with Dictionary_Package; use Dictionary_Package;
+   with Dictionary_Package;  use Dictionary_Package;
 
 
    package ENGLISH_SUPPORT_PACKAGE is 
