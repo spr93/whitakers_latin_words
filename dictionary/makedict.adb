@@ -39,10 +39,6 @@ with Ada.Command_Line;
          START_TRAN +
          TRANSLATION_RECORD_IO.DEFAULT_WIDTH - 1;
    
-   
-   
-   
-   
       DICTFILE : DICT_IO.FILE_TYPE;
       INPUT, STEMLIST : TEXT_IO.FILE_TYPE;
       DE : DICTIONARY_ENTRY;
