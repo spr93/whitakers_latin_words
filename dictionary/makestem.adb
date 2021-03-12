@@ -251,7 +251,7 @@
                         Ddlf(Fc, Sc, D_K) := I;
                      --DEBUG.PUT(" df2 DDLF("); DEBUG.PUT( FC); DEBUG.PUT( SC); DEBUG.PUT(")  "); 
                      --DEBUG.PUT(DDLF( FC,  SC, D_K)); DEBUG.NEW_LINE;
-                        Put_Indices(Fc & Osc, D_K);
+                        -- Put_Indices(Fc & Osc, D_K);
                         Osc := Sc;
                      
                         exit Inner_Loop;
@@ -273,7 +273,7 @@
    
    --To reprint correctly the last letter information
    --Put_Line("--  To reprint correctly the last letter information");
-      Put_Indices(Ofc & Osc, D_K);
+     -- Put_Indices(Ofc & Osc, D_K);
       Close(STEM_File(D_K));
    
       for I in Character'('a')..Character'('z')  loop

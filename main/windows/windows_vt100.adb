@@ -1,12 +1,9 @@
 --------------------------------------------------------------------------------
-with system.Win32;                      use system.Win32;
-with Interfaces.C;                      use Interfaces.C;
-With Ada.Text_IO;                       use Ada.Text_IO;
-with ada.Characters.Latin_1;
--- with System.OS_Constants
+with System.Win32;                      use System.Win32;
+with Interfaces.C;
 --------------------------------------------------------------------------------
 
-package body windows_vt100 is
+package body Windows_vt100 is
 
 function Enable_Windows_Console_vt100_codes return boolean is
 
@@ -31,14 +28,14 @@ begin
    stdout := GetStdHandle(std_output_nstring);
 
    Result := GetConsoleMode(stdout , StdOutMode'unchecked_access);
-   StdOutMode := StdOutMode or ENABLE_VIRTUAL_TERMINAL_PROCESSING; --or DISABLE_NEWLINE_AUTO_RETURN;
+   StdOutMode := StdOutMode or ENABLE_VIRTUAL_TERMINAL_PROCESSING;
    Result := SetConsoleMode (StdOut, StdOutMode);
 
- --  put_line(result'image);  -- DEBUG
+ --  Put_Line(result'image);  -- DEBUG
 
    if result /= 0 then return true;
    else return false;
       end if;
 end;
 
-end windows_vt100;
+end Windows_vt100;
