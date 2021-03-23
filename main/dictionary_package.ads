@@ -1,5 +1,6 @@
 with TEXT_IO; 
-with DIRECT_IO;
+
+with DIRECT_IO;  -- test
 with INFLECTIONS_PACKAGE; use INFLECTIONS_PACKAGE;
 
 

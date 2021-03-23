@@ -55,7 +55,7 @@ package body Parse_Package is
 
          LINE (1 .. L) := TRIM (INPUT_LINE);
 
-         ELIMINATE_NOT_LETTERS :
+         ELIMINATE_NON_LETTERS :
          begin
             for I in 1 .. L loop
                case LINE (I) is
@@ -80,7 +80,7 @@ package body Parse_Package is
                      LINE (I) := ' ';
                end case;
             end loop;
-         end ELIMINATE_NOT_LETTERS;
+         end ELIMINATE_NON_LETTERS;
 
          --  Skip over leading and intervening blanks, looking for comments
          --  Punctuation, numbers, and special characters were cleared above

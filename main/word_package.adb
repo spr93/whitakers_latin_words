@@ -2228,7 +2228,8 @@ end CHANGE_LANGUAGE;
         and then Windows_Vt100.Is_Windows
       then 
           if not Windows_Vt100.Enable_Windows_Console_Vt100_Codes
-            then  Preface.Put_Line("ERROR:  Terminal unable to enter vt100 mode.");
+           then  Preface.Put_Line("INFO:  Terminal unable to enter vt100 mode.  ANSI formatting off.");
+            WORDS_MODE(DO_ANSI_FORMATTING) := False;
           end if; 
       end if; 
       

@@ -237,7 +237,7 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
   procedure PUT(HELP : HELP_TYPE) is
   begin
     NEW_LINE;
-    for I in HELP'FIRST..HELP'LAST  loop
+    for I in HELP'RANGE  loop
       PUT_LINE(HELP(I));
     end loop;
     NEW_LINE;
@@ -415,7 +415,8 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
       then
          case Windows_Vt100.Enable_Windows_Console_Vt100_Codes is
             when True => null;
-            when False => Put_Line("ERROR:  Terminal unable to enter vt100 mode.");
+            when False => Put_Line("INFO:  Terminal unable to enter vt100 mode.  ANSI formatting off.");
+            WORDS_MODE(DO_ANSI_FORMATTING) := False;
          end case;
       end if; 
           

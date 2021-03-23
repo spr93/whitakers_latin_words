@@ -1,5 +1,4 @@
  package body ENGLISH_SUPPORT_PACKAGE is
-   --use EWDS_DIRECT_IO;
    use TEXT_IO;    
    
  package body EWDS_RECORD_IO is
