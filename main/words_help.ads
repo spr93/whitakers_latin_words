@@ -58,7 +58,7 @@ GRAMMAR_HELP : constant MAIN_HELP_TYPE :=  (
   "The PART OF SPEECH code immediately follows inflected form.                    ",
   "The codes are self-descriptive. E.g., N, V, ADJ, NUM, ADV, VPAR, SUPINE        ",
   "                                                                               ",
-  "Next comes two numbers, the CASE or CONJUGATION number is first, followed      ",
+  "Next come two numbers, the CASE or CONJUGATION number is first, followed       ",
   "     by a 'VARIANT' number. The VARIANT specifies the ending patterns, which   ",
   "     are defined in INFLECTS.LAT. MOST VARIANTS ARE NOT MEANINGFUL CATEGORIES  ",
   "     but inventions for the program logic. They may be useful references:      ",

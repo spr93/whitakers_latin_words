@@ -182,7 +182,7 @@ DO_SYNCOPE_HELP : constant HELP_TYPE :=  (
    "and to try various possibilities for the insertion of a removed 'v'.  ",
    "To do this it has to fully process the modified candidates, which can ",
    "have a consderable impact on the speed of processind a large file.    ",
-   "However, this trick seldom producesa false positive, and syncope is   ",
+   "However, this trick seldom produces a false positive, and syncope is  ",
    "very common in Latin (first year texts excepted).  Default is Y(es).  ",
    "This processing is turned off with the choice of N(o).                " );
 
@@ -196,7 +196,7 @@ DO_TWO_WORDS_HELP : constant HELP_TYPE :=  (
    "This most often fails.  Even if mechnically successful, the result is ",
    "usually false and must be examined by the user.  If the result is     ",
    "correct, it is probably clear to the user.  Otherwise,  beware.  .    ",
-   "Since this is a last chanceand infrequent, the default is Y(es);      ",
+   "Since this is a last chance and infrequent, the default is Y(es);     ",
    "This processing is turned off with the choice of N(o).                " );
    
 INCLUDE_UNKNOWN_CONTEXT_HELP : constant HELP_TYPE :=  (
