@@ -84,7 +84,7 @@ package WORD_PARAMETERS is
                       DO_ARABIC_NUMERALS          => TRUE,
                       DO_ANSI_FORMATTING          => TRUE,
                       DIM_EXAMPLES_TEXT           => FALSE,
-                      DO_UNICODE_INPUT            => TRUE);
+                      DO_UNICODE_INPUT            => FALSE);
    
   package MODE_TYPE_IO is new TEXT_IO.ENUMERATION_IO(MODE_TYPE); 
 

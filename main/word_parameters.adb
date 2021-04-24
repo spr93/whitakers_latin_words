@@ -2,7 +2,8 @@ with STRINGS_PACKAGE; use STRINGS_PACKAGE;
 with LATIN_FILE_NAMES; use LATIN_FILE_NAMES;
 with CONFIG;           use CONFIG;
 with PREFACE;
-with Windows_Vt100; -- src/nonwindows placeholder package for non-Windows target
+with Windows_Vt100;    -- main/nonwindows placeholder package if non-Windows target
+with Unicode_Features; -- main/nonunicode placeholder package if not compiler supported
 
 pragma Elaborate(PREFACE);
 
@@ -420,10 +421,14 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
          end case;
       end if; 
           
+       if WORDS_MODE(DO_ANSI_FORMATTING) then 
     INQUIRE(DIM_EXAMPLES_TEXT, DIM_EXAMPLES_TEXT_HELP);
-      
+    end if; 
+    
+ if Unicode_Features.Unicode_Function_Available then  
     INQUIRE(DO_UNICODE_INPUT, DO_UNICODE_HELP_TEXT);
-
+  end if; 
+  
     PUT("Do you wish to save this set of parameters? Y or N (Default) ");
     PUT(" =>");
     GET_LINE(L1, LL);

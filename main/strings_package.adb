@@ -1,9 +1,8 @@
-with Ada.Wide_Text_IO;
-with Ada.Wide_Characters.Handling;
-with Ada.Characters.Conversions;
+with Text_IO; use Text_IO;
 with WORD_PARAMETERS; use WORD_PARAMETERS;
-with STRINGS_PACKAGE; use STRINGS_PACKAGE;
-
+with Ada.Characters.Handling; 
+with Ada.Strings; use Ada.Strings;
+with Ada.Strings.Fixed;
 
    package body STRINGS_PACKAGE is
    
@@ -53,39 +52,8 @@ with STRINGS_PACKAGE; use STRINGS_PACKAGE;
          LAST := LX;
       end GET_NON_COMMENT_LINE;
    
-   procedure GET_UNICODE (LINE : in out String; L : in out Integer) is
-         -- Converts unicode accented forms to basic ASCII 
-         -- Useful for input that includes macrons.
-         -- E.g., this causes 'ē' to be processed as 'e'
-         
-         pragma Wide_Character_Encoding(UTF8);
-            
-      W_Line : constant Wide_String := Ada.Wide_Text_IO.Get_Line;
-
-      T_Line : constant String := Ada.Characters.Conversions.To_String(    
-                            Ada.Wide_Characters.Handling.To_Basic(W_Line));
-         
-   begin
-
-              if T_Line'Last <= INPUT_LINE_LENGTH then 
-                LINE(T_LINE'RANGE) := T_LINE;
-                L := T_Line'Length;
-              else 
-                Line := T_Line(T_Line'First..Line'Last);
-                L := Line'Last;
-              end if; 
-   exception 
-      when others =>
-           Format(OUTPUT,Inverse);
-           Text_IO.Put_Line(OUTPUT, "ERROR processing Unicode. Falling back to non-Unicode mode.");
-           Text_IO.Put(OUTPUT, "If this resolves the problem, save the current parameters by entering " & CHANGE_PARAMETERS_CHARACTER);
-           WORDS_MODE(DO_UNICODE_INPUT) := False;
-           Format(Output,Reset);
-           New_Line;
-      end GET_UNICODE; 
-   
-   
- procedure Format (OUTPUT : in Text_IO.File_Type; Format : In Format_Command) is
+    
+  procedure Format (OUTPUT : in Text_IO.File_Type; Format : In Format_Command) is
    begin
 
       if WORDS_MODE(DO_ANSI_FORMATTING) and then
@@ -104,7 +72,6 @@ with STRINGS_PACKAGE; use STRINGS_PACKAGE;
 
       end if;
 
-   end Format;
-   
+   end Format;  
    
    end STRINGS_PACKAGE;  

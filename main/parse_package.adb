@@ -14,11 +14,11 @@ with CONFIG;                  use CONFIG;
 with ENGLISH_SUPPORT_PACKAGE; use ENGLISH_SUPPORT_PACKAGE;
 with SEARCH_ENGLISH;
 with Arabic2Roman;
-with words_help;              use words_help;
-with Ada.Wide_Text_IO;
-with Ada.Characters.Conversions;
-with Ada.Wide_Characters.Handling;
+with Words_Help;              use Words_Help;
 with Ada.Characters.Handling;
+with Ada.Wide_Characters;
+with Ada.Wide_Text_IO;
+with Unicode_Features;        use Unicode_Features;
 
 with Ada.Exceptions;
 
@@ -32,7 +32,7 @@ package body Parse_Package is
 
       J, K, L : Integer := 0;
 
-      LINE : String (1 .. INPUT_LINE_LENGTH) := (others => ' ');
+      LINE       : String (1 .. INPUT_LINE_LENGTH)          := (others => ' ');
       BLANK_LINE : constant String (1 .. INPUT_LINE_LENGTH) := (others => ' ');
 
       PA : PARSE_ARRAY (1 .. 150) := (others => NULL_PARSE_RECORD);
@@ -1160,7 +1160,7 @@ package body Parse_Package is
             end if;
             Text_IO.Put_Line
               (    --  ERROR_FILE,
-            "STORAGE_ERROR Exception in WORDS, try again");
+            "STORAGE_ERROR Exception in WORDS");
             STORAGE_ERROR_COUNT := STORAGE_ERROR_COUNT + 1;
             if STORAGE_ERROR_COUNT >= 4 then
                raise;
@@ -1378,7 +1378,7 @@ package body Parse_Package is
 
                if METHOD = INTERACTIVE and then WORDS_MODE (DO_UNICODE_INPUT)
                then
-                  GET_UNICODE (LINE, L);
+                  Get_Unicode (LINE, L);
                else
                   Get_Line (LINE, L);
                   LINE (LINE'First .. L) :=
@@ -1396,7 +1396,7 @@ package body Parse_Package is
                      if METHOD = INTERACTIVE
                        and then WORDS_MODE (DO_UNICODE_INPUT)
                      then
-                        GET_UNICODE (LINE, L);
+                        Get_Unicode (LINE, L);
                      else
                         Get_Line (LINE, L);
                         LINE (LINE'First .. L) :=
@@ -1485,7 +1485,7 @@ package body Parse_Package is
                      Set_Input (Standard_Input);
                      Close (INPUT);
                   end if;
-                  Put_Line ("Unknown or unacceptable file name. Try Again");
+                  Put_Line ("Unknown or unacceptable file name.");
 
                when End_Error =>          --  The end of the input file resets to CON:
                   if CL_Arguments (NO_EXIT) then
@@ -1533,45 +1533,34 @@ package body Parse_Package is
 
    end PARSE;
 
-   --  RELIES ON ADA202X FEATURE WIDE_CHARACTERS.HANDLING.TO_BASIC
-   procedure Parse_Unicode_File (W_Input_String : String) is
+   ---Unicode handling relies on Ada 202x features (see comments to Unicode_to_Basic_Text).
+   ---When building Words with implementations that don't include the necessary features,
+   ---use the Unicode_Function package in main/nonunicode, which will disable the DO_UNICODE
+   ---feature and render the following procedures dead code that should be optimized out.
 
-      use Ada.Wide_Text_IO;
+   ---Unicode handling is only useful for dealing with input that includes macrons.
+
+   procedure Parse_Unicode_File (File_Name_String : in String) is
 
       pragma Wide_Character_Encoding (UTF8);
 
-      Old_Method : METHOD_TYPE := METHOD;
+      use Ada.Wide_Text_IO;
+
+      Saved_Method : METHOD_TYPE := METHOD;
 
    begin
 
-      Open (W_INPUT, In_File, W_Input_String);
+      Open (W_INPUT, In_File, File_Name_String);
       WORDS_MODE (DO_UNICODE_INPUT) := False;
       METHOD                        := COMMAND_LINE_INPUT;
 
       while not End_Of_File (W_INPUT) loop
-
-         PARSE
-           ((Ada.Characters.Conversions.To_String
-               (Ada.Wide_Characters.Handling.To_Basic (Get_Line (W_INPUT)))));
+         PARSE (Unicode_To_Basic_Text (Get_Line (W_INPUT)));
       end loop;
 
       Close (W_INPUT);
       WORDS_MODE (DO_UNICODE_INPUT) := True;
-      METHOD                        := Old_Method;
-   exception
-      when Ada.Wide_Text_IO.End_Error | Ada.Wide_Text_IO.Status_Error |
-        Ada.Wide_Text_IO.Name_Error =>
-         --  WORDS_MODE(DO_UNICODE_INPUT) := False;
-         METHOD := Old_Method;
-         if Is_Open (W_INPUT) then
-            Close (W_INPUT);
-         end if;
-      when others =>
-         --  WORDS_MODE(DO_UNICODE_INPUT) := False;
-         if Is_Open (W_INPUT) then
-            Close (W_INPUT);
-         end if;
-         raise;
+      METHOD                        := Saved_Method;
 
    end Parse_Unicode_File;
 
