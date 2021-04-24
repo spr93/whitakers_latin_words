@@ -5,16 +5,14 @@ with CONFIG;               use CONFIG;
 with WORD_PARAMETERS;      use WORD_PARAMETERS;
 with DEVELOPER_PARAMETERS; use DEVELOPER_PARAMETERS;
 with WORD_PACKAGE;         use WORD_PACKAGE;
-with parse_package;        use parse_package;
+with Parse_Package;        use Parse_Package;
 with Ada.Interrupts;       use Ada.Interrupts;
 with Ada.Interrupts.Names; use Ada.Interrupts.Names;
-with no_exit_handler;      use no_exit_handler;
-with words_help;
+with No_Exit_Handler;      use No_Exit_Handler;
+with Words_Help;
 with Ada.Environment_Variables;
 with Ada.Directories;
 with Ada.Wide_Text_IO;
-
-with Ada.Exceptions;
 
 procedure WORDS is
 
@@ -251,11 +249,5 @@ begin
       end if;
 
    end if;
-
-exception
-   when Catch_Me : others =>
-
-      Text_IO.Put_Line (Ada.Exceptions.Exception_Message (Catch_Me));
-      Text_IO.Put_Line (Ada.Exceptions.Exception_Information (Catch_Me));
 
 end WORDS;

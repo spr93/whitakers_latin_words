@@ -5,13 +5,13 @@ package body No_Exit_Handler is
    ---------------------
    -- No_Exit_Handler --
    ---------------------
-  protected body No_Exit_Handler is
+   protected body No_Exit_Handler is
 
-     procedure  No_Exit_Catch_Interr Is
+      procedure No_Exit_Catch_Interr is
       begin
-      null;
+         null;
       end No_Exit_Catch_Interr;
 
-  end  No_Exit_Handler;
+   end No_Exit_Handler;
 
-end no_exit_handler;
+end No_Exit_Handler;
