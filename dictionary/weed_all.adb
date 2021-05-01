@@ -38,7 +38,9 @@
          W = "OT"  or
          W = "PASS"  or
          W = "L+S"  or
-         W = "St"        
+         W = "St"   or
+         W = "W"    or  -- internal W (war) codes e.g., W:[alt meaning]
+         W = "OLD"
          
          then
          
@@ -47,22 +49,23 @@
       
       
       
-      
-         if 
-           --  Articles
-         W = "a"    or
-         W = "an"   or
-         W = "the"  or    
-         W = "The"  or 
-         
-           --  Others  
-         W = "no"   
-         
-         then
-         
-            KILL := TRUE;
-         end if;
-      
+--        
+--           if 
+--             --  Articles
+--           W = "a"    or
+--           W = "an"   or
+--           W = "the"  or    
+--           W = "The"  or 
+--           
+--             --  Others  
+--           W = "no"   or
+--           W = "w"       -- w/, W.
+--           
+--           then
+--           
+--              KILL := TRUE;
+--           end if;
+--        
       
           if   --  Fragments
              W = "ad"   or     
@@ -75,18 +78,16 @@
             KILL := TRUE;
         end if;
       
-     
-      
-      
-      
-         if
+
+        if
              W = "abb"   or     --  Abbreviation  
-             --  Number suffixes   
-             W = "st"   or      --  1st
-             W = "nd"   or      --  2nd
-             W = "rd"   or      --  3rd
-             W = "th"           --  4th
-         then
+--               --  Number suffixes   
+--               W = "st"   or      --  1st
+--               W = "nd"   or      --  2nd
+--               W = "rd"   or      --  3rd
+--               W = "th"   or      --  4th
+             W = "Cen"          --  e.g., "W. Cen. Gaul"
+        then
             KILL := TRUE;
         end if;
       
@@ -96,18 +97,19 @@
          end if; 
       
         --  Kill internal AREA
-         if W(W'LAST) = ':'  then
+         if W(W'LAST) = ':' then
             KILL := TRUE;
          end if;                   
       
        end if;
          
       
-         if KILL then
+  if KILL then
+       -- PUT_LINE("KILLED ANY  "  & W);    
             for I in W'RANGE  loop
                W(I) := '\';
             end loop;
-         end if;
+  end if;
          
    --PUT_LINE("WEEDed ANY  "  & W & '|' & BOOLEAN'IMAGE(KILL));         
    

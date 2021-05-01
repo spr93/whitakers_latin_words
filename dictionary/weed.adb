@@ -56,7 +56,8 @@ procedure WEED(W : in out STRING;
           (W = "and"   or
            W = "or"    or
            W = "but"   or
-           W = "if"  )  
+           W = "if"    or 
+           W = "w"     )  
                        then
             
            KILL := TRUE;
@@ -69,8 +70,7 @@ procedure WEED(W : in out STRING;
            W = "in"    or
            W = "into"   or
            W = "with"  or
-           W = "w"   or
-           W = "without"   or
+           W = "without" or
            W = "for"   or
            W = "per"   or
            W = "on"    or
@@ -89,7 +89,8 @@ procedure WEED(W : in out STRING;
            W = "like"   or
            W = "similar"   or
            W = "than"   or
-           W = "as"   )
+           W = "as"     or 
+           W = "concerning")
 
                      then
             
@@ -201,14 +202,6 @@ procedure WEED(W : in out STRING;
        
          end if; 
          
-         
-          
- 
-             
-      
-      
-             
-                    
      if     
               
              
@@ -240,7 +233,8 @@ procedure WEED(W : in out STRING;
            W = "high"   or
            W = "near"   or
            W = "little"   or
-           W = "small"         )
+           W = "small"    or 
+           W = "unknown")
                               then
                    KILL := TRUE;
   
@@ -274,8 +268,6 @@ procedure WEED(W : in out STRING;
                    KILL := TRUE;
   
       end if;  
-             
-
          
    if
                 
@@ -336,6 +328,7 @@ procedure WEED(W : in out STRING;
            W = "you"   or
            W = "who"   or
            W = "whatever"   or
+           W = "whatsoever" or 
            W = "oneself"   or
            W = "self"   or
            W = "all"   or
@@ -490,7 +483,8 @@ procedure WEED(W : in out STRING;
        
                 
                          
-        if KILL then
+  if KILL then
+   -- PUT_LINE("KILLed  "  & W);       
           for I in W'RANGE  loop
             W(I) := '\';
           end loop;
