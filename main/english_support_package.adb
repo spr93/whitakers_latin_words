@@ -104,7 +104,6 @@ end PUT;
     L := L + 1;           
     GET(S(L+1..S'LAST), P.RANK, LAST);
   end GET;
-
     
   procedure PUT(S : out STRING; P : in EWDS_RECORD) is
     L : INTEGER := S'FIRST - 1;
@@ -142,4 +141,3 @@ end EWDS_RECORD_IO;
 
    
 end ENGLISH_SUPPORT_PACKAGE;
-

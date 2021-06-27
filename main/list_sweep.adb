@@ -112,8 +112,8 @@ procedure LIST_SWEEP (PA : in out PARSE_ARRAY; PA_LAST : in out Integer) is
                         ALLOWED := False;
                      end if;
                   elsif STEM'Length = 2
-                  then  -- SPR:  This change enables "em" (imperative of emo) when TRIM_OUTPUT is on
-                     null;                       --       Otherwise the output is just the interject "em".  Probably other special cases too
+                  then      -- SPR:  This change enables "em" (imperative of emo) when TRIM_OUTPUT is on
+                     null;  --       Otherwise the output is just the interject "em".  Probably other special cases too
                   else
                      ALLOWED := False;
                   end if;
@@ -705,17 +705,16 @@ begin                               --  LIST_SWEEP
    --      It's not pretty, but it handles almost almost all the corner cases I've identified. ...except qu- PRONs, which are
    --      handled in a combination of routines here and in list_package.
    --
-   --      The qu- pronouns cause the most trouble because they require a 5 dimensional array to fully characterize
-   --      (see INFLECTS.LAT for the explanation) their inflections AND THEN they have the special PACKON feature
+   --      The qu- pronouns cause the most trouble.   It takes a 5-dimensional array to fully characterize
+   --      their inflections (see INFLECTS.LAT for the explanation) AND THEN they have the special PACKON feature
    --      (-que, -libet, etc.).  Making things even more complicated are two structural issues.  First, Gen. Whitaker maximized
    --      flexibility by separating the parse and dictionary arrays (see explanation of those structures in his list_package
    --      comments). Second, he used variant records to reduce duplication and use storage efficiently.  But this approach means that
    --      parsing qu- pronouns uniquely require information from the dictionary array (namely, the actual meanings, not just the MNPC,
    --      to prevent duplicates). It also requires treating dictionary objects from ADDONs (PACKONs) as if they were inflection
    --      objects.  The variant records make this especially tricky because but the ADDON record variants don't store the information
-   --      we need in a way that maps 1:1 to PRONs--and there isn't an easy way to re-map them without refactoring.  See "Problem
-   --      Encountered with the Variant in Ada," Cryptologic Quarterly (1988) (NSA Transparency Case 63853, DOCID 3929124); Whitaker's
-   --      note above re generating exceptions due to POFS variants.
+   --      we need in a way that maps 1:1 to PRONs.  See "Problem  Encountered with the Variant in Ada," Cryptologic Quarterly (1988)
+   --      (NSA Transparency Case 63853, DOCID 3929124); Whitaker's note above re generating exceptions due to POFS variants.
    --
    --      The upshot is that we must either change objects and data structures just for qu- stems or run some complicated conditional
    --      procedures.  I'm not willing to descend into the object-oriented hell of refactoring the data structures or creating
@@ -865,8 +864,7 @@ begin                               --  LIST_SWEEP
             function "<=" (A, B : in PARSE_RECORD) return Boolean is
             begin                             --  !!!!!!!!!!!!!!!!!!!!!!!!!!
 
-               if A.IR.QUAL = B.IR.QUAL and then A.MNPC = B.MNPC
-then
+               if A.IR.QUAL = B.IR.QUAL and then A.MNPC = B.MNPC then
                   return True;
                else
                   return False;

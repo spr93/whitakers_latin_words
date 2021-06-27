@@ -1,9 +1,9 @@
-package parse_package is
+package Parse_Package is
 
-pragma Wide_Character_Encoding(UTF8);
+   pragma Wide_Character_Encoding (UTF8);
 
-procedure Parse (COMMAND_LINE : String := "") ;
+   procedure Parse (COMMAND_LINE : String := "");
 
-procedure Parse_Unicode_File (File_Name_String : String);
+   procedure Parse_Unicode_File (File_Name_String : String);
 
 end Parse_Package;

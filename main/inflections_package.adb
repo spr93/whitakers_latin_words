@@ -14,7 +14,7 @@ package body INFLECTIONS_PACKAGE is
       return FALSE;
     end if;
   end "<";
- 
+
   function "<" (LEFT, RIGHT : QUALITY_RECORD) return BOOLEAN is
   begin
     if LEFT.POFS = RIGHT.POFS  then
@@ -370,29 +370,29 @@ LEFT.V.TENSE_VOICE_MOOD.MOOD   = RIGHT.V.TENSE_VOICE_MOOD.MOOD   and then
       return FALSE;
     end if;
   end "<=";
-  
+
    Null_Pronoun_Record : constant PRONOUN_RECORD := ((0,0),X,X,X,X);
-   
+
    function Qual_Equ_PRONPACK (Qual : in QUALITY_RECORD) return Boolean is
    begin
       if (Qual.Pofs = Pron)
         or else (Qual.Pofs = Pack) then
          return True;
-      else 
+      else
          return False;
-      end if; 
-   end Qual_Equ_PRONPACK; 
-  
-   function QR_PACK_TO_PRON (QR : in QUALITY_RECORD   ) return PRONOUN_RECORD is
+      end if;
+   end Qual_Equ_PRONPACK;
+
+   function QR_PACK_TO_PRON (QR : in QUALITY_RECORD) return PRONOUN_RECORD is
       begin
       if Qr.Pofs = PACK
         then return (QR.PACK.DECL,QR.PACK.CS,QR.PACK.NUMBER,QR.PACK.GENDER,QR.PACK.KIND);
          elsif QR.POFS = PRON
-           then return QR.PRON; 
-      end if;    
+           then return QR.PRON;
+      end if;
       return Null_Pronoun_Record;
    end QR_PACK_TO_PRON;
-         
+
 
 package body STEM_TYPE_IO is
     procedure GET(F : in FILE_TYPE; D : out STEM_TYPE) is
@@ -403,12 +403,12 @@ package body STEM_TYPE_IO is
         GET(F, C);
         if (C not in 'A'..'Z') and (C not in 'a'..'z')  then
           exit;
-        else 
+        else
           D(I) := C;
         end if;
       end loop;
     end GET;
-                   
+
     procedure GET(D : out STEM_TYPE) is
       C : CHARACTER := ' ';
     begin
@@ -417,47 +417,47 @@ package body STEM_TYPE_IO is
         TEXT_IO.GET(C);
         if (C not in 'A'..'Z') and (C not in 'a'..'z')  then
           exit;
-        else 
+        else
           D(I) := C;
         end if;
       end loop;
     end GET;
-    
+
     procedure PUT(F : in FILE_TYPE; D : in STEM_TYPE) is
-    begin 
+    begin
       TEXT_IO.PUT(F, D);
     end PUT;
-      
+
     procedure PUT(D : in STEM_TYPE) is
-    begin 
+    begin
       TEXT_IO.PUT(D);
     end PUT;
-      
-    procedure GET(S : in STRING; D : out STEM_TYPE; 
+
+    procedure GET(S : in STRING; D : out STEM_TYPE;
                                  LAST : out INTEGER) is
       C : CHARACTER;
-    begin 
+    begin
       D := NULL_STEM_TYPE;
       LAST := 0;
       for I in 1..STEM_TYPE_IO.DEFAULT_WIDTH  loop
         C := S(I);
         if (C not in 'A'..'Z') and (C not in 'a'..'z')  then
           exit;
-        else 
+        else
           D(I) := C;
           LAST := I;
         end if;
       end loop;
     end GET;
-                                   
+
     procedure PUT(S : out STRING; D : in STEM_TYPE) is
-    begin 
+    begin
       S(S'FIRST..S'FIRST+STEM_TYPE_IO.DEFAULT_WIDTH-1) := D;
     end PUT;
-        
-  end STEM_TYPE_IO;  
-  
-   
+
+  end STEM_TYPE_IO;
+
+
 package body DECN_RECORD_IO is
 --  This package will carry the documentation for all the following packages
   --  Must have "use" for _IO for each of the components of the record
@@ -525,7 +525,7 @@ package body DECN_RECORD_IO is
     M : INTEGER := 0;
   begin
     --  Make a place the DEFAULT_WIDTH of the component  to be Put
-    --  The DEFAULT_WIDTH has been set for these _IO packages to be 
+    --  The DEFAULT_WIDTH has been set for these _IO packages to be
     --  the LONGEST component width, not the normal Ada default
     M := L + 1;           --  But WHICH is to be PUT WIDTH 1
     --  Put onto the substring that is exactly the DEFAULT (LONGEST) size
@@ -539,13 +539,13 @@ package body DECN_RECORD_IO is
     --  Put the next component
     PUT(S(L+1..M), D.VAR);
     --  The following may be necessary to fill the out string
-    --  but usually the out string has been specified exactly 
+    --  but usually the out string has been specified exactly
     S(M+1..S'LAST) := (others => ' ');
   end PUT;
 
 end DECN_RECORD_IO;
 
-   
+
 package body TENSE_VOICE_MOOD_RECORD_IO is
   use TENSE_TYPE_IO;
   use VOICE_TYPE_IO;
@@ -618,7 +618,7 @@ package body TENSE_VOICE_MOOD_RECORD_IO is
 
 end TENSE_VOICE_MOOD_RECORD_IO;
 
-   
+
 package body NOUN_RECORD_IO is
   use DECN_RECORD_IO;
   use CASE_TYPE_IO;
@@ -793,7 +793,7 @@ package body PRONOUN_RECORD_IO is
 
 end PRONOUN_RECORD_IO;
 
-   
+
 package body PROPACK_RECORD_IO is
   use DECN_RECORD_IO;
   use CASE_TYPE_IO;
@@ -880,7 +880,7 @@ package body PROPACK_RECORD_IO is
 
 end PROPACK_RECORD_IO;
 
-   
+
 package body ADJECTIVE_RECORD_IO is
   use DECN_RECORD_IO;
   use GENDER_TYPE_IO;
@@ -981,8 +981,8 @@ package body ADJECTIVE_RECORD_IO is
   end PUT;
 
 end ADJECTIVE_RECORD_IO;
- 
-   
+
+
 package body NUMERAL_RECORD_IO is
   use DECN_RECORD_IO;
   use CASE_TYPE_IO;
@@ -1007,7 +1007,7 @@ package body NUMERAL_RECORD_IO is
   procedure GET(NUM : out NUMERAL_RECORD) is
   begin
     GET(NUM.DECL);
-    GET(SPACER);                                                                             
+    GET(SPACER);
     GET(SPACER);
     GET(NUM.NUMBER);
     GET(SPACER);
@@ -1083,7 +1083,7 @@ package body NUMERAL_RECORD_IO is
 
 end NUMERAL_RECORD_IO;
 
-   
+
 package body ADVERB_RECORD_IO is
   use COMPARISON_TYPE_IO;
   SPACER : CHARACTER := ' ';
@@ -1125,7 +1125,7 @@ package body ADVERB_RECORD_IO is
 
 end ADVERB_RECORD_IO;
 
-   
+
 package body VERB_RECORD_IO is
   use DECN_RECORD_IO;
   use TENSE_VOICE_MOOD_RECORD_IO;
@@ -1316,7 +1316,7 @@ package body VPAR_RECORD_IO is
 
 end VPAR_RECORD_IO;
 
-   
+
 package body SUPINE_RECORD_IO is
   use DECN_RECORD_IO;
   use CASE_TYPE_IO;
@@ -1403,7 +1403,7 @@ package body SUPINE_RECORD_IO is
 
 end SUPINE_RECORD_IO;
 
-   
+
 package body PREPOSITION_RECORD_IO is
   use CASE_TYPE_IO;
   SPACER : CHARACTER := ' ';
@@ -1445,13 +1445,13 @@ package body PREPOSITION_RECORD_IO is
 
 end PREPOSITION_RECORD_IO;
 
-   
+
 package body CONJUNCTION_RECORD_IO is
   NULL_CONJUNCTION_RECORD : CONJUNCTION_RECORD;
   SPACER : CHARACTER := ' ';
 
   procedure GET(F : in FILE_TYPE; C : out CONJUNCTION_RECORD) is
-  --  There is actually nothing to a CONJUNCTION_RECORD, no compoonents
+  --  There is actually nothing to a CONJUNCTION_RECORD, no components
   begin
     C := NULL_CONJUNCTION_RECORD;
   end GET;
@@ -1486,7 +1486,7 @@ package body CONJUNCTION_RECORD_IO is
 
 end CONJUNCTION_RECORD_IO;
 
-   
+
 package body INTERJECTION_RECORD_IO is
   NULL_INTERJECTION_RECORD : INTERJECTION_RECORD;
   SPACER : CHARACTER := ' ';
@@ -1525,7 +1525,7 @@ package body INTERJECTION_RECORD_IO is
 
 end INTERJECTION_RECORD_IO;
 
-   
+
 package body TACKON_RECORD_IO is
   NULL_TACKON_RECORD : TACKON_RECORD;
   SPACER : CHARACTER := ' ';
@@ -1564,7 +1564,7 @@ package body TACKON_RECORD_IO is
 
 end TACKON_RECORD_IO;
 
-   
+
 package body PREFIX_RECORD_IO is
 
     procedure GET(F : in FILE_TYPE; P : out PREFIX_RECORD) is
@@ -1601,9 +1601,9 @@ package body PREFIX_RECORD_IO is
 
   end PREFIX_RECORD_IO;
 
-   
+
 package body SUFFIX_RECORD_IO is
-   
+
     procedure GET(F : in FILE_TYPE; P : out SUFFIX_RECORD) is
     begin
       P := NULL_SUFFIX_RECORD;
@@ -2066,10 +2066,10 @@ package body ENDING_RECORD_IO is
       L := L + 1;
 --if S(L+N-1) = ' '  or else
 --   S(L+N+1) /= ' '  then
---if 
+--if
 --   S(L+N+1) /= ' '  then
--- TEXT_IO.PUT_LINE("ERROR in INFLECTION =>" & S);   
---else     
+-- TEXT_IO.PUT_LINE("ERROR in INFLECTION =>" & S);
+--else
       SF := S(L+1..L+N) & BLANKS(N+1..MAX_ENDING_SIZE);
       LAST := L + N;
       X := (N, SF(1..N) & BLANKS(N+1..MAX_ENDING_SIZE));
@@ -2213,7 +2213,7 @@ end INFLECTION_RECORD_IO;
 
 procedure ESTABLISH_INFLECTIONS_SECTION  is
 --  Loads the inflection array from the file prepared in FILE_INFLECTIONS_SECTION
---  If N = 0 (an artifical flag for the section for blank inflections = 5) 
+--  If N = 0 (an artifical flag for the section for blank inflections = 5)
 --  computes the LELL..LELF indices for use in WORD
   use INFLECTION_RECORD_IO;
   use LEL_SECTION_IO;
@@ -2488,7 +2488,7 @@ exception
   when CONSTRAINT_ERROR => null;
 end;
 
-         
+
     PELL(XN, XCH) := I - 1;
     NUMBER_OF_INFLECTIONS := NUMBER_OF_INFLECTIONS + I - 1;
     CLOSE(INFLECTIONS_SECTIONS_FILE);
@@ -2509,7 +2509,7 @@ exception
   when Text_IO.Name_Error  =>
     NEW_LINE;
     PUT_LINE("There is no " & INFLECTIONS_SECTIONS_NAME & " file.");
-    PUT_LINE("The program cannot work without one.");           
+    PUT_LINE("The program cannot work without one.");
     PUT_LINE("Make sure you are in the subdirectory containing the files");
     PUT_LINE("for inflections, dictionary, addons and uniques.");
     PUT_LINE("Alternatively, you may add the correct directory to the PATH");

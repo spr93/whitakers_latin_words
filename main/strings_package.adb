@@ -4,6 +4,7 @@ with Ada.Characters.Handling;
 with Ada.Strings; use Ada.Strings;
 with Ada.Strings.Fixed;
 
+
    package body STRINGS_PACKAGE is
    
       function MAX(A, B : in INTEGER) return INTEGER is
@@ -27,6 +28,7 @@ with Ada.Strings.Fixed;
       
          T : STRING(1..250) := (others => ' ');
          L, LX : INTEGER := 0;
+      
       begin
          LAST := 0;
       FILE_LOOP:

@@ -1,10 +1,11 @@
 with WORD_SUPPORT_PACKAGE; use WORD_SUPPORT_PACKAGE;   --  for STEM_IO
-with STRINGS_PACKAGE; use STRINGS_PACKAGE;
-with LATIN_FILE_NAMES; use LATIN_FILE_NAMES;
+with STRINGS_PACKAGE;      use STRINGS_PACKAGE;
+with LATIN_FILE_NAMES;     use LATIN_FILE_NAMES;
 with PREFACE;
 with INFLECTIONS_PACKAGE;
 with DICTIONARY_PACKAGE;
 with ADDONS_PACKAGE;
+
 pragma ELABORATE(INFLECTIONS_PACKAGE);
 pragma ELABORATE(DICTIONARY_PACKAGE);
 pragma ELABORATE(ADDONS_PACKAGE);
@@ -12,8 +13,8 @@ pragma ELABORATE(ADDONS_PACKAGE);
 
 package body LINE_STUFF is
 
-  procedure LOAD_DICTIONARY(DICT : in out DICTIONARY;
-                            DICTIONARY_FILE_NAME : in STRING)  is
+  procedure LOAD_DICTIONARY (DICT : in out DICTIONARY;
+                             DICTIONARY_FILE_NAME : in STRING)  is
   --  For loading a DICTIONARY list from a file
   --  Only used now for DICT.LOC
    
@@ -153,12 +154,12 @@ package body LINE_STUFF is
     elsif PT.POFS = ADJ  then
       if PT.ADJ.CO   = X  then   --  X for all KINDs
         if (STS(2)(1) /= STS(1)(1) and then
-           STS(2)(1) /= ' '  ) or
-          (STS(3)(1) /= STS(1)(1) and then
-           STS(3)(1) /= ' '  ) or
-          (STS(4)(1) /= STS(1)(1) and then
-           STS(4)(1) /= ' '  ) then
-          DICT(FC1) :=
+            STS(2)(1) /= ' '  ) or
+           (STS(3)(1) /= STS(1)(1) and then
+            STS(3)(1) /= ' '  ) or
+           (STS(4)(1) /= STS(1)(1) and then
+            STS(4)(1) /= ' '  ) then
+            DICT(FC1) :=
                  new DICTIONARY_ITEM'(( (STS(1), BLK_STEM, BLK_STEM, BLK_STEM),
           (ADJ, (PT.ADJ.DECL, POS)),
              --KIND, TRAN, MEAN), DICT(FC1));
@@ -254,12 +255,12 @@ package body LINE_STUFF is
 
     elsif PT.POFS = V  then
       if (STS(2)(1) /= STS(1)(1) and then
-         STS(2)(1) /= ' ' ) or
-        (STS(3)(1) /= STS(1)(1) and then
-         STS(3)(1) /= ' ' ) or
-        (STS(4)(1) /= STS(1)(1) and then
-         STS(4)(1) /= ' ' )  then
-         DICT(FC1) :=
+          STS(2)(1) /= ' ' )     or
+         (STS(3)(1) /= STS(1)(1) and then
+          STS(3)(1) /= ' ' )     or
+         (STS(4)(1) /= STS(1)(1) and then
+          STS(4)(1) /= ' ' )     then
+          DICT(FC1) :=
                new DICTIONARY_ITEM'(( (STS(1), ZZZ_STEM, ZZZ_STEM, ZZZ_STEM),
                            --PT, KIND, TRAN, MEAN), DICT(FC1) );
                            PT, TRAN, MEAN), DICT(FC1) );
@@ -267,11 +268,11 @@ package body LINE_STUFF is
                new DICTIONARY_ITEM'(( (ZZZ_STEM, STS(2), ZZZ_STEM, ZZZ_STEM),
                            --PT, KIND, TRAN, MEAN), DICT(FC2));
                            PT, TRAN, MEAN), DICT(FC2));
-       DICT(FC3) :=
+        DICT(FC3) :=
                new DICTIONARY_ITEM'(( (ZZZ_STEM, ZZZ_STEM, STS(3), ZZZ_STEM),
                           --PT, KIND, TRAN, MEAN), DICT(FC3));
                           PT, TRAN, MEAN), DICT(FC3));
-       DICT(FC4) :=
+        DICT(FC4) :=
                new DICTIONARY_ITEM'(( (ZZZ_STEM, ZZZ_STEM, ZZZ_STEM, STS(4)),
                           --PT, KIND, TRAN, MEAN), DICT(FC4));
                           PT, TRAN, MEAN), DICT(FC4));
@@ -279,13 +280,13 @@ package body LINE_STUFF is
           --DICT(FC1) := new DICTIONARY_ITEM'((STS, PT, KIND, TRAN, MEAN),
           DICT(FC1) := new DICTIONARY_ITEM'((STS, PT, TRAN, MEAN),
                                                   DICT(FC1));
-      end if;
+       end if;
 
     elsif PT.POFS = NUM  then
-      if PT.NUM.SORT = X  then   --  X for all KINDs
+        if PT.NUM.SORT = X  then   --  X for all KINDs
         if (STS(1)(1) /= ' ' )  then
           DICT(FC1) :=
-        new DICTIONARY_ITEM'(( (STS(1), BLK_STEM, BLK_STEM, BLK_STEM),
+         new DICTIONARY_ITEM'(( (STS(1), BLK_STEM, BLK_STEM, BLK_STEM),
                              --(NUM, (PT.NUM.DECL, CARD)), KIND, TRAN, MEAN),
                              (NUM, (PT.NUM.DECL, CARD, VALUE)), TRAN, MEAN),
                               DICT(FC1));
@@ -351,15 +352,16 @@ package body LINE_STUFF is
     PREFACE.PUT(" entries"); PREFACE.SET_COL(60);
     PREFACE.PUT_LINE("--  loaded correctly");
   exception
-      when others   =>
-        PREFACE.PUT_LINE("    LOAD_DICTIONARY exception        !!!!!!!!!!");
+    when others   =>
+        PREFACE.PUT_LINE("    LOAD_DICTIONARY exception -- DATA FILE MAY BE CORRUPT");
         PREFACE.PUT_LINE(ST_LINE(1..LAST));
         PREFACE.PUT_LINE(LINE(1..L));
         CLOSE(DICTIONARY_FILE);
         PREFACE.SET_COL(33); PREFACE.PUT("--  ");
         PREFACE.PUT(NUMBER_OF_DICTIONARY_ENTRIES, 6);
         PREFACE.PUT(" entries"); PREFACE.SET_COL(55);
-        PREFACE.PUT_LINE("--  Loaded anyway   ");
+        PREFACE.PUT_LINE("--  loaded anyway");
+        PREFACE.PUT_LINE("    USE WITH CAUTION - DICTIONARY DATA PARTIALLY OR INCORRECTLY LOADED");
   end LOAD_DICTIONARY;
 
   procedure LOAD_STEM_FILE(D_K : DICTIONARY_KIND)  is
@@ -697,7 +699,6 @@ package body LINE_STUFF is
       LAST := M;
     end GET;
 
-
     procedure PUT(S : out STRING; P : in SUFFIX_LINE) is
       L : INTEGER := S'FIRST - 1;
       M : INTEGER := 0;
@@ -725,6 +726,7 @@ package body LINE_STUFF is
 
   end SUFFIX_LINE_IO;
 
+  
   package body UNIQUE_ENTRY_IO is
     use QUALITY_RECORD_IO;
     use KIND_ENTRY_IO;
@@ -788,7 +790,6 @@ package body LINE_STUFF is
       L := L + 1;
       GET(S(L+1..S'LAST), P.TRAN, LAST);
     end GET;
-
 
     procedure PUT(S : out STRING; P : in UNIQUE_ENTRY) is
       L : INTEGER := S'FIRST - 1;
