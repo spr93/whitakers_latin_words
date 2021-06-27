@@ -3,6 +3,12 @@ with Ada.Characters.Handling;
 with Ada.Strings; use Ada.Strings;
 with Ada.Strings.Fixed;
 
+-- This package originally implemented string-handling procedures that later became
+-- part of the Ada 95 standard.  
+-- Today it contains output-formatting routines and a series of renames that reduce
+-- the number of standard packages that need to be with'd in other units.
+
+
 package STRINGS_PACKAGE is
 
    NULL_STRING : constant String (2 .. 1) := (others => ' ');

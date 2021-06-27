@@ -3,11 +3,7 @@ with TEXT_IO;
 
 package DEVELOPER_PARAMETERS is
    
---  These are a few strange declarations to be used in diagnostics;
-  SRA_MAX, SRAA_MAX, DMA_MAX     : INTEGER := 0;
-  PA_LAST_MAX, FINAL_PA_LAST_MAX : INTEGER := 0;
-  
---  This package defines a number of parameters that areused in the program
+--  This package defines a number of parameters that are used in the program
 --  The default values are set in the body, so that they may be changed easily
 
 --  These files are used by the program if requested, but not necessary
@@ -18,11 +14,7 @@ package DEVELOPER_PARAMETERS is
   MDEV_FILE : TEXT_IO.FILE_TYPE;
   MDEV_FULL_NAME : constant STRING := "WORD.MDV";
 
-  STATS : TEXT_IO.FILE_TYPE;
-  STATS_FULL_NAME : constant STRING := "WORD.STA";
-
   type MDEV_TYPE is (   
-
                       SHOW_DICTIONARY,      
                       SHOW_DICTIONARY_LINE, 
                       SHOW_DICTIONARY_CODES, 
@@ -55,9 +47,10 @@ package DEVELOPER_PARAMETERS is
 
                       MINIMIZE_OUTPUT         );
 
+
   package MDEV_TYPE_IO is new TEXT_IO.ENUMERATION_IO(MDEV_TYPE); 
 
-  type MDEV_ARRAY is array (MDEV_TYPE) of BOOLEAN;
+  type    MDEV_ARRAY   is array (MDEV_TYPE) of BOOLEAN;
 
 
   WORDS_MDEV : MDEV_ARRAY;        --  Initialized in body
@@ -74,5 +67,3 @@ package DEVELOPER_PARAMETERS is
 
 
 end DEVELOPER_PARAMETERS;
-
-                                      

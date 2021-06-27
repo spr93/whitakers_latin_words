@@ -8,7 +8,7 @@
   with WORD_PACKAGE; use WORD_PACKAGE;
   with ENGLISH_SUPPORT_PACKAGE; use ENGLISH_SUPPORT_PACKAGE;
   with DICTIONARY_FORM;
-  with List_Package; use LIST_PACKAGE; -- for trim_bars and ANSI formatting
+  with List_Package;
     
  procedure SEARCH_ENGLISH(INPUT_ENGLISH_WORD : in STRING; POFS : in PART_OF_SPEECH_TYPE := X) is
      use EWDS_DIRECT_IO;
@@ -137,22 +137,13 @@ DICT_IO.READ(DICT_FILE(GENERAL), DE, DICT_IO.COUNT(OUTPUT_ARRAY(I).N));
 --TEXT_IO.PUT_LINE("DUMP_OUTPUT PART");             
             if DE.PART.POFS = N  then
                 DECN_RECORD_IO.PUT(OUTPUT, DE.PART.N.DECL);
-               --   TEXT_IO.PUT(OUTPUT, "  " & GENDER_TYPE'IMAGE(DE.PART.N.GENDER) & "  "); -- SPR:  This was duplicative:
-                                                                                            -- DICTIONARY_FORM(DE) already outputs the gender
              end if;
              if (DE.PART.POFS = V)   then
                DECN_RECORD_IO.PUT(OUTPUT, DE.PART.V.CON);
             end if;
-            
--- SPR:  This was duplicative:
--- DICTIONARY_FORM(DE) already outputs the VERB_KIND            
---               if (DE.PART.POFS = V)  and then  (DE.PART.V.KIND in GEN..PERFDEF)  then
---                 TEXT_IO.PUT(OUTPUT, "  " & VERB_KIND_TYPE'IMAGE(DE.PART.V.KIND) & "  ");
---               end if;
       
  --TEXT_IO.PUT_LINE("DUMP_OUTPUT CODE");             
 
- 
        if WORDS_MDEV(SHOW_DICTIONARY_CODES)    then
                  TEXT_IO.PUT(OUTPUT, " [");
                  AGE_TYPE_IO.PUT(OUTPUT, DE.TRAN.AGE);
@@ -174,10 +165,10 @@ DICT_IO.READ(DICT_FILE(GENERAL), DE, DICT_IO.COUNT(OUTPUT_ARRAY(I).N));
             end if;
             
            if (WORDS_MODE (SHOW_FREQUENCY) or (DE.TRAN.FREQ >= D)) and
-             (TRIM (DICTIONARY_FREQUENCY (DE.TRAN.FREQ))'LENGTH /= 0)
+             (TRIM (LIST_PACKAGE.DICTIONARY_FREQUENCY (DE.TRAN.FREQ))'LENGTH /= 0)
            then
               Text_IO.Put
-           (OUTPUT, "  " & TRIM (DICTIONARY_FREQUENCY (DE.TRAN.FREQ)));
+           (OUTPUT, "  " & TRIM (LIST_PACKAGE.DICTIONARY_FREQUENCY (DE.TRAN.FREQ)));
             end if;
             
             --TEXT_IO.PUT_LINE("DUMP_OUTPUT MEAN");   

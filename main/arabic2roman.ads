@@ -1,3 +1,6 @@
+pragma Ada_2012;
+-- USES ADA 2012 CONDITIONAL CASE EXPRESSIONS IN OUTPUT LOOPS
+
 with Ada.Text_IO;           use Ada.Text_IO;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
@@ -33,8 +36,6 @@ private
    function Generate_Subtractive (Arabic_Num : in Integer) return Unbounded_String;
    function Integer_Test (Arabic_String: in String) return Boolean;
 
-   pragma Inline_Always(Generate_Additive);
-   pragma Inline_Always(Generate_Subtractive);
    pragma Inline_Always(Integer_Test);
 
 end  Arabic2Roman;

@@ -169,11 +169,8 @@ package body Parse_Package is
                if W (I) = 'Q' and then W (I + 1) = 'V' then
                   W (I + 1) := 'U';
                end if;
-               if W (I) = 'q' and then W (I + 1) = 'v'
-               then                    -- SPR:  added lower case condition because
-                  W (I +
-                     1) :=         -- the above resulted in inconsistent output
-                    'u';
+               if W (I) = 'q' and then W (I + 1) = 'v' then
+                  W (I + 1) := 'u';
                end if;
             end loop;
 
@@ -186,8 +183,6 @@ package body Parse_Package is
                   POFS       : PART_OF_SPEECH_TYPE := X;
                begin
 
---  Extract from the rest of the line Should do AUX here
---  !!!!!!!!!!!!!!!!!!!!!!!!
                   EXTRACT_POFS :
                   begin
                      PART_OF_SPEECH_TYPE_IO.Get (LINE (K + 1 .. L), POFS, L);
@@ -196,6 +191,7 @@ package body Parse_Package is
                      when others =>
                         POFS := X;
                   end EXTRACT_POFS;
+
 --PART_OF_SPEECH_TYPE_IO.PUT(POFS);
 --TEXT_IO.NEW_LINE;
 
@@ -1223,11 +1219,11 @@ package body Parse_Package is
       else
 
          PREFACE.PUT_LINE
-           ("Copyright (c) William Whitaker 1993-2006 - free for any use");
+           ("Copyright (c) William Armstrong Whitaker 1993-2006 - free for any use");
          PREFACE.PUT_LINE
-           ("with modifications and additions 2008-2020, see github.com/spr93");
+           ("with modifications and additions 2008-2021, see github.com/spr93");
          PREFACE.PUT_LINE
-           ("In memoriam, Gen. William Whitaker, Chair of DoD Working Group responsible for");
+           ("In memoriam, Gen. Wm. Whitaker, Chair of DoD Working Group responsible for");
          PREFACE.PUT_LINE
            ("establishing the Ada language and accomplished amateur Latin lexicographer,");
          PREFACE.PUT_LINE
@@ -1317,7 +1313,7 @@ package body Parse_Package is
                PREFACE.PUT ("Input a word or line of English and press ENTER");
                PREFACE.NEW_LINE;
                PREFACE.PUT
-                 ("   or input a word <space> and part of speech restriction [ADJ, ADV, N, V]]");
+                 ("   or input a word <space> and part of speech restriction [ADJ, ADV, N, V]");
 
          end case;
 
@@ -1446,7 +1442,7 @@ package body Parse_Package is
                     and then (Name (Current_Input) = Name (Standard_Input))
                     and then not CONFIG.SUPPRESS_PREFACE
                   then
-                     SHOW_HELP (Upper_Case (TRIM (LINE (2 .. L))));
+                     SHOW_HELP (Upper_Case (TRIM (LINE (2 .. L))), Current_Output);
 
                   elsif LINE (1) = CHANGE_LANGUAGE_CHARACTER
                     and then not
