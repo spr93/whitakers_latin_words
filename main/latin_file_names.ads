@@ -22,6 +22,7 @@ package LATIN_FILE_NAMES is
   --  These files are input files and may have any name legal in your system
   --  and contain the ASCII information copied from the porting system
 
+  
   INFLECTIONS_FULL_NAME     : constant STRING := "INFLECTS.LAT";
   INFLECTIONS_SECTIONS_NAME : constant STRING := "INFLECTS.SEC";
 
@@ -32,15 +33,12 @@ package LATIN_FILE_NAMES is
   MODE_FULL_NAME            : constant STRING := "WORD.MOD";
   OUTPUT_FULL_NAME          : constant STRING := "WORD.OUT";
   UNKNOWNS_FULL_NAME        : constant STRING := "WORD.UNK";
-  PARSE_FULL_NAME           : constant STRING := "WORD.PRS";
 
   --  These file names are used with extensions (e.g., GEN, SPE, LOC) 
   --  for the various dictionaries
   --  The function ADD_FILE_NAME_EXTENSION below is used to create 
   --  a full file name
-  --  Note that for DOS they are not complete names (no '.')
-  --  but DOS is forgiving and will give it a pass
-
+  
   DICTIONARY_FILE_NAME  : constant STRING := "DICT";
   DICT_FILE_NAME        : constant STRING := "DICTFILE";
   DICT_LINE_NAME        : constant STRING := "DICTLINE";
@@ -52,4 +50,5 @@ package LATIN_FILE_NAMES is
   --  This is the function that creates a file name legal for your system
   --  with a FILE_NAME defined above and a program specified extension
 
-end LATIN_FILE_NAMES;   
+end LATIN_FILE_NAMES; 
+

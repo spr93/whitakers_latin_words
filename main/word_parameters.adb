@@ -259,6 +259,10 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
       NEW_LINE(MODE_FILE);
     end loop;
     CLOSE(MODE_FILE);
+    
+    exception 
+    when others =>
+      Put_Line("Error saving WORD.MOD file.  Changes may not have been saved.");
   end PUT_MODES;
 
   procedure GET_MODES is --(M : out MODE_ARRAY) is
@@ -475,11 +479,11 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
     when NAME_ERROR  =>
       WORDS_MODE := DEFAULT_MODE_ARRAY;
     when BAD_MODE_FILE  =>
-      PUT_LINE("MODE_FILE exists, but empty or corrupted - Default modes used");
-      PUT_LINE("You can set new parameters with CHANGE PARAMETERS and save.");
+      PREFACE.PUT_LINE("MODE_FILE exists, but empty or corrupted.  Falling back to defaults.");
+      PREFACE.PUT_LINE("You can create a replacement file by typing " & CHANGE_PARAMETERS_CHARACTER & " and saving."); 
       WORDS_MODE := DEFAULT_MODE_ARRAY;
   when others  =>
-      PUT_LINE("MODE_FILE others ERROR");
+      PREFACE.PUT_LINE("UKNOWN ERROR LOADING MODE_FILE.  Falling back to defaults.");
       WORDS_MODE := DEFAULT_MODE_ARRAY;
     end DO_MODE_FILE;
 
@@ -487,12 +491,12 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
      (not TEXT_IO.IS_OPEN(OUTPUT)) and then
      (WORDS_MODE(HAVE_OUTPUT_FILE))  then
     TEXT_IO.CREATE(OUTPUT, TEXT_IO.OUT_FILE, OUTPUT_FULL_NAME);
-    --TEXT_IO.PUT_LINE("WORD.OUT Created at Initialization");
+    --TEXT_IO.PUT_LINE("WORD.OUT created at initialization");
     PREFACE.PUT_LINE("WORD.OUT created");
   end if;
   if not TEXT_IO.IS_OPEN(UNKNOWNS) and then WORDS_MODE(WRITE_UNKNOWNS_TO_FILE)  then
     TEXT_IO.CREATE(UNKNOWNS, TEXT_IO.OUT_FILE, UNKNOWNS_FULL_NAME);
-    PREFACE.PUT_LINE("WORD.UNK Created at Initialization");
+    PREFACE.PUT_LINE("WORD.UNK created at initialization");
   end if;
 end INITIALIZE_WORD_PARAMETERS;
 

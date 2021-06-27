@@ -5,6 +5,10 @@ with ADDONS_PACKAGE;      use ADDONS_PACKAGE;
 with UNIQUES_PACKAGE;     use UNIQUES_PACKAGE;
 
 
+-- This somewhat confusingly named package processes "lines" in the dictionary data files
+-- It contains routines for loading the dictionary data at program startup, then it 
+-- processes dictionary entries during searches.
+
 package LINE_STUFF is
   pragma Elaborate_Body;
    

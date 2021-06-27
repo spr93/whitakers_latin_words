@@ -20,32 +20,26 @@ begin
 
    -- FIND DATA FILES
    -- If the always-necessary INFLECTS.SEC isn't in the working directory, see
-   -- if we can find them
-   if
-     (not Ada.Directories.Exists ("INFLECTS.SEC")
-      and then Ada.Environment_Variables.Exists ("LATINWORDS"))
-   then
-      Put_Line
-        ("LATINWORDS environment variable set; using data files at " &
-         Ada.Environment_Variables.Value ("LATINWORDS"));
-      Ada.Directories.Set_Directory
-        (Ada.Environment_Variables.Value ("LATINWORDS"));
-   else
-      CHECK_PATH_VARIABLE;
-   end if;
-
+   -- if we can find it:  First, in a path designated using the LATINWORDS or LATIN_WORDS environment
+   --- variables.  Second, in any directory set in the PATH variable. Ariables;
+   -- or (2) a directory in the PATH environment variable.
+   if not Ada.Directories.Exists ("INFLECTS.SEC")
+      then
+          Find_Dictionary_Files;
+   end if; 
+  
    --  SIMPLE INTERACTIVE MODE
    if Ada.Command_Line.Argument_Count = 0 then
-      METHOD           := INTERACTIVE;
-      SUPPRESS_PREFACE := False;
+      Method           := Interactive;
+      Suppress_Preface := False;
       Set_Output (Standard_Output);
-      INITIALIZE_WORD_PARAMETERS;
-      INITIALIZE_DEVELOPER_PARAMETERS;
-      INITIALIZE_WORD_PACKAGE;
+      Initialize_Word_Parameters;
+      Initialize_Developer_Parameters;
+      Initialize_Word_Package;
       Parse;
       return;
 
-      --  COMMAND-LINE ARGUMENTS ("new" style to modify interactive mode)
+   --  COMMAND-LINE ARGUMENTS ("new" style to modify interactive mode)
    elsif
      (TRIM (Ada.Command_Line.Argument (1)) (1) = '-' or
       TRIM (Ada.Command_Line.Argument (1)) (1) = HELP_CHARACTER)
@@ -75,18 +69,18 @@ begin
                      if CL_Arguments (ENGLISH_ONLY) then
                         raise Args_Exception;
                      else
-                        CL_Arguments (LATIN_ONLY) := True;
+                        CL_Arguments (LATIN_ONLY)   := True;
                      end if;
                   when 'R' =>
-                     CL_Arguments (READ_ONLY) := True;
+                     CL_Arguments (READ_ONLY)       := True;
                   when 'M' =>
-                     CL_Arguments (MEANINGS_ONLY) := True;
-                     CONFIGURATION                :=
+                     CL_Arguments (MEANINGS_ONLY)   := True;
+                     CONFIGURATION                  :=
                        ONLY_MEANINGS;      -- re-use this existing setting; nothing more to do to enforce meanings only
                   when 'N' =>
-                     CL_Arguments (NO_FILES) := True;
+                     CL_Arguments (NO_FILES)        := True;
                   when 'X' =>
-                     CL_Arguments (NO_EXIT) := True;
+                     CL_Arguments (NO_EXIT)         := True;
                      pragma Unreserve_All_Interrupts;
                      Attach_Handler (No_Exit_Handler_Access, SIGINT);
                   when '?' | 'H' =>
@@ -106,16 +100,16 @@ begin
 
          -- Still in the "elsif" statement => we're using the - / -- style
          -- arguments => INTERACTIVE MODE STARTUP:
-         METHOD           := INTERACTIVE;
-         SUPPRESS_PREFACE := False;
+         Method           := Interactive;
+         Suppress_Preface := False;
          Set_Output (Standard_Output);
-         INITIALIZE_WORD_PARAMETERS;
-         INITIALIZE_DEVELOPER_PARAMETERS;
-         INITIALIZE_WORD_PACKAGE;
+         Initialize_Word_Parameters;
+         Initialize_Developer_Parameters;
+         Initialize_Word_Package;
 
-         if CL_Arguments (NO_EXIT) then
+         If Cl_Arguments (No_Exit) Then
             loop
-               Parse; -- return => infinite loop avoids more complex exception logic
+               Parse;
             end loop;
          else
             Parse;
@@ -125,7 +119,7 @@ begin
       exception
 
          when Args_Exception =>     -- Parse may raise NO_EXCEPTION_EXCEPTION; handler is outside the block
-            words_help.SHOW_HELP ("ARG");
+            Words_Help.Show_Help ("ARG", OUTPUT);
             return;
       end New_Style_Arguments;
 
@@ -133,7 +127,7 @@ begin
 
    -- NOT entering interactive mode; no '-'-style parameters; back to classic
    -- Words startup
-
+   
    SUPPRESS_PREFACE := True;
    INITIALIZE_WORD_PARAMETERS;
    INITIALIZE_DEVELOPER_PARAMETERS;
