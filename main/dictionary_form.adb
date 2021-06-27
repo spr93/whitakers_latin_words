@@ -89,7 +89,8 @@ begin
      (((DE.PART.POFS = N) and then (DE.PART.N.DECL.WHICH = 9)) or
       ((DE.PART.POFS = ADJ)
        and then
-       ((DE.PART.ADJ.DECL.WHICH = 9) or (DE.PART.ADJ.CO in COMP | SUPER))) or
+       ((DE.PART.ADJ.DECL.WHICH = 9) or (DE.PART.ADJ.CO = COMP) or
+        (DE.PART.ADJ.CO = SUPER))) or
       ((DE.PART.POFS = V) and then (DE.PART.V.CON = (9, 8))) or
       ((DE.PART.POFS = V) and then (DE.PART.V.CON = (9, 9))))
    then
@@ -150,7 +151,7 @@ begin
 
       elsif DE.PART.N.DECL.WHICH = 3 then
          OX (1) := Add (DE.STEMS (1), "");
-         if DE.PART.N.DECL.VAR in 7 | 9 then
+         if ((DE.PART.N.DECL.VAR = 7) or (DE.PART.N.DECL.VAR = 9)) then
             OX (2) := Add (DE.STEMS (2), "os/is");
          else
             OX (2) := Add (DE.STEMS (2), "is");

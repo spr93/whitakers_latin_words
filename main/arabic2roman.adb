@@ -1,10 +1,12 @@
+pragma Ada_2012;
+-- USES ADA 2012 CONDITIONAL CASE EXPRESSIONS IN OUTPUT LOOPS
+
 with WORD_PARAMETERS;       use WORD_PARAMETERS;
 with DEVELOPER_PARAMETERS;  use DEVELOPER_PARAMETERS;
 with STRINGS_PACKAGE;       use STRINGS_PACKAGE;
 with CONFIG;                use CONFIG;
 
 
--- USES ADA 2012 CONDITIONAL CASE EXPRESSION IN OUTPUT LOOPS
 package body Arabic2Roman is
 
   procedure Arabic2Roman
@@ -129,7 +131,7 @@ package body Arabic2Roman is
                   return;
             end case;
 
-            -- Is the number low enough to do an additive form?  is there a unique additive form?
+            -- Is the number low enough to do an additive form?  Is there a unique additive form?
             if Arabic_Num <= 100_000 then
                Roman_Num_Record.Age_X := Generate_Additive (Arabic_Num);
 
@@ -138,7 +140,6 @@ package body Arabic2Roman is
                end if;
             end if;
 
-            -- user note for OMIT_MEDIEVAL and OMIT_UNCOMMONG
             if ((WORDS_MDEV (OMIT_MEDIEVAL) = True) or
                 (WORDS_MDEV (OMIT_UNCOMMON) = True))
                 and then
@@ -249,7 +250,7 @@ package body Arabic2Roman is
                if WORDS_MODE (SHOW_FREQUENCY) = True
                then
                   Set_Col (OUTPUT, 69);
-                  if Is_Negative and Put_Additive = False then
+                  if Is_Negative and (Put_Additive = False) then
                      Put (OUTPUT, "very rare");
                   elsif Is_Negative = False then
                      Put (OUTPUT, "mostfreq");
@@ -486,7 +487,7 @@ package body Arabic2Roman is
          end case;
          Counter :=
            Counter + 2;           -- Move two positions down the Roman numeral array each time
-         exit when Counter > 11;  -- shouldnt ever hit this, but just in case
+         exit when Counter > 11;  -- Can't hit this unless code modified to allow > 999_999_999
       end loop;
 
       if Arabic_String2'Length >= 8 then
@@ -502,7 +503,7 @@ package body Arabic2Roman is
 
       Built_String : Unbounded_String;
 
-      -- Rules get complex, especially starting at 4_000, so not using an array for readability and debugging purposes
+      -- Rules get complex starting at about 4_000, so no fancy stuff here; keep it understandable
    begin
 
       case (Arabic_Num / 10_000) mod 10 is
@@ -580,8 +581,6 @@ package body Arabic2Roman is
             null;
       end case;
 
-      -- Handle tens
-
       case (Arabic_Num / 10) mod 10 is
          when 0 =>
             null;
@@ -607,7 +606,6 @@ package body Arabic2Roman is
             null;
       end case;
 
-      -- handle final digit
       case Arabic_Num mod 10 is
          when 0 =>
             null;
@@ -636,10 +634,10 @@ package body Arabic2Roman is
 
    end Generate_Subtractive;
 
-   function Integer_Test (Arabic_String : in String) return Boolean is
+  function Integer_Test (Arabic_String : in String) return Boolean is
+
       -- Checks that PARSE and Arabic2Roman have left us with valid input
-      -- and lets us handle exceptions silently so we don't interrupt PARSE
-      -- if somehow nonsense characters have made it to this point
+      -- and handles erroneous input silently
       type Valid_Integer is new Integer range -999_999_999 .. 999_999_999;
       Tester : Valid_Integer;
    begin
