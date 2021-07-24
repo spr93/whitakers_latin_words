@@ -28,9 +28,8 @@ procedure LIST_SWEEP (PA : in out PARSE_ARRAY; PA_LAST : in out Integer) is
 
    function ALLOWED_STEM (PR : PARSE_RECORD) return Boolean is
       ALLOWED : Boolean := True;   --  modify as necessary and return it
-      --DE : DICTIONARY_ENTRY;
    begin
-      --TEXT_IO.PUT("ALLOWED? >"); PARSE_RECORD_IO.PUT(PR); TEXT_IO.NEW_LINE;
+--DEBUG: TEXT_IO.PUT("ALLOWED? >"); PARSE_RECORD_IO.PUT(PR); TEXT_IO.NEW_LINE;
       if PR.D_K not in GENERAL .. LOCAL then
          return True;
       end if;
@@ -40,7 +39,7 @@ procedure LIST_SWEEP (PA : in out PARSE_ARRAY; PA_LAST : in out Integer) is
 
       DICT_IO.Read (DICT_FILE (PR.D_K), DE, PR.MNPC);
 
---TEXT_IO.PUT("ALLOWED? >"); DICTIONARY_ENTRY_IO.PUT(DE); TEXT_IO.NEW_LINE;
+      --DEBUG: TEXT_IO.PUT("ALLOWED? >"); DICTIONARY_ENTRY_IO.PUT(DE); TEXT_IO.NEW_LINE;
 
       --  NOUN CHECKS
 
@@ -92,7 +91,7 @@ procedure LIST_SWEEP (PA : in out PARSE_ARRAY; PA_LAST : in out Integer) is
             --  VERB CHECKS
 
          when V =>
-            --TEXT_IO.PUT("VERB  ");
+
             --  Check for Verb 3 1 dic/duc/fac/fer shortened imperative See G&L
             --  130.5
             declare
@@ -112,8 +111,8 @@ procedure LIST_SWEEP (PA : in out PARSE_ARRAY; PA_LAST : in out Integer) is
                         ALLOWED := False;
                      end if;
                   elsif STEM'Length = 2
-                  then      -- SPR:  This change enables "em" (imperative of emo) when TRIM_OUTPUT is on
-                     null;  --       Otherwise the output is just the interject "em".  Probably other special cases too
+                  then      -- SPR:  This change prevents TRIM_OUTPUT from dropping some very short words
+                     null;  --       E.g., it will drop "em" (imperative of emo).
                   else
                      ALLOWED := False;
                   end if;
@@ -131,7 +130,7 @@ procedure LIST_SWEEP (PA : in out PARSE_ARRAY; PA_LAST : in out Integer) is
                then
                   null;
                else
-                  --PUT("IMP not in permitted person  "); PUT(PR.IR); NEW_LINE;
+         --DEBUG: PUT("IMP not in permitted person  "); PUT(PR.IR); NEW_LINE;
                   ALLOWED := False;
                end if;
             end if;
@@ -141,29 +140,29 @@ procedure LIST_SWEEP (PA : in out PARSE_ARRAY; PA_LAST : in out Integer) is
                if (PR.IR.QUAL.V.PERSON = 3) then
                   null;
                else
-                  --PUT("IMPERS not in 3rd person     "); PUT(PR.IR); NEW_LINE;
+         --DEBUG: PUT("IMPERS not in 3rd person     "); PUT(PR.IR); NEW_LINE;
                   ALLOWED := False;
                end if;
             end if;
 
             --  Check for V DEP and demand PASSIVE
             if (DE.PART.V.KIND = DEP) then
-               --TEXT_IO.PUT("DEP  ");
+               --DEBUG: TEXT_IO.PUT("DEP  ");
                if (PR.IR.QUAL.V.TENSE_VOICE_MOOD.VOICE = ACTIVE) and
                  (PR.IR.QUAL.V.TENSE_VOICE_MOOD.MOOD = INF) and
                  (PR.IR.QUAL.V.TENSE_VOICE_MOOD.TENSE = FUT)
                then
-                  --TEXT_IO.PUT("PASSIVE  ");
---TEXT_IO.PUT("DEP    FUT INF not in ACTIVE "); PUT(PR.IR); TEXT_IO.NEW_LINE;
+                  --DEBUG: TEXT_IO.PUT("PASSIVE  ");
+                  --DEBUG: TEXT_IO.PUT("DEP    FUT INF not in ACTIVE "); PUT(PR.IR); TEXT_IO.NEW_LINE;
                   ALLOWED := True;
                elsif (PR.IR.QUAL.V.TENSE_VOICE_MOOD.VOICE = ACTIVE) and
                  (PR.IR.QUAL.V.TENSE_VOICE_MOOD.MOOD in IND .. INF)
                then
-                  --TEXT_IO.PUT("ACTIVE  ");
-                  --TEXT_IO.PUT("DEP    not in PASSIVE     NOT ALLOWED   "); PUT(PR.IR); TEXT_IO.NEW_LINE;
+                  --DEBUG: TEXT_IO.PUT("ACTIVE  ");
+                  --DEBUG: TEXT_IO.PUT("DEP    not in PASSIVE     NOT ALLOWED   "); PUT(PR.IR); TEXT_IO.NEW_LINE;
                   ALLOWED := False;
                else
-                  --TEXT_IO.PUT("??????  ");
+                  --DEBUG: TEXT_IO.PUT("??????  ");
                   null;
                end if;
             end if;
@@ -174,13 +173,13 @@ procedure LIST_SWEEP (PA : in out PARSE_ARRAY; PA_LAST : in out Integer) is
                  (PR.IR.QUAL.V.TENSE_VOICE_MOOD.TENSE in PRES .. FUT) and
                  (PR.IR.QUAL.V.TENSE_VOICE_MOOD.MOOD in IND .. IMP)
                then
-               --PUT("SEMIDEP    Pres not in ACTIVE "); PUT(PR.IR); NEW_LINE;
+         --DEBUG: PUT("SEMIDEP    Pres not in ACTIVE "); PUT(PR.IR); NEW_LINE;
                   ALLOWED := False;
                elsif (PR.IR.QUAL.V.TENSE_VOICE_MOOD.VOICE = ACTIVE) and
                  (PR.IR.QUAL.V.TENSE_VOICE_MOOD.TENSE in PERF .. FUTP) and
                  (PR.IR.QUAL.V.TENSE_VOICE_MOOD.MOOD in IND .. IMP)
                then
-               --PUT("SEMIDEP    Perf not in PASSIVE "); PUT(PR.IR); NEW_LINE;
+         --DEBUG: PUT("SEMIDEP    Perf not in PASSIVE "); PUT(PR.IR); NEW_LINE;
                   ALLOWED := False;
                else
                   null;
@@ -234,7 +233,7 @@ procedure LIST_SWEEP (PA : in out PARSE_ARRAY; PA_LAST : in out Integer) is
             ALLOWED := False;
          end if;
       end if;                                           --  Non parts
-      --TEXT_IO.PUT_LINE("Returning FOR ALLOWED    " & BOOLEAN'IMAGE(ALLOWED));
+      --DEBUG: TEXT_IO.PUT_LINE("Returning FOR ALLOWED    " & BOOLEAN'IMAGE(ALLOWED));
       return ALLOWED;
 
    end ALLOWED_STEM;
@@ -257,7 +256,7 @@ procedure LIST_SWEEP (PA : in out PARSE_ARRAY; PA_LAST : in out Integer) is
          DE : DICTIONARY_ENTRY;
 
       begin
---TEXT_IO.PUT("DEPR  "); PARSE_RECORD_IO.PUT(PR); TEXT_IO.NEW_LINE;
+--DEBUG: TEXT_IO.PUT("DEPR  "); PARSE_RECORD_IO.PUT(PR); TEXT_IO.NEW_LINE;
          if PR.MNPC = NULL_MNPC then
             return NULL_DICTIONARY_ENTRY;
          else
@@ -275,8 +274,8 @@ procedure LIST_SWEEP (PA : in out PARSE_ARRAY; PA_LAST : in out Integer) is
             end if;
          end if;
 
---TEXT_IO.PUT_LINE("Returning from DEPR   MNPC = " & INTEGER'IMAGE(INTEGER(PR.MNPC)) & "  ");
---DICTIONARY_ENTRY_IO.PUT(DE); TEXT_IO.NEW_LINE;
+--DEBUG: TEXT_IO.PUT_LINE("Returning from DEPR   MNPC = " & INTEGER'IMAGE(INTEGER(PR.MNPC)) & "  ");
+--DEBUG: DICTIONARY_ENTRY_IO.PUT(DE); TEXT_IO.NEW_LINE;
          return DE;
       end DEPR;
 
@@ -391,21 +390,26 @@ procedure LIST_SWEEP (PA : in out PARSE_ARRAY; PA_LAST : in out Integer) is
       --  Fix up the Archaic/Medieval
       if WORDS_MODE (TRIM_OUTPUT) then
          --  Remove those inflections if MDEV and there is other valid
---         TEXT_IO.PUT_LINE("SCANNING FOR TRIM   SL'FIRST = " & INTEGER'IMAGE(SL'FIRST) & "   SL'LAST = " & INTEGER'IMAGE(SL'LAST) );
---         for I in SL'FIRST..SL_LAST  loop
---         PARSE_RECORD_IO.PUT(SL(I)); TEXT_IO.NEW_LINE;
---         end loop;
+--DEBUG: TEXT_IO.PUT_LINE("SCANNING FOR TRIM   SL'FIRST = " & INTEGER'IMAGE(SL'FIRST) & "   SL'LAST = " & INTEGER'IMAGE(SL'LAST) );
+--DEBUG:         for I in SL'FIRST..SL_LAST  loop
+--DEBUG:         PARSE_RECORD_IO.PUT(SL(I)); TEXT_IO.NEW_LINE;
+--DEBUG:         end loop;
 
          --  Check to see if we can afford to TRIM, if there will be something
          --  left over
          for I in SL'FIRST .. SL_LAST loop
-            --TEXT_IO.PUT_LINE("SCANNING FOR TRIM   I = " & INTEGER'IMAGE(I) & "  INFL AGE = " & AGE_TYPE'IMAGE(SL(I).IR.AGE));
+
+--DEBUG: TEXT_IO.PUT_LINE("SCANNING FOR TRIM   I = " & INTEGER'IMAGE(I) & "  INFL AGE = " & AGE_TYPE'IMAGE(SL(I).IR.AGE));
+
             if SL (I).D_K in GENERAL .. LOCAL then
 
                DICT_IO.Set_Index (DICT_FILE (SL (I).D_K), SL (I).MNPC);
---TEXT_IO.PUT(INTEGER'IMAGE(INTEGER(SL(I).MNPC)));
+
+               --DEBUG: TEXT_IO.PUT(INTEGER'IMAGE(INTEGER(SL(I).MNPC)));
+
                DICT_IO.Read (DICT_FILE (SL (I).D_K), DE);
---DICTIONARY_ENTRY_IO.PUT(DE); TEXT_IO.NEW_LINE;
+
+--DEBUG: DICTIONARY_ENTRY_IO.PUT(DE); TEXT_IO.NEW_LINE;
 
                if ((SL (I).IR.AGE = X) or else (SL (I).IR.AGE > A)) and
                  ((DE.TRAN.AGE = X) or else (DE.TRAN.AGE > A))
@@ -433,7 +437,7 @@ procedure LIST_SWEEP (PA : in out PARSE_ARRAY; PA_LAST : in out Integer) is
                  and then SL (I).IR.QUAL.N.DECL = (9, 8)
                then
                   HAS_NOUN_ABBREVIATION := True;
-         --TEXT_IO.PUT_LINE("Has noun abbreviation   I = " & INTEGER'IMAGE(I));
+--DEBUG: TEXT_IO.PUT_LINE("Has noun abbreviation   I = " & INTEGER'IMAGE(I));
                   --       elsif SL(I).IR.QUAL.POFS = ADJ  and then
                   --          SL(I).IR.QUAL.ADJ.DECL = (9, 8) then
                   --         HAS_ADJECTIVE_ABBREVIATION := TRUE;
@@ -454,31 +458,31 @@ procedure LIST_SWEEP (PA : in out PARSE_ARRAY; PA_LAST : in out Integer) is
                  (SL (I)) or               --  Remove not ALLOWED_STEM & null
 
                (PA (I) = NULL_PARSE_RECORD)) then
-               --TEXT_IO.PUT_LINE("Not ALLOWED   SL_LAST = " & INTEGER'IMAGE(SL_LAST) & "  J = " & INTEGER'IMAGE(I));
+--DEBUG: TEXT_IO.PUT_LINE("Not ALLOWED   SL_LAST = " & INTEGER'IMAGE(SL_LAST) & "  J = " & INTEGER'IMAGE(I));
                SL (I .. SL_LAST - 1) := SL (I + 1 .. SL_LAST);
                SL_LAST               := SL_LAST - 1;
                TRIMMED               := True;
-               --TEXT_IO.PUT_LINE("Not ALLOWED end  SL_LAST = " & INTEGER'IMAGE(SL_LAST) & "  J = " & INTEGER'IMAGE(I));
+--DEBUG: TEXT_IO.PUT_LINE("Not ALLOWED end  SL_LAST = " & INTEGER'IMAGE(SL_LAST) & "  J = " & INTEGER'IMAGE(I));
             end if;
             I := I - 1;
          end loop;
 
          I := SL_LAST;
          while I >= SL'FIRST loop
-            --TEXT_IO.PUT_LINE("TRIMMING FOR TRIM   I = " & INTEGER'IMAGE(I));
+      --DEBUG: TEXT_IO.PUT_LINE("TRIMMING FOR TRIM   I = " & INTEGER'IMAGE(I));
             if (NOT_ONLY_ARCHAIC and WORDS_MDEV (OMIT_ARCHAIC))
               and then SL (I).IR.AGE = A
             then
                SL (I .. SL_LAST - 1) := SL (I + 1 .. SL_LAST);
                SL_LAST               := SL_LAST - 1;
-               --TEXT_IO.PUT_LINE("Archaic        SL_LAST = " & INTEGER'IMAGE(SL_LAST) & "  I = " & INTEGER'IMAGE(I));
+               --DEBUG: TEXT_IO.PUT_LINE("Archaic        SL_LAST = " & INTEGER'IMAGE(SL_LAST) & "  I = " & INTEGER'IMAGE(I));
                TRIMMED := True;
             elsif (NOT_ONLY_MEDIEVAL and WORDS_MDEV (OMIT_MEDIEVAL))
               and then SL (I).IR.AGE >= F
             then
                SL (I .. SL_LAST - 1) := SL (I + 1 .. SL_LAST);
                SL_LAST               := SL_LAST - 1;
-               --TEXT_IO.PUT_LINE("Medieval       SL_LAST = " & INTEGER'IMAGE(SL_LAST) & "  I = " & INTEGER'IMAGE(I));
+               --DEBUG: TEXT_IO.PUT_LINE("Medieval       SL_LAST = " & INTEGER'IMAGE(SL_LAST) & "  I = " & INTEGER'IMAGE(I));
                TRIMMED := True;
             end if;
             I := I - 1;
@@ -491,7 +495,7 @@ procedure LIST_SWEEP (PA : in out PARSE_ARRAY; PA_LAST : in out Integer) is
             then      --  Remember A < C
                SL (I .. SL_LAST - 1) := SL (I + 1 .. SL_LAST);
                SL_LAST               := SL_LAST - 1;
-               --TEXT_IO.PUT_LINE("Uncommon       SL_LAST = " & INTEGER'IMAGE(SL_LAST) & "  I = " & INTEGER'IMAGE(I));
+               --DEBUG: TEXT_IO.PUT_LINE("Uncommon       SL_LAST = " & INTEGER'IMAGE(SL_LAST) & "  I = " & INTEGER'IMAGE(I));
                TRIMMED := True;
             end if;
             I := I - 1;
@@ -506,33 +510,31 @@ procedure LIST_SWEEP (PA : in out PARSE_ARRAY; PA_LAST : in out Integer) is
 ----At least one difficulty is that suffixes change POFS.
 ----So one has a N inflection (SL) but a V DE
 ----When the program checks for VOC, it wants a N
----- and then asks about KIND (P, N, T,...)
----- But the DE (v) does not have those
----- The solution would be to fix ADD SUFFIX to do something about passing the ADDON KIND
-----  I do not want to face that now
-----  It is likely that all this VOC/LOC is worthless anyway.  Maybe lower FREQ in INFLECTS
+----and then asks about KIND (P, N, T,...)
+----But the DE (v) does not have those
+----The solution would be to fix ADD SUFFIX to do something about passing the ADDON KIND
+----I do not want to face that now
+----It is likely that all this VOC/LOC is worthless anyway.  Maybe lower FREQ in INFLECTS
 ----
-----  A further complication is the GNAT and AO give different results (AO no exception)
-----  That is probably because the program is in error and the result therefore unspecified
-----
-----
+----A further complication is the GNAT and AO give different results (AO no exception)
+----That is probably because the program is in error and the result therefore unspecified
 
-         --  SPR: Should be solved; see long comment below
+--  SPR: Should be solved; see long comment below
 
          I := SL_LAST;
--- .PUT_LINE("Checking VOC/LOC SL_LAST = " & INTEGER'IMAGE(SL_LAST));
+--DEBUG: PUT_LINE("Checking VOC/LOC SL_LAST = " & INTEGER'IMAGE(SL_LAST));
          while I >= SL'FIRST loop
             --  Check for Vocative being person/name and Locative a place/area
--- TEXT_IO.PUT_LINE("Looping down on I I = " & INTEGER'IMAGE(I));
+--DEBUG: TEXT_IO.PUT_LINE("Looping down on I I = " & INTEGER'IMAGE(I));
             if (SL (I).IR.QUAL.POFS = N) then
--- TEXT_IO.PUT_LINE("N found I = " & INTEGER'IMAGE(I));
---PARSE_RECORD_IO.PUT(SL(I)); TEXT_IO.NEW_LINE;
+--DEBUG: TEXT_IO.PUT_LINE("N found I = " & INTEGER'IMAGE(I));
+--DEBUG: PARSE_RECORD_IO.PUT(SL(I)); TEXT_IO.NEW_LINE;
                if NOT_ONLY_VOCATIVE and then (SL (I).IR.QUAL.N.CS = VOC)
                  and then
                  ((DEPR (SL (I)).PART.N.KIND /= N) and
                   (DEPR (SL (I)).PART.N.KIND /= P))
                then
--- TEXT_IO.PUT_LINE("N VOC not a P or N I = " & INTEGER'IMAGE(I));
+--DEBUG: TEXT_IO.PUT_LINE("N VOC not a P or N I = " & INTEGER'IMAGE(I));
                   SL (I .. SL_LAST - 1) := SL (I + 1 .. SL_LAST);
                   SL_LAST               := SL_LAST - 1;
                   TRIMMED               := True;
@@ -541,7 +543,7 @@ procedure LIST_SWEEP (PA : in out PARSE_ARRAY; PA_LAST : in out Integer) is
                  ((DEPR (SL (I)).PART.N.KIND /= L) and
                   (DEPR (SL (I)).PART.N.KIND /= W))
                then
--- TEXT_IO.PUT_LINE("N LOC not a W or L ");
+--DEBUG: TEXT_IO.PUT_LINE("N LOC not a W or L ");
                   SL (I .. SL_LAST - 1) := SL (I + 1 .. SL_LAST);
                   SL_LAST               := SL_LAST - 1;
                   TRIMMED               := True;
@@ -549,7 +551,7 @@ procedure LIST_SWEEP (PA : in out PARSE_ARRAY; PA_LAST : in out Integer) is
             end if;
             I := I - 1;
          end loop;
--- TEXT_IO.PUT_LINE("Checked VOC/LOC");
+--DEBUG: TEXT_IO.PUT_LINE("Checked VOC/LOC");
 
          --  Cutting viciously here
          I := SL_LAST;
@@ -628,8 +630,8 @@ procedure LIST_SWEEP (PA : in out PARSE_ARRAY; PA_LAST : in out Integer) is
 
 begin                               --  LIST_SWEEP
 
--- DICT_IO.READ(DICT_FILE(GENERAL), DE, 31585); DICTIONARY_ENTRY_IO.PUT(DE);
--- TEXT_IO.PUT_LINE("#########");
+--DEBUG: DICT_IO.READ(DICT_FILE(GENERAL), DE, 31585); DICTIONARY_ENTRY_IO.PUT(DE);
+--DEBUG: TEXT_IO.PUT_LINE("#########");
 
    if PA'LENGTH = 0 then
       return;
@@ -738,10 +740,10 @@ begin                               --  LIST_SWEEP
    --      The new code adds overhead here by adding new checks before outputting a result, but I suspect these new changes eliminate output
    --      problems that can arise under different circumstances.  See the comment attached to the Saved_Meaning_J code.
 
---   TEXT_IO.PUT_LINE("PA before SWEEPING in LIST_SWEEP     PA_LAST = " & INTEGER'IMAGE(PA_LAST));
---   for I in 1..PA_LAST  loop
---   PARSE_RECORD_IO.PUT(PA(I)); TEXT_IO.NEW_LINE;
---   end loop;
+--DEBUG: TEXT_IO.PUT_LINE("PA before SWEEPING in LIST_SWEEP     PA_LAST = " & INTEGER'IMAGE(PA_LAST));
+--DEBUG: for I in 1..PA_LAST  loop
+--DEBUG: PARSE_RECORD_IO.PUT(PA(I)); TEXT_IO.NEW_LINE;
+--DEBUG: end loop;
 
    SWEEPING :
    --  To remove disallowed stems/inflections and resulting dangling fixes
@@ -753,19 +755,19 @@ begin                               --  LIST_SWEEP
       subtype XONS is PART_OF_SPEECH_TYPE range TACKON .. SUFFIX;
 
    begin
-      --
---      TEXT_IO.NEW_LINE;
---      TEXT_IO.PUT_LINE("SWEEPING    ======================================");
---      TEXT_IO.NEW_LINE;
---TEXT_IO.PUT("{");
+
+--DEBUG: TEXT_IO.NEW_LINE;
+--DEBUG: TEXT_IO.PUT_LINE("SWEEPING    ======================================");
+--DEBUG: TEXT_IO.NEW_LINE;
+--DEBUG: TEXT_IO.PUT("{");
       J := PA_LAST;
 
       while J >= 1 loop        --  Sweep backwards over PA
 
-         --           if (not ALLOWED_STEM(PA(J))   or               --  Remove not ALLOWED_STEM & null
+         --           if (not ALLOWED_STEM(PA(J))   or                 --  Remove not ALLOWED_STEM & null
 --               (PA(J) = NULL_PARSE_RECORD))  then         --  and close ranks
-         -- TEXT_IO.PUT_LINE("Removing dis ALLOWED STEM J = " &
-         -- INTEGER'IMAGE(J));
+         --DEBUG: TEXT_IO.PUT_LINE("Removing dis ALLOWED STEM J = " &
+         --DEBUG: INTEGER'IMAGE(J));
          --               PA(J..PA_LAST-1) := PA(J+1..PA_LAST);     --  null if J = PA_LAST
          --              PA_LAST := PA_LAST - 1;
          --              P_LAST := P_LAST - 1;
@@ -778,8 +780,8 @@ begin                               --  LIST_SWEEP
             PW_ON   := False;
             P_FIRST := J + 1;
 
-            --TEXT_IO.PUT_LINE("SWEEP  FIX/TRICK  J = " & INTEGER'IMAGE(J) & "  P_FIRST = " & INTEGER'IMAGE(P_FIRST) &
-            --"  P_LAST = " & INTEGER'IMAGE(P_LAST));
+            --DEBUG: TEXT_IO.PUT_LINE("SWEEP  FIX/TRICK  J = " & INTEGER'IMAGE(J) & "  P_FIRST = " & INTEGER'IMAGE(P_FIRST) &
+            --DEBUG: "  P_LAST = " & INTEGER'IMAGE(P_LAST));
 
             JJ := J;
 
@@ -789,24 +791,25 @@ begin                               --  LIST_SWEEP
             end loop;
 
             ----Order internal to this set of inflections
---  TEXT_IO.PUT_LINE("SWEEP INTERNAL J = " & INTEGER'IMAGE(J) & " P_FIRST = " &
---  INTEGER'IMAGE(P_FIRST) & " P_LAST = " & INTEGER'IMAGE(P_LAST) & " DIFF_J =
---  " & INTEGER'IMAGE(DIFF_J) & " PA_LAST = " & INTEGER'IMAGE(PA_LAST));
+--DEBUG:   TEXT_IO.PUT_LINE("SWEEP INTERNAL J = " & INTEGER'IMAGE(J) & " P_FIRST = " &
+--DEBUG:   INTEGER'IMAGE(P_FIRST) & " P_LAST = " & INTEGER'IMAGE(P_LAST) & " DIFF_J = " &
+--DEBUG:   INTEGER'IMAGE(DIFF_J) & " PA_LAST = " & INTEGER'IMAGE(PA_LAST));
+
             ORDER_PARSE_ARRAY (PA (P_FIRST .. P_LAST), DIFF_J);
-            --PA(J..PA_LAST-1) := PA(J+1..PA_LAST);
             PA (P_LAST - DIFF_J + 1 .. PA_LAST - DIFF_J) :=
               PA (P_LAST + 1 .. PA_LAST);
             PA_LAST := PA_LAST - DIFF_J;
--- TEXT_IO.PUT_LINE("SWEEP INTERNAL end J = " & INTEGER'IMAGE(J) & " P_FIRST =
--- " & INTEGER'IMAGE(P_FIRST) & " P_LAST = " & INTEGER'IMAGE(P_LAST) & " DIFF_J
--- = " & INTEGER'IMAGE(DIFF_J) & " PA_LAST = " & INTEGER'IMAGE(PA_LAST));
+
+--DEBUG:  TEXT_IO.PUT_LINE("SWEEP INTERNAL end J = " & INTEGER'IMAGE(J) & " P_FIRST = " &
+--DEBUG:  INTEGER'IMAGE(P_FIRST) & " P_LAST = " & INTEGER'IMAGE(P_LAST) & " DIFF_J = " &
+--DEBUG:  INTEGER'IMAGE(DIFF_J) & " PA_LAST = " & INTEGER'IMAGE(PA_LAST));
             P_FIRST := 1;
             P_LAST  := 0;
 
          elsif ((PA (J).D_K in ADDONS .. YYY) or (PA (J).IR.QUAL.POFS in XONS))
            and then (FIX_ON)
          then               --  another FIX
---TEXT_IO.PUT_LINE("SWEEP  Another FIX/TRICK  J = " & INTEGER'IMAGE(J));
+--DEBUG: TEXT_IO.PUT_LINE("SWEEP  Another FIX/TRICK  J = " & INTEGER'IMAGE(J));
             null;
 
          elsif ((PA (J).D_K in ADDONS .. YYY) or (PA (J).IR.QUAL.POFS = X))
@@ -814,7 +817,7 @@ begin                               --  LIST_SWEEP
 
            (not PW_ON)
          then
-         --TEXT_IO.PUT_LINE("Killing Tricks stuff  J = " & INTEGER'IMAGE(J));
+   --DEBUG: TEXT_IO.PUT_LINE("Killing Tricks stuff  J = " & INTEGER'IMAGE(J));
 
             PA (P_LAST - DIFF_J + 1 .. PA_LAST - DIFF_J) :=
               PA (P_LAST + 1 .. PA_LAST);
@@ -823,31 +826,31 @@ begin                               --  LIST_SWEEP
             P_LAST := P_LAST - 1;
 
          else
---  TEXT_IO.PUT_LINE("SWEEP else J = " & INTEGER'IMAGE(J) & " P_LAST = " &
---  INTEGER'IMAGE(P_LAST)); --DEBUG
---for I in 1..PA_LAST  loop
---PARSE_RECORD_IO.PUT(PA(I)); TEXT_IO.NEW_LINE;
---end loop;
+--DEBUG: TEXT_IO.PUT_LINE("SWEEP else J = " & INTEGER'IMAGE(J) & " P_LAST = " &
+--DEBUG: INTEGER'IMAGE(P_LAST));
+--DEBUG: for I in 1..PA_LAST  loop
+--DEBUG: PARSE_RECORD_IO.PUT(PA(I)); TEXT_IO.NEW_LINE;
+            --DEBUG: end loop;
+
             PW_ON  := True;
             FIX_ON := False;
             if P_LAST <= 0 then
                P_LAST := J;
             end if;
             if J = 1 then
-      --TEXT_IO.PUT_LINE("SWEEP  J = 1     P_LAST = " & INTEGER'IMAGE(P_LAST));
-
+--DEBUG: TEXT_IO.PUT_LINE("SWEEP  J = 1     P_LAST = " & INTEGER'IMAGE(P_LAST));
                ORDER_PARSE_ARRAY (PA (1 .. P_LAST), DIFF_J);
                PA (P_LAST - DIFF_J + 1 .. PA_LAST - DIFF_J) :=
                  PA (P_LAST + 1 .. PA_LAST);
                PA_LAST := PA_LAST - DIFF_J;
---TEXT_IO.PUT_LINE("SWEEP  J = 1 end    PA_LAST = " & INTEGER'IMAGE(PA_LAST) & "  DIFF_J = " & INTEGER'IMAGE(DIFF_J)); --DEBUG
+--DEBUG: TEXT_IO.PUT_LINE("SWEEP  J = 1 end    PA_LAST = " & INTEGER'IMAGE(PA_LAST) & "  DIFF_J = " & INTEGER'IMAGE(DIFF_J));
             end if;
 
-         end if;                                      --  check PART
+         end if; --  check PART
 
          J := J - 1;
 
-      end loop;                          --  loop sweep over PA
+      end loop;  --  loop sweep over PA
 
    end SWEEPING;
 
@@ -877,9 +880,7 @@ begin                               --  LIST_SWEEP
                if (PR <= OPR) then
                   PA (J .. PA_LAST - 1) :=
                     PA (J + 1 .. PA_LAST);  --  Shift PA down 1
-                  PA_LAST :=
-                    PA_LAST -
-                    1;                 --  because found key duplicate
+                  PA_LAST := PA_LAST - 1;   --  because found key duplicate
 
                   -- SPR: The elsif that follows stops duplicative entries for
                   -- suffixes with multiple stems SPR: (for example, 'ludica');
@@ -1021,7 +1022,7 @@ begin                               --  LIST_SWEEP
                Next      := Next + 1;
                exit when Next > PA'Last;
             end if;
-         end loop; --m
+         end loop; -- M (2nd)
 
       end Qu_PA_Fix;
    end if;  -- has_qu_pron
@@ -1029,27 +1030,25 @@ begin                               --  LIST_SWEEP
    for I in 1 .. PA_LAST loop
 
       if PA (I).IR.QUAL.POFS = V then
-         if PA (I).IR.QUAL.V.CON = (3, 4) then
-            --  Fix V 3 4 to be 4th conjugation
+         if PA (I).IR.QUAL.V.CON = (3, 4)
+         then --  Fix V 3 4 to be 4th conjugation
             PA (I).IR.QUAL.V.CON := (4, 1);
          end if;
       end if;
    end loop;
 
---DEBUG
---     declare
---        De : DICTIONARY_ENTRY;
---        begin
---      TEXT_IO.PUT_LINE("PA after COMPRESS  almost leaving LIST_STEMS    PA_LAST = "  & INTEGER'IMAGE(PA_LAST));
---      for I in 1..PA_LAST  loop
---        PARSE_RECORD_IO.PUT(PA(I)); TEXT_IO.NEW_LINE;
---        if PA(I).D_K = General then
---        DICT_IO.SET_INDEX(DICT_FILE(PA(I).D_K), PA(I).MNPC);
---        DICT_IO.READ(DICT_FILE(PA(I).D_K), DE);
---        end if;
---        Text_IO.Put_Line(DE.MEAN);
---        end loop;
---        end; -- block
---DEBUG
+--DEBUG:     declare -- debug block
+--DEBUG:        De : DICTIONARY_ENTRY;
+--DEBUG:        begin
+--DEBUG:      TEXT_IO.PUT_LINE("PA after COMPRESS -- ABOUT TO LEAVE LIST_STEMS    PA_LAST = "  & INTEGER'IMAGE(PA_LAST));
+--DEBUG:      for I in 1..PA_LAST  loop
+--DEBUG:        PARSE_RECORD_IO.PUT(PA(I)); TEXT_IO.NEW_LINE;
+--DEBUG:        if PA(I).D_K = General then
+--DEBUG:        DICT_IO.SET_INDEX(DICT_FILE(PA(I).D_K), PA(I).MNPC);
+--DEBUG:        DICT_IO.READ(DICT_FILE(PA(I).D_K), DE);
+--DEBUG:        end if;
+--DEBUG:        Text_IO.Put_Line(DE.MEAN);
+--DEBUG:        end loop;
+--DEBUG:      end;  -- debug block
 
 end LIST_SWEEP;
