@@ -7,7 +7,7 @@ a Latin<->English dictionary program and inflection parser
 **With new features, expanded dictionary, and bugfixes**
 
 Ready-to-use binaries in /release -- a lot of them:
-macOS (amd_64), Linux (amd_64), Windows (amd_64 and Win32), FreeBSD (amd_64), and OS/2 (emx 0.9d or higher)
+macOS (amd_64), Linux (amd_64), Windows (amd_64 and i586), FreeBSD (amd_64), and OS/2 (emx 0.9d or higher)
 
 
 *What's this?*

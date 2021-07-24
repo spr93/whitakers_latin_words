@@ -1,0 +1,23 @@
+_Instructions for Old Compilers_
+
+Words can be easily modified to compiler in just about any validatable compiler provided that the built-in type Integer and Text_IO.Count use at least 32-bit numbers, the Ada.System package can address at least ~16MB RAM.
+
+For Ada 95, the modifications concern only post-Whitaker features.  For Ada 83, Whitaker's parameter handling code in words.adb must also be removed or replaced with implementation-specific code.
+
+For the main code, the changes are:
+
+Ada 95:  
+-	Delete no_exit_handler.ad? and code references to it (words.adb and parse_package), including the parameters handling in words.adb
+-   Remove everything with Unicode in the name (multiple files), the code that references it (words.adb and parse_package), including the parameters handling in words.adb
+-   Remove with's to Ada.Directories and Ada.Environment_Variables, as well as the code that relies on it (in words.adb, sorter.adb, word_package) [Most implementations have their own similar packages, and changing the code should be trivial]
+-   If you're on Windows, use the non-Windows version of windows_vt100.adb
+
+Ada 83:  
+-   All of the above
+-   Remove Arabic2Roman, the parse_package code that references it and the DO_ARABIC_NUMERALS references in word_parameters
+-   Remove Ada.Command_Line and the associated code from word.adb (which is the majority of lines in words.adb)  [Most implementations have their own similar packages, and changing the code should be trivial]
+-   The compiler may balk at what it considers reading "out" mode parameters (though what's actually happening is not reading content but setting an iterator variable according to the out parameter's lower array bound).  Just change those parameters from "out" to "in out" mode.
+
+There are also a handful of conditionals that will need to be changed to older, more confusing syntax (e.g., ((Y = Z) elsif ( Y = X)))
+
+As for the dictionary tools, you can either remove Ada.Directories and all the associated parameter handling, or just revert to Whitaker's original tools.  The latter is much easier, but be sure you use Whitaker's "wakedict" instead of "makedict."

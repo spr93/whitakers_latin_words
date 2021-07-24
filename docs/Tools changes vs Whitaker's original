@@ -1,0 +1,3 @@
+The tools in attic/tools are no longer maintained.  However, they should be fully usable because they generally do not rely on hard-coded assumptions about the size of the dictionary or fields within it.
+
+The dictionary tools' changes are documented in "How to build . . ." in this directory

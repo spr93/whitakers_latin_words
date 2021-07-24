@@ -13,7 +13,7 @@ sorter will take D, S, and E, which will sort dictline, stemlist, and ewdsfile, 
 the other programs accept G (or S) to sort the GEN files
 
 so you can distill all the following steps to these commands.  rebuild.sh in tools runs 'em for you:
-
+1 75
 ./sorter D
 ./makedict G
 ./sorter S
@@ -59,8 +59,7 @@ Run MAKEINFL against INFLECTS.LAT
 
 --English part:
 
-Run MAKEEWDS against ewdslist.gen
-	Check output, especially for weird lines at top.  Remove weird lines at top.
+Run MAKEEWDS against DICTLINE.GEN
 
 Sort EWDSLIST.GEN
 SORTER
