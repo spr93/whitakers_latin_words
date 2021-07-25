@@ -481,8 +481,8 @@ package body WORD_PACKAGE is
 
       if INDEX_FIRST > 0 and then INDEX_FIRST <= INDEX_LAST then
 
-         J1 := STEM_IO.Count (INDEX_FIRST);    --######################
-         J2 := STEM_IO.Count (INDEX_LAST);
+         J1 := INDEX_FIRST;   
+         J2 := INDEX_LAST;
 
          STEM_ARRAY_LOOP :
          for K in SSA'RANGE loop
@@ -532,7 +532,7 @@ package body WORD_PACKAGE is
                         end if;
                      end if;
 
-                     Set_Index (STEM_FILE (D_K), STEM_IO.Count (J));
+                     Set_Index (STEM_FILE (D_K), J);
                      Read (STEM_FILE (D_K), DS);
 
                      if LTU (Lower_Case (DS.STEM), SSA (K)) then
@@ -576,7 +576,7 @@ package body WORD_PACKAGE is
                      end if;
                   end loop BINARY_SEARCH;
                   J1 := JJ;
-                  J2 := STEM_IO.Count (INDEX_LAST);
+                  J2 := INDEX_LAST;
 
                end if;               --  On LOCAL check
             end if;               --  On LENGTH > 1

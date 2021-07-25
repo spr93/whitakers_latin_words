@@ -108,8 +108,8 @@ if DICTIONARY_AVAILABLE(GENERAL)  then
   --TEXT_IO.PUT_LINE("OPENing was successful");
       end if;
   --TEXT_IO.PUT_LINE("BDL OPEN");
-      INDEX_FIRST := BBLF(' ', ' ', DICTIONARY_KIND(D_K));
-      INDEX_LAST  := BBLL(' ', ' ', DICTIONARY_KIND(D_K));
+      INDEX_FIRST := BBLF(' ', ' ', D_K);
+      INDEX_LAST  := BBLL(' ', ' ', D_K);
 
       SET_INDEX(STEM_FILE(D_K), STEM_IO.POSITIVE_COUNT(INDEX_FIRST));
       for J in INDEX_FIRST..INDEX_LAST  loop
@@ -231,7 +231,7 @@ end if;
     CLOSE(INDX_FILE(D_K));
     PREFACE.SET_COL(40); PREFACE.PUT("--  ");
         if not CONFIG.SUPPRESS_PREFACE  then
-          PUT(STEM_IO.COUNT((NUMBER_OF_NON_BLANK_STEMS)), 6);
+          PUT(NUMBER_OF_NON_BLANK_STEMS, 6);
         end if;   --  Kludge for when TEXT_IO.COUNT too small
     PREFACE.PUT(" stems");
     PREFACE.SET_COL(60); PREFACE.PUT_LINE("--  loaded correctly");

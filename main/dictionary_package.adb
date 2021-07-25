@@ -1285,7 +1285,6 @@ end KIND_ENTRY_IO;
 
 
 package body TRANSLATION_RECORD_IO is
-    use TEXT_IO;
     use AGE_TYPE_IO;
     use AREA_TYPE_IO;
     use GEO_TYPE_IO;
