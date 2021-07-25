@@ -16,14 +16,14 @@ package STRINGS_PACKAGE is
    function MAX (A, B : in Integer) return Integer;
    function MIN (A, B : in Integer) return Integer;
 
-   function Upper_Case (Item : in Character) return Character renames
+   function Upper_Case (Item : in Character) return Character       renames
      Ada.Characters.Handling.To_Upper;
-   function Upper_Case (Item : in String) return String renames
+   function Upper_Case (Item : in String)    return String          renames
      Ada.Characters.Handling.To_Upper;
 
-   function Lower_Case (Item : in Character) return Character renames
+   function Lower_Case (Item : in Character) return Character       renames
      Ada.Characters.Handling.To_Lower;
-   function Lower_Case (Item : in String) return String renames
+   function Lower_Case (Item : in String)    return String          renames
      Ada.Characters.Handling.To_Lower;
 
    function TRIM

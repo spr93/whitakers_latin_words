@@ -11,7 +11,6 @@ with Dictionary_Form;
 with PUT_EXAMPLE_LINE;
 with LIST_SWEEP;
 
-
 package body LIST_PACKAGE is
 
    subtype XONS is PART_OF_SPEECH_TYPE range TACKON .. SUFFIX;
@@ -35,14 +34,14 @@ package body LIST_PACKAGE is
    --  Takes vertical bars from beginning of MEAN and TRIMs
    begin
 
-      if S'LENGTH > 3 and then S (S'FIRST .. S'FIRST + 3) = "||||" then
-         return TRIM (S (S'FIRST + 4 .. S'LAST));
-      elsif S'LENGTH > 2 and then S (S'FIRST .. S'FIRST + 2) = "|||" then
-         return TRIM (S (S'FIRST + 3 .. S'LAST));
-      elsif S'LENGTH > 1 and then S (S'FIRST .. S'FIRST + 1) = "||" then
-         return TRIM (S (S'FIRST + 2 .. S'LAST));
-      elsif S (S'FIRST) = '|' then
-         return TRIM (S (S'FIRST + 1 .. S'LAST));
+      if S'Length > 3 and then S (S'First .. S'First + 3) = "||||" then
+         return TRIM (S (S'First + 4 .. S'Last));
+      elsif S'Length > 2 and then S (S'First .. S'First + 2) = "|||" then
+         return TRIM (S (S'First + 3 .. S'Last));
+      elsif S'Length > 1 and then S (S'First .. S'First + 1) = "||" then
+         return TRIM (S (S'First + 2 .. S'Last));
+      elsif S (S'First) = '|' then
+         return TRIM (S (S'First + 1 .. S'Last));
       else
          return TRIM (S);
       end if;
@@ -54,13 +53,13 @@ package body LIST_PACKAGE is
    begin
 
       if WORDS_MODE (SHOW_AGE) or
-        (TRIM (DICTIONARY_AGE (DE.TRAN.AGE))'LENGTH /= 0)
+        (TRIM (DICTIONARY_AGE (DE.TRAN.AGE))'Length /= 0)
       then  --  Not X
          Text_IO.Put (OUTPUT, "  " & TRIM (DICTIONARY_AGE (DE.TRAN.AGE)));
          HIT := True;
       end if;
       if (WORDS_MODE (SHOW_FREQUENCY) or (DE.TRAN.FREQ >= D)) and
-        (TRIM (DICTIONARY_FREQUENCY (DE.TRAN.FREQ))'LENGTH /= 0)
+        (TRIM (DICTIONARY_FREQUENCY (DE.TRAN.FREQ))'Length /= 0)
       then
          Text_IO.Put
            (OUTPUT, "  " & TRIM (DICTIONARY_FREQUENCY (DE.TRAN.FREQ)));
@@ -86,7 +85,7 @@ package body LIST_PACKAGE is
          end if;
 
          Format (OUTPUT, UNDERLINE);
-         if Dictionary_Form (DE)'LENGTH /= 0 then
+         if Dictionary_Form (DE)'Length /= 0 then
             Text_IO.Put (OUTPUT, Dictionary_Form (DE) & "  ");
             DHIT := True;
          end if;
@@ -118,7 +117,7 @@ package body LIST_PACKAGE is
          if DICTIONARY_LINE_NUMBER > 0 then
             Text_IO.Put
               (OUTPUT,
-               "(" & TRIM (Integer'IMAGE (DICTIONARY_LINE_NUMBER)) & ")");
+               "(" & TRIM (Integer'Image (DICTIONARY_LINE_NUMBER)) & ")");
             LHIT := True;
          end if;
       end if;
@@ -192,7 +191,8 @@ package body LIST_PACKAGE is
 
       SRA, OSRA : STEM_INFLECTION_ARRAY (1 .. STEM_INFLECTION_ARRAY_SIZE) :=
         (others => (NULL_STEM_TYPE, NULL_INFLECTION_RECORD));
-      NULL_SRA : constant STEM_INFLECTION_ARRAY (1 .. STEM_INFLECTION_ARRAY_SIZE) :=
+      NULL_SRA : constant STEM_INFLECTION_ARRAY
+        (1 .. STEM_INFLECTION_ARRAY_SIZE) :=
         (others => (NULL_STEM_TYPE, NULL_INFLECTION_RECORD));
       SRAA : STEM_INFLECTION_ARRAY_ARRAY
         (1 .. STEM_INFLECTION_ARRAY_ARRAY_SIZE) :=
@@ -224,8 +224,8 @@ package body LIST_PACKAGE is
 
       DEA : DICTIONARY_ENTRY := NULL_DICTIONARY_ENTRY;
 
-      J, J1, J2, K       : Integer         := 0;
-      THERE_IS_AN_ADVERB : Boolean         := False;
+      J, J1, J2, K       : Integer := 0;
+      THERE_IS_AN_ADVERB : Boolean := False;
 
       procedure PUT_INFLECTION
         (SR : in STEM_INFLECTION_RECORD; DM : in DICTIONARY_MNPC_RECORD)
@@ -237,7 +237,7 @@ package body LIST_PACKAGE is
             if
               (WORDS_MODE (SHOW_AGE) or
                (SR.IR.AGE /= X)) and     --  Warn even if not to show AGE
-              TRIM (INFLECTION_AGE (SR.IR.AGE))'LENGTH /= 0
+              TRIM (INFLECTION_AGE (SR.IR.AGE))'Length /= 0
             then
                Text_IO.Put
                  (File => OUTPUT, Item => "  " & INFLECTION_AGE (SR.IR.AGE));
@@ -245,7 +245,7 @@ package body LIST_PACKAGE is
             if
               (WORDS_MODE (SHOW_FREQUENCY) or
                (SR.IR.FREQ >= C)) and    --  Warn regardless
-              TRIM (INFLECTION_FREQUENCY (SR.IR.FREQ))'LENGTH /= 0
+              TRIM (INFLECTION_FREQUENCY (SR.IR.FREQ))'Length /= 0
             then
                Text_IO.Put (OUTPUT, "  " & INFLECTION_FREQUENCY (SR.IR.FREQ));
             end if;
@@ -376,19 +376,16 @@ package body LIST_PACKAGE is
       begin
          if (SR.IR.QUAL.POFS not in XONS) and (DM.D_K in GENERAL .. UNIQUE)
          then
-            --   Text_IO.New_Line(OUTPUT);
             PUT_DICTIONARY_FORM
               (OUTPUT, DM.D_K, DM.MNPC,
                DM.DE);  -- prints dictionary form line; e.g.,
-         end if;                                                  --  amo, amare, amavi, amatus  V (1st)   [XXXAO]      veryfreq
+         end if;        --  amo, amare, amavi, amatus  V (1st)   [XXXAO]      veryfreq
       end PUT_FORM;
 
       procedure PUT_MEANING (OUTPUT : Text_IO.File_Type; RAW_MEANING : String)
       is
       --  Handles the MM screen line limit and TRIM_BAR, then TRIMs
-
       begin
-
          Text_IO.Put (OUTPUT, TRIM (HEAD (TRIM_BAR (RAW_MEANING), MM)));
       end PUT_MEANING;
 
@@ -407,34 +404,34 @@ package body LIST_PACKAGE is
                   when CARD =>
                      S :=
                        HEAD
-                         (Integer'IMAGE (N) & " - (CARD answers 'how many')",
+                         (Integer'Image (N) & " - (CARD answers 'how many')",
                           MAX_MEANING_SIZE);
                   when ORD =>
                      S :=
                        HEAD
-                         (Integer'IMAGE (N) &
+                         (Integer'Image (N) &
                           "th - (ORD, 'in series'); (a/the)" &
-                          Integer'IMAGE (N) & "th (part) (fract. w/ pars?)",
+                          Integer'Image (N) & "th (part) (fract. w/ pars?)",
                           MAX_MEANING_SIZE);
                   when DIST =>
                      S :=
                        HEAD
-                         (Integer'IMAGE (N) &
+                         (Integer'Image (N) &
                           " each/apiece/times/fold/together/at a time - 'how many each'; by " &
-                          Integer'IMAGE (N) & "s ",
+                          Integer'Image (N) & "s ",
                           MAX_MEANING_SIZE);
                   when ADVERB =>
                      S :=
                        HEAD
-                         (Integer'IMAGE (N) & " times, on" &
-                          Integer'IMAGE (N) &
+                         (Integer'Image (N) & " times, on" &
+                          Integer'Image (N) &
                           " occasions - (ADVERB answers 'how often')",
                           MAX_MEANING_SIZE);
                   when others =>
                      null;
                end case;
             else  -- there is fix so POFS is not NUM
-               S := HEAD ("Number " & Integer'IMAGE (N), MAX_MEANING_SIZE);
+               S := HEAD ("Number " & Integer'Image (N), MAX_MEANING_SIZE);
             end if;
          end if;
          return S;
@@ -487,7 +484,6 @@ package body LIST_PACKAGE is
                   RRR_MEANING_COUNTER := RRR_MEANING_COUNTER + 1;
                   Text_IO.New_Line (OUTPUT);
                   -- Text_IO.Put_Line("-----------");
-
                end if;
 
             elsif DM.D_K = NNN then
@@ -627,19 +623,20 @@ package body LIST_PACKAGE is
       end if;
 
       -------  The gimmick of adding an ADV if there is only ADJ VOC  ----
---TEXT_IO.PUT_LINE("About to do the ADJ -> ADV kludge");
-      for I in PA'FIRST .. PA_LAST loop
+-- TEXT_IO.PUT_LINE("About to do the ADJ -> ADV kludge");
+      for I in PA'First .. PA_LAST loop
          if PA (I).IR.QUAL.POFS = ADV then
             THERE_IS_AN_ADVERB := True;
             exit;
          end if;
       end loop;
 
---TEXT_IO.PUT_LINE("In the ADJ -> ADV kludge  Checked to see if there is an ADV");
+-- TEXT_IO.PUT_LINE("In the ADJ -> ADV kludge Checked to see if there is an
+-- ADV");
 
       if ((not THERE_IS_AN_ADVERB) and (WORDS_MODE (DO_FIXES))) then
---TEXT_IO.PUT_LINE("In the ADJ -> ADV kludge  There is no ADV");
-         for I in reverse PA'FIRST .. PA_LAST loop
+-- TEXT_IO.PUT_LINE("In the ADJ -> ADV kludge There is no ADV");
+         for I in reverse PA'First .. PA_LAST loop
 
             if PA (I).IR.QUAL.POFS = ADJ
               and then
@@ -652,7 +649,7 @@ package body LIST_PACKAGE is
 
                J := I;
 
-               while J >= PA'FIRST loop  --Back through other ADJ cases
+               while J >= PA'First loop  --Back through other ADJ cases
                   if PA (J).IR.QUAL.POFS /= ADJ then
                      J2 :=
                        J;                          --  J2 is first (reverse) that is not ADJ
@@ -660,7 +657,7 @@ package body LIST_PACKAGE is
                   end if;
                   J := J - 1;
                end loop;
-               while J >= PA'FIRST loop  --  Sweep up associated fixes
+               while J >= PA'First loop  --  Sweep up associated fixes
                   if PA (J).IR.QUAL.POFS not in XONS then
                      J1 :=
                        J;                      --  J1 is first (reverse) that is not XONS
@@ -777,11 +774,13 @@ package body LIST_PACKAGE is
                         OSRA := SRA;
                         K    :=
                           1;                  --  K indexes within the MNPCA array --  Initialize
---TEXT_IO.PUT_LINE("Starting IRA for N    I = " & INTEGER'IMAGE(I) & "   K = " & INTEGER'IMAGE(K));
+-- TEXT_IO.PUT_LINE("Starting IRA for N I = " & INTEGER'IMAGE(I) & " K = " &
+-- INTEGER'IMAGE(K));
                         J :=
                           J +
                           1;             --  J indexes the number of MNPCA arrays - Next MNPCA
---TEXT_IO.PUT_LINE("Shifting J for N  I = " & INTEGER'IMAGE(I) & "   J = " & INTEGER'IMAGE(J));
+-- TEXT_IO.PUT_LINE("Shifting J for N I = " & INTEGER'IMAGE(I) & " J = " &
+-- INTEGER'IMAGE(J));
                         SRAA (J) (K) := (PA (I).STEM, PA (I).IR);
                         DICT_IO.Set_Index
                           (DICT_FILE (PA (I).D_K), PA (I).MNPC);
@@ -793,7 +792,8 @@ package body LIST_PACKAGE is
                         K :=
                           K +
                           1;              --  K indexes within the MNPCA array  - Next MNPC
---TEXT_IO.PUT_LINE("Continuing IRA for N  I = " & INTEGER'IMAGE(I) & "   K = " & INTEGER'IMAGE(K) & "   J = " & INTEGER'IMAGE(J));
+-- TEXT_IO.PUT_LINE("Continuing IRA for N I = " & INTEGER'IMAGE(I) & " K = " &
+-- INTEGER'IMAGE(K) & " J = " & INTEGER'IMAGE(J));
                         SRAA (J) (K) := (PA (I).STEM, PA (I).IR);
                      end if;
 
@@ -868,14 +868,15 @@ package body LIST_PACKAGE is
                         DM      := (PA (I).D_K, PA (I).MNPC, DEA);
                         DMA (J) := DM;
                         ODM     := DM;
---TEXT_IO.PUT_LINE("I is" & i'image & "J is " & J'image & "IR: "); INFLECTION_RECORD_IO.Put(PA(I).IR); Text_IO.New_Line;
+-- TEXT_IO.PUT_LINE("I is" & i'image & "J is " & J'image & "IR: ");
+-- INFLECTION_RECORD_IO.Put(PA(I).IR); Text_IO.New_Line;
                      else
                         K :=
                           K +
                           1;              --  K indexes within the MNPCA array  - Next MNPC
                         SRAA (J) (K) := (PA (I).STEM, PA (I).IR);
                      end if;
---TEXT_IO.PUT_LINE("SRAA  + ADJ");
+-- TEXT_IO.PUT_LINE("SRAA + ADJ");
                      I := I + 1;              --  I cycles over full PA array
                      --                  TEXT_IO.PUT_LINE("I is" & i'image & "J is " & J'image & "IR: "); INFLECTION_RECORD_IO.Put(PA(I).IR); Text_IO.New_Line;
                   end loop;
@@ -948,7 +949,8 @@ package body LIST_PACKAGE is
                         J :=
                           J +
                           1;             --  J indexes the number of MNPCA arrays - Next MNPCA
---TEXT_IO.PUT_LINE("Shifting J for VPAR I = " & INTEGER'IMAGE(I) & "   J = " & INTEGER'IMAGE(J));
+-- TEXT_IO.PUT_LINE("Shifting J for VPAR I = " & INTEGER'IMAGE(I) & " J = " &
+-- INTEGER'IMAGE(J));
                         SRAA (J) (K) := (PA (I).STEM, PA (I).IR);
                         if PA (I).D_K /= PPP then
                            DICT_IO.Set_Index
@@ -962,7 +964,8 @@ package body LIST_PACKAGE is
                         K :=
                           K +
                           1;              --  K indexes within the MNPCA array  - Next MNPC
---TEXT_IO.PUT_LINE("Continuing IRA for VPAR  I = " & INTEGER'IMAGE(I) & "   K = " & INTEGER'IMAGE(K)   & "   J = " & INTEGER'IMAGE(J));
+-- TEXT_IO.PUT_LINE("Continuing IRA for VPAR I = " & INTEGER'IMAGE(I) & " K = "
+-- & INTEGER'IMAGE(K) & " J = " & INTEGER'IMAGE(J));
                         SRAA (J) (K) := (PA (I).STEM, PA (I).IR);
                      end if;
 
@@ -970,7 +973,7 @@ package body LIST_PACKAGE is
                   end loop;
 
                when others =>
---TEXT_IO.PUT_LINE("Others");
+-- TEXT_IO.PUT_LINE("Others");
                   OSRA := NULL_SRA;
                   ODMA := NULL_DMA;
                   --ODM := NULL_DICTIONARY_MNPC_RECORD;
@@ -1024,7 +1027,7 @@ package body LIST_PACKAGE is
       --  Strangely enough, it may enter LIST_STEMS with PA_LAST /= 0 but be
       --  weeded and end up with no parse after LIST_SWEEP - PA_LAST = 0
       if PA_LAST = 0 then  --  WORD failed
-   --????      (DMA(1).D_K in ADDONS..YYY  and then TRIM(DMA(1).DE.STEMS(1)) /= "que")  then  --  or used FIXES/TRICKS
+         --????      (DMA(1).D_K in ADDONS..YYY  and then TRIM(DMA(1).DE.STEMS(1)) /= "que")  then  --  or used FIXES/TRICKS
          if WORDS_MODE (IGNORE_UNKNOWN_NAMES) and CAPITALIZED then
             NNN_MEANING (NNN_MEANING_COUNTER) :=
               HEAD
@@ -1137,7 +1140,7 @@ package body LIST_PACKAGE is
          return;
       end if;
 
---TEXT_IO.PUT_LINE("PUTting INFLECTIONS");
+-- TEXT_IO.PUT_LINE("PUTting INFLECTIONS");
       J    := 1;
       OSRA := NULL_SRA;
       OUTPUT_LOOP :
@@ -1176,7 +1179,7 @@ package body LIST_PACKAGE is
 
             else
                PUT_INFLECTION_ARRAY_J :
-               for K in SRAA (J)'RANGE loop
+               for K in SRAA (J)'Range loop
 
                   exit when SRAA (J) (K) = NULL_STEM_INFLECTION_RECORD;
                   if K > 1
@@ -1294,8 +1297,8 @@ package body LIST_PACKAGE is
             if (DMA (J).DE.PART.POFS = PRON or DMA (J).DE.PART.POFS = PACK)
             then
                if not Next_Form_Same
-                  -- and Then not Next_Meaning_Same
-                  -- and then Saved_Meaning_J = 0
+                  -- and Then not Next_Meaning_Same and then Saved_Meaning_J =
+                  -- 0
                   then
                   PUT_FORM (SRAA (J) (1), DMA (J));
                end if;
@@ -1460,7 +1463,7 @@ package body LIST_PACKAGE is
          --  Dictionary Fixes the first two letters of a word/stem which can
          --  be done right
          S  : constant String  := Lower_Case (W);
-         SS : String (W'RANGE) := W;
+         SS : String (W'Range) := W;
 
          function UI (C : Character) return Character is
          begin
@@ -1479,11 +1482,11 @@ package body LIST_PACKAGE is
 
       begin
 
-         if S'LENGTH = 1 then
-            SS (S'FIRST) := UI (W (S'FIRST));
+         if S'Length = 1 then
+            SS (S'First) := UI (W (S'First));
          else
-            SS (S'FIRST)     := UI (W (S'FIRST));
-            SS (S'FIRST + 1) := UI (W (S'FIRST + 1));
+            SS (S'First)     := UI (W (S'First));
+            SS (S'First + 1) := UI (W (S'First + 1));
          end if;
 
          return SS;
@@ -1496,7 +1499,7 @@ package body LIST_PACKAGE is
             Open
               (STEM_FILE (D_K), STEM_IO.In_File,
                ADD_FILE_NAME_EXTENSION
-                 (STEM_FILE_NAME, DICTIONARY_KIND'IMAGE (D_K)));
+                 (STEM_FILE_NAME, DICTIONARY_KIND'Image (D_K)));
          end if;
 
          INDEX_FIRST := FIRST_INDEX (FIRST_TWO (INDEX_ON), D_K);
@@ -1504,8 +1507,8 @@ package body LIST_PACKAGE is
 
          if INDEX_FIRST > 0 and then INDEX_FIRST <= INDEX_LAST then
 
-            J1 := STEM_IO.Count (INDEX_FIRST);    --######################
-            J2 := STEM_IO.Count (INDEX_LAST);
+            J1 := INDEX_FIRST;
+            J2 := INDEX_LAST;
 
             FIRST_TRY := True;
 
@@ -1529,7 +1532,7 @@ package body LIST_PACKAGE is
                   end if;
                end if;
 
-               Set_Index (STEM_FILE (D_K), STEM_IO.Count (J));
+               Set_Index (STEM_FILE (D_K), J);
                Read (STEM_FILE (D_K), DS);
 
                if LTU (Lower_Case (DS.STEM), UNKNOWN) then
@@ -1567,7 +1570,7 @@ package body LIST_PACKAGE is
                end if;
             end loop BINARY_SEARCH;
             J1 := JJ;
-            J2 := STEM_IO.Count (INDEX_LAST);
+            J2 := INDEX_LAST;
 
          end if;
          UNKNOWN_COUNT := DS.MNPC;

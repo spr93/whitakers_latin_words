@@ -1,11 +1,10 @@
    with TEXT_IO;
-   with STRINGS_PACKAGE; use STRINGS_PACKAGE;
-   with WORD_PARAMETERS; use WORD_PARAMETERS;
+   with STRINGS_PACKAGE;      use STRINGS_PACKAGE;
+   with WORD_PARAMETERS;      use WORD_PARAMETERS;
    with DEVELOPER_PARAMETERS; use DEVELOPER_PARAMETERS;
-   with INFLECTIONS_PACKAGE; use INFLECTIONS_PACKAGE;
-   with DICTIONARY_PACKAGE;
+   with INFLECTIONS_PACKAGE;  use INFLECTIONS_PACKAGE;
    with WORD_SUPPORT_PACKAGE; use WORD_SUPPORT_PACKAGE;
-   with WORD_PACKAGE; use WORD_PACKAGE;
+   with WORD_PACKAGE;         use WORD_PACKAGE;
 
 
    package body TRICKS_PACKAGE is    
@@ -41,7 +40,7 @@
                return TRUE;  
             when 'I' | 'i'  => 
                return TRUE;      -- SPR:  Special case j/J in the last place (a Medieval form) handled in calling function
-            when others => 
+            when others     => 
                return FALSE;
          end case;
       end A_ROMAN_DIGIT;
@@ -63,7 +62,7 @@
                 return    5; 
             when 'I' | 'i' | 'J' | 'j'  => 
                return    1;
-            when others => 
+            when others     => 
                return    0;
          end case;
       end VALUE;

@@ -56,7 +56,7 @@ package body DEVELOPER_PARAMETERS is
                       NO_SCREEN_ACTIVITY          => FALSE,
                       
                       UPDATE_LOCAL_DICTIONARY     => FALSE,
-                 --    UPDATE_MEANINGS             => FALSE,
+                --    UPDATE_MEANINGS             => FALSE,
 
                       MINIMIZE_OUTPUT             => FALSE    );
 

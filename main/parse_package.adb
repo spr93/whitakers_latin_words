@@ -24,6 +24,7 @@ with Ada.Exceptions;
 
 pragma Elaborate (WORD_PARAMETERS);
 
+
 package body Parse_Package is
 
    procedure PARSE (COMMAND_LINE : String := "") is
@@ -1442,7 +1443,8 @@ package body Parse_Package is
                     and then (Name (Current_Input) = Name (Standard_Input))
                     and then not CONFIG.SUPPRESS_PREFACE
                   then
-                     SHOW_HELP (Upper_Case (TRIM (LINE (2 .. L))), Current_Output);
+                     SHOW_HELP
+                       (Upper_Case (TRIM (LINE (2 .. L))), Current_Output);
 
                   elsif LINE (1) = CHANGE_LANGUAGE_CHARACTER
                     and then not
