@@ -212,7 +212,7 @@ procedure SORTER is
       PUT_LEVEL (S.FIRST_LEVEL);
       Put ('.');
       if LEVEL = 1 then
-         Put ('0');           --  To match the ATLAS index convention
+         Put ('0');  --  To match the ATLAS index convention
       end if;
       if LEVEL >= 2 then
          PUT_LEVEL (S.SECOND_LEVEL);
@@ -239,7 +239,7 @@ procedure SORTER is
    begin
       S := NO_SECTION;
       if TRIM (FROM)'LAST < FROM'FIRST then
-         return;   --  Empty string, no data         --  Return default
+         return;     --  Empty string, no data
       end if;
 
       Get (FROM, S.FIRST_LEVEL, L);
@@ -1128,8 +1128,6 @@ begin
          PROMPT_FOR_ENTRY ("fifth");
          GET_ENTRY (M5, N5, S5, W5);
       exception
-         when Program_Error =>
-            raise;
          when ENTRY_FINISHED =>
             null;
          when Text_IO.Data_Error | Text_IO.End_Error =>

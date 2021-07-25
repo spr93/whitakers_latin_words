@@ -1,6 +1,7 @@
 #!/bin/sh
 ./sorter D
-rm WORK.   -- CREATE_FILE FOR WORK. may raise USE_ERROR on some implementations
+# CREATE_FILE FOR WORK. may raise USE_ERROR on some implementationss
+rm WORK.
 ./makedict G
 ./sorter S
 rm WORK.
