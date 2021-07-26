@@ -353,6 +353,8 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
 
     INQUIRE(TRIM_OUTPUT, TRIM_OUTPUT_HELP);
 
+    
+    if not CL_Arguments(NO_FILES) then  -- We test for Read_Only before allowing Change_Paramaters
     INQUIRE(HAVE_OUTPUT_FILE, HAVE_OUTPUT_FILE_HELP);
          
     if IS_OPEN(OUTPUT)  and then not WORDS_MODE(HAVE_OUTPUT_FILE)  then
@@ -384,6 +386,9 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
           PUT_LINE("Cannot CREATE WORD.UNK");
       end;
       end if;
+    
+    end if; -- not CL_Arguments(NO_FILES) 
+    
     
     INQUIRE(DO_UNKNOWNS_ONLY, DO_UNKNOWNS_ONLY_HELP);
       
@@ -433,6 +438,7 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
     INQUIRE(DO_UNICODE_INPUT, DO_UNICODE_HELP_TEXT);
   end if; 
   
+    if not CL_Arguments(NO_FILES) then 
     PUT("Do you wish to save this set of parameters? Y or N (Default) ");
     PUT(" =>");
     GET_LINE(L1, LL);
@@ -449,7 +455,8 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
         PUT_LINE("MODE_ARRAY saved in file " & MODE_FULL_NAME);
       end if;
     end if;
-      
+                        end if; -- not CL_Arguments(NO_FILES)
+                        
     NEW_LINE;
 
   exception

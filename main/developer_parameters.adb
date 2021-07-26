@@ -272,12 +272,12 @@ PAUSE_IN_SCREEN_OUTPUT_HELP : constant HELP_TYPE :=  (
    "about 16 lines--the maximum for certain legacy terminals and OSes.    ",
    "                                                  The default is N(o).");
    
-NO_SCREEN_ACTIVITY_HELP : constant HELP_TYPE :=  (
-   "This option instructs the program not to keep a running screen of the ",
-   "input.  This is probably only to be used by the developer to calibrate",
-   "run times for large text file input, removing the time necessary to   ",
-   "write to screen.                                  The default is N(o).");
- 
+--  NO_SCREEN_ACTIVITY_HELP : constant HELP_TYPE :=  (
+--     "This option instructs the program not to keep a running screen of the ",
+--     "input.  This is probably only to be used by the developer to calibrate",
+--     "run times for large text file input, removing the time necessary to   ",
+--     "write to screen.                                  The default is N(o).");
+--   
 UPDATE_LOCAL_DICTIONARY_HELP : constant HELP_TYPE :=  (
    "This option instructs the program to invite the user to input a new   ",
    "word to the local dictionary on the fly.  This is only active if the  ",
@@ -633,11 +633,11 @@ LOAD_DICTIONARY(DICT_LOC,
 
     INQUIRE(PAUSE_IN_SCREEN_OUTPUT, PAUSE_IN_SCREEN_OUTPUT_HELP);
     
-    INQUIRE(NO_SCREEN_ACTIVITY, NO_SCREEN_ACTIVITY_HELP);        
-     
-    INQUIRE(UPDATE_LOCAL_DICTIONARY, UPDATE_LOCAL_DICTIONARY_HELP);
- 
     INQUIRE(MINIMIZE_OUTPUT, MINIMIZE_OUTPUT_HELP);
+    
+    if not CL_Arguments(NO_FILES) then 
+    INQUIRE(UPDATE_LOCAL_DICTIONARY, UPDATE_LOCAL_DICTIONARY_HELP);
+
 
     PUT("START_FILE_CHARACTER ?  "); SET_COL(45); PUT("(Currently  '");
     PUT(START_FILE_CHARACTER); PUT("'");
@@ -657,7 +657,8 @@ LOAD_DICTIONARY(DICT_LOC,
       end if;
     end if;
     NEW_LINE;
-
+    end if; -- not CL_Arguents(No_Files)
+      
     PUT("CHANGE_PARAMETERS_CHARACTER ?  "); SET_COL(45); PUT("(Currently  '");
     PUT(CHANGE_PARAMETERS_CHARACTER); PUT("'");
     PUT(" =>");
@@ -698,6 +699,7 @@ LOAD_DICTIONARY(DICT_LOC,
     end if;
     NEW_LINE;
       
+    if not CL_Arguments(NO_FILES) then 
     PUT("Do you wish to save this set of parameters? Y or N (Default) ");
     PUT(" =>");
     GET_LINE(L1, LL);
@@ -714,8 +716,10 @@ LOAD_DICTIONARY(DICT_LOC,
         PUT_LINE("MDEV_ARRAY saved in file " & MDEV_FULL_NAME);
       end if;
     end if;
-    NEW_LINE;
-      
+    end if; -- not CL_Arguments(NO_FILES)
+    
+    NEW_LINE; 
+    
   exception
     when BLANK_INPUT  =>
       null;
