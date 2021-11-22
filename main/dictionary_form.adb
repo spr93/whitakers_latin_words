@@ -724,13 +724,13 @@ begin
       -- and then Part.Pron.Decl.Which = 1
       and then DE.PART.PRON.KIND /= X then
       Add_to
-        ("  " & DE.PART.PRON.KIND'Image & "   " &
+        ("  " & PRONOUN_KIND_TYPE'Image (DE.PART.PRON.KIND) & "   " &
          PART_OF_SPEECH_TYPE'Image (DE.PART.POFS) & "  ");
    elsif DE.PART.POFS = PACK and then DE.PART.PACK.KIND /= X
       -- and then Part.Pron.Decl.Which = 1
       then
       Add_to
-        ("  " & DE.PART.PACK.KIND'Image & "   " &
+        ("  " & PRONOUN_KIND_TYPE'Image (DE.PART.PACK.KIND) & "   " &
          PART_OF_SPEECH_TYPE'Image (PRON) & "  ");
    else
       Add_to ("   " & PART_OF_SPEECH_TYPE'Image (DE.PART.POFS) & "  ");
