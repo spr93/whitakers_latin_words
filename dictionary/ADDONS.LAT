@@ -1103,10 +1103,10 @@ PRON 4 1 X
 --
 TACKON cumque
 ADJ 0 0 POS
--ever/-soever; (for generalized/indefinite force); (what/how -> what/however);
+-ever/-soever; (for generalized/indefinite force); (what/how => what/however);
 TACKON cunque
 ADJ 0 0 POS
--ever/-soever; (for generalized/indefinite force); (what/how -> what/however);
+-ever/-soever; (for generalized/indefinite force); (what/how => what/however);
 TACKON cine
 PRON 3 1 ADJECT
 TACKON w/hic this?; (hic + ce + ne (enclitic));
