@@ -27,18 +27,17 @@ begin
       FIND_DICTIONARY_FILES;
    end if;
 
-   --  SIMPLE INTERACTIVE MODE
+   --  SIMPLE INTERACTIVE MODE -- when Words is run without parameters
    if Ada.Command_Line.Argument_Count = 0 then
       METHOD           := INTERACTIVE;
-      SUPPRESS_PREFACE := False;
-      Set_Output (Standard_Output);
+      -- Set_Output (Standard_Output);
       INITIALIZE_WORD_PARAMETERS;
       INITIALIZE_DEVELOPER_PARAMETERS;
       INITIALIZE_WORD_PACKAGE;
       Parse;
       return;
 
-      --  COMMAND-LINE ARGUMENTS ("new" style to modify interactive mode)
+   --  COMMAND-LINE ARGUMENTS ("new" style to modify interactive mode)
    elsif
      (TRIM (Ada.Command_Line.Argument (1)) (1) = '-' or
       TRIM (Ada.Command_Line.Argument (1)) (1) = HELP_CHARACTER)
@@ -100,7 +99,6 @@ begin
          -- Still in the "elsif" statement => we're using the - / -- style
          -- arguments => INTERACTIVE MODE STARTUP:
          METHOD           := INTERACTIVE;
-         SUPPRESS_PREFACE := False;
          Set_Output (Standard_Output);
          INITIALIZE_WORD_PARAMETERS;
          INITIALIZE_DEVELOPER_PARAMETERS;
@@ -118,27 +116,28 @@ begin
       exception
 
          when Args_Exception =>
-            Words_Help.SHOW_HELP ("ARG", OUTPUT);
+            Words_Help.SHOW_HELP ("ARG", Current_Output);
             return;
       end New_Style_Arguments;
 
    end if; -- enclosing interactive mode
 
    -- NOT entering interactive mode; no '-'-style parameters; back to classic
-   -- Words startup
+   -- Words startup sequence
 
    SUPPRESS_PREFACE := True;
    INITIALIZE_WORD_PARAMETERS;
    INITIALIZE_DEVELOPER_PARAMETERS;
    INITIALIZE_WORD_PACKAGE;
 
-   --  choose a non-interactive mode: when 1 argument => either a simple Latin
+   --  Now choose a non-interactive mode: when 1 argument => either a simple Latin
    --  word or an input file. when 2 arguments => two words in-line OR language
    --  switch and word or input file when more arguments => command-line of
    --  words
 
    if Ada.Command_Line.Argument_Count > 1
-     and then Ada.Command_Line.Argument (1) (1) = CHANGE_LANGUAGE_CHARACTER
+    and then Ada.Command_Line.Argument (1) (1) = CHANGE_LANGUAGE_CHARACTER
+    and then ( Ada.Command_Line.Argument (1) (2) = 'e' or Ada.Command_Line.Argument (1) (2) ='E')
    then
 
       CHANGE_LANGUAGE ('E');
@@ -154,7 +153,7 @@ begin
               Ada.Command_Line.Argument (I)'length >
               250;
 
-            --to get the same result as interactive mode and classic Words command-line, we pass a single string (because of POFS option)
+         -- In English->Latin mode, PARSE needs to receive a single string (due to POFS option)
             Input_String
               ((Length_Counter + 1) ..
                    (Length_Counter +
@@ -226,7 +225,7 @@ begin
 
    else
 
-      METHOD := COMMAND_LINE_FILES;
+    METHOD := COMMAND_LINE_FILES;
 
       if WORDS_MODE (DO_UNICODE_INPUT) then
          Parse_Unicode_File ((Ada.Command_Line.Argument (1)));
