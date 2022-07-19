@@ -1,9 +1,4 @@
-with Text_IO; use Text_IO;
 with WORD_PARAMETERS; use WORD_PARAMETERS;
-with Ada.Characters.Handling; 
-with Ada.Strings; use Ada.Strings;
-with Ada.Strings.Fixed;
-
 
    package body STRINGS_PACKAGE is
    
@@ -59,7 +54,6 @@ with Ada.Strings.Fixed;
    begin
 
       if WORDS_MODE(DO_ANSI_FORMATTING) and then
-        not WORDS_MODE (WRITE_OUTPUT_TO_FILE) then
         Put (OUTPUT, Format_Reset);
 
          case Format is

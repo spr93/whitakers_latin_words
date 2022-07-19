@@ -33,6 +33,7 @@ package STRINGS_PACKAGE is
    function HEAD
      (SOURCE : in String; COUNT : in Natural; PAD : in Character := ' ')
       return String renames
+                                              return String         renames
      Ada.Strings.Fixed.Head;
 
    procedure GET_NON_COMMENT_LINE
