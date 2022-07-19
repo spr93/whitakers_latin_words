@@ -53,9 +53,11 @@ package body DEVELOPER_PARAMETERS is
                  --    DO_U_FOR_V                  => TRUE,
 
                       PAUSE_IN_SCREEN_OUTPUT      => FALSE,
+                      NO_SCREEN_ACTIVITY          => FALSE,
                  --   NO_SCREEN_ACTIVITY          => FALSE,
 
                       UPDATE_LOCAL_DICTIONARY     => FALSE,
+                --    UPDATE_MEANINGS             => FALSE,
                  --   UPDATE_MEANINGS             => FALSE,
 
                       MINIMIZE_OUTPUT             => FALSE    );
@@ -387,13 +389,14 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
 
       CLOSE(DICT_LOC_FILE);
 
-      if WORDS_MODE(WRITE_OUTPUT_TO_FILE) and then Name(Output) /= Standard_Output
+      if WORDS_MODE(WRITE_OUTPUT_TO_FILE) and then Name(Output) /= Name(Standard_Output)
       then
-        if WORDS_MDEV (DO_PEARSE_CODES) then
-          Put (OUTPUT, "07 ");
-        end if;
-        Put_Line(OUTPUT,"USER UPDATED LOCAL DICTIONARY FILE FOR THE UNKNOWN");
+      if WORDS_MDEV (DO_PEARSE_CODES) then
+                  Put (OUTPUT, "07 ");
       end if;
+      Put_Line(OUTPUT,"USER UPDATED LOCAL DICTIONARY FILE FOR THE UNKNOWN");
+      end if;
+
     end APPEND_TO_DICT_LOC_FILE;
 
    begin
