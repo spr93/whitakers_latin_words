@@ -57,22 +57,18 @@ WRITE_OUTPUT_TO_FILE_HELP : constant HELP_TYPE :=  (
    "This option may be turned on and off during running of the program,   ",
    "thereby capturing only certain desired results.  If the option        ",
    "HAVE_OUTPUT_FILE is off, the user will not be given a chance to turn  ",
-   "this one on.  Only for INTERACTIVE running.         Default is N(o).  ",
-   "This works in English mode, but output in somewhat diffeent so far.   " );
+   "this one on.  Only for INTERACTIVE running.         Default is N(o).  ");
 
 DO_UNKNOWNS_ONLY_HELP : constant HELP_TYPE :=  (
    "This option instructs the program to only output those words that it  ",
    "cannot resolve.  Of course, it has to do processing on all words, but ",
    "those that are found (with prefix/suffix, if that option in on) will  ",
-   "be ignored.  The purpose of this option is t allow a quick look to    ",
+   "be ignored.  The purpose of this option is to allow a quick look to   ",
    "determine if the dictionary and process is going to do an acceptable  ",
    "job on the current text.  It also allows the user to assemble a list  ",
    "of unknown words to look up manually, and perhaps augment the system  ",
-   "dictionary.  For those purposes, the system is usually run with the   ",
-   "MINIMIZE_OUTPUT option, just producing a list.  Another use is to run ",
-   "without MINIMIZE to an output file.  This gives a list of the input   ",
-   "text with the unknown words, by line.  This functions as a spelling   ",
-   "checker for Latin texts.  The default is N(o).                        ",
+   "dictionary.  It may also be used as a spell checker when composing    ",
+   "Latin texts.                                    The default is N(o).  ",
    "This does not work in English mode, but may in the future.            " );
    
 WRITE_UNKNOWNS_TO_FILE_HELP : constant HELP_TYPE :=  (
@@ -455,7 +451,7 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
         PUT_LINE("MODE_ARRAY saved in file " & MODE_FULL_NAME);
       end if;
     end if;
-                        end if; -- not CL_Arguments(NO_FILES)
+    end if; -- not CL_Arguments(NO_FILES)
                         
     NEW_LINE;
 
