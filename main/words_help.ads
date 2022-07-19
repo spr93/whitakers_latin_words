@@ -298,8 +298,10 @@ private
       "01   forms|                                                                    ",
       "02   dictionary forms (incl. Area, geography, age, source codes)|              ",
       "03   definition|                                                               ",
-      "04   unknown|                                                                  ",
-      "06   warnings, notes (esp. tricks)|                                            ");
+      "04   unknown word|                                                             ",
+      "05   contains addon|                                                           ",
+      "06   warnings, notes (esp. tricks)|                                            ",
+      "07   notice that data written to file (other than WORD.OUT or WORD.UNK|        ");
 
    MEANING_HELP : constant Main_Help_Type :=
      (Underline_Next,
