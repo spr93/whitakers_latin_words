@@ -389,12 +389,18 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
 
       CLOSE(DICT_LOC_FILE);
 
+      if WORDS_MODE(WRITE_OUTPUT_TO_FILE) and then Name(Output) /= Standard_Output
+      then
+      if WORDS_MDEV (DO_PEARSE_CODES) then
+                  Put (OUTPUT, "07 ");
+      end if;
+      Put_Line(OUTPUT,"USER UPDATED LOCAL DICTIONARY FILE FOR THE UNKNOWN");
     end APPEND_TO_DICT_LOC_FILE;
 
    begin
 
     loop
-      TEXT_IO.PUT_LINE("Update location dictionary (enter blank line to skip)");
+    Text_IO.Put_Line("Update location dictionary (enter blank line to skip)");
       TEXT_IO.PUT("STEMS =>");
       GET_LINE(STEM_LINE, SL);
       if SL > 0  then  --  if no input for stems, then just skip the entry

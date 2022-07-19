@@ -236,6 +236,9 @@ begin
       if Name (Current_Output) /= Name (Standard_Output) then
          Set_Output (Standard_Output);
          Close (OUTPUT);
+      if WORDS_MDEV (DO_PEARSE_CODES) then
+           Put ("07 ");
+      end if;
          Put_Line
            ("Wrote output to file " & TRIM (Ada.Command_Line.Argument (2)));
       end if;
