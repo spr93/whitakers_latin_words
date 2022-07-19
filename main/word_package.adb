@@ -27,10 +27,11 @@ package body WORD_PACKAGE is
          if METHOD = INTERACTIVE then
             if Text_IO.Name (OUTPUT) = Text_IO.Name (Text_IO.Standard_Output)
             then
-
+             Format(Output,Inverse);
                Text_IO.Put_Line
                  (Text_IO.Standard_Output,
                   "                          MORE - hit RETURN/ENTER to continue");
+             Format(Output,RESET);
                Text_IO.Get_Line
                  (Text_IO.Standard_Input, PAUSE_LINE, PAUSE_LAST);
             end if;
@@ -38,6 +39,7 @@ package body WORD_PACKAGE is
             Text_IO.Put_Line
               (Text_IO.Standard_Output,
                "                          MORE - hit RETURN/ENTER to continue");
+        Format(Output,RESET);
             Text_IO.Get_Line (Text_IO.Standard_Input, PAUSE_LINE, PAUSE_LAST);
          elsif METHOD = COMMAND_LINE_FILES then
             null;                       --  Do not PAUSE
@@ -330,8 +332,7 @@ package body WORD_PACKAGE is
                      --  Could order the endings by length (suffix sort) so
                      --  length changes slowly
 
-                     --PUT_LINE("LENGTH = " & INTEGER'IMAGE(STEM_LENGTH)
-                     --& "   SA =>" & PR.STEM & "|");
+--DEBUG:           PUT_LINE("LENGTH = " & INTEGER'IMAGE(STEM_LENGTH) & "   SA =>" & PR.STEM & "|");
                   end if;
                end if;
             end loop;
@@ -2375,7 +2376,6 @@ package body WORD_PACKAGE is
       if Ada.Environment_Variables.Exists ("LATINWORDS") then
          Set_Directory (Ada.Environment_Variables.Value ("LATINWORDS"));
          PREFACE.PUT_LINE (Data_Message_1 & "LATINWORDS");
-
       elsif Ada.Environment_Variables.Exists ("LATIN_WORDS") then
          Set_Directory (Ada.Environment_Variables.Value ("LATIN_WORDS"));
          PREFACE.PUT_LINE (Data_Message_1 & "LATIN_WORDS");

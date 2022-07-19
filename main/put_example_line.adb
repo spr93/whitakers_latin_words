@@ -15,12 +15,12 @@ is
      (OUTPUT : in Text_IO.File_Type; IR : in INFLECTION_RECORD;
       VK     : in VERB_KIND_TYPE)
    is
-      PERSON : constant PERSON_TYPE := IR.QUAL.V.PERSON;
-      NUMBER : constant NUMBER_TYPE := IR.QUAL.V.NUMBER;
-      TENSE  : constant TENSE_TYPE  := IR.QUAL.V.TENSE_VOICE_MOOD.TENSE;
-      MOOD   : constant MOOD_TYPE   := IR.QUAL.V.TENSE_VOICE_MOOD.MOOD;
-      VOICE  : VOICE_TYPE           := IR.QUAL.V.TENSE_VOICE_MOOD.VOICE;
-      KIND   : constant VERB_KIND_TYPE       := VK;
+      PERSON : constant PERSON_TYPE    := IR.QUAL.V.PERSON;
+      NUMBER : constant NUMBER_TYPE    := IR.QUAL.V.NUMBER;
+      TENSE  : constant TENSE_TYPE     := IR.QUAL.V.TENSE_VOICE_MOOD.TENSE;
+      MOOD   : constant MOOD_TYPE      := IR.QUAL.V.TENSE_VOICE_MOOD.MOOD;
+      VOICE  : VOICE_TYPE              := IR.QUAL.V.TENSE_VOICE_MOOD.VOICE;
+      KIND   : constant VERB_KIND_TYPE := VK;
       --  Nothing on (part), gerund
 
       function THEY return String is

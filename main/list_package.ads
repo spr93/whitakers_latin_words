@@ -61,7 +61,7 @@ package LIST_PACKAGE is
 
       "Scholar ",   --  G
 
-      "Modern  "); --  H
+      "Modern  ");  --  H
 
    DICTIONARY_FREQUENCY : array (FREQUENCY_TYPE) of String (1 .. 8) :=
      ("        ",  --  X
@@ -82,7 +82,7 @@ package LIST_PACKAGE is
 
       "graffiti",  --  J
 
-      "Pliny   ");--  N
+      "Pliny   "); --  N
 
    DICTIONARY_AGE : array (AGE_TYPE) of String (1 .. 8) :=
      ("        ",   --  X
