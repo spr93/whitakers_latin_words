@@ -299,7 +299,6 @@ private
       "02   dictionary forms (incl. Area, geography, age, source codes)|              ",
       "03   definition|                                                               ",
       "04   unknown|                                                                  ",
-      "05   [unused]|                                                                 ",
       "06   warnings, notes (esp. tricks)|                                            ");
 
    MEANING_HELP : constant Main_Help_Type :=
@@ -409,11 +408,8 @@ private
       "  ***No scholarly rigor is assured.  This dictionary is an amateur project***| ");
 
    Param_Help : constant Main_Help_Type :=
-     (Underline_Next,
-      "COMMAND-LINE ARGUMENTS|                                                        ",
-      Skip_Next,
-      "Words operates in two modes when using command-line arguments|                 ",
-      Skip_Next, Bold_Next,
+     ("Words operates in two modes when using command-line arguments|                 ",
+      Bold_Next,
       "[1] NON-INTERACTIVE WORDS:  Fully compatible with Wm. Whitaker's classic Words.",
       "Usage:|                                                                        ",
       "words [string of Latin words]|                                                 ",
@@ -427,16 +423,16 @@ private
       Skip_Next, Bold_Next,
       "[2] MODIFIED INTERACTIVE-MODE:  Set limits on interactive mode.|               ",
       "Options:|                                                                      ",
-      "-r    READ ONLY:     User cannot change settings or direct output to file|     ",
-      "-n    NO FILES:      User cannot save settings, load or direct ouptut to file| ",
+      "-r    NO CHANGE:     User cannot CHANGE settings or update local dictionary|   ",
+      "-n    NO FILES:      User cannot SAVE settings, update local dictionary, use|  ",
+      "                     file input, or CHANGE user log settings (WRITE_...TO_FILE)",
       "-x    NO EXIT:       User cannot exit with two returns or control-C|           ",
       "           NOT A SECURE MODE - only blocks SIGINT|                             ",
       "           No effect on suspend (SIGSTP) or kill (SIGTERM)|                    ",
       "-l    LATIN ONLY:    User cannot enter English->Latin mode|                    ",
       "-e    ENGLISH ONLY:  User cannot enter Latin->English mode|                    ",
-      "-m    MEANINGS ONLY: Show only the meanings line (in Latin->English mode)|     ",
+      "-m    MEANINGS ONLY: Limit Latin->English output to dictionary line and meaning",
       "E.g., words -rnlm limits the user the functionality of a paper dictionary|     ",
-      Skip_Next,
-      "These options override any conflicting settings in WORD.MOD|                   ");
+      "Command-line options override any conflicting settings in WORD.MOD|            ");
 
 end Words_Help;
