@@ -184,7 +184,7 @@ package INFLECTIONS_PACKAGE is
           IND,       --  INDicative
           SUB,       --  SUBjunctive
           IMP,       --  IMPerative
-          INF,       --  INFinative
+          INF,       --  INFinitive
           PPL        --  ParticiPLe
                      );                    
                            
@@ -287,11 +287,6 @@ type NOUN_RECORD is
    procedure GET(S : in STRING; N : out NOUN_RECORD; LAST : out INTEGER);
    procedure PUT(S : out STRING; N : in NOUN_RECORD);  
  end NOUN_RECORD_IO;  
-
-   
---  type Qu_Pron_Type is (X, Ali_Indef, Ali_Adject, Qu_Indef, Qu_Adject, Qu_Rel, Qu_Interr);
---  Ali_Stem      : constant Stem_Type := (1 => 'a', 2 => 'l', 3 => 'i', others => ' ');
---  Qu_Stem       : constant Stem_Type := (1 => 'q', 2 => 'u', others => ' ');
 
    
 type PRONOUN_RECORD is
@@ -724,9 +719,9 @@ type INTERJECTION_RECORD is
 
   BELF, BELL : INFLECTION_ARRAY_INDEX(0..0, ' '..' ') := (0 => (others => 0));
   LELF, LELL : INFLECTION_ARRAY_INDEX(1..MAX_ENDING_SIZE, 
-                                      'a'..'z') := (others => (others => 0));
+                                      'a'..'z') := (others  => (others => 0));
   PELF, PELL : INFLECTION_ARRAY_INDEX(1..MAX_ENDING_SIZE, 
-                                      'a'..'z') := (others => (others => 0));
+                                      'a'..'z') := (others  => (others => 0));
   
   NUMBER_OF_INFLECTIONS : INTEGER := 0;
   
@@ -750,7 +745,7 @@ type INTERJECTION_RECORD is
   function "<=" (LEFT, RIGHT : FREQUENCY_TYPE)   return BOOLEAN;  
   
   function Qual_Equ_PRONPACK (Qual : in QUALITY_RECORD) return Boolean;
-  function Qr_Pack_To_PRON   (QR : in QUALITY_RECORD  ) return PRONOUN_RECORD; 
+  function Qr_Pack_To_PRON   (QR   : in QUALITY_RECORD) return PRONOUN_RECORD; 
    
   GIVE_UP : exception;
 
