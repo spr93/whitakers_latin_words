@@ -59,7 +59,7 @@ package body LINE_STUFF is
   begin
 
     OPEN(DICTIONARY_FILE, IN_FILE, DICTIONARY_FILE_NAME);
-    PREFACE.PUT("Dictionary loading");
+    PREFACE.PUT("dictionary loading");
 
     while not END_OF_FILE(DICTIONARY_FILE)  loop
 --TEXT_IO.PUT_LINE("GETTING");
@@ -353,17 +353,20 @@ package body LINE_STUFF is
     PREFACE.PUT_LINE("--  loaded correctly");
   exception
     when others   =>
-        PREFACE.PUT_LINE("    LOAD_DICTIONARY exception -- DATA FILE MAY BE CORRUPT");
+        PREFACE.NEW_LINE;
+        PREFACE.PUT_LINE("PROBLEM LOADING DATA FILE -- LIKELY FORMAT OR FILE ACCESS ERROR");
+        PREFACE.PUT_LINE("LAST LINES READ WERE:");
         PREFACE.PUT_LINE(ST_LINE(1..LAST));
         PREFACE.PUT_LINE(LINE(1..L));
         CLOSE(DICTIONARY_FILE);
-        PREFACE.SET_COL(33); PREFACE.PUT("--  ");
+        PREFACE.SET_COL(40); PREFACE.PUT("--  ");
         PREFACE.PUT(NUMBER_OF_DICTIONARY_ENTRIES, 6);
-        PREFACE.PUT(" entries"); PREFACE.SET_COL(55);
+        PREFACE.PUT(" entries"); PREFACE.SET_COL(60);
         PREFACE.PUT_LINE("--  loaded anyway");
-        PREFACE.PUT_LINE("    USE WITH CAUTION - DICTIONARY DATA PARTIALLY OR INCORRECTLY LOADED");
+        PREFACE.PUT_LINE("   USE WITH CAUTION -- SOME DATA PARTIALLY OR INCORRECTLY LOADED");
+        PREFACE.NEW_LINE;
   end LOAD_DICTIONARY;
-
+  
   procedure LOAD_STEM_FILE(D_K : DICTIONARY_KIND)  is
   --  This is used to load a dictionary access file, like DIC.LOC
   --  It uses the single first letter index rather than the two letter
