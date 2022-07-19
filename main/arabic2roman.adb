@@ -150,7 +150,7 @@ package body Arabic2Roman is
                Put (OUTPUT, Arabic_String);
                    Set_Col (OUTPUT, 15);
                    Put_Line (OUTPUT, "========   UNKNOWN  ");
-               New_Line;
+               New_Line(OUTPUT);
 
                if WORDS_MDEV (DO_PEARSE_CODES) then
                   Put (OUTPUT, "06 ");
