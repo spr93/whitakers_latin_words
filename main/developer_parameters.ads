@@ -9,7 +9,7 @@ package DEVELOPER_PARAMETERS is
 --  These files are used by the program if requested, but not necessary
 --  They are all text files and human readable
 
---  DEVELOPER MODE_FILE is used by the program to remember values 
+--  MDEV_FILE is used by the program to remember values 
 
   MDEV_FILE : TEXT_IO.FILE_TYPE;
   MDEV_FULL_NAME : constant STRING := "WORD.MDV";
@@ -40,7 +40,7 @@ package DEVELOPER_PARAMETERS is
                       OMIT_UNCOMMON,    
                                  
                       PAUSE_IN_SCREEN_OUTPUT, 
-                      NO_SCREEN_ACTIVITY,   
+                    --NO_SCREEN_ACTIVITY,   
                         
                       UPDATE_LOCAL_DICTIONARY,
                     --UPDATE_MEANINGS,       
