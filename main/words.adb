@@ -21,8 +21,7 @@ begin
    -- FIND DATA FILES
    -- If the always-necessary INFLECTS.SEC isn't in the working directory, see
    -- if we can find it via environment variable. First check LATINWORDS and
-   -- LATIN_WORDS,
-   ---then cycle through PATH.
+   -- LATIN_WORDS, then cycle through PATH.
    if not Ada.Directories.Exists ("INFLECTS.SEC") then
       FIND_DICTIONARY_FILES;
    end if;
@@ -172,7 +171,7 @@ begin
 
       METHOD := COMMAND_LINE_INPUT;
 
-   else -- Ada.Command_Line.Argument_Count = 1 or 2 w/o language change
+   else -- Ada.Command_Line.Argument_Count = 1 or 2 w/o changing to English->Latin mode
 
       SETUP_INPUT :
       declare
