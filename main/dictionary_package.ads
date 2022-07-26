@@ -1,7 +1,6 @@
 with Text_IO;
 with INFLECTIONS_PACKAGE; use INFLECTIONS_PACKAGE;
 
-
 package DICTIONARY_PACKAGE is
    pragma Elaborate_Body;
    use Text_IO;
@@ -101,18 +100,7 @@ package DICTIONARY_PACKAGE is
       Z       --  Sent by user --  no dictionary reference
    --  mostly John White of Blitz Latin
 
-      --  Consulted but used only indirectly
-      --  Liddell + Scott Greek-English Lexicon (Lid)
-      --  Various translations of Ovid and Vergil
 
-      --  Consulted but used only occasionally, seperately referenced
-      --  D.A. Kidd, Collins Latin Gem Dictionary, 1957 (Col)
-      --  Allen + Greenough, New Latin Grammar, 1888 (A+G)
-      --  Harrington/Pucci/Elliott, Medieval Latin 2nd Ed 1997 (Harr)
-      --  C.C./C.L. Scanlon Latin Grammar/Second Latin, TAN 1976 (SCANLON)
-      --  W. M. Lindsay, Short Historical Latin Grammar, 1895 (Lindsay)
-      --  Du Cange
-      --  Oxford English Dictionary (OED)
 
 --  Note that the WORDS dictionary is not a copy of source info, but the
 --  indicated SOURCE is a main reference/check point used to derive the entry
@@ -337,32 +325,32 @@ package DICTIONARY_PACKAGE is
 
    type PART_ENTRY (POFS : PART_OF_SPEECH_TYPE := X) is record
       case POFS is
-         when N     =>
-              N      : NOUN_ENTRY;
-         when PRON  =>
-              PRON   : PRONOUN_ENTRY;
-         when PACK  =>
-              PACK   : PROPACK_ENTRY;
-         when ADJ   =>
-              ADJ    : ADJECTIVE_ENTRY;
-         when NUM   =>
-              NUM    : NUMERAL_ENTRY;
-         when ADV    =>
-              ADV    : ADVERB_ENTRY;
-         when V      =>
-              V      : VERB_ENTRY;
-         when VPAR   =>
-              null;  --  There will be no VPAR dictionary entries
+         when N =>
+            N : NOUN_ENTRY;
+         when PRON =>
+            PRON : PRONOUN_ENTRY;
+         when PACK =>
+            PACK : PROPACK_ENTRY;
+         when ADJ =>
+            ADJ : ADJECTIVE_ENTRY;
+         when NUM =>
+            NUM : NUMERAL_ENTRY;
+         when ADV =>
+            ADV : ADVERB_ENTRY;
+         when V =>
+            V : VERB_ENTRY;
+         when VPAR =>
+            null;  --  There will be no VPAR dictionary entries
          when SUPINE =>
-              null;  --  There will be no SUPINE dictionary entries
-         when PREP   =>
-              PREP   : PREPOSITION_ENTRY;
-         when CONJ   =>
-              CONJ   : CONJUNCTION_ENTRY;
+            null;  --  There will be no SUPINE dictionary entries
+         when PREP =>
+            PREP : PREPOSITION_ENTRY;
+         when CONJ =>
+            CONJ : CONJUNCTION_ENTRY;
          when INTERJ =>
-              INTERJ : INTERJECTION_ENTRY;
+            INTERJ : INTERJECTION_ENTRY;
          when others =>
-              null;
+            null;
       end case;
    end record;
 
@@ -401,19 +389,19 @@ package DICTIONARY_PACKAGE is
 
    NULL_DICTIONARY_ENTRY : DICTIONARY_ENTRY;
 
-   package DICT_IO is new DIRECT_IO (DICTIONARY_ENTRY);
-   DICT_FILE : array (DICTIONARY_KIND) of DICT_IO.FILE_TYPE;
+   package DICT_IO is new Direct_IO (DICTIONARY_ENTRY);
+   DICT_FILE : array (DICTIONARY_KIND) of DICT_IO.File_Type;
 
-   package MNPC_IO is new TEXT_IO.INTEGER_IO (DICT_IO.COUNT);
-   subtype MNPC_TYPE is DICT_IO.COUNT;
-   NULL_MNPC : DICT_IO.COUNT := DICT_IO.COUNT'First;
-   LAST_MNPC : DICT_IO.COUNT := NULL_MNPC;
+   package MNPC_IO is new Text_IO.Integer_IO (DICT_IO.Count);
+   subtype MNPC_TYPE is DICT_IO.Count;
+   NULL_MNPC : DICT_IO.Count := DICT_IO.Count'First;
+   LAST_MNPC : DICT_IO.Count := NULL_MNPC;
 
    type PARSE_RECORD is record
       STEM : STEM_TYPE         := NULL_STEM_TYPE;
       IR   : INFLECTION_RECORD := NULL_INFLECTION_RECORD;
       D_K  : DICTIONARY_KIND   := DEFAULT_DICTIONARY_KIND;
-      MNPC : DICT_IO.COUNT     := NULL_MNPC;
+      MNPC : DICT_IO.Count     := NULL_MNPC;
    end record;
 
    NULL_PARSE_RECORD : PARSE_RECORD;
@@ -433,5 +421,38 @@ package DICTIONARY_PACKAGE is
    function NUMBER_OF_STEMS (P : PART_OF_SPEECH_TYPE) return STEM_KEY_TYPE;
 
    function "<=" (LEFT, RIGHT : AREA_TYPE) return Boolean;
+
+   Sum_Array : constant array
+     (MOOD_TYPE range IND .. SUB, TENSE_TYPE range PRES .. FUTP,
+      NUMBER_TYPE range S .. P, PERSON_TYPE range 1 .. 3) of String (1 .. 9) :=
+     (
+      (         --  IND
+
+       (("sum      ", "es       ", "est      "),
+        ("sumus    ", "estis    ", "sunt     ")),
+       (("eram     ", "eras     ", "erat     "),
+        ("eramus   ", "eratis   ", "erant    ")),
+       (("ero      ", "eris     ", "erit     "),
+        ("erimus   ", "eritis   ", "erunt    ")),
+       (("fui      ", "fuisti   ", "fuit     "),
+        ("fuimus   ", "fuistis  ", "fuerunt  ")),
+       (("fueram   ", "fueras   ", "fuerat   "),
+        ("fueramus ", "fueratis ", "fuerant  ")),
+       (("fuero    ", "fueris   ", "fuerit   "),
+        ("fuerimus ", "fueritis ", "fuerunt  "))),
+      (         --  SUB
+
+       (("sim      ", "sis      ", "sit      "),
+        ("simus    ", "sitis    ", "sint     ")),
+       (("essem    ", "esses    ", "esset    "),
+        ("essemus  ", "essetis  ", "essent   ")),
+       (("zzz      ", "zzz      ", "zzz      "),
+        ("zzz      ", "zzz      ", "zzz      ")),
+       (("fuerim   ", "fueris   ", "fuerit   "),
+        ("fuerimus ", "fueritis ", "fuerint  ")),
+       (("fuissem  ", "fuisses  ", "fuisset  "),
+        ("fuissemus", "fuissetis", "fuissent ")),
+       (("zzz      ", "zzz      ", "zzz      "),
+        ("zzz      ", "zzz      ", "zzz      "))));
 
 end DICTIONARY_PACKAGE;
