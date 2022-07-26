@@ -110,7 +110,7 @@ package body Parse_Package is
                   Arabic2Roman.Arabic2Roman
                     (Current_Output, Arabic_String ((Arabic_J) .. J));
             end if;
-          
+
             Arabic_J := (J);
 
             end if;
@@ -1417,27 +1417,27 @@ package body Parse_Package is
                      CHANGE_DEVELOPER_MODES;
 
                   else
-                   
+
                      --  Echo input to console if console output is active and we're reading from a file, pipe, etc.
-                     if (Name (Current_Input) /= Name (Standard_Input)) then 
+                     if (Name (Current_Input) /= Name (Standard_Input)) then
                       PREFACE.PUT_LINE ("=> " & TRIM(LINE));
                      end if;
-                     
-                   if METHOD = INTERACTIVE 
+
+                   if METHOD = INTERACTIVE
                       then
                       Preface.New_Line;
-                 
-              
+
+
                 -- SPR:  NEW FEATURE - Log the user's session when set to WRITE_OUTPUT_TO_FILE in
                 --       INTERACTIVE mode with a real user at the console/stdout (i.e., not SUPPRESS_PREFACE).
                 --
-                --       RATIONALE: This combination of features always sounded to me like it should log 
+                --       RATIONALE: This combination of features always sounded to me like it should log
                 --       the user's entire session, but it used to just re-direct re-directing all output except
                 --       the input prompt ("=>") to file.
                 --
                 --       COMPATIBILITY: So long as you turn on SUPPRESS_PREFACE, these changes will not result in
                 --       in any extra parsing or stdout activiity as compared with prior versions.
-                
+
                      if WORDS_MODE (WRITE_OUTPUT_TO_FILE) then
                      Text_IO.Put_Line (OUTPUT,("=> " & TRIM(LINE)));
                       -- NOT SUPPRESS_PREFACE + WRITE_OUTPUT_TO_FILE + INTERACTIVE = parse to console before parsing to file
@@ -1447,11 +1447,11 @@ package body Parse_Package is
                         Words_Mode(WRITE_OUTPUT_TO_FILE) := True;
                         Preface.Put_Line("                               [Logging to file - WRITE_OUTPUT_TO_FILE mode on]");
                      end if;
-           
+
                    end if;
                    end if;
-              
-              
+
+
                   PARSE_LINE (LINE (1 .. L));
 
             end if;
@@ -1465,7 +1465,7 @@ package body Parse_Package is
                   end if;
                   Put_Line ("Unknown or unacceptable file name.");
 
-               when End_Error =>  
+               when End_Error =>
                   if CL_Arguments (NO_EXIT) then
                      null;
                   elsif (Name (Current_Input) /= Name (Standard_Input)) then
@@ -1536,7 +1536,10 @@ package body Parse_Package is
       Close (W_INPUT);
       WORDS_MODE (DO_UNICODE_INPUT) := True;
       METHOD                        := Saved_Method;
-
+     exception
+       when Ada.Wide_Text_IO.Use_Error  =>  raise Text_IO.Use_Error;
+       when Ada.Wide_Text_IO.Name_Error =>  raise Text_IO.Name_Error;
+       when others => Handle_Unicode_Exception;
    end Parse_Unicode_File;
 
 end Parse_Package;
