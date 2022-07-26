@@ -24,7 +24,6 @@ with Ada.Exceptions;
 
 pragma Elaborate (WORD_PARAMETERS);
 
-
 package body Parse_Package is
 
    procedure PARSE (COMMAND_LINE : String := "") is
@@ -99,31 +98,23 @@ package body Parse_Package is
                J := I + 1;
             end loop;
 
-      --------------------------BEGIN ROMAN NUMERALS--------------------------
-            -- Intercept Arabic numerals here; a bit messy, but we can avoid
-            -- changing the rest of the procedure
+      --------------------------BEGIN NUMERALS------------------------
+            -- Intercept Arabic numerals here; a bit messy, but we can
+            -- avoid changing the rest of the procedure
             if WORDS_MODE (DO_ARABIC_NUMERALS) and Arabic_Present then
 
-               if Arabic_J = 1 and then (Arabic_String (1) /= 'z') then
-                  if WORDS_MODE (WRITE_OUTPUT_TO_FILE) then
-                     Text_IO.New_Line (OUTPUT);
-                  else
-                     Text_IO.New_Line (Current_Output);
-                  end if;
-               end if;
-
                if WORDS_MODE (WRITE_OUTPUT_TO_FILE) then
-
                   Arabic2Roman.Arabic2Roman
                     (OUTPUT, Arabic_String ((Arabic_J) .. J));
                else
                   Arabic2Roman.Arabic2Roman
                     (Current_Output, Arabic_String ((Arabic_J) .. J));
-               end if;
-
-               Arabic_J := (J);
             end if;
-      ----------------------------END ROMAN NUMERALS--------------------------
+          
+            Arabic_J := (J);
+
+            end if;
+      ----------------------------END NUMERALS------------------------
 
             exit when J > L;              --  Kludge
 
@@ -153,7 +144,7 @@ package body Parse_Package is
             -- behavior when there's a cap);
 
             if W (J) in 'A' .. 'Z' and then K - J >= 1
-              and then W (J + 1) in 'a' .. 'z'
+            and then W (J + 1) in 'a' .. 'z'
             then
                CAPITALIZED := True;
             end if;
@@ -589,41 +580,6 @@ package body Parse_Package is
                            end NEXT_WORD;
 
                            function IS_SUM (T : String) return Boolean is
-                              SA : constant array
-                                (MOOD_TYPE range IND .. SUB,
-                                 TENSE_TYPE range PRES .. FUTP,
-                                 NUMBER_TYPE range S .. P,
-                                 PERSON_TYPE range 1 .. 3) of String
-                                (1 .. 9) :=
-                                (
-                                 (         --  IND
-
-                                  (("sum      ", "es       ", "est      "),
-                                   ("sumus    ", "estis    ", "sunt     ")),
-                                  (("eram     ", "eras     ", "erat     "),
-                                   ("eramus   ", "eratis   ", "erant    ")),
-                                  (("ero      ", "eris     ", "erit     "),
-                                   ("erimus   ", "eritis   ", "erunt    ")),
-                                  (("fui      ", "fuisti   ", "fuit     "),
-                                   ("fuimus   ", "fuistis  ", "fuerunt  ")),
-                                  (("fueram   ", "fueras   ", "fuerat   "),
-                                   ("fueramus ", "fueratis ", "fuerant  ")),
-                                  (("fuero    ", "fueris   ", "fuerit   "),
-                                   ("fuerimus ", "fueritis ", "fuerunt  "))),
-                                 (         --  SUB
-
-                                  (("sim      ", "sis      ", "sit      "),
-                                   ("simus    ", "sitis    ", "sint     ")),
-                                  (("essem    ", "esses    ", "esset    "),
-                                   ("essemus  ", "essetis  ", "essent   ")),
-                                  (("zzz      ", "zzz      ", "zzz      "),
-                                   ("zzz      ", "zzz      ", "zzz      ")),
-                                  (("fuerim   ", "fueris   ", "fuerit   "),
-                                   ("fuerimus ", "fueritis ", "fuerint  ")),
-                                  (("fuissem  ", "fuisses  ", "fuisset  "),
-                                   ("fuissemus", "fuissetis", "fuissent ")),
-                                  (("zzz      ", "zzz      ", "zzz      "),
-                                   ("zzz      ", "zzz      ", "zzz      "))));
 
                            begin
                               if T = "" then
@@ -637,7 +593,8 @@ package body Parse_Package is
                                  for K in TENSE_TYPE range PRES .. FUTP loop
                                     for J in NUMBER_TYPE range S .. P loop
                                        for I in PERSON_TYPE range 1 .. 3 loop
-                                          if TRIM (T) = TRIM (SA (L, K, J, I))
+                                          if TRIM (T) =
+                                            TRIM (Sum_Array (L, K, J, I))
                                           then
                                              SUM_INFO :=
                                                ((5, 1), (K, ACTIVE, L), I, J);
@@ -1418,14 +1375,12 @@ package body Parse_Package is
                     and then not CL_Arguments (NO_FILES)
                     and then not CL_Arguments (READ_ONLY)
                   then    --  To begin file of words
-
                      if (Name (Current_Input) /= Name (Standard_Input)) then
                         Text_IO.Put_Line
                           ("Cannot have file of words (@FILE) in an @FILE");
 
                      elsif WORDS_MODE (DO_UNICODE_INPUT) then
                         Parse_Unicode_File (TRIM (LINE (2 .. L)));
-                        null;
                      else
                         Text_IO.Open
                           (INPUT, Text_IO.In_File, TRIM (LINE (2 .. L)));
@@ -1453,7 +1408,7 @@ package body Parse_Package is
                   then
                      CHANGE_LANGUAGE (LINE (2));
 
-                  elsif --  CONFIGURATION = DEVELOPER_VERSION  and then    --  Allow anyone to do it
+                  elsif CONFIGURATION = DEVELOPER_VERSION  and then
                   LINE (1) = CHANGE_DEVELOPER_MODES_CHARACTER
                     and then (Name (Current_Input) = Name (Standard_Input))
                     and then not CONFIG.SUPPRESS_PREFACE
@@ -1462,20 +1417,45 @@ package body Parse_Package is
                      CHANGE_DEVELOPER_MODES;
 
                   else
-                     if (Name (Current_Input) /= Name (Standard_Input)) then
-                        PREFACE.NEW_LINE;
-                        PREFACE.PUT_LINE (LINE (1 .. L));
+                   
+                     --  Echo input to console if console output is active and we're reading from a file, pipe, etc.
+                     if (Name (Current_Input) /= Name (Standard_Input)) then 
+                      PREFACE.PUT_LINE ("=> " & TRIM(LINE));
                      end if;
+                     
+                   if METHOD = INTERACTIVE 
+                      then
+                      Preface.New_Line;
+                 
+              
+                -- SPR:  NEW FEATURE - Log the user's session when set to WRITE_OUTPUT_TO_FILE in
+                --       INTERACTIVE mode with a real user at the console/stdout (i.e., not SUPPRESS_PREFACE).
+                --
+                --       RATIONALE: This combination of features always sounded to me like it should log 
+                --       the user's entire session, but it used to just re-direct re-directing all output except
+                --       the input prompt ("=>") to file.
+                --
+                --       COMPATIBILITY: So long as you turn on SUPPRESS_PREFACE, these changes will not result in
+                --       in any extra parsing or stdout activiity as compared with prior versions.
+                
                      if WORDS_MODE (WRITE_OUTPUT_TO_FILE) then
-                        if not CONFIG.SUPPRESS_PREFACE then
-                           Text_IO.Put_Line (OUTPUT, LINE (1 .. L));
-                           New_Line (OUTPUT);
-                        end if;
+                     Text_IO.Put_Line (OUTPUT,("=> " & TRIM(LINE)));
+                      -- NOT SUPPRESS_PREFACE + WRITE_OUTPUT_TO_FILE + INTERACTIVE = parse to console before parsing to file
+                      if not SUPPRESS_PREFACE then
+                        Words_Mode(WRITE_OUTPUT_TO_FILE) := False;
+                        PARSE_LINE (LINE (1 .. L));
+                        Words_Mode(WRITE_OUTPUT_TO_FILE) := True;
+                        Preface.Put_Line("                               [Logging to file - WRITE_OUTPUT_TO_FILE mode on]");
                      end if;
-                     PARSE_LINE (LINE (1 .. L));
+           
+                   end if;
+                   end if;
+              
+              
+                  PARSE_LINE (LINE (1 .. L));
 
-                  end if;
-               end if;
+            end if;
+          end if;
 
             exception
                when Name_Error | Use_Error =>
@@ -1485,28 +1465,24 @@ package body Parse_Package is
                   end if;
                   Put_Line ("Unknown or unacceptable file name.");
 
-               when End_Error =>          --  The end of the input file resets to CON:
+               when End_Error =>  
                   if CL_Arguments (NO_EXIT) then
                      null;
                   elsif (Name (Current_Input) /= Name (Standard_Input)) then
+                     --  The end of the input file resets to CON:
                      Set_Input (Standard_Input);
                      Close (INPUT);
                      if METHOD = COMMAND_LINE_FILES then
                         raise GIVE_UP;
                      end if;
                   else
-                     if CL_Arguments (NO_EXIT) then
-                        null;
-
-                     else
-                        Put_Line
+                     Put_Line
                           ("Raised END_ERROR (may be inappropriate line terminator)");
-                        raise GIVE_UP;
-                     end if;
+                     raise GIVE_UP;
                   end if;
 
                when Status_Error =>                 --  The end of the input file resets to CON:
-                  Put_Line ("Raised STATUS_ERROR");
+                  Put_Line ("Raised STATUS_ERROR (is file or input locked or busy?");
             end GET_INPUT_LINE;                     --  end Block to manipulate file of lines
 
          end loop GET_INPUT_LINES;                  --  Loop on lines
@@ -1534,9 +1510,10 @@ package body Parse_Package is
    ---Unicode handling relies on Ada 202x features (see comments to Unicode_to_Basic_Text).
    ---When building Words with implementations that don't include the necessary features,
    ---use the Unicode_Function package in main/nonunicode, which will disable the DO_UNICODE
-   ---feature and render the following procedures dead code that should be optimized out.
+   ---feature and render the following procedure dead code that should be optimized out.
 
-   ---Unicode handling is only useful for dealing with input that includes macrons.
+   ---Unicode handling is useful for dealing with input that includes macrons.
+   ---It may also clean up unexpected input.
 
    procedure Parse_Unicode_File (File_Name_String : in String) is
 
