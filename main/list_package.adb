@@ -7,7 +7,7 @@ with UNIQUES_PACKAGE;      use UNIQUES_PACKAGE;
 with WORD_SUPPORT_PACKAGE; use WORD_SUPPORT_PACKAGE;
 with DEVELOPER_PARAMETERS; use DEVELOPER_PARAMETERS;
 with WORD_PACKAGE;         use WORD_PACKAGE;
-with DICTIONARY_FORM;
+with Dictionary_Form;
 with PUT_EXAMPLE_LINE;
 with LIST_SWEEP;
 
@@ -262,9 +262,9 @@ package body LIST_PACKAGE is
       -- TEXT_IO.PUT_LINE("PUT_INFLECTION ");
 
           if   ( WORDS_MODE (DO_ONLY_MEANINGS) or (CONFIGURATION = ONLY_MEANINGS) )
-          and then DM.D_K not  in ADDONS .. YYY  -- all "inflection" information for ADDONS, TRICKS, and SYNCOPES has been processed now; they don't have real inflection information, but they [mis-]use
+          and then DM.D_K not  in ADDONS .. YYY  -- not an addon, TRICK, or SYNCOPE (because they [mis-]use
                                                  -- the inflection field for modification warning (XXX .. YYY)
-                                                 -- or for the definition (ADDONS).
+                                                 -- or for the definition (ADDONS))
       then
       return;
       end if;
@@ -1046,7 +1046,7 @@ package body LIST_PACKAGE is
       --  Sets + if capitalized
       --  Strangely enough, it may enter LIST_STEMS with PA_LAST /= 0 but be
       --  weeded and end up with no parse after LIST_SWEEP - PA_LAST = 0
-      if PA_LAST = 0 then  --  WORD failed
+   if PA_LAST = 0 then  --  WORD failed
          --????      (DMA(1).D_K in ADDONS..YYY  and then TRIM(DMA(1).DE.STEMS(1)) /= "que")  then  --  or used FIXES/TRICKS
          if WORDS_MODE (IGNORE_UNKNOWN_NAMES) and CAPITALIZED then
             NNN_MEANING (NNN_MEANING_COUNTER) :=
@@ -1078,7 +1078,7 @@ package body LIST_PACKAGE is
             DMA (1)      := (NNN, 0, NULL_DICTIONARY_ENTRY);
          end if;
 
-      end if;
+    --  end if;
 
 ----    --  Just to find the words with long/complicated output at the LIST level
 ----    --  This is done with the final PA_LAST, after SWEEP
@@ -1087,32 +1087,22 @@ package body LIST_PACKAGE is
 --         FINAL_PA_LAST_MAX := PA_LAST;
 --       end if;
 
-      if PA_LAST = 0 then
-
-         if WORDS_MODE (WRITE_OUTPUT_TO_FILE) then
-            if WORDS_MDEV (DO_PEARSE_CODES) then
+-- OUTPUT ROUTINES FOR UNKNOWNS
+     -- Basic ouptut
+           if WORDS_MDEV (DO_PEARSE_CODES) then
                Text_IO.Put (OUTPUT, "04 ");
             end if;
             Text_IO.Put (OUTPUT, RAW_WORD);
             Text_IO.Set_Col (OUTPUT, 30);
             Text_IO.Put_Line (OUTPUT, "    ========   UNKNOWN    ");
-            --TEXT_IO.NEW_LINE(OUTPUT);
-         else              --  Just screen output
-            -- TEXT_IO.NEW_LINE(OUTPUT);
-            if WORDS_MDEV (DO_PEARSE_CODES) then
-               Text_IO.Put (OUTPUT, "04 ");
-            end if;
-            Text_IO.Put (RAW_WORD);
-            Text_IO.Set_Col (OUTPUT, 30);
-            Text_IO.Put_Line (OUTPUT, "    ========   UNKNOWN    ");
-            --TEXT_IO.NEW_LINE;
-         end if;
+      if WORDS_MODE (DO_STEMS_FOR_UNKNOWN) then
+          LIST_NEIGHBORHOOD (OUTPUT, RAW_WORD);
+      end if;
 
-         if WORDS_MODE (WRITE_UNKNOWNS_TO_FILE) then
-            if WORDS_MDEV (INCLUDE_UNKNOWN_CONTEXT) or
-              WORDS_MDEV (DO_ONLY_INITIAL_WORD)
+      -- Additional output for WORD.UNK file
+      if WORDS_MODE (WRITE_UNKNOWNS_TO_FILE) then
+            if WORDS_MDEV (INCLUDE_UNKNOWN_CONTEXT)
             then
-               Text_IO.Put_Line (INPUT_LINE);
                Text_IO.Put_Line (UNKNOWNS, INPUT_LINE);
             end if;
             if WORDS_MDEV (DO_PEARSE_CODES) then
@@ -1121,30 +1111,21 @@ package body LIST_PACKAGE is
             Text_IO.Put (UNKNOWNS, RAW_WORD);
             Text_IO.Set_Col (UNKNOWNS, 30);
             Text_IO.Put_Line (UNKNOWNS, "    ========   UNKNOWN    ");
-         end if;
       end if;
 
-      if PA_LAST = 0 then
-
-      if WORDS_MODE (DO_STEMS_FOR_UNKNOWN) then
-          LIST_NEIGHBORHOOD (OUTPUT, RAW_WORD);
-        if WORDS_MODE (WRITE_UNKNOWNS_TO_FILE)
-         then
-          LIST_NEIGHBORHOOD (UNKNOWNS, RAW_WORD);
-          end if;
-      end if;
-
-         if WORDS_MDEV
+      --Update local dictionary?
+      if WORDS_MDEV
         (UPDATE_LOCAL_DICTIONARY) and then
         not CL_Arguments(READ_ONLY)  and then
         not CL_Arguments(NO_FILES) and then
         Name (Current_Input) = Name (Standard_Input) and then    -- Don't if reading from file
         Name (Current_Output) = Name(Standard_Output)            -- Don't if not sure there's a user
-         then
-            UPDATE_LOCAL_DICTIONARY_FILE;
+
+          then
+            UPDATE_LOCAL_DICTIONARY_FILE; -- Also re-loads updated local dictionary
             WORD
               (RAW_WORD, PA,
-               PA_LAST);       --  Circular if you dont update!!!!!
+               PA_LAST);
       end if;
 
       end if;
@@ -1467,9 +1448,9 @@ package body LIST_PACKAGE is
       FIRST_TRY, SECOND_TRY   : Boolean       := True;
 
       function FIRST_TWO (W : String) return String is
-         --  'v' could be represented by 'u', like the new Oxford Latin
-         --  Dictionary Fixes the first two letters of a word/stem which can
-         --  be done right
+         --  Make sure V/U and I/J distinctions in the dictionary file don't bias our search results
+         --  (e.g., 'v' could be represented by 'u',but our dictionary file has entries for veni, vidi, vici, not ueni, uidi, uici)
+
          S  : constant String  := Lower_Case (W);
          SS : String (W'Range) := W;
 
@@ -1490,10 +1471,9 @@ package body LIST_PACKAGE is
 
       begin
 
-         if S'Length = 1 then
-            SS (S'First) := UI (W (S'First));
-         else
             SS (S'First)     := UI (W (S'First));
+
+         if S'Length > 1 then
             SS (S'First + 1) := UI (W (S'First + 1));
          end if;
 

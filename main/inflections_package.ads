@@ -747,7 +747,6 @@ type INTERJECTION_RECORD is
   function Qual_Equ_PRONPACK (Qual : in QUALITY_RECORD) return Boolean;
   function Qr_Pack_To_PRON   (QR   : in QUALITY_RECORD) return PRONOUN_RECORD; 
    
-  GIVE_UP : exception;
 
 end INFLECTIONS_PACKAGE;  
             

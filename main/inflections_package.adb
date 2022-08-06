@@ -2217,7 +2217,7 @@ procedure ESTABLISH_INFLECTIONS_SECTION  is
 --  computes the LELL..LELF indices for use in WORD
   use INFLECTION_RECORD_IO;
   use LEL_SECTION_IO;
-
+  FATAL_ERROR : exception;
   procedure LOAD_LEL_INDEXES is
   --  Load arrays from file
     I  : INTEGER := 0;
@@ -2226,6 +2226,7 @@ procedure ESTABLISH_INFLECTIONS_SECTION  is
     CH, XCH : CHARACTER := ' ';
     INFLECTIONS_SECTIONS_FILE : LEL_SECTION_IO.FILE_TYPE;
   begin
+      
     OPEN(INFLECTIONS_SECTIONS_FILE, IN_FILE, INFLECTIONS_SECTIONS_NAME);
     NUMBER_OF_INFLECTIONS := 0;
 
@@ -2443,7 +2444,6 @@ procedure ESTABLISH_INFLECTIONS_SECTION  is
     end loop C4_LOOP;
 
     LELL(XN, XCH) := I - 1;
-
 begin
 
     N := LEL(I).ENDING.SIZE;
@@ -2514,7 +2514,7 @@ exception
     PUT_LINE("for inflections, dictionary, addons and uniques.");
     PUT_LINE("Alternatively, you may add the correct directory to the PATH");
     PUT_LINE("or set a LATINWORDS environment variable to the correct directory.");
-    raise GIVE_UP;
+    raise FATAL_ERROR;
 
 end ESTABLISH_INFLECTIONS_SECTION;
 
