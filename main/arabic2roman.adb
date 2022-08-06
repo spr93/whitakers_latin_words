@@ -10,7 +10,7 @@ with CONFIG;                use CONFIG;
 package body Arabic2Roman is
 
   procedure Arabic2Roman
-     (OUTPUT : in Ada.Text_IO.File_Type; INPUT_WORD : in String)
+     (OUTPUT : in Text_IO.File_Type; INPUT_WORD : in String)
    is
 
       type Roman_Num_Record_Type is record

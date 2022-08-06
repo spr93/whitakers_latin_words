@@ -17,7 +17,7 @@ package body LINE_STUFF is
                              DICTIONARY_FILE_NAME : in STRING)  is
   --  For loading a DICTIONARY list from a file
   --  Only used now for DICT.LOC
-
+   
     DICTIONARY_FILE : FILE_TYPE;
     BLK_STEM : constant STEM_TYPE := NULL_STEM_TYPE;
     STS   : STEMS_TYPE := NULL_STEMS_TYPE;
@@ -25,12 +25,12 @@ package body LINE_STUFF is
     TRAN  : TRANSLATION_RECORD := NULL_TRANSLATION_RECORD;
     VALUE : constant NUMERAL_VALUE_TYPE := 0;
     MEAN  : MEANING_TYPE := NULL_MEANING_TYPE;
-
+    
     FC1, FC2, FC3, FC4 : CHARACTER;
 
     LINE, ST_LINE : STRING(1..100) := (others => ' ');
     BLANK_LINE    : constant STRING(1..100) := (others => ' ');
-
+    
     L, LL, LLL, LAST    : INTEGER := 0;
     NUMBER_OF_DICTIONARY_ENTRIES : INTEGER := 0;
 
@@ -51,7 +51,7 @@ package body LINE_STUFF is
         I := I + 1;
         L := L + 1;
       end loop;
-      --  Return  last
+      --  Return  last 
       LAST := L;
 
     end GET_STEM;
@@ -66,7 +66,7 @@ package body LINE_STUFF is
       ST_LINE := BLANK_LINE;
       GET_NON_COMMENT_LINE(DICTIONARY_FILE, ST_LINE, LAST);      --  STEMS
 --TEXT_IO.PUT_LINE("READ STEMS");
-
+  
       LINE := BLANK_LINE;
 --TEXT_IO.PUT("1 ");
    GET_NON_COMMENT_LINE(DICTIONARY_FILE, LINE, L);           --  PART
@@ -78,32 +78,32 @@ package body LINE_STUFF is
    TRANSLATION_RECORD_IO.GET(LINE(LL+1..L), TRAN, LLL);
 --TEXT_IO.PUT("5 ");
 --TEXT_IO.PUT_LINE("READ PART");
-
+  
 --  Specialize for parts
 --  If ADV then look if the CO is something other than X
 --  If so (like POS) then only that stem is active, and the others => xxx
 --  Same for ADJ
---  If the ADJ or ADV stems have different first letters then make them
+--  If the ADJ or ADV stems have different first letters then make them 
 --  different dictionary entries  --  Do this in LOAD and in DICT.DIC
 --  TEXT_IO.PUT_LINE("GETTING STEMS IN LOAD_DICTIONARY");
 
       STS := NULL_STEMS_TYPE;
       LL := 1;
-      --  Extract up to 4 stems
+      --  Extract up to 4 stems                  
       for I in 1..NUMBER_OF_STEMS(PT.POFS)  loop   --  EXTRACT STEMS
         GET_STEM(ST_LINE(LL..LAST), STS(I), LL);
       end loop;
-
---for I in 1..NUMBER_OF_STEMS(PT.POFS)  loop
---  TEXT_IO.PUT(STS(I));
+      
+--for I in 1..NUMBER_OF_STEMS(PT.POFS)  loop  
+--  TEXT_IO.PUT(STS(I));      
 --end loop;
 --TEXT_IO.NEW_LINE;
-
+ 
       LINE := BLANK_LINE;
       GET_NON_COMMENT_LINE(DICTIONARY_FILE, LINE, L);         --  MEANING
-      MEAN := HEAD(TRIM(LINE(1..L)), MAX_MEANING_SIZE);
+      MEAN := HEAD(TRIM(LINE(1..L)), MAX_MEANING_SIZE);         
 --TEXT_IO.PUT_LINE("READ MEANING");
-
+      
     --  Now take care of other first letters in a gross way
     FC1 := LOWER_CASE(STS(1)(1));
     FC2 := LOWER_CASE(STS(2)(1));
@@ -366,7 +366,7 @@ package body LINE_STUFF is
         PREFACE.PUT_LINE("   USE WITH CAUTION -- SOME DATA PARTIALLY OR INCORRECTLY LOADED");
         PREFACE.NEW_LINE;
   end LOAD_DICTIONARY;
-
+  
   procedure LOAD_STEM_FILE(D_K : DICTIONARY_KIND)  is
   --  This is used to load a dictionary access file, like DIC.LOC
   --  It uses the single first letter index rather than the two letter
@@ -729,7 +729,7 @@ package body LINE_STUFF is
 
   end SUFFIX_LINE_IO;
 
-
+  
   package body UNIQUE_ENTRY_IO is
     use QUALITY_RECORD_IO;
     use KIND_ENTRY_IO;
@@ -821,7 +821,7 @@ package body LINE_STUFF is
     use QUALITY_RECORD_IO;
     use KIND_ENTRY_IO;
     use DICT_IO;
-
+    
     UNIQUES_FILE : TEXT_IO.FILE_TYPE;
     LINE, STEM_LINE : STRING(1..100) := (others => ' ');
       BLANKS : constant STRING(1..100) := (others => ' ');
@@ -844,11 +844,11 @@ package body LINE_STUFF is
 
     while not END_OF_FILE(UNIQUES_FILE)  loop
       STEM_LINE := BLANKS;
-      GET_LINE(UNIQUES_FILE, STEM_LINE, LAST);      --  STEM
+      GET_LINE(UNIQUES_FILE, STEM_LINE, LAST);      --  STEM 
       STEM := HEAD(TRIM(STEM_LINE(1..LAST)), MAX_STEM_SIZE);
 
       LINE := BLANKS;
-      GET_LINE(UNIQUES_FILE, LINE, LAST);    --  QUAL, KIND, TRAN
+      GET_LINE(UNIQUES_FILE, LINE, LAST);    --  QUAL, KIND, TRAN       
       GET(LINE(1..LAST), QUAL, L);
       GET(LINE(L+1..LAST), QUAL.POFS, KIND, L);
       AGE_TYPE_IO.GET(LINE(L+1..LAST), TRAN.AGE, L);
@@ -861,7 +861,7 @@ package body LINE_STUFF is
       LINE := BLANKS;
       GET_LINE(UNIQUES_FILE, LINE, L);         --  MEAN
          MEAN := HEAD(TRIM(LINE(1..L)), MAX_MEANING_SIZE);
-
+         
     --@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
       declare
         UNIQUE_DE : DICTIONARY_ENTRY;
@@ -879,22 +879,22 @@ package body LINE_STUFF is
           when NUM =>
             PART := (NUM, (QUAL.NUM.DECL, QUAL.NUM.SORT, KIND.NUM_VALUE));
           when ADV =>
-            PART := (ADV, (CO => QUAL.ADV.CO));
+            PART := (ADV, (CO => QUAL.ADV.CO));  
           when V =>
             PART := (V, (QUAL.V.CON, KIND.V_KIND));
           when others  =>
             PART := NULL_PART_ENTRY;
         end case;
 
-        UNIQUE_DE.STEMS := (STEM,
+        UNIQUE_DE.STEMS := (STEM, 
                             NULL_STEM_TYPE, NULL_STEM_TYPE, NULL_STEM_TYPE);
         UNIQUE_DE.PART  :=  PART;
         UNIQUE_DE.TRAN  :=  TRAN;
         UNIQUE_DE.MEAN  :=  MEAN;
-
+        
         UNIQUES_DE(M) := UNIQUE_DE;
       end;
-      --@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+      --@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@      
 
        MNPC := M;
 
@@ -911,7 +911,7 @@ package body LINE_STUFF is
 
       M := M + 1;
       NUMBER_OF_UNIQUES_ENTRIES := INTEGER(M) - 1;
-
+    
     end loop;
     CLOSE(UNIQUES_FILE);
     PREFACE.SET_COL(40);
@@ -932,7 +932,7 @@ package body LINE_STUFF is
     PREFACE.PUT(" entries");
     PREFACE.SET_COL(55); PREFACE.PUT_LINE("--  Loaded before error");
     end LOAD_UNIQUES;
-
+    
 begin
 
   PREFIX_LINE_IO.DEFAULT_WIDTH := PART_OF_SPEECH_TYPE_IO.DEFAULT_WIDTH + 1 +

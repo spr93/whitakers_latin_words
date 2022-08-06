@@ -459,7 +459,7 @@ package body STEM_TYPE_IO is
 
 
 package body DECN_RECORD_IO is
---  This package will carry the documentation for all the following packages
+  --  This package will carry the documentation for all the following packages
   --  Must have "use" for _IO for each of the components of the record
   use INTEGER_IO;
   --  This is a dummy used to GET the space character PUT between components

@@ -100,7 +100,15 @@ package DICTIONARY_PACKAGE is
       Z       --  Sent by user --  no dictionary reference
    --  mostly John White of Blitz Latin
 
+      --  Consulted but used only indirectly Liddell + Scott Greek-English
+      --  Lexicon (Lid) Various translations of Ovid and Vergil
 
+      --  Consulted but used only occasionally, seperately referenced D.A.
+      --  Kidd, Collins Latin Gem Dictionary, 1957 (Col) Allen + Greenough, New
+      --  Latin Grammar, 1888 (A+G) Harrington/Pucci/Elliott, Medieval Latin
+      --  2nd Ed 1997 (Harr) C.C./C.L. Scanlon Latin Grammar/Second Latin, TAN
+      --  1976 (SCANLON) W. M. Lindsay, Short Historical Latin Grammar, 1895
+      --  (Lindsay) Du Cange Oxford English Dictionary (OED)
 
 --  Note that the WORDS dictionary is not a copy of source info, but the
 --  indicated SOURCE is a main reference/check point used to derive the entry

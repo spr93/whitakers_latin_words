@@ -7,7 +7,7 @@ with UNIQUES_PACKAGE;      use UNIQUES_PACKAGE;
 with WORD_SUPPORT_PACKAGE; use WORD_SUPPORT_PACKAGE;
 with DEVELOPER_PARAMETERS; use DEVELOPER_PARAMETERS;
 with WORD_PACKAGE;         use WORD_PACKAGE;
-with Dictionary_Form;
+with DICTIONARY_FORM;
 with PUT_EXAMPLE_LINE;
 with LIST_SWEEP;
 
@@ -262,9 +262,9 @@ package body LIST_PACKAGE is
       -- TEXT_IO.PUT_LINE("PUT_INFLECTION ");
 
           if   ( WORDS_MODE (DO_ONLY_MEANINGS) or (CONFIGURATION = ONLY_MEANINGS) )
-          and then DM.D_K not  in ADDONS .. YYY  -- not an addon, TRICK, or SYNCOPE (because they [mis-]use
+          and then DM.D_K not  in ADDONS .. YYY  -- all "inflection" information for ADDONS, TRICKS, and SYNCOPES has been processed now; they don't have real inflection information, but they [mis-]use
                                                  -- the inflection field for modification warning (XXX .. YYY)
-                                                 -- or for the definition (ADDONS))
+                                                 -- or for the definition (ADDONS).
       then
       return;
       end if;

@@ -1,4 +1,4 @@
-with Ada.Text_IO;          use Ada.Text_IO;
+with Text_IO;              use Text_IO;
 with CONFIG;               use CONFIG;
 with WORD_PACKAGE;
 with DEVELOPER_PARAMETERS; use DEVELOPER_PARAMETERS;

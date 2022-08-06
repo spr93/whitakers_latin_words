@@ -1,7 +1,7 @@
 pragma Ada_2012;
 -- USES ADA 2012 CONDITIONAL CASE EXPRESSIONS IN OUTPUT LOOPS
 
-with Ada.Text_IO;           use Ada.Text_IO;
+with Text_IO;               use Text_IO;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
 -- Forms and age codes guided by sources incl.
@@ -13,7 +13,7 @@ with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
 package Arabic2Roman is
 
-procedure Arabic2Roman (OUTPUT : in Ada.Text_IO.File_Type ; INPUT_WORD : in String);
+procedure Arabic2Roman (OUTPUT : in Text_IO.File_Type ; INPUT_WORD : in String);
 
 private
   Roman_Nums_CLASSICAL : constant array (1..11) of Unbounded_String  := (

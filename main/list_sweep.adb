@@ -709,7 +709,7 @@ begin                               --  LIST_SWEEP
    --
    --      The qu- pronouns cause the most trouble.   It takes a 5-dimensional array to fully characterize
    --      their inflections (see INFLECTS.LAT for the explanation) AND THEN they have the special PACKON feature
-   --      (-que, -libet, etc.).  Making things even more complicated are two structural issues.  First, Gen. Whitaker maximized
+   --      (-que, -libet, etc.).  Making things even more complicated are two structural issues.  First, Col. Whitaker maximized
    --      flexibility by separating the parse and dictionary arrays (see explanation of those structures in his list_package
    --      comments). Second, he used variant records to reduce duplication and use storage efficiently.  But this approach means that
    --      parsing qu- pronouns uniquely require information from the dictionary array (namely, the actual meanings, not just the MNPC,
@@ -722,17 +722,17 @@ begin                               --  LIST_SWEEP
    --      procedures.  I'm not willing to descend into the object-oriented hell of refactoring the data structures or creating
    --      even more special qu- pronoun objects.
    --
-   --      It appears Gen. Whitaker didn't want to either. He minimized the processing required by truncating the output of qu- pronoun
+   --      It appears Col. Whitaker didn't want to either. He minimized the processing required by truncating the output of qu- pronoun
    --      information.  Put "quique" in his version--it returns only quique PRON, has no promoun_kind information, does not
    --      differentiate the possible meanings given the pronoun_kind, returns no dict_form, and duplicates all but one of the
    --      MEANS.  Try it in this version, you'll get comprehensive results.
    --
    --      This change sets adds routines here and in list_package; it also defines a couple helper functions in dictionary_package and
    --      the inflections package.  The new routines address four areas:  First, that qu- pronouns require special treatment when
-   --      eliminating duplicates and sorting the results.  Gen. Whitaker had routines in both list_sweep and list_package to address
+   --      eliminating duplicates and sorting the results.  Col. Whitaker had routines in both list_sweep and list_package to address
    --      aspects of these sweep-and-sort issues.  Several of those routines are removed, one is replaced, and one is added.
    --      The net changes localize the qu-pronoun-specific code.  They add some overhead, but most of the additional processing
-   --      is triggered only when qu-pronouns exist in the results.  Second, Gen. Whitaker's dictform largely ignored qu- pronouns.
+   --      is triggered only when qu-pronouns exist in the results.  Second, Col. Whitaker's dictform largely ignored qu- pronouns.
    --      Now qu-pronoun results include proper dictforms.  They also provide KIND information (relative, indefinite, adjectival, etc.).
    --      Third, list_package's output procedure needs special logic to eliminate duplicate output.  The new dictforms help list_package
    --      determine which FORMs are duplicates.  Finally, list_package needs a handful of changes to prevent duplicate or omitted output

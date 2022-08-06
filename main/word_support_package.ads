@@ -29,8 +29,7 @@ package WORD_SUPPORT_PACKAGE is
   type DICT_ARRAY is array (POSITIVE range <>) of DICTIONARY_STEM; 
   BDL : DICT_ARRAY(1..100);
   BDL_LAST : INTEGER := 0;
---SIZE_OF_DICTIONARY_ARRAY : constant INTEGER := 120;    --  ###################
---DDL : DICT_ARRAY(1..SIZE_OF_DICTIONARY_ARRAY);
+
   type DICT_ARRAY_INDEX is array (CHARACTER range <>,
                                   CHARACTER range <>,
                        DICTIONARY_FILE_KIND range <>) of STEM_IO.COUNT;
