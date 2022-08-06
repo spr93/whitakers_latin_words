@@ -90,6 +90,8 @@ package WORD_PARAMETERS is
 
   WORDS_MODE : MODE_ARRAY := DEFAULT_MODE_ARRAY;
   
+  procedure Check_Compatibility;
+  
   procedure CHANGE_PARAMETERS;  
    
   procedure INITIALIZE_WORD_PARAMETERS;

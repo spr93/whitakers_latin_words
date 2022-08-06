@@ -87,4 +87,6 @@ package WORD_PACKAGE is
 
    procedure INITIALIZE_WORD_PACKAGE;
 
+  FATAL_ERROR : exception;
+
 end WORD_PACKAGE;

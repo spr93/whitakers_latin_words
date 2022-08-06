@@ -20,8 +20,6 @@ package body WORD_PARAMETERS is
   MODE_OF_REPLY : array (REPLY_TYPE) of BOOLEAN := (FALSE, TRUE);
   BLANK_INPUT : exception;
 
-  BAD_MODE_FILE : exception;
-
 TRIM_OUTPUT_HELP : constant HELP_TYPE :=  (
    "This option instructs the program to remove from the output list of   ",
    "possible constructs those which are least likely.  There is now a fair",
@@ -36,7 +34,7 @@ TRIM_OUTPUT_HELP : constant HELP_TYPE :=  (
    "various reasons.  These may be trimmed out if this parameter in on.   ",
    "When in English-Latin mode, TRIM just reduces the output to the top   ",
    "six results, if there are that many. was trimmed and more results are ",
-   "available.                                         The default is N(o)",
+   "available.                                            Default is N(o).",
    "Setting to (Y)es is HIGHLY RECOMMENDED when using Latin-English mode. ");
 
 HAVE_OUTPUT_FILE_HELP : constant HELP_TYPE :=  (
@@ -52,12 +50,14 @@ HAVE_OUTPUT_FILE_HELP : constant HELP_TYPE :=  (
 
 WRITE_OUTPUT_TO_FILE_HELP : constant HELP_TYPE :=  (
    "This option instructs the program, when HAVE_OUTPUT_FILE is on, to    ",
-   "write results to the file " & OUTPUT_FULL_NAME
-                                  & (27+OUTPUT_FULL_NAME'LENGTH..70 => ' '),
+   "RE-DIRECT results to the file " & OUTPUT_FULL_NAME
+                                  & (31+OUTPUT_FULL_NAME'LENGTH..70 => ' '),
    "This option may be turned on and off during running of the program,   ",
-   "thereby capturing only certain desired results.  If the option        ",
-   "HAVE_OUTPUT_FILE is off, the user will not be given a chance to turn  ",
-   "this one on.  Only for INTERACTIVE running.         Default is N(o).  ");
+   "thereby capturing only certain desired results.  Only available when  ",
+   "HAVE_OUTPUT_FILE is on.                                               ",
+   "Note that output is RE-DIRECTED, and therefore not duplicated on      ",
+   "screen; if you want a transcript of your session, use 'tee' or a      ",
+   "similar utility.                                      Default is N(o).");
 
 DO_UNKNOWNS_ONLY_HELP : constant HELP_TYPE :=  (
    "This option instructs the program to only output those words that it  ",
@@ -68,14 +68,14 @@ DO_UNKNOWNS_ONLY_HELP : constant HELP_TYPE :=  (
    "job on the current text.  It also allows the user to assemble a list  ",
    "of unknown words to look up manually, and perhaps augment the system  ",
    "dictionary.  It may also be used as a spell checker when composing    ",
-   "Latin texts.                                    The default is N(o).  ",
+   "Latin texts.                                      The default is N(o).",
    "This does not work in English mode, but may in the future.            " );
-   
+
 WRITE_UNKNOWNS_TO_FILE_HELP : constant HELP_TYPE :=  (
    "This option instructs the program to write all unresolved words to a  ",
    "UNKNOWNS file named " & UNKNOWNS_FULL_NAME
                                 & (21+UNKNOWNS_FULL_NAME'LENGTH..70 => ' '),
-   "With this option on , the file of unknowns is written, even though    ",
+   "With this option on, the file of unknowns is written, even though     ",
    "the main output contains both known and unknown (unresolved) words.   ",
    "One may wish to save the unknowns for later analysis, testing, or to  ",
    "form the basis for dictionary additions.  When this option is turned  ",
@@ -85,26 +85,23 @@ WRITE_UNKNOWNS_TO_FILE_HELP : constant HELP_TYPE :=  (
    "This option is for specialized use, so its default is N(o).           ",
    "This does not work in English mode, but may in the future.            " );
 
+-- SPR:  Changed the following two optionsn from default yes to default no because
+--       they restrict results based on assumptions about capitalization conventions
+--       in the source text as well as supposed user expectations.
+--       I don't believe input FORMATTING should ordinarily affect the results'
+--       SUBSTANCE; the default results should be consistent and thorough.
+--       (The new Unicode handling/macron-stripping feature follows the same principle.)
 IGNORE_UNKNOWN_NAMES_HELP : constant HELP_TYPE :=  (
-   "This option instructs the program to assume that any capitalized word ",
-   "longer than three letters is a proper name.  As no dictionary can be  ",
-   "expected to account for many proper names, many such occur that would ",
-   "be called UNKNOWN.  This contaminates the output in most cases, and   ",
-   "it is often convenient to ignore these sperious UNKNOWN hits.  This   ",
-   "option implements that mode, and calls such words proper names.       ",
-   "Any proper names that are in the dictionary are handled in the normal ",
-   "manner.                                          The default is Y(es)." );
+   "This option instructs the program to disregard unknown capitalized    ",
+   "words of more than three letters.  This avoids distracting UNKNOWN    ",
+   "results when translating texts that contain many proper names.        ",
+   "                                                  The default is N(o).");
 
 IGNORE_UNKNOWN_CAPS_HELP : constant HELP_TYPE :=  (
    "This option instructs the program to assume that any all caps word    ",
-   "is a proper name or similar designation.  This convention is often    ",
-   "used to designate speakers in a discussion or play.  No dictionary can",
-   "claim to be exaustive on proper names, so many such occur that would  ",
-   "be called UNKNOWN.  This contaminates the output in most cases, and   ",
-   "it is often convenient to ignore these sperious UNKNOWN hits.  This   ",
-   "option implements that mode, and calls such words names.  Any similar ",
-   "designations that are in the dictionary are handled in the normal     ",
-   "manner, as are normal words in all caps.    The default is Y(es).     " );
+   "is a proper name (as is common in plays and texts of discussions) or  ",
+   "an ad hoc acronym.  This may avoid distracting UNKNOWN results.       ",
+   "                                                  The default is N(o).");
 
 DO_COMPOUNDS_HELP : constant HELP_TYPE :=  (
    "This option instructs the program to look ahead for the verb TO_BE (or",
@@ -181,43 +178,40 @@ DO_STEMS_FOR_UNKNOWN_HELP : constant HELP_TYPE :=  (
    "match in the dictionary, and after various prefixes and suffixes, to  ",
    "list the dictionary entries around the unknown.  This will likely     ",
    "catch a substantive for which only the ADJ stem appears in dictionary,",
-   "an ADJ for which there is only a N stem, etc.  This option should     ",
-   "probably only be used with individual UNKNOWN words, and off-line     ",
-   "from full translations, therefore the default choice is N(o).         ",
-   "This processing can be turned on with the choice of Y(es).            " );
+   "an ADJ for which there is only a N stem, etc.    The default is Y(es).");
 
 DO_ARABIC_NUMERALS_HELP : constant HELP_TYPE :=  (
    "This option instructs the program to process Arabic-Hindu numerals as ",
    "words for translation to Roman numerals.  This option applies to both ",
    "English-Latin and Latin-English modes.  If set to N(o), then the      ",
-   "program disregards Arabic-Hindu numerals and treats them like spaces. ",                                            
+   "program disregards Arabic-Hindu numerals and treats them like spaces. ",
    "spaces.                                          The default is Y(es).");
 
 DO_ANSI_FORMATTING_HELP : constant HELP_TYPE :=  (
    "This option uses standard ANSI tty control characters to format the   ",
    "dictionary output.  The format emphasizes the dictionary and meaning  ",
    "lines, as well as any important usage notes. The goal is to make      ",
-   "skimming large output easier.  This parameter has no effect on file   ",                                       
+   "skimming large output easier.  This parameter has no effect on file   ",
    "output, which is always in plain text.           The default is Y(es).");
 
 DIM_EXAMPLES_TEXT_HELP : constant HELP_TYPE :=  (
    "This option formats the examples line using the ANSI tty control      ",
    "character for 'dimmed' or 'faint' text.  It may make skimming long    ",
    "results faster by keeping the eye focused on the inflections line.    ",
-   "However, on some consoles the text may be too difficult to read.  On  ",                          
+   "However, on some consoles the text may be too difficult to read.  On  ",
    "others, the effect may be to invert the text color rather than dim it.",
    "This parameter has no effect if DO_ANSI_FORMATTING is off.            ",
    "                                                  The default is N(o).");
-   
+
 DO_UNICODE_HELP_TEXT : constant HELP_TYPE :=  (
-   "This option allows the program to accept input text with macrons.  It ", 
-   "takes the input text as Unicode (UTF-8), then converts any accented   ",  
+   "This option allows the program to accept input text with macrons.  It ",
+   "takes the input text as Unicode (UTF-8), then converts any accented   ",
    "characters to their basic form before processing.  Words ouptut will  ",
-   "still be in plain ASCII (Latin-1). Disable if your input is garbled or", 
+   "still be in plain ASCII (Latin-1). Disable if your input is garbled or",
    "to increase performance when processing large plain-text files.       ",
    "When this parameter is disabled, accented characters will be skipped. ",
    "                                                 The default is Y(es).");
-  
+
 SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
    "This option instructs the program, to save the current parameters, as ",
    "just established by the user, in a file WORD.MOD.  If such a file     ",
@@ -230,7 +224,7 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
    "default parameters used, until a proper parameter file in written by  ",
    "the program.  Since one may want to make temporary changes during a   ",
    "run, but revert to the usual set, the default is N(o).                " );
-                                                                                            
+
   procedure PUT(HELP : HELP_TYPE) is
   begin
     NEW_LINE;
@@ -255,8 +249,8 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
       NEW_LINE(MODE_FILE);
     end loop;
     CLOSE(MODE_FILE);
-    
-    exception 
+
+    exception
     when others =>
       Put_Line("Error saving WORD.MOD file.  Changes may not have been saved.");
   end PUT_MODES;
@@ -277,10 +271,50 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
 
   exception
     when NAME_ERROR  =>
-      raise;
-    when others =>
-      raise BAD_MODE_FILE;
+      WORDS_MODE := DEFAULT_MODE_ARRAY;
+
+    when Data_Error | End_Error | Layout_Error  =>
+      Preface.Format(Inverse);
+      PREFACE.PUT("MODE_FILE exists, but empty or corrupted.  Falling back to defaults.");
+      Preface.Format(Bold);
+      Preface.New_Line;
+      PREFACE.PUT_LINE("You can create a replacement file by typing " & CHANGE_PARAMETERS_CHARACTER & " and saving.");
+      Preface.Format(Reset);
+      WORDS_MODE := DEFAULT_MODE_ARRAY;
+
+    when Status_Error | Use_Error =>
+      Preface.Format(Inverse);
+      PREFACE.PUT("Access to the existing MODE_FILE was refused.  Falling back to defaults.");
+      Preface.Format(Reset);
+      Preface.New_Line;
+      WORDS_MODE := DEFAULT_MODE_ARRAY;
+
+    when others  =>
+      Preface.Format(Inverse);
+      PREFACE.PUT("UKNOWN ERROR LOADING MODE_FILE.  Falling back to defaults.");
+      Preface.Format(Reset);
+      Preface.New_Line;
+      WORDS_MODE := DEFAULT_MODE_ARRAY;
   end GET_MODES;
+
+  procedure Check_Compatibility is
+  begin
+    if ( WORDS_MODE(DO_ONLY_MEANINGS) or CONFIGURATION = ONLY_MEANINGS )
+      and then WORDS_MODE(Do_Examples)
+    then
+      Preface.Put("MODE override: DO_EXAMPLES disabled because meanings-only restriction set");
+      WORDS_MODE(DO_EXAMPLES) := False;
+      Preface.New_Line;
+    end if;
+
+    if WORDS_MODE(WRITE_OUTPUT_TO_FILE) and not WORDS_MODE(HAVE_OUTPUT_FILE) then
+         Preface.Put("MODE override: WRITE_OUTPUT_TO_FILE disabled because HAVE_OUTPUT_FILE disabled");
+      WORDS_MODE(WRITE_OUTPUT_TO_FILE) := False;
+      Preface.New_Line;
+    end if;
+
+  end Check_Compatibility;
+
 
   procedure INQUIRE(MO : MODE_TYPE; HELP : in HELP_TYPE := NO_HELP) is
     use MODE_TYPE_IO;
@@ -296,7 +330,7 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
     if LL /= 0  then
       if TRIM(L1(1..LL)) = ""  then
         PUT_LINE("Blank input, skipping the rest of CHANGE_PARAMETERS");
-        raise BLANK_INPUT;                 
+        raise BLANK_INPUT;
       elsif L1(1) = '?'  then
         PUT(HELP);
         INQUIRE(MO, HELP);
@@ -314,13 +348,13 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
     R  : REPLY_TYPE;
 
   begin
-    
+
     PUT_LINE("To set/change parameters reply Y/y or N/n.  Return accepts current value.");
     PUT_LINE("A '?' reply gives information/help on that parameter.  A space skips the rest.");
     NEW_LINE;
-     
+
   --  Interactive mode - lets you do things on unknown words
-        
+
   --  You can say it is a noun and then look at the endings
   --  Or look all the endings and guess what part of speech
 
@@ -349,10 +383,10 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
 
     INQUIRE(TRIM_OUTPUT, TRIM_OUTPUT_HELP);
 
-    
+
     if not CL_Arguments(NO_FILES) then  -- We test for Read_Only before allowing Change_Paramaters
     INQUIRE(HAVE_OUTPUT_FILE, HAVE_OUTPUT_FILE_HELP);
-         
+
     if IS_OPEN(OUTPUT)  and then not WORDS_MODE(HAVE_OUTPUT_FILE)  then
       CLOSE(OUTPUT);
       WORDS_MODE(WRITE_OUTPUT_TO_FILE) := FALSE;
@@ -362,16 +396,16 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
         CREATE(OUTPUT, OUT_FILE, OUTPUT_FULL_NAME);
       exception
         when others =>
-          PUT_LINE("Cannot create WORD.OUT - Check if it is in use elsewhere");
+        PUT_LINE("Cannot create WORD.OUT - Check if it is in use elsewhere");
       end;
       end if;
 
     if WORDS_MODE(HAVE_OUTPUT_FILE) then
       INQUIRE(WRITE_OUTPUT_TO_FILE, WRITE_OUTPUT_TO_FILE_HELP);
     end if;
-    
+
     INQUIRE(WRITE_UNKNOWNS_TO_FILE, WRITE_UNKNOWNS_TO_FILE_HELP);
-         
+
     --  If there is an open file then OK
     --  If not open and you now want to start writing to UNKNOWNS, the CREATE
     if not IS_OPEN(UNKNOWNS) and then WORDS_MODE(WRITE_UNKNOWNS_TO_FILE)  then
@@ -382,12 +416,12 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
           PUT_LINE("Cannot CREATE WORD.UNK");
       end;
       end if;
-    
-    end if; -- not CL_Arguments(NO_FILES) 
-    
-    
+
+    end if; -- not CL_Arguments(NO_FILES)
+
+
     INQUIRE(DO_UNKNOWNS_ONLY, DO_UNKNOWNS_ONLY_HELP);
-      
+
     INQUIRE(IGNORE_UNKNOWN_NAMES, IGNORE_UNKNOWN_NAMES_HELP);
 
     INQUIRE(IGNORE_UNKNOWN_CAPS, IGNORE_UNKNOWN_CAPS_HELP);
@@ -398,43 +432,46 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
 
     INQUIRE(DO_TRICKS, DO_TRICKS_HELP);
 
-    if Cl_Arguments(Meanings_Only) = False then   -- enclosing CL_Arguments(meanings_only) condition
+    if CONFIGURATION /= ONLY_MEANINGS then   -- enclosing CL_Arguments(meanings_only) condition
+      INQUIRE(DO_ONLY_MEANINGS, DO_ONLY_MEANINGS_HELP);
+      if WORDS_MODE(DO_ONLY_MEANINGS) then
+        WORDS_MODE(DO_EXAMPLES) := FALSE;
+        else
+        INQUIRE(DO_EXAMPLES, DO_EXAMPLES_HELP);
+      end if;
+    end if;  -- enclosing CL_Arguments(meanings_only) condition
+
     INQUIRE(DO_DICTIONARY_FORMS, DO_DICTIONARY_FORMS_HELP);
-      
+
+    INQUIRE(DO_STEMS_FOR_UNKNOWN, DO_STEMS_FOR_UNKNOWN_HELP);
+
     INQUIRE(SHOW_AGE, SHOW_AGE_HELP);
 
     INQUIRE(SHOW_FREQUENCY, SHOW_FREQUENCY_HELP);
-    
-    INQUIRE(DO_EXAMPLES, DO_EXAMPLES_HELP);
-
-    INQUIRE(DO_ONLY_MEANINGS, DO_ONLY_MEANINGS_HELP);
-
-    INQUIRE(DO_STEMS_FOR_UNKNOWN, DO_STEMS_FOR_UNKNOWN_HELP);
-    end if;  -- enclosing CL_Arguments(meanings_only) condition
 
     INQUIRE(DO_ARABIC_NUMERALS, DO_ARABIC_NUMERALS_HELP);
-      
+
     INQUIRE(DO_ANSI_FORMATTING, DO_ANSI_FORMATTING_HELP);
-    
+
       if WORDS_MODE(DO_ANSI_FORMATTING)
-         and then Windows_Vt100.Is_Windows 
+         and then Windows_Vt100.Is_Windows
       then
          case Windows_Vt100.Enable_Windows_Console_Vt100_Codes is
             when True => null;
             when False => Put_Line("INFO:  Terminal unable to enter vt100 mode.  ANSI formatting off.");
             WORDS_MODE(DO_ANSI_FORMATTING) := False;
          end case;
-      end if; 
-          
-       if WORDS_MODE(DO_ANSI_FORMATTING) then 
+      end if;
+
+       if WORDS_MODE(DO_ANSI_FORMATTING) then
     INQUIRE(DIM_EXAMPLES_TEXT, DIM_EXAMPLES_TEXT_HELP);
-    end if; 
-    
- if Unicode_Features.Unicode_Function_Available then  
+    end if;
+
+ if Unicode_Features.Unicode_Function_Available then
     INQUIRE(DO_UNICODE_INPUT, DO_UNICODE_HELP_TEXT);
-  end if; 
-  
-    if not CL_Arguments(NO_FILES) then 
+  end if;
+
+    if not CL_Arguments(NO_FILES) then
     PUT("Do you wish to save this set of parameters? Y or N (Default) ");
     PUT(" =>");
     GET_LINE(L1, LL);
@@ -452,7 +489,7 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
       end if;
     end if;
     end if; -- not CL_Arguments(NO_FILES)
-                        
+
     NEW_LINE;
 
   exception
@@ -465,42 +502,56 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
 
   procedure INITIALIZE_WORD_PARAMETERS is
   begin
---  WORDS_MODE := DEFAULT_MODE_ARRAY;
---TEXT_IO.PUT_LINE("Initializing WORD_PARAMETERS");
 
-  DO_MODE_FILE:
-  begin
-    --  Read the mode file
     GET_MODES; --(WORDS_MODE);
     PREFACE.PUT_LINE("MODE_FILE loaded");
-  exception
-  --  If there is any problem
-  --  Put that the mode file is corrupted and the options are:
-      --  to proceed with default parameters
-      --  to set parameters with a CHANGE (SET) PARAMETERS and save
-      --  to examine the mode file with a text editor and try to repair it
-    when NAME_ERROR  =>
-      WORDS_MODE := DEFAULT_MODE_ARRAY;
-    when BAD_MODE_FILE  =>
-      PREFACE.PUT_LINE("MODE_FILE exists, but empty or corrupted.  Falling back to defaults.");
-      PREFACE.PUT_LINE("You can create a replacement file by typing " & CHANGE_PARAMETERS_CHARACTER & " and saving."); 
-      WORDS_MODE := DEFAULT_MODE_ARRAY;
-  when others  =>
-      PREFACE.PUT_LINE("UKNOWN ERROR LOADING MODE_FILE.  Falling back to defaults.");
-      WORDS_MODE := DEFAULT_MODE_ARRAY;
-    end DO_MODE_FILE;
+    Check_Compatibility;
 
-  if ((METHOD = INTERACTIVE) or (METHOD = COMMAND_LINE_INPUT)) and then
-     (not TEXT_IO.IS_OPEN(OUTPUT)) and then
-     (WORDS_MODE(HAVE_OUTPUT_FILE))  then
-    TEXT_IO.CREATE(OUTPUT, TEXT_IO.OUT_FILE, OUTPUT_FULL_NAME);
-    --TEXT_IO.PUT_LINE("WORD.OUT created at initialization");
-    PREFACE.PUT_LINE("WORD.OUT created");
+  if (WORDS_MODE(HAVE_OUTPUT_FILE))
+        and then ( (METHOD = INTERACTIVE) or (METHOD = COMMAND_LINE_INPUT) )
+        and then not TEXT_IO.IS_OPEN(OUTPUT)  -- belt+suspenders
+     then
+     DO_OUTPUT_FILE:
+     begin
+     TEXT_IO.CREATE(OUTPUT, TEXT_IO.OUT_FILE, OUTPUT_FULL_NAME);
+      PREFACE.PUT_LINE("WORD.OUT created");
+
+     exception
+      when Text_IO.Status_Error | Text_IO.Use_Error =>
+      Preface.Format(Inverse);
+      PREFACE.PUT("Could not get exclusive write access to WORD.OUT.  Disabling HAVE_OUTPUT_FILE.");
+      Preface.Format(Reset);
+      Preface.New_Line;
+
+      when others  =>
+      Preface.Format(Inverse);
+      PREFACE.PUT("Error setting up WORD.OUT.  Disabling HAVE_OUTPUT_FILE.");
+      Preface.Format(Reset);
+      Preface.New_Line;
+    end DO_OUTPUT_File;
   end if;
-  if not TEXT_IO.IS_OPEN(UNKNOWNS) and then WORDS_MODE(WRITE_UNKNOWNS_TO_FILE)  then
-    TEXT_IO.CREATE(UNKNOWNS, TEXT_IO.OUT_FILE, UNKNOWNS_FULL_NAME);
-    PREFACE.PUT_LINE("WORD.UNK created at initialization");
-  end if;
+
+    if  WORDS_MODE(WRITE_UNKNOWNS_TO_FILE)
+      and then not TEXT_IO.IS_OPEN(UNKNOWNS)
+      then
+      DO_UNKNOWNS_FILE:
+      begin
+      TEXT_IO.CREATE(UNKNOWNS, TEXT_IO.Append_File, UNKNOWNS_FULL_NAME);
+      PREFACE.PUT_LINE("WORD.UNK created at initialization");
+      exception
+      when Text_IO.Status_Error | Text_IO.Use_Error =>
+      Preface.Format(Inverse);
+      PREFACE.PUT("Could not get exclusive write access to WORD.UNK.  Continuing without it.");
+      Preface.Format(Reset);
+      Preface.New_Line;
+      when others  =>
+      Preface.Format(Inverse);
+      PREFACE.PUT("Error setting up WORD.UNK.  Continuing without it.");
+      Preface.Format(Reset);
+      Preface.New_Line;
+      end DO_UNKNOWNS_FILE;
+
+      end if;
 end INITIALIZE_WORD_PARAMETERS;
 
 end WORD_PARAMETERS;

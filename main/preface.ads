@@ -8,5 +8,5 @@ package PREFACE is
   procedure PUT_LINE (S : in String);
   procedure NEW_LINE (SPACING : in Text_IO.Positive_Count := 1);
   procedure PUT (N : in Integer; WIDTH : in Text_IO.Field := Integer'Width);
-  procedure Format (Format : in STRINGS_PACKAGE.Format_Command);
+  procedure Format (Format : in Strings_Package.Format_Command);
 end PREFACE;

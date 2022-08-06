@@ -2283,6 +2283,13 @@ package body WORD_PACKAGE is
    procedure INITIALIZE_WORD_PACKAGE is
    begin                                  --  Initializing WORD_PACKAGE
 
+        
+      -- Ready to start opening the dictionary files.  Make sure we can find them by hunting for 
+      -- the minimum necessary file (INFLECTS.SEC)
+      if not Ada.Directories.Exists (INFLECTIONS_FULL_NAME) then
+      FIND_DICTIONARY_FILES;
+      end if;
+    
       ESTABLISH_INFLECTIONS_SECTION;
 
       LEL_SECTION_IO.Open
@@ -2353,7 +2360,8 @@ package body WORD_PACKAGE is
             ENGLISH_DICTIONARY_AVAILABLE (GENERAL) := False;
       end TRY_TO_LOAD_ENGLISH_WORDS;
 
-      if WORDS_MODE (DO_ANSI_FORMATTING) and then windows_vt100.Is_Windows then
+    if WORDS_MODE (DO_ANSI_FORMATTING) and windows_vt100.Is_Windows 
+       then
          if not windows_vt100.Enable_Windows_Console_vt100_codes then
             PREFACE.PUT_LINE
               ("INFO:  Terminal unable to enter vt100 mode.  ANSI formatting off.");
@@ -2369,7 +2377,8 @@ package body WORD_PACKAGE is
 
       Data_Message_1 : constant String :=
         "Found probable dictionary data using environment variable ";
-      Data_Message_2 : constant String := "Using data at: ";
+      Data_Message_2 : constant String := 
+                       "Attempting to load dictionary data from: ";
 
    begin
 
@@ -2399,7 +2408,7 @@ package body WORD_PACKAGE is
                          (Compose
                             (Containing_Directory =>
                                Path_String (Start_Char .. (End_Char - 1)),
-                             Name => "INFLECTS.SEC"))
+                             Name => INFLECTIONS_FULL_NAME))
                      then
 
                         Set_Directory
@@ -2444,7 +2453,7 @@ package body WORD_PACKAGE is
 
          end SEARCH_PATH; -- block
       end if;
-      PREFACE.PUT_LINE (Data_Message_2 & Current_Directory);
+      PREFACE.PUT_LINE (Data_Message_2 & Current_Directory); -- Data_Message_2 appropriate even if we can't find INFLECTS
       PREFACE.NEW_LINE;
 
    exception
