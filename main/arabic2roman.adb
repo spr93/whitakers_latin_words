@@ -1,5 +1,5 @@
 pragma Ada_2012;
--- USES ADA 2012 CONDITIONAL CASE EXPRESSIONS IN OUTPUT LOOPS
+-- USES ADA 2012 MEMBERSHIP TESTS AND CONDITIONAL CASE EXPRESSIONS IN OUTPUT LOOPS
 
 with WORD_PARAMETERS;       use WORD_PARAMETERS;
 with DEVELOPER_PARAMETERS;  use DEVELOPER_PARAMETERS;
@@ -140,8 +140,7 @@ package body Arabic2Roman is
                end if;
             end if;
 
-            if ((WORDS_MDEV (OMIT_MEDIEVAL) = True) or
-                (WORDS_MDEV (OMIT_UNCOMMON) = True))
+            if WORDS_MDEV (OMIT_MEDIEVAL) = True
                 and then
                 (Is_Negative
                 or (Arabic_Num not in 1 .. 500 | 600 | 700 | 800 | 900 | 10_000) )
@@ -157,7 +156,7 @@ package body Arabic2Roman is
                end if;
 
                Format(Output,Inverse);
-               Put (OUTPUT, "Uncommon medieval numeral forms exist, but OMIT_MEDIEVAL or OMIT_UNCOMMON ON");
+               Put (OUTPUT, "Uncommon medieval numeral forms exist, but OMIT_MEDIEVAL ON");
                FORMAT (OUTPUT, RESET); New_Line(OUTPUT);
                return;
             end if; -- end medieval/uncommon exceptions

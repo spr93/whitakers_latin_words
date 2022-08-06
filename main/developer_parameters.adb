@@ -1,11 +1,11 @@
 with TEXT_IO;            use TEXT_IO;
 with STRINGS_PACKAGE;    use STRINGS_PACKAGE;
-with LATIN_FILE_NAMES;   use LATIN_FILE_NAMES; 
+with LATIN_FILE_NAMES;   use LATIN_FILE_NAMES;
 with WORD_PARAMETERS;    use WORD_PARAMETERS;
 with DICTIONARY_PACKAGE; use DICTIONARY_PACKAGE;
 with PREFACE;
 with LINE_STUFF;         use LINE_STUFF;
-with CONFIG;             use CONFIG; 
+with CONFIG;             use CONFIG;
 
 
 package body DEVELOPER_PARAMETERS is
@@ -20,27 +20,27 @@ package body DEVELOPER_PARAMETERS is
   MDEV_OF_REPLY : array (REPLY_TYPE) of BOOLEAN := (FALSE, TRUE);
 
   BLANK_INPUT : exception;
-  
+
   --  The default MDEVs are set in the body so that they can be changed
   --  with only this being recompiled, not the rest of the with'ing system
   DEFAULT_MDEV_ARRAY : constant MDEV_ARRAY := (
 
                       SHOW_DICTIONARY             => FALSE,
                       SHOW_DICTIONARY_LINE        => FALSE,
-                      SHOW_DICTIONARY_CODES       => TRUE,   
+                      SHOW_DICTIONARY_CODES       => TRUE,
                       DO_PEARSE_CODES             => FALSE,
 
-                      DO_ONLY_INITIAL_WORD        => FALSE,
-                      FOR_WORD_LIST_CHECK         => FALSE,
+                 --   DO_ONLY_INITIAL_WORD        => FALSE,
+                 --   FOR_WORD_LIST_CHECK         => FALSE,
 
                       DO_ONLY_FIXES               => FALSE,
                       DO_FIXES_ANYWAY             => FALSE,
-                      USE_PREFIXES                => TRUE, 
-                      USE_SUFFIXES                => TRUE, 
-                      USE_TACKONS                 => TRUE, 
-                                            
+                      USE_PREFIXES                => TRUE,
+                      USE_SUFFIXES                => TRUE,
+                      USE_TACKONS                 => TRUE,
+
                       DO_MEDIEVAL_TRICKS          => TRUE,
-                      
+
                       DO_SYNCOPE                  => TRUE,
                       DO_TWO_WORDS                => TRUE,
                       INCLUDE_UNKNOWN_CONTEXT     => TRUE,
@@ -49,12 +49,12 @@ package body DEVELOPER_PARAMETERS is
                       OMIT_MEDIEVAL               => FALSE,
                       OMIT_UNCOMMON               => FALSE,
 
-                 --    DO_I_FOR_J                  => TRUE,
-                 --    DO_U_FOR_V                  => TRUE,
+                 --   DO_I_FOR_J                  => TRUE,
+                 --   DO_U_FOR_V                  => TRUE,
 
                       PAUSE_IN_SCREEN_OUTPUT      => FALSE,
                  --   NO_SCREEN_ACTIVITY          => FALSE,
-                      
+
                       UPDATE_LOCAL_DICTIONARY     => FALSE,
                  --   UPDATE_MEANINGS             => FALSE,
 
@@ -70,7 +70,7 @@ package body DEVELOPER_PARAMETERS is
 --     "format.     The statistics file is named " & STATS_FULL_NAME
 --                                  & (42+STATS_FULL_NAME'LENGTH..70 => ' '),
 --     "This information is only of development use, so the default is N(o).  " );
---  
+--
 --  WRITE_STATISTICS_FILE_HELP : constant HELP_TYPE :=  (
 --     "This option instructs the program, with HAVE_STATISTICS_FILE, to put  ",
 --     "derived statistics in a file named " & STATS_FULL_NAME
@@ -160,7 +160,6 @@ USE_TACKONS_HELP : constant HELP_TYPE :=  (
    "This is primarily a development tool, so the conventional user should ",
    "probably maintain the default  choice of Y(es).                       " );
 
-
 DO_MEDIEVAL_TRICKS_HELP : constant HELP_TYPE :=  (
    "This option instructs the program, when it is unable to find a proper ",
    "match in the dictionary, and after various prefixes and suffixes, and ",
@@ -174,7 +173,7 @@ DO_MEDIEVAL_TRICKS_HELP : constant HELP_TYPE :=  (
    "tricks for classical.  The dictionary can never contain all spelling  ",
    "variations found in medieval Latin, but some constructs are common.   ",
    "The default choice is N(o), since the results are iffy, medieval only,",
-   "and expensive.  This processing is turned on with the choice of Y(es)." ); 
+   "and expensive.  This processing is turned on with the choice of Y(es)." );
 
 DO_SYNCOPE_HELP : constant HELP_TYPE :=  (
    "This option instructs the program to postulate that syncope of        ",
@@ -198,7 +197,7 @@ DO_TWO_WORDS_HELP : constant HELP_TYPE :=  (
    "correct, it is probably clear to the user.  Otherwise,  beware.  .    ",
    "Since this is a last chance and infrequent, the default is Y(es);     ",
    "This processing is turned off with the choice of N(o).                " );
-   
+
 INCLUDE_UNKNOWN_CONTEXT_HELP : constant HELP_TYPE :=  (
    "This option instructs the program, when writing to an UNKNOWNS file,  ",
    "to put out the whole context of the UNKNOWN (the whole input line on  ",
@@ -223,8 +222,8 @@ OMIT_MEDIEVAL_HELP : constant HELP_TYPE :=  (
    "Medieval (roughly defined) will be reported.      The default is N(o).");
 
    --  SPR: OMIT_UNCOMMON is broken.  It's not filtering (or rarely filtering)
-   --       and under some circumstances can cause an extraneous raw dictionary 
-   --       line to print       
+   --       and under some circumstances can cause an extraneous raw dictionary
+   --       line to print
 --  OMIT_UNCOMMON_HELP : constant HELP_TYPE :=  (
 --     "THIS OPTION IS CAN ONLY BE ACTIVE IF WORDS_MODE(TRIM_OUTPUT) IS SET!  ",
 --     "This option instructs the program to omit inflections and dictionary  ",
@@ -232,12 +231,12 @@ OMIT_MEDIEVAL_HELP : constant HELP_TYPE :=  (
 --     "While these forms are a significant feature of the program, many users",
 --     "will not want them.  If there is no other possible form, then the     ",
 --     "uncommon (roughly defined) will be reported.   The default is Y(es).  " );
-   
+
 --  SPR:  Col. Whitaker never implemented this option, and it is much less
 --        helpful than treating I and J as equivalent in input (which he did do).
 --        Students whose instructors prefer I for N should know to convert the
---        output just as they would for a paper dictionary. 
---        The critical point is that we are flexible wrt input and consistent 
+--        output just as they would for a paper dictionary.
+--        The critical point is that we are flexible wrt input and consistent
 --        wrt output.
 --  DO_I_FOR_J_HELP : constant HELP_TYPE :=  (
 --     "This option instructs the program to modify the output so that the j/J",
@@ -251,8 +250,8 @@ OMIT_MEDIEVAL_HELP : constant HELP_TYPE :=  (
 --  SPR:  Col. Whitaker never implemented this option, and it is much less
 --        helpful than treating U and V as equivalent in input (which he did do).
 --        Students whose instructors prefer U for V should know to convert the
---        output just as they would for a paper dictionary other than the OLD. 
---        The critical point is that we are flexible wrt input and consistent 
+--        output just as they would for a paper dictionary other than the OLD.
+--        The critical point is that we are flexible wrt input and consistent
 --        wrt output.
 --  DO_U_FOR_V_HELP : constant HELP_TYPE :=  (
 --     "This option instructs the program to modify the output so that the u  ",
@@ -271,21 +270,22 @@ PAUSE_IN_SCREEN_OUTPUT_HELP : constant HELP_TYPE :=  (
    "This option instructs the program to pause if a result is longer than ",
    "about 16 lines--the maximum for certain legacy terminals and OSes.    ",
    "                                                  The default is N(o).");
-   
+
 --  NO_SCREEN_ACTIVITY_HELP : constant HELP_TYPE :=  (
 --     "This option instructs the program not to keep a running screen of the ",
 --     "input.  This is probably only to be used by the developer to calibrate",
 --     "run times for large text file input, removing the time necessary to   ",
 --     "write to screen.                                  The default is N(o).");
---   
+--
 UPDATE_LOCAL_DICTIONARY_HELP : constant HELP_TYPE :=  (
    "This option instructs the program to invite the user to input a new   ",
    "word to the local dictionary on the fly.  This is only active if the  ",
-   "program is not using an (@) input file!  If an UNKNOWN is discovered, ",
-   "the program asks for STEM, PART, and MEAN, the basic elements of a    ",
-   "dictionary entry.  These are put into the local dictionary right then,",
-   "and are available for the rest of the session, and all later sessions.",
-   "The use of this option requires a detailed knowledge of the structure ",
+   "program is in INTERACTIVE mode and not using an (@) input file.       ",
+   "If an UNKNOWN is discovered, the program asks for STEM, PART, and MEAN",
+   "(i.e., the basic elements of a dictionary entry), which are then      ",
+   "inserted into the dictionary and made avaialble for use in both the   ",
+   "surrent and subsequent sessions.                                      ",
+   "The use of this option requires substantial knowledge of the structure",
    "of dictionary entries, and is not for the average user.  If the entry ",
    "is not valid, reloading the dictionary will raise and exception, and  ",
    "the invalid entry will be rejected, but the program will continue     ",
@@ -295,9 +295,9 @@ UPDATE_LOCAL_DICTIONARY_HELP : constant HELP_TYPE :=  (
    "the STEM=> prompt will ignore and continue the program.  This option  ",
    "is only for very experienced users and should normally be off.        ",
    "                                                  The default is N(o).");
-   
+
 --   "      ------    NOT AVAILABLE IN THIS VERSION   -------               " );
---  The code necessary for this does not exist.                                                      
+--  The code necessary for this does not exist.
 --  UPDATE_MEANINGS_HELP : constant HELP_TYPE :=  (
 --     "This option instructs the program to invite the user to modify the    ",
 --     "meaning displayed on a word translation.  This is only active if the  ",
@@ -353,7 +353,7 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
     --  Effectively goes to the end of DICT_LOC to ready for appending
     --  Does this by making a new file and writing the old DICT_LOC into it
     --  If there is not already a DICT_LOC, it creates one
-      
+
     begin
       OPEN(DICT_LOC_FILE, IN_FILE, DICT_LOC_NAME);
       CREATE(DUMMY, OUT_FILE);
@@ -374,7 +374,7 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
         CREATE(DICT_LOC_FILE, OUT_FILE, DICT_LOC_NAME);
     end READY_DICT_LOC_FILE;
 
-      
+
     procedure APPEND_TO_DICT_LOC_FILE is
     --  This just appends the 3 lines of a dictionary entry to DICT_LOC
     --  It prepares the file to write at the end, writes, then closes it
@@ -386,7 +386,7 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
       PUT_LINE(DICT_LOC_FILE, MEAN_LINE(1..ML));
 
       CLOSE(DICT_LOC_FILE);
-      
+
       if WORDS_MODE(WRITE_OUTPUT_TO_FILE) and then Name(Output) /= Name(Standard_Output)
       then
         if WORDS_MDEV (DO_PEARSE_CODES) then
@@ -397,7 +397,7 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
     end APPEND_TO_DICT_LOC_FILE;
 
    begin
-      
+
     loop
     Text_IO.Put_Line("Update location dictionary (enter blank line to skip)");
       TEXT_IO.PUT("STEMS =>");
@@ -412,7 +412,7 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
       end if;
 
     begin
-            
+
         APPEND_TO_DICT_LOC_FILE;
 
 DICT_LOC := NULL_DICTIONARY;
@@ -559,12 +559,12 @@ LOAD_DICTIONARY(DICT_LOC,
     R  : REPLY_TYPE;
 
   begin
-    
+
   PUT_LINE("To set developer modes reply Y/y or N/n.  Return accepts current value.");
   PUT_LINE("A '?' reply gives infomation/help on that parameter.  A space skips the rest.");
   PUT_LINE("Developer modes are only for special requirements and may not all be operable.");
   NEW_LINE;
-  
+
   --  Interactive MDEV - lets you do things on unknown words
 
   --  You can say it is a noun and then look at the endings
@@ -596,11 +596,11 @@ LOAD_DICTIONARY(DICT_LOC,
     INQUIRE(SHOW_DICTIONARY, SHOW_DICTIONARY_HELP);
 
     INQUIRE(SHOW_DICTIONARY_LINE, SHOW_DICTIONARY_LINE_HELP);
-  
-    if Cl_Arguments(Meanings_Only) = False then 
+
+    if Cl_Arguments(Meanings_Only) = False then
     INQUIRE(SHOW_DICTIONARY_CODES, SHOW_DICTIONARY_CODES_HELP);
     end if;
-      
+
     INQUIRE(DO_PEARSE_CODES, DO_PEARSE_CODES_HELP);
 
     if WORDS_MODE(DO_FIXES) then
@@ -609,11 +609,11 @@ LOAD_DICTIONARY(DICT_LOC,
     end if;
 
     INQUIRE(USE_PREFIXES, USE_PREFIXES_HELP);
-    
+
     INQUIRE(USE_SUFFIXES, USE_SUFFIXES_HELP);
-    
+
     INQUIRE(USE_TACKONS, USE_TACKONS_HELP);
-      
+
     if WORDS_MODE(DO_TRICKS) then
       INQUIRE(DO_MEDIEVAL_TRICKS, DO_MEDIEVAL_TRICKS_HELP);
     end if;
@@ -629,9 +629,9 @@ LOAD_DICTIONARY(DICT_LOC,
     INQUIRE(OMIT_MEDIEVAL, OMIT_MEDIEVAL_HELP);
 
        --  SPR: OMIT_UNCOMMON is broken.  It's not filtering (or rarely filtering)
-       --       and under some circumstances can cause an extraneous raw dictionary 
-       --       line to print  
-  
+       --       and under some circumstances can cause an extraneous raw dictionary
+       --       line to print
+
   -- INQUIRE(OMIT_UNCOMMON, OMIT_UNCOMMON_HELP);
 
   --  INQUIRE(DO_I_FOR_J, DO_I_FOR_J_HELP);
@@ -639,10 +639,10 @@ LOAD_DICTIONARY(DICT_LOC,
   --  INQUIRE(DO_U_FOR_V, DO_U_FOR_V_HELP);
 
     INQUIRE(PAUSE_IN_SCREEN_OUTPUT, PAUSE_IN_SCREEN_OUTPUT_HELP);
-    
+
     INQUIRE(MINIMIZE_OUTPUT, MINIMIZE_OUTPUT_HELP);
-    
-    if not CL_Arguments(NO_FILES) then 
+
+    if not CL_Arguments(NO_FILES) then
     INQUIRE(UPDATE_LOCAL_DICTIONARY, UPDATE_LOCAL_DICTIONARY_HELP);
 
 
@@ -665,7 +665,7 @@ LOAD_DICTIONARY(DICT_LOC,
     end if;
     NEW_LINE;
     end if; -- not CL_Arguents(No_Files)
-      
+
     PUT("CHANGE_PARAMETERS_CHARACTER ?  "); SET_COL(45); PUT("(Currently  '");
     PUT(CHANGE_PARAMETERS_CHARACTER); PUT("'");
     PUT(" =>");
@@ -705,8 +705,8 @@ LOAD_DICTIONARY(DICT_LOC,
       end if;
     end if;
     NEW_LINE;
-      
-    if not CL_Arguments(NO_FILES) then 
+
+    if not CL_Arguments(NO_FILES) then
     PUT("Do you wish to save this set of parameters? Y or N (Default) ");
     PUT(" =>");
     GET_LINE(L1, LL);
@@ -724,9 +724,9 @@ LOAD_DICTIONARY(DICT_LOC,
       end if;
     end if;
     end if; -- not CL_Arguments(NO_FILES)
-    
-    NEW_LINE; 
-    
+
+    NEW_LINE;
+
   exception
     when BLANK_INPUT  =>
       null;
@@ -746,7 +746,7 @@ begin
       if WORDS_MDEV(OMIT_UNCOMMON) = TRUE then
          PREFACE.PUT_LINE ("MDEV_FILE:  OMIT_UNCOMMON option is deprecated; not applied");
          WORDS_MDEV(OMIT_UNCOMMON) := FALSE;
-      end if; 
+      end if;
   exception
   --  If there is any problem
   --  Put that the MDEV file is corrupted and the options are:
@@ -756,7 +756,7 @@ begin
     when NAME_ERROR  =>
       WORDS_MDEV := DEFAULT_MDEV_ARRAY;
     when BAD_MDEV_FILE  =>
-      PREFACE.Format(Inverse);  
+      PREFACE.Format(Inverse);
       PREFACE.PUT("MDEV_FILE invalid or corrupted - default MDEVs used");
       Preface.Format(Reset);
       Preface.New_Line;
