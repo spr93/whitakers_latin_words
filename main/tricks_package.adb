@@ -677,18 +677,32 @@
          begin
             for I in S'FIRST..S'LAST-X1'LENGTH+1  loop  
                if S(I..I+X1'LENGTH-1) = X1   then
-                  PA_LAST := PA_LAST + 1;
-                  PA(PA_LAST) := (HEAD("Word mod " & X1 & "/" & X2, MAX_STEM_SIZE),
+          PA_LAST := PA_LAST + 1;
+
+                   if X2 = "" then 
+                  PA(PA_LAST) := (HEAD("Word mod letter H " & X1, MAX_STEM_SIZE),
                                     NULL_INFLECTION_RECORD,
-                                    XXX, NULL_MNPC);
+                                  XXX, NULL_MNPC);
+                     else 
+                              PA(PA_LAST) := (HEAD("Word mod " & X1 & "/" & X2, MAX_STEM_SIZE),
+                                    NULL_INFLECTION_RECORD,
+                                  XXX, NULL_MNPC);
+                   end if; 
                   TWORD(S(S'FIRST..I-1) & X2 & S(I+X1'LENGTH..S'LAST), PA, PA_LAST);
                   if (PA_LAST > PA_SAVE + 1)   and then
                      (PA(PA_LAST-1).IR.QUAL.POFS /= TACKON)  then
                      if EXPLANATION = ""  then
+                    if X1 = "h" and then X2 = "" then 
+                                        XXX_MEANING(XXX_MEANING_COUNTER) := HEAD(
+                                        "The letter H may be dropped or added; it may be silent or pronounced",
+                                        MAX_MEANING_SIZE); 
+                XXX_MEANING_COUNTER := XXX_MEANING_COUNTER + 1; 
+                else 
                         XXX_MEANING(XXX_MEANING_COUNTER) := HEAD(
                                            "An internal '" & X1 & "' might be rendered by '" & X2 & "'"
                                            , MAX_MEANING_SIZE); 
-                                           XXX_MEANING_COUNTER := XXX_MEANING_COUNTER + 1; 
+                XXX_MEANING_COUNTER := XXX_MEANING_COUNTER + 1; 
+                end if; 
                      else
                         XXX_MEANING(XXX_MEANING_COUNTER) := HEAD(EXPLANATION, MAX_MEANING_SIZE); 
                         XXX_MEANING_COUNTER := XXX_MEANING_COUNTER + 1; 
@@ -759,7 +773,7 @@
                   (IS_A_VOWEL(S(I-1)) and IS_A_VOWEL(S(I+1))) then
                   PA_LAST := PA_LAST + 1;
                   PA(PA_LAST)           := (HEAD("Word mod " & S(I) &
-                                                 " -> " & S(I) & S(I), MAX_STEM_SIZE),
+                                                 " => " & S(I) & S(I), MAX_STEM_SIZE),
                                             NULL_INFLECTION_RECORD,
                                             XXX, NULL_MNPC);
                   TWORD(S(S'FIRST..I) & S(I) & S(I+1..S'LAST), PA, PA_LAST);
@@ -1296,8 +1310,7 @@
          INTERNAL("h",  "");   
          if PA_LAST > 0  then 
             return; end if;
-      
-      
+        
          INTERNAL("oe",  "e");   
          if PA_LAST > 0  then 
             return; end if;
