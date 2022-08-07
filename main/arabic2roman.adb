@@ -342,7 +342,7 @@ package body Arabic2Roman is
                Put (OUTPUT, Arabic_String (C));
             end loop;
 
-            Put (OUTPUT, " as a ROMAN NUMERAL");
+            Put (OUTPUT, " as a ROMAN NUMERAL;");
             Format(OUTPUT, RESET);
 
             New_Line (OUTPUT); -- end output of first result
@@ -426,7 +426,7 @@ package body Arabic2Roman is
                   exit when Arabic_String (C) = ' ';
                   Put (OUTPUT, Arabic_String (C));
                end loop;
-               Put_Line (OUTPUT, " as a ROMAN NUMERAL");
+               Put_Line (OUTPUT, " as a ROMAN NUMERAL;");
                  Format(OUTPUT, Reset); New_Line (OUTPUT);
             end if;  -- if enclosing dictionary line items
 
