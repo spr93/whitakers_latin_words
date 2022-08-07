@@ -1,42 +1,59 @@
-with Ada.Command_Line;
-with Text_IO;              use Text_IO;
-with STRINGS_PACKAGE;      use STRINGS_PACKAGE;
-with CONFIG;               use CONFIG;
-with WORD_PARAMETERS;      use WORD_PARAMETERS;
-with DEVELOPER_PARAMETERS; use DEVELOPER_PARAMETERS;
-with WORD_PACKAGE;         use WORD_PACKAGE;
-with Parse_Package;        use Parse_Package;
-with Ada.Interrupts;       use Ada.Interrupts;
-with Ada.Interrupts.Names; use Ada.Interrupts.Names;
-with No_Exit_Handler;      use No_Exit_Handler;
-with Words_Help;
-with Ada.Environment_Variables;
-with Ada.Directories;
-with Ada.Wide_Text_IO;
+--
+-- LICENSE DETAILS AND RIGHTS GRANT AT BOTTOM OF FILE.
+-- SUMMARY:
+-- Copyright (c) 1993-2022 William Armstrong Whitaker and contributors.
+-- BSD 2-clause
+--
+-- In memoriam, Col. Wm. Whitaker, Chair of DoD Working Group responsible for
+-- establishing the Ada language and accomplished amateur Latin lexicographer,
+-- who labored for years to create this comprehensive and free dictionary.
+--
 
-procedure WORDS is
+---------------------------------------------------
+-- CORE:  Packages necessary for the core Words system; Whitaker's original
+
+with TEXT_IO;              use TEXT_IO;
+   -- Configuration
+with CONFIG;               use CONFIG;               -- Important global variables, changes to which
+with LATIN_FILE_NAMES;                               --   must be carefully controlled
+with WORD_PARAMETERS;      use WORD_PARAMETERS;      -- Common options; easily changeable by user
+with DEVELOPER_PARAMETERS; use DEVELOPER_PARAMETERS; -- Uncommon options that Whitaker used primarily
+                                                     --   for development - rarely set by user, mostly
+                                                     --   simple control-flow changes; can be disabled in CONFIG
+   -- Logic and interface
+with WORD_PACKAGE;         use WORD_PACKAGE;         -- Initializes type system and data structures, loads dictionary data
+with STRINGS_PACKAGE;      use STRINGS_PACKAGE;      -- Mostly formatting routines; mostly for user interface
+with PARSE_PACKAGE;        use PARSE_PACKAGE;        -- Contains PARSE, the main control program
+
+-- MORE:  Packages supporting additional user convenience options; mostly post-Whitaker
+
+with Ada.Command_Line;                               -- Command-line options (see below)
+with Ada.Environment_Variables;                      -- Makes it easier to separate data files from executable
+with Ada.Directories;                                --   (same)
+with Ada.Wide_Text_IO;                               -- For Unicode handling (macron stripping)
+with Words_Help;                                     -- Online help system
+with Ada.Exceptions;                                 -- Provide information for unhandled errors
+---------------------------------------------------
+
+procedure WORDS is -- the main/startup procedure.  Handles I/O configuration and command-line options.
+
+  procedure Initialize_Dictionary is -- mostly related to file system operations (opening, loading, and creating files).
+  begin                              -- Some command-line options moot, or even prohibit, some of those operations
+      INITIALIZE_WORD_PARAMETERS;    -- so we defer them until we're ready to call PARSE.
+      INITIALIZE_DEVELOPER_PARAMETERS;
+      INITIALIZE_WORD_PACKAGE;
+  end Initialize_Dictionary;
 
 begin
-
-   -- FIND DATA FILES
-   -- If the always-necessary INFLECTS.SEC isn't in the working directory, see
-   -- if we can find it via environment variable. First check LATINWORDS and
-   -- LATIN_WORDS, then cycle through PATH.
-   if not Ada.Directories.Exists ("INFLECTS.SEC") then
-      FIND_DICTIONARY_FILES;
-   end if;
 
    --  SIMPLE INTERACTIVE MODE -- when Words is run without parameters
    if Ada.Command_Line.Argument_Count = 0 then
       METHOD           := INTERACTIVE;
-      -- Set_Output (Standard_Output);
-      INITIALIZE_WORD_PARAMETERS;
-      INITIALIZE_DEVELOPER_PARAMETERS;
-      INITIALIZE_WORD_PACKAGE;
-      Parse;
+      Initialize_Dictionary;
+      PARSE;
       return;
 
-   --  COMMAND-LINE ARGUMENTS ("new" style to modify interactive mode)
+   --  COMMAND-LINE ARGUMENTS ("new" [post-Whitaker] options that modify interactive mode)
    elsif
      (TRIM (Ada.Command_Line.Argument (1)) (1) = '-' or
       TRIM (Ada.Command_Line.Argument (1)) (1) = HELP_CHARACTER)
@@ -45,7 +62,6 @@ begin
       New_Style_Arguments :
       declare
          Args_Exception : exception;
-
       begin
 
          for I in 1 .. Ada.Command_Line.Argument_Count loop
@@ -53,9 +69,6 @@ begin
             for J in 2 .. TRIM (Ada.Command_Line.Argument (I))'length loop
                exit when J > 5; -- max 5 arguments (-E and -L conflict)
                case Upper_Case (TRIM (Ada.Command_Line.Argument (I)) (J)) is
-                  when '-' =>
-                     exit when J > 2;
-                     exit;
                   when 'E' =>
                      if CL_Arguments (LATIN_ONLY) then
                         raise Args_Exception;
@@ -73,15 +86,13 @@ begin
                   when 'M' =>
                      CL_Arguments (MEANINGS_ONLY) := True;
                      CONFIGURATION                :=
-                       ONLY_MEANINGS;      -- re-use this existing setting; nothing more to do to enforce meanings only
+                       ONLY_MEANINGS;       -- this config.ads setting is all we need to enforce meanings only
                   when 'N' =>
                      CL_Arguments (NO_FILES) := True;
                   when 'X' =>
                      CL_Arguments (NO_EXIT) := True;
-                     pragma Unreserve_All_Interrupts;
-                     Attach_Handler (No_Exit_Handler_Access, SIGINT);
-                  when '?' | 'H' =>
-                     raise Args_Exception; -- display arguments help and terminate
+                  when '?' | 'H' | '-' =>
+                     raise Args_Exception;  -- display arguments help and terminate
                   when others =>
                      New_Line;
                      Put_Line
@@ -93,15 +104,12 @@ begin
             end loop;
 
             exit when I > 5;  -- max 5 arguments (-E and -L conflict)
-         end loop; -- while =< argument_counter'length
+         end loop; -- I in 1 .. Ada.Command_Line.Argument_Count
 
-         -- Still in the "elsif" statement => we're using the - / -- style
+         -- Still in the "elsif" statement => we're using '-' style arguments
          -- arguments => INTERACTIVE MODE STARTUP:
          METHOD           := INTERACTIVE;
-         Set_Output (Standard_Output);
-         INITIALIZE_WORD_PARAMETERS;
-         INITIALIZE_DEVELOPER_PARAMETERS;
-         INITIALIZE_WORD_PACKAGE;
+         Initialize_Dictionary;
 
          if CL_Arguments (NO_EXIT) then
             loop
@@ -121,26 +129,31 @@ begin
 
    end if; -- enclosing interactive mode
 
-   -- NOT entering interactive mode; no '-'-style parameters; back to classic
-   -- Words startup sequence
+ -- The rest of this procedure handles the command-line possibilities Whitaker created
 
+   -- NOT entering interactive mode, so minimize screen output.
    SUPPRESS_PREFACE := True;
-   INITIALIZE_WORD_PARAMETERS;
-   INITIALIZE_DEVELOPER_PARAMETERS;
-   INITIALIZE_WORD_PACKAGE;
 
    --  Now choose a non-interactive mode: when 1 argument => either a simple Latin
    --  word or an input file. when 2 arguments => two words in-line OR language
-   --  switch and word or input file when more arguments => command-line of
-   --  words
+   --  switch and word or input file when more arguments => command-line of Latin
+   --  words.
+
+ --  First possibility:  English->Latin command-line mode
+   --  Words has never supported processing a file of English words after a command-line switch to English.
+   --  Few users should want to do that because Word's isn't suitable for translating a lot of English
+   --  to Latin in a non-interactive mode (getting a Latin word with the right connotation
+   --  often requires interactively trying a few English words; dumping a lot of English into Words
+   --  will almost always produce output that's be too long (or too TRIM'd) to be practical).
+   --  We'd also need to jump through more hoops to detect and handle the POFS restriction option.
 
    if Ada.Command_Line.Argument_Count > 1
     and then Ada.Command_Line.Argument (1) (1) = CHANGE_LANGUAGE_CHARACTER
     and then ( Ada.Command_Line.Argument (1) (2) = 'e' or Ada.Command_Line.Argument (1) (2) ='E')
    then
-
-      CHANGE_LANGUAGE ('E');
       METHOD := COMMAND_LINE_INPUT;
+      Initialize_Dictionary;
+      CHANGE_LANGUAGE ('E');
 
       English_Command_Line_Input :
       declare
@@ -166,36 +179,48 @@ begin
          Parse (TRIM (Input_String));
          return;
       end English_Command_Line_Input;
+  end if;
 
-   elsif Ada.Command_Line.Argument_Count > 2 then
-
+ -- Possibility two:  >2 arguments without a switch to English->Latin => must be command-line Latin
+   if Ada.Command_Line.Argument_Count > 2 then
       METHOD := COMMAND_LINE_INPUT;
+      Initialize_Dictionary;
 
-   else -- Ada.Command_Line.Argument_Count = 1 or 2 w/o changing to English->Latin mode
+ -- Remaining possibilities:  Command-line Latin or Latin command-line files.  Ambiguous until we check
+ --                           whether the first argument is a valid input file name
+   else -- (Ada.Command_Line.Argument_Count = 1 or 2)
 
-      SETUP_INPUT :
+    -- We've got to start doing some file I/O at this point, but not sure whether to open the file
+    -- for Unicode processing (Wide_Text) or not.
+    -- Go ahead and initialize now.  At this point, METHOD is NOT_YET_SET, which will
+    -- suppress unnecessary file operations during initialization.
+    Initialize_Dictionary;
+
+    SETUP_INPUT :
       declare
       begin
-
          if WORDS_MODE (DO_UNICODE_INPUT) then
             Ada.Wide_Text_IO.Open
               (W_INPUT, Ada.Wide_Text_IO.In_File,
                (Ada.Command_Line.Argument (1)));
-            Ada.Wide_Text_IO.Close (W_INPUT);
+         --   Ada.Wide_Text_IO.Close (W_INPUT);
+         METHOD := COMMAND_LINE_FILES;
+
          else
 
             Open (INPUT, In_File, TRIM (Ada.Command_Line.Argument (1)));
             Set_Input (INPUT);
             METHOD := COMMAND_LINE_FILES;
+
          end if;
+
       exception
-         when Name_Error =>
-            METHOD := COMMAND_LINE_INPUT;
+         when Name_Error =>  -- First argument not a valid file name
+         METHOD := COMMAND_LINE_INPUT;
       end SETUP_INPUT;
 
       if Ada.Command_Line.Argument_Count = 2
-        and then METHOD /= COMMAND_LINE_INPUT
-
+        and then METHOD /= COMMAND_LINE_INPUT  -- So we won't interfere with any ..._TO_OUTPUT_FILE parameters
       then
          SETUP_OUTPUT :
          begin
@@ -206,42 +231,84 @@ begin
             when Name_Error =>
                Create (OUTPUT, Out_File, TRIM (Ada.Command_Line.Argument (2)));
                Set_Output (OUTPUT);
-         end SETUP_OUTPUT;
+      end SETUP_OUTPUT;
+    elsif WORDS_MODE(HAVE_OUTPUT_FILE) and then not TEXT_IO.IS_OPEN(OUTPUT)
+      then
+      TEXT_IO.CREATE(OUTPUT, TEXT_IO.OUT_FILE, LATIN_FILE_NAMES.OUTPUT_FULL_NAME);
+-- else must be writing to Standard_Output, so outuput setup needed.
       end if;
 
    end if;
 
-   if METHOD = COMMAND_LINE_INPUT then
 
+-- Finally, we can parse.
+   if METHOD = COMMAND_LINE_INPUT then
       for I in 1 .. Ada.Command_Line.Argument_Count loop
          declare
             INPUT_LINE : constant String :=
               TRIM (Ada.Command_Line.Argument (I));
          begin
-            Parse (TRIM (INPUT_LINE));
+            Parse (INPUT_LINE);
          end;
       end loop;
 
-   else
-
-    METHOD := COMMAND_LINE_FILES;
-
+   else  -- METHOD := COMMAND_LINE_FILES;
       if WORDS_MODE (DO_UNICODE_INPUT) then
          Parse_Unicode_File ((Ada.Command_Line.Argument (1)));
       else
          Parse;
       end if;
 
-      if Name (Current_Output) /= Name (Standard_Output) then
-         Set_Output (Standard_Output);
-         Close (OUTPUT);
-      if WORDS_MDEV (DO_PEARSE_CODES) then
+      if Text_IO.Is_Open(Output) -- Must check Is_Open first or risk Status_Error
+      and then Name (OUTPUT) /= Name (Standard_Output) then
+         if WORDS_MDEV (DO_PEARSE_CODES) then
            Put ("07 ");
-      end if;
+         end if;
          Put_Line
-           ("Wrote output to file " & TRIM (Ada.Command_Line.Argument (2)));
+           (Standard_Output,"Wrote output to file " & Name(Output)); --TRIM (Ada.Command_Line.Argument (2)));
       end if;
 
    end if;
 
+exception
+  when Give_Up | FATAL_ERROR => return; -- handled errors
+  when Catch_Me: Others =>
+    Put_Line(Standard_Error,"Latin Words encountered a problem and cannot continue:");
+    Put_Line(Standard_Error,Ada.Exceptions.Exception_Information(Catch_Me));
+    Put_Line(Standard_Error,Ada.Exceptions.Exception_Message(Catch_Me));
+
 end WORDS;
+
+--
+-- COPYRIGHT INFORMATION AND LICENSE GRANT
+--
+-- BACKGROUND:
+--
+-- SPR:  Whitaker developed and relased Words under a 1990s-style public domain license.
+-- For example, he made the following statements in the documentation that he wrote concerning Words:
+--   * "[Words is] freely available for anyone to use for any purpose. It may be converted
+--      to other languages, used in pieces, or modified in any way without
+--      further permission or notification."
+--   * "The program source (in Ada) and dictionary are freely available for rehosting."
+--
+-- The BSD 2-clause license accurately captures the intent of Whitaker's license (that is,
+-- (free for any commercial or non-commercial use,no attempt to control downstream use
+-- or force a particular downstream licensing regime on derivatives) and is well known to modern audiences.
+-- At a minimum, there is no conflict between the BSD 2-clause license and the license that Whitaker articulated.
+--
+-- See also discussion of license issues at https://github.com/mk270/whitakers-words/issues/118
+--
+-- The formal copyright and license grant follow.
+--
+--  LICENSE:
+--
+--  Copyright (c) 1993-2022 William Armstrong Whitaker and contributors.
+--
+--  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+--
+--  1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+--
+--  2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+--
+--  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+--

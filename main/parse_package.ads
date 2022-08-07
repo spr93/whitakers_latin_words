@@ -6,4 +6,6 @@ package Parse_Package is
 
    procedure Parse_Unicode_File (File_Name_String : String);
 
+   Give_Up : exception;
+
 end Parse_Package;

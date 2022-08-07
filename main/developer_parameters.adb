@@ -30,8 +30,8 @@ package body DEVELOPER_PARAMETERS is
                       SHOW_DICTIONARY_CODES       => TRUE,
                       DO_PEARSE_CODES             => FALSE,
 
-                 --   DO_ONLY_INITIAL_WORD        => FALSE,
-                 --   FOR_WORD_LIST_CHECK         => FALSE,
+                      -- DO_ONLY_INITIAL_WORD        => FALSE,
+                      -- FOR_WORD_LIST_CHECK         => FALSE,
 
                       DO_ONLY_FIXES               => FALSE,
                       DO_FIXES_ANYWAY             => FALSE,
@@ -49,8 +49,8 @@ package body DEVELOPER_PARAMETERS is
                       OMIT_MEDIEVAL               => FALSE,
                       OMIT_UNCOMMON               => FALSE,
 
-                 --   DO_I_FOR_J                  => TRUE,
-                 --   DO_U_FOR_V                  => TRUE,
+                 --    DO_I_FOR_J                  => TRUE,
+                 --    DO_U_FOR_V                  => TRUE,
 
                       PAUSE_IN_SCREEN_OUTPUT      => FALSE,
                  --   NO_SCREEN_ACTIVITY          => FALSE,

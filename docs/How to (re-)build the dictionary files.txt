@@ -1,10 +1,5 @@
-Below is a simplified version of Wm. Whitaker's instructions for fully rebuilding the dictionary system
-
-IMPORTANT NOTE:  The "wakedict"-"makedict" distinction has been abandoned in this version
-				 Always run makedict.
-
 *****
-EVEN EASIER:
+THE EASIEST WAY:
 
 The sorter, makedict, makestem, makeewds, and makeefil in this repository have been modified to accept command line options to automated the steps below.
 
@@ -24,41 +19,46 @@ so you can distill all the following steps to these commands.  rebuild.sh in too
 ./makeefil
 
 *****
+SIMPLIFIED INSTRUCTIONS FOR MANUAL RE-BUILD:
+
+Below is a simplified version of Wm. Whitaker's instructions for fully rebuilding the dictionary system.
+
+IMPORTANT NOTE:  The "wakedict"-"makedict" distinction has been abandoned in this version
+				 Always run makedict.
 
 
 Run sorter against modified DICTLINE.GEN.  Input:
+       SORTER
+         DICTLINE.GEN    --  Input
+            1 75         --  STEMS
+           77 24   P     --  POFS + DECL/CONJ
+          111 80         --
+          101 1          --  AGE
+          107 1          --  FREQ
+          DICTLINE.GEN   --  OUTPUT
 
-            1 75         
-           77 24   P     
-          111 80        
-          101 1        -- SPR:  TEST THIS Sort first by age
-          107 1        -- SPR:  TEST THIS Then frequency 
-          
-
-Copy DICTLINE.GEN to CHECK.IN and run CHECK. 
+Copy DICTLINE.GEN to CHECK.IN and run CHECK.
 Review CHECK.OUT.
 
 Run MAKEDICT against DICTLINE.GEN
 
 Run SORTER against the resulting STEMLIST.GEN
        SORTER
-         STEMLIST.GEN    --  Input  
+         STEMLIST.GEN    --  Input
            1    18   U
            20   24   P
            1    18   C
            1    56   A
-           58    1         
-         STEMLIST.GEN    --  Output  
-         
+           58    1
+         STEMLIST.GEN    --  Output
+
 DO NOT REMOVE WEIRD TO_BE AT THE FIRST LINE - IT IS SUPPOSED TO BE THERE
 
 Run makestem
 
 Run MAKEINFL against INFLECTS.LAT
 
-
---English part:
-
+That completes the Latin->English dictionary prep.  To make the English->Latin dictionary:
 Run MAKEEWDS against DICTLINE.GEN
 
 Sort EWDSLIST.GEN
@@ -66,14 +66,14 @@ SORTER
     EWDSLIST.GEN
        1  24  A         --  Main word
        1  24  C         --  Main word for CAPS
-      51   6  R         --  Part of Speech  
+      51   6  R         --  Part of Speech
       72   5  N   D     --  RANK
       58   1  A         --  FREQ
-    EWDSLIST.GEN        --  Store 
+    EWDSLIST.GEN        --  Store
 
 Run MAKEEFIL
 
--- end English part
+=> Done.
 
 THE FOLLOWING IS NOW THE FULL DATA SET:
 WORDS [executable]
@@ -84,4 +84,3 @@ DICTFILE.GEN
 STEMFILE.GEN
 INDXFILE.GEN
 EWDSFILE.GEN
- 	

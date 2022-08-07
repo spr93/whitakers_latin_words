@@ -98,7 +98,7 @@ package body Parse_Package is
                J := I + 1;
             end loop;
 
-      --------------------------BEGIN NUMERALS------------------------
+         ------------------------(BEGIN) INTERCEPT ARABIC2ROMAN NUMERALS (BEGIN)--------------------
             -- Intercept Arabic numerals here; a bit messy, but we can
             -- avoid changing the rest of the procedure
             if WORDS_MODE (DO_ARABIC_NUMERALS) and Arabic_Present then
@@ -114,9 +114,9 @@ package body Parse_Package is
             Arabic_J := (J);
 
             end if;
-      ----------------------------END NUMERALS------------------------
+         -------------------------(END) INTERCEPT ARABIC2ROMAN NUMERALS (END)-----------------------
 
-            exit when J > L;              --  Kludge
+            exit when J > L;  --  Kludge
 
             FOLLOWED_BY_PERIOD := False;
             CAPITALIZED        := False;
@@ -125,8 +125,7 @@ package body Parse_Package is
             --  Extract the word
             for I in J .. L loop
 
-               --  Although I have removed punctuation above, it may not always
-               --  be so
+               --  Although I have removed punctuation above, it may not always be so
                if LINE (I) = '.' then
                   FOLLOWED_BY_PERIOD := True;
                   exit;
@@ -140,9 +139,7 @@ package body Parse_Package is
 
             end loop;
 
-            -- Determine whether all caps (a couple user options change
-            -- behavior when there's a cap);
-
+            -- Determine whether all caps (a couple user options change behavior when there's a cap)
             if W (J) in 'A' .. 'Z' and then K - J >= 1
             and then W (J + 1) in 'a' .. 'z'
             then
@@ -170,7 +167,7 @@ package body Parse_Package is
 
                PARSE_LINE_ENGLISH_TO_LATIN :
 --  Since we do only one English word per line
-               declare
+              declare
                   INPUT_WORD : constant String     := W (J .. K);
                   POFS       : PART_OF_SPEECH_TYPE := X;
                begin
@@ -220,7 +217,7 @@ package body Parse_Package is
                   begin
 
 --TEXT_IO.PUT_LINE("Entering ENCLITIC  HAVE DONE = " & BOOLEAN'IMAGE(HAVE_DONE_ENCLITIC));
-   --if WORDS_MODE(TRIM_OUTPUT)  and (PA_LAST > 0)  sathen    return;   end if;
+--if WORDS_MODE(TRIM_OUTPUT)  and (PA_LAST > 0)  sathen    return;   end if;
                      if HAVE_DONE_ENCLITIC then
                         return;
                      end if;
@@ -366,7 +363,7 @@ package body Parse_Package is
                   end TRICKS_ENCLITIC;
 
                   procedure PASS (INPUT_WORD : in String) is
---  This is the core logic of the program, everything else is details
+--  *** This is the core logic of the program, everything else is details ***
 
                      SAVE_DO_FIXES      : Boolean := WORDS_MODE (DO_FIXES);
                      SAVE_DO_ONLY_FIXES : Boolean :=
@@ -521,7 +518,7 @@ package body Parse_Package is
 
 --======================================================================
 
---  At this point we have done what we can with individual words Now see if
+--  At this point we have done what we can with individual words.  Now see if
 --  there is something we can do with word combinations For this we have to
 --  look ahead
 
@@ -1102,7 +1099,7 @@ package body Parse_Package is
             J :=
               K + 1;    --  In case it is end of line and we don't look for ' '
 
-            exit when WORDS_MDEV (DO_ONLY_INITIAL_WORD);
+            -- exit when WORDS_MDEV (DO_ONLY_INITIAL_WORD);
 
          end loop OVER_LINE;        --  Loop on line
 
@@ -1114,10 +1111,10 @@ package body Parse_Package is
             end if;
             Text_IO.Put_Line
               (    --  ERROR_FILE,
-            "STORAGE_ERROR Exception in WORDS");
+            "STORAGE_ERROR Exception in PARSE");
             STORAGE_ERROR_COUNT := STORAGE_ERROR_COUNT + 1;
             if STORAGE_ERROR_COUNT >= 4 then
-               raise;
+               raise Storage_Error;
             end if;
             PA_LAST := 0;
          when GIVE_UP =>
@@ -1140,25 +1137,36 @@ package body Parse_Package is
 
       procedure CHANGE_LANGUAGE (C : Character) is
       begin
-         if Upper_Case (C) = 'L' then
-            LANGUAGE := LATIN_TO_ENGLISH;
+        if Upper_Case (C) = 'L' then
+          LANGUAGE := LATIN_TO_ENGLISH;
+          PREFACE.PUT_LINE
+            ("Language changed to " & LANGUAGE_TYPE'IMAGE (LANGUAGE));
+
+        elsif Upper_Case (C) = 'E' then
+          if ENGLISH_DICTIONARY_AVAILABLE (GENERAL) then
+            LANGUAGE := ENGLISH_TO_LATIN;
             PREFACE.PUT_LINE
               ("Language changed to " & LANGUAGE_TYPE'IMAGE (LANGUAGE));
-         elsif Upper_Case (C) = 'E' then
-            if ENGLISH_DICTIONARY_AVAILABLE (GENERAL) then
-               LANGUAGE := ENGLISH_TO_LATIN;
-               PREFACE.PUT_LINE
-                 ("Language changed to " & LANGUAGE_TYPE'IMAGE (LANGUAGE));
-               PREFACE.PUT_LINE
-                 ("Input a single English word (+ part of speech - N, ADJ, V, PREP, ...)");
-            else
-               PREFACE.PUT_LINE ("No English dictionary available");
+            if not WORDS_MODE(TRIM_OUTPUT) then
+              PREFACE.Format(Inverse);
+              Preface.Put("TRIM_OUTPUT disabled, but English->Latin output can be long. Consider enabling.");
+              PREFACE.Format(Reset);
+              Preface.NEW_LINE;
             end if;
-         else
+
             PREFACE.PUT_LINE
-              ("Bad LANGUAGE input - no change, remains " &
+              ("Input a single English word (+ part of speech - N, ADJ, V, PREP, ...)");
+          else
+            PREFACE.PUT_LINE ("No English dictionary available");
+          end if;
+        else
+          PREFACE.Format(Inverse);
+          PREFACE.PUT
+            ("Bad LANGUAGE input - no change, remains " &
                LANGUAGE_TYPE'IMAGE (LANGUAGE));
-         end if;
+          PREFACE.Format(Reset);
+          Preface.New_Line;
+        end if;
       exception
          when others =>
             PREFACE.PUT_LINE
@@ -1177,33 +1185,23 @@ package body Parse_Package is
       else
 
          PREFACE.PUT_LINE
-           ("Copyright (c) William Armstrong Whitaker 1993-2006 - free for any use");
+           ("Copyright (c) 1993-2022 William Armstrong Whitaker and contributors.");
+
          PREFACE.PUT_LINE
-           ("with modifications and additions 2008-2021, see github.com/spr93");
-         PREFACE.PUT_LINE
-           ("In memoriam, Gen. Wm. Whitaker, Chair of DoD Working Group responsible for");
+           ("In memoriam, Col. Wm. Whitaker, Chair of DoD Working Group responsible for");
          PREFACE.PUT_LINE
            ("establishing the Ada language and accomplished amateur Latin lexicographer,");
          PREFACE.PUT_LINE
-           ("who gave this comprehensive and free dictionary to the world.");
+           ("who labored for years to create this comprehensive and free dictionary.");
 
          PREFACE.NEW_LINE;
 
          -- Begin restrictions report
          if CONFIGURATION = ONLY_MEANINGS or CL_Arguments /= Null_CL_Arguments
          then
-            if WORDS_MODE (DO_ANSI_FORMATTING) then
-               PREFACE.PUT (Format_Reset);
-               PREFACE.PUT (Format_Inverse);
-            end if;
-
+            PREFACE.Format(Inverse);
             PREFACE.PUT ("Restrictions enabled:");
-
-            if WORDS_MODE (DO_ANSI_FORMATTING) then
-               PREFACE.PUT (Format_Reset);
-               PREFACE.PUT (Format_Bold);
-            end if;
-
+            Preface.Format(Bold);
             PREFACE.NEW_LINE;
 
             if CONFIGURATION = ONLY_MEANINGS then
@@ -1228,13 +1226,10 @@ package body Parse_Package is
             end if;
             if CL_Arguments (NO_EXIT) then
                PREFACE.PUT_LINE
-                 ("- NO EXIT      :   User cannot instruct the program to exit; SIGINT ignored");
+                 ("- NO EXIT      :   Blank lines will not terminate program; use Control-C to exit");
             end if;
 
-            if WORDS_MODE (DO_ANSI_FORMATTING) then
-               PREFACE.PUT (Format_Reset);
-            end if;
-
+            PREFACE.Format(Reset);
             PREFACE.NEW_LINE;
          end if;
          -- End restrictions report
@@ -1293,7 +1288,10 @@ package body Parse_Package is
 
          PREFACE.PUT_LINE ("Input " & HELP_CHARACTER & " to get help");
 
-         if CL_Arguments (NO_EXIT) = False then
+      if CL_Arguments (NO_EXIT) then
+            PREFACE.PUT_LINE
+              ("Use control-C to exit the program");
+        else
             PREFACE.PUT_LINE
               ("Two empty lines (just a RETURN/ENTER) from the keyboard exits the program");
             PREFACE.NEW_LINE;
@@ -1307,10 +1305,10 @@ package body Parse_Package is
 
                PA :=
                  (others =>
-                    NULL_PARSE_RECORD); -- clear PA to prevent exceptions in LIST_STEM
-               -- which can occur after a huge result fills the PA (e.g.,
-               -- arcule will return a full array once then cause an exception
-               -- the next time without this)
+                    NULL_PARSE_RECORD); -- SPR:  Clear PA to prevent exceptions in LIST_STEM
+                                        -- which can occur after a huge result fills the PA (e.g.,
+                                        -- arcule will return a full array once then cause an exception
+                                        -- the next time without this)
 
                SYPA      := (others => NULL_PARSE_RECORD);
                TRPA      := (others => NULL_PARSE_RECORD);
@@ -1330,7 +1328,7 @@ package body Parse_Package is
                   PREFACE.PUT ("=>");
                end if;
 
-               if METHOD = INTERACTIVE and then WORDS_MODE (DO_UNICODE_INPUT)
+               if ( METHOD = INTERACTIVE ) and WORDS_MODE (DO_UNICODE_INPUT)
                then
                   Get_Unicode (LINE, L);
                else
@@ -1339,16 +1337,16 @@ package body Parse_Package is
                     Ada.Characters.Handling.To_Basic (LINE (LINE'First .. L));
                end if;
 
-               if (L = 0) or else (TRIM (LINE (1 .. L)) = "") then
+               if ( (L = 0) or (TRIM (LINE (1 .. L)) = "") ) then
                   if CL_Arguments (NO_EXIT) then
                      null;
                   elsif (Name (Current_Input) = Name (Standard_Input))
-                    and then not CL_Arguments (NO_EXIT)
+                    and not CL_Arguments (NO_EXIT)
                   then   --  INPUT is keyboard
                      PREFACE.PUT ("Blank exits =>");
 
-                     if METHOD = INTERACTIVE
-                       and then WORDS_MODE (DO_UNICODE_INPUT)
+                     if ( ( METHOD = INTERACTIVE )
+                       and WORDS_MODE (DO_UNICODE_INPUT) )
                      then
                         Get_Unicode (LINE, L);
                      else
@@ -1358,7 +1356,7 @@ package body Parse_Package is
                             (LINE (LINE'First .. L));
                      end if;
 
-                     if (L = 0) or else (TRIM (LINE (1 .. L)) = "")
+                     if ( (L = 0) or else (TRIM (LINE (1 .. L)) = "") )
                      then  -- Two in a row
                         exit;
                      end if;
@@ -1418,44 +1416,29 @@ package body Parse_Package is
 
                   else
 
-                     --  Echo input to console if console output is active and we're reading from a file, pipe, etc.
-                     if (Name (Current_Input) /= Name (Standard_Input)) then
-                      PREFACE.PUT_LINE ("=> " & TRIM(LINE));
-                     end if;
 
-                   if METHOD = INTERACTIVE
+              if (Name (Current_Input) /= Name (Standard_Input)) then
+                PREFACE.PUT_LINE ("=> " & TRIM(LINE)); --  Echo input to console if console output is active and we're reading from a file, pipe, etc.
+              elsif Words_Mode (Write_Output_To_File) then
+                if not Config.Suppress_Preface then    --  Echo raw input to OUT_FIlE -- this behavior is straight from Whitaker's original
+               --   New_Line (Output);
+                  Text_Io.Put_Line
+                    (Output, Line (1 .. L));
+                end if;
+              end if;
+
+                   if METHOD = INTERACTIVE -- Don't add blank line to file output
                       then
                       Preface.New_Line;
-
-
-                -- SPR:  NEW FEATURE - Log the user's session when set to WRITE_OUTPUT_TO_FILE in
-                --       INTERACTIVE mode with a real user at the console/stdout (i.e., not SUPPRESS_PREFACE).
-                --
-                --       RATIONALE: This combination of features always sounded to me like it should log
-                --       the user's entire session, but it used to just re-direct re-directing all output except
-                --       the input prompt ("=>") to file.
-                --
-                --       COMPATIBILITY: So long as you turn on SUPPRESS_PREFACE, these changes will not result in
-                --       in any extra parsing or stdout activiity as compared with prior versions.
-
-                     if WORDS_MODE (WRITE_OUTPUT_TO_FILE) then
-                     Text_IO.Put_Line (OUTPUT,("=> " & TRIM(LINE)));
-                      -- NOT SUPPRESS_PREFACE + WRITE_OUTPUT_TO_FILE + INTERACTIVE = parse to console before parsing to file
-                      if not SUPPRESS_PREFACE then
-                        Words_Mode(WRITE_OUTPUT_TO_FILE) := False;
-                        PARSE_LINE (LINE (1 .. L));
-                        Words_Mode(WRITE_OUTPUT_TO_FILE) := True;
-                        Preface.Put_Line("                               [Logging to file - WRITE_OUTPUT_TO_FILE mode on]");
-                     end if;
-
-                   end if;
                    end if;
 
 
-                  PARSE_LINE (LINE (1 .. L));
+
+               PARSE_LINE (LINE (1 .. L));
+          end if;  -- end of non-blank input section
+
 
             end if;
-          end if;
 
             exception
                when Name_Error | Use_Error =>
@@ -1492,18 +1475,20 @@ package body Parse_Package is
 
    exception
 
-      when Storage_Error =>    --  Have tried at least twice, fail
-         PREFACE.PUT_LINE ("STORAGE_ERROR Exception in PARSE");
       when GIVE_UP =>
          PREFACE.PUT_LINE ("Giving up!");
       when Catch_Me : others =>
          if CL_Arguments (NO_EXIT) then
             PARSE;
-         else
-            PREFACE.PUT_LINE ("Unexpected exception raised in PARSE");
-            Put_Line (Ada.Exceptions.Exception_Message (Catch_Me));
-            Put_Line (Ada.Exceptions.Exception_Information (Catch_Me));
-         end if;
+      else
+        Preface.Format(Inverse);
+        PREFACE.PUT ("Unexpected exception raised in PARSE");
+        Preface.Format(Reset);
+        Preface.New_Line;
+        Put_Line (Ada.Exceptions.Exception_Message (Catch_Me));
+        Put_Line (Ada.Exceptions.Exception_Information (Catch_Me));
+        raise FATAL_ERROR;
+       end if;
 
    end PARSE;
 
@@ -1525,7 +1510,10 @@ package body Parse_Package is
 
    begin
 
+    if not Is_Open(W_INPUT) then
       Open (W_INPUT, In_File, File_Name_String);
+      end if;
+
       WORDS_MODE (DO_UNICODE_INPUT) := False;
       METHOD                        := COMMAND_LINE_INPUT;
 
@@ -1536,6 +1524,7 @@ package body Parse_Package is
       Close (W_INPUT);
       WORDS_MODE (DO_UNICODE_INPUT) := True;
       METHOD                        := Saved_Method;
+
      exception
        when Ada.Wide_Text_IO.Use_Error  =>  raise Text_IO.Use_Error;
        when Ada.Wide_Text_IO.Name_Error =>  raise Text_IO.Name_Error;
