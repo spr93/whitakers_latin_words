@@ -252,14 +252,13 @@ is
 
    end PUT_VERB_EXAMPLE;
 
-begin    --  PUT_EXAMPLE_LINE
+begin    --  PUT_EXAMPLE_LINE.  This is only called by PUT_INFLECTIONS
+         --  PUT_INFLECTIONS checks for DO_EXAMPLES, DO_ONLY_MEANINGS, and MEANINGS_ONLY,
+         --  so we don't re-check them here
 
    --TEXT_IO.PUT("In EXAMPLES  ");
    --TEXT_IO.PUT("  LKM  "); BOOLEAN_IO.PUT(WORDS_MDEV(LOCK_MEANINGS));
---TEXT_IO.PUT("   /LKM  "); BOOLEAN_IO.PUT((not WORDS_MDEV(LOCK_MEANINGS))  );
-
-   if WORDS_MODE (DO_EXAMPLES) and then (not (CONFIGURATION = ONLY_MEANINGS))
-   then
+   --TEXT_IO.PUT("   /LKM  "); BOOLEAN_IO.PUT((not WORDS_MDEV(LOCK_MEANINGS))  );
 
       case IR.QUAL.POFS is
          when N =>
@@ -425,9 +424,5 @@ begin    --  PUT_EXAMPLE_LINE
          when others =>
             null;
       end case;        --  PART
-
-   else
-      null;
-   end if;
 
 end PUT_EXAMPLE_LINE;

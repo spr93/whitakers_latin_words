@@ -22,79 +22,32 @@ procedure LIST_SWEEP (PA : in out PARSE_ARRAY; PA_LAST : in out Integer) is
 
    NOT_ONLY_ARCHAIC  : Boolean := False;
    NOT_ONLY_MEDIEVAL : Boolean := False;
-   NOT_ONLY_UNCOMMON : Boolean := False;
 
    Has_Qu_Pron : Boolean := False;
 
    function ALLOWED_STEM (PR : PARSE_RECORD) return Boolean is
       ALLOWED : Boolean := True;   --  modify as necessary and return it
+
    begin
 --DEBUG: TEXT_IO.PUT("ALLOWED? >"); PARSE_RECORD_IO.PUT(PR); TEXT_IO.NEW_LINE;
       if PR.D_K not in GENERAL .. LOCAL then
-         return True;
-      end if;
+      return True;
+      elsif PR.IR.QUAL.POFS /= V then  -- SPR:  This section previously included a few static checks that were intended
+        return True;                   -- to verify new dictionary entries.  I've read Whitaker's explanations repeatedly--
+                                       -- those checks were designed to allow only dictionary forms (e.g., amicus, amici)
+                                       -- and I have no idea how that could be useful for entry checking (aside from maybe double-checking
+                                       -- new INFLECTS entries, but the INFLECTS have been complete for a very long time).
+                                       -- In any event, DICTPAGE reports dictionary forms if that's important for some reason.
+                                       -- The remaining checks apply only to verbs; the /= V condition is an artifact of removed non-verb checks.
 
-      --DICT_IO.SET_INDEX(DICT_FILE(PR.D_K), PR.MNPC);
-      --DICT_IO.READ(DICT_FILE(PR.D_K), DE);
+      end if; 
 
       DICT_IO.Read (DICT_FILE (PR.D_K), DE, PR.MNPC);
 
-      --DEBUG: TEXT_IO.PUT("ALLOWED? >"); DICTIONARY_ENTRY_IO.PUT(DE); TEXT_IO.NEW_LINE;
-
-      --  NOUN CHECKS
-
-      case PR.IR.QUAL.POFS is
-
-         when N =>
-
-            if WORDS_MDEV (FOR_WORD_LIST_CHECK) then
-               if (NOM <= PR.IR.QUAL.N.CS) and then (S <= PR.IR.QUAL.N.NUMBER)
-               then
-                  ALLOWED := True;
-               elsif (NOM <= PR.IR.QUAL.N.CS)
-                 and then (PR.IR.QUAL.N.NUMBER = P)
-               then
-                  SEARCH_FOR_PL :
-                  declare
-                     DE   : DICTIONARY_ENTRY;
-                     MEAN : MEANING_TYPE := NULL_MEANING_TYPE;
-                  begin
-                     ALLOWED := False;
-                     DICT_IO.Read (DICT_FILE (PR.D_K), DE, PR.MNPC);
-                     MEAN := DE.MEAN;
-                     for J in MEANING_TYPE'FIRST .. MEANING_TYPE'LAST - 2 loop
-                        if MEAN (J .. J + 2) = "pl." then
-                           ALLOWED := True;
-                           exit;
-                        end if;
-                     end loop;
-                  end SEARCH_FOR_PL;
-                  --====================================
-               else
-                  ALLOWED := False;
-               end if;
-            end if;
-
-         when ADJ =>
-
-            if WORDS_MDEV (FOR_WORD_LIST_CHECK) then
-               if (NOM <= PR.IR.QUAL.ADJ.CS)
-                 and then (S <= PR.IR.QUAL.ADJ.NUMBER)
-                 and then (M <= PR.IR.QUAL.ADJ.GENDER)
-               then
-                  ALLOWED := True;
-               else
-                  ALLOWED := False;
-               end if;
-            end if;
-
-            --  VERB CHECKS
-
-         when V =>
 
             --  Check for Verb 3 1 dic/duc/fac/fer shortened imperative See G&L
             --  130.5
-            declare
+      declare
                STEM       : constant String := TRIM (PR.STEM);
                LAST_THREE : String (1 .. 3);
             begin
@@ -185,56 +138,9 @@ procedure LIST_SWEEP (PA : in out PARSE_ARRAY; PA_LAST : in out Integer) is
                   null;
                end if;
             end if;
-
-            if WORDS_MDEV (FOR_WORD_LIST_CHECK) then
-               if (PR.IR.QUAL.V.PERSON = 1) and then (PR.IR.QUAL.V.NUMBER = S)
-               then
-                  if
-                    ((DE.PART.V.KIND in X .. INTRANS) and
-                     (PR.IR.QUAL.V.TENSE_VOICE_MOOD = (PRES, ACTIVE, IND)))
-                    or else
-                    ((DE.PART.V.KIND = DEP) and
-                     (PR.IR.QUAL.V.TENSE_VOICE_MOOD = (PRES, PASSIVE, IND)))
-                    or else
-                    ((DE.PART.V.KIND = SEMIDEP) and
-                     (PR.IR.QUAL.V.TENSE_VOICE_MOOD = (PRES, ACTIVE, IND)))
-                  then
-                     ALLOWED := True;
-                  elsif
-                    ((DE.PART.V.KIND = PERFDEF) and
-                     (PR.IR.QUAL.V.TENSE_VOICE_MOOD = (PERF, ACTIVE, IND)))
-                  then
-                     ALLOWED := True;
-                  else
-                     ALLOWED := False;
-                  end if;
-               elsif (DE.PART.V.KIND = IMPERS) then
-                  if (PR.IR.QUAL.V.PERSON = 3)
-                    and then (PR.IR.QUAL.V.NUMBER = S)
-                    and then
-                    (PR.IR.QUAL.V.TENSE_VOICE_MOOD = (PRES, ACTIVE, IND))
-                  then
-                     ALLOWED := True;
-                  else
-                     ALLOWED := False;
-                  end if;
-               else
-                  ALLOWED := False;
-               end if;
-            end if;
-
-         when others =>
-            null;
-
-      end case;
-
-      if WORDS_MDEV (FOR_WORD_LIST_CHECK) then       --  Non parts
-         if (PR.IR.QUAL.POFS in VPAR .. SUPINE) then
-            ALLOWED := False;
-         end if;
-      end if;                                           --  Non parts
-      --DEBUG: TEXT_IO.PUT_LINE("Returning FOR ALLOWED    " & BOOLEAN'IMAGE(ALLOWED));
+        
       return ALLOWED;
+
 
    end ALLOWED_STEM;
 
@@ -423,15 +329,6 @@ procedure LIST_SWEEP (PA : in out PARSE_ARRAY; PA_LAST : in out Integer) is
                then     --  Or E????
                   NOT_ONLY_MEDIEVAL := True;
                end if;
-               if
-                 ((SL (I).IR.FREQ = X)
-                  or else
-                  (SL (I).IR.FREQ <
-                   C)) and  --  A/X < C   --  C for inflections is uncommon  !!!!
-                 ((DE.TRAN.FREQ = X) or else (DE.TRAN.FREQ < D))
-               then  --     --  E for DICTLINE is uncommon  !!!!
-                  NOT_ONLY_UNCOMMON := True;
-               end if;
 
                if SL (I).IR.QUAL.POFS = N
                  and then SL (I).IR.QUAL.N.DECL = (9, 8)
@@ -489,23 +386,13 @@ procedure LIST_SWEEP (PA : in out PARSE_ARRAY; PA_LAST : in out Integer) is
          end loop;
 
          I := SL_LAST;
-         while I >= SL'FIRST loop
-            if (NOT_ONLY_UNCOMMON and WORDS_MDEV (OMIT_UNCOMMON))
-              and then SL (I).IR.FREQ >= C
-            then      --  Remember A < C
-               SL (I .. SL_LAST - 1) := SL (I + 1 .. SL_LAST);
-               SL_LAST               := SL_LAST - 1;
-               --DEBUG: TEXT_IO.PUT_LINE("Uncommon       SL_LAST = " & INTEGER'IMAGE(SL_LAST) & "  I = " & INTEGER'IMAGE(I));
-               TRIMMED := True;
-            end if;
-            I := I - 1;
-         end loop;
 
 ----------------------------------------------------------------------------
 ----------------------------------------------------------------------------
 ----------------------------------------------------------------------------
 ----------------------------------------------------------------------------
 ----------------------------------------------------------------------------
+----Whitaker's original comments:
 ----Big problem.  This area has been generating exceptions.
 ----At least one difficulty is that suffixes change POFS.
 ----So one has a N inflection (SL) but a V DE
@@ -516,7 +403,7 @@ procedure LIST_SWEEP (PA : in out PARSE_ARRAY; PA_LAST : in out Integer) is
 ----I do not want to face that now
 ----It is likely that all this VOC/LOC is worthless anyway.  Maybe lower FREQ in INFLECTS
 ----
-----A further complication is the GNAT and AO give different results (AO no exception)
+----A further complication is that GNAT and AO [SPR: I think he means OA (ObjectAda)] give different results (AO no exception)
 ----That is probably because the program is in error and the result therefore unspecified
 
 --  SPR: Should be solved; see long comment below
