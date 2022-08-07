@@ -1,4 +1,5 @@
-with WORD_PARAMETERS; use WORD_PARAMETERS;
+with WORD_PARAMETERS;      use WORD_PARAMETERS;
+with DEVELOPER_PARAMETERS; use DEVELOPER_PARAMETERS;
 
    package body STRINGS_PACKAGE is
    
@@ -54,6 +55,8 @@ with WORD_PARAMETERS; use WORD_PARAMETERS;
    begin
 
       if WORDS_MODE(DO_ANSI_FORMATTING) and then
+         not WORDS_MODE (WRITE_OUTPUT_TO_FILE) then
+      
         Put (OUTPUT, Format_Reset);
 
          case Format is
