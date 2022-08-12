@@ -2,7 +2,6 @@ with STRINGS_PACKAGE;      use STRINGS_PACKAGE;
 with DEVELOPER_PARAMETERS; use DEVELOPER_PARAMETERS;
 with PREFACE;
 
-
 package body ADDONS_PACKAGE is
    use PART_OF_SPEECH_TYPE_IO;
    use TARGET_ENTRY_IO;
@@ -42,12 +41,12 @@ package body ADDONS_PACKAGE is
       use SUFFIX_ENTRY_IO;
 
       S                                : String (1 .. 100);
-      L, LAST, TIC, PRE, SUF, TAC, PAC : Integer                  := 0;
+      L, LAST, TIC, PRE, SUF, TAC, PAC : Integer          := 0;
       ADDONS_FILE                      : Text_IO.File_Type;
       POFS                             : PART_OF_SPEECH_TYPE;
       DE : DICTIONARY_ENTRY := NULL_DICTIONARY_ENTRY;
-      MEAN                             : MEANING_TYPE := NULL_MEANING_TYPE;
-      M                                : Integer                  := 1;
+      MEAN                             : MEANING_TYPE     := NULL_MEANING_TYPE;
+      M                                : Integer          := 1;
       --TG : TARGET_ENTRY;
       TN : TACKON_ENTRY;
       PM : PREFIX_ITEM;

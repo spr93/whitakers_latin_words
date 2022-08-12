@@ -1,5 +1,6 @@
 with Text_IO;
 with INFLECTIONS_PACKAGE; use INFLECTIONS_PACKAGE;
+with Ada.Direct_IO;
 
 package DICTIONARY_PACKAGE is
    pragma Elaborate_Body;
@@ -397,7 +398,7 @@ package DICTIONARY_PACKAGE is
 
    NULL_DICTIONARY_ENTRY : DICTIONARY_ENTRY;
 
-   package DICT_IO is new Direct_IO (DICTIONARY_ENTRY);
+   package DICT_IO is new Ada.Direct_IO (DICTIONARY_ENTRY);
    DICT_FILE : array (DICTIONARY_KIND) of DICT_IO.File_Type;
 
    package MNPC_IO is new Text_IO.Integer_IO (DICT_IO.Count);
