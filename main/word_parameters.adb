@@ -59,18 +59,6 @@ WRITE_OUTPUT_TO_FILE_HELP : constant HELP_TYPE :=  (
    "screen; if you want a transcript of your session, use 'tee' or a      ",
    "similar utility.                                      Default is N(o).");
 
-DO_UNKNOWNS_ONLY_HELP : constant HELP_TYPE :=  (
-   "This option instructs the program to only output those words that it  ",
-   "cannot resolve.  Of course, it has to do processing on all words, but ",
-   "those that are found (with prefix/suffix, if that option in on) will  ",
-   "be ignored.  The purpose of this option is to allow a quick look to   ",
-   "determine if the dictionary and process is going to do an acceptable  ",
-   "job on the current text.  It also allows the user to assemble a list  ",
-   "of unknown words to look up manually, and perhaps augment the system  ",
-   "dictionary.  It may also be used as a spell checker when composing    ",
-   "Latin texts.                                      The default is N(o).",
-   "This does not work in English mode, but may in the future.            " );
-
 WRITE_UNKNOWNS_TO_FILE_HELP : constant HELP_TYPE :=  (
    "This option instructs the program to write all unresolved words to a  ",
    "UNKNOWNS file named " & UNKNOWNS_FULL_NAME
@@ -268,7 +256,7 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
       WORDS_MODE(MO) := MODE_OF_REPLY(REP);
     end loop;
     CLOSE(MODE_FILE);
-
+    PREFACE.PUT_LINE("MODE_FILE loaded");
   exception
     when NAME_ERROR  =>
       WORDS_MODE := DEFAULT_MODE_ARRAY;
@@ -419,9 +407,6 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
 
     end if; -- not CL_Arguments(NO_FILES)
 
-
-    INQUIRE(DO_UNKNOWNS_ONLY, DO_UNKNOWNS_ONLY_HELP);
-
     INQUIRE(IGNORE_UNKNOWN_NAMES, IGNORE_UNKNOWN_NAMES_HELP);
 
     INQUIRE(IGNORE_UNKNOWN_CAPS, IGNORE_UNKNOWN_CAPS_HELP);
@@ -504,7 +489,7 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
   begin
 
     GET_MODES; --(WORDS_MODE);
-    PREFACE.PUT_LINE("MODE_FILE loaded");
+
     Check_Compatibility;
 
   if (WORDS_MODE(HAVE_OUTPUT_FILE))
