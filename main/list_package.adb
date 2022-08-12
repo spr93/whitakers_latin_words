@@ -52,9 +52,7 @@ package body LIST_PACKAGE is
    is
    begin
 
-      if WORDS_MODE (SHOW_AGE) and
-        (DE.TRAN.AGE /= X)
-      then
+      if WORDS_MODE (SHOW_AGE) and (DE.TRAN.AGE /= X) then
          Text_IO.Put (OUTPUT, " " & TRIM (DICTIONARY_AGE (DE.TRAN.AGE)));
          HIT := True;
       end if;
@@ -132,6 +130,34 @@ package body LIST_PACKAGE is
 
    end PUT_DICTIONARY_FORM;
 
+
+   procedure PUT_INFLECTION_FLAGS (OUTPUT : in Text_IO.File_Type; SR : in Stem_Inflection_Record) is
+         begin
+
+            if
+              (WORDS_MODE
+                 (SHOW_AGE) or  -- SHOW_AGE is for the dictionary entry, not inflections,
+
+               (SR.IR.AGE /= X)) and     -- and is meant to reduce output.
+               --If user wants inflections displayed, they're getting
+               -- verbose output anyway. Therefore, we warn the user if an
+               -- inflection is limited to a specific age (not coded 'X').
+
+              TRIM (INFLECTION_AGE (SR.IR.AGE))'Length /= 0
+            then
+               Text_IO.Put
+                 (File => OUTPUT, Item => "  " & INFLECTION_AGE (SR.IR.AGE));
+            end if;
+
+            if
+              (WORDS_MODE (SHOW_FREQUENCY) or
+               (SR.IR.FREQ >= C)) and    --  Warn regardless
+              TRIM (INFLECTION_FREQUENCY (SR.IR.FREQ))'Length /= 0
+            then
+               Text_IO.Put (OUTPUT, "  " & INFLECTION_FREQUENCY (SR.IR.FREQ));
+            end if;
+  end PUT_INFLECTION_FLAGS;
+
    procedure LIST_STEMS
      (OUTPUT     : in     Text_IO.File_Type; RAW_WORD : in String;
       INPUT_LINE : in     String; PA : in out PARSE_ARRAY;
@@ -167,12 +193,6 @@ package body LIST_PACKAGE is
       --  containing the same data plus the DICTFILE data DICTIONARY_ENTRY but
       --  breaking it into two arrays allows different manipulation These are
       --  only within this routine, used to clean up the output
-
-      type STEM_INFLECTION_RECORD is record
-         STEM : STEM_TYPE         := NULL_STEM_TYPE;
-         IR   : INFLECTION_RECORD := NULL_INFLECTION_RECORD;
-      end record;
-      NULL_STEM_INFLECTION_RECORD : STEM_INFLECTION_RECORD;
 
       STEM_INFLECTION_ARRAY_SIZE       : constant := 12;
       STEM_INFLECTION_ARRAY_ARRAY_SIZE : constant := 40;
@@ -227,99 +247,76 @@ package body LIST_PACKAGE is
       J, J1, J2, K       : Integer := 0;
       THERE_IS_AN_ADVERB : Boolean := False;
 
+
       procedure PUT_INFLECTION
         (SR : in STEM_INFLECTION_RECORD; DM : in DICTIONARY_MNPC_RECORD)
       is
-    --  Handles putting PEARSE_CODES, CAPS, QUAL, V_KIND, FLAGS
-
-         procedure PUT_INFLECTION_FLAGS is
-         begin
-
-
-
-            if
-              (WORDS_MODE (SHOW_AGE) or  -- SHOW_AGE is for the dictionary entry, not inflections,
-                   (SR.IR.AGE /= X)) and     -- and is meant to reduce output.
-                                             --If user wants inflections displayed, they're getting
-                                             -- verbose output anyway.  Therefore, we warn the user
-                                             -- if an inflection is limited to a specific age (not coded 'X').
-              TRIM (INFLECTION_AGE (SR.IR.AGE))'Length /= 0
-            then
-               Text_IO.Put
-                 (File => OUTPUT, Item => "  " & INFLECTION_AGE (SR.IR.AGE));
-        end if;
-
-            if
-              (WORDS_MODE (SHOW_FREQUENCY) or
-               (SR.IR.FREQ >= C)) and    --  Warn regardless
-              TRIM (INFLECTION_FREQUENCY (SR.IR.FREQ))'Length /= 0
-            then
-               Text_IO.Put (OUTPUT, "  " & INFLECTION_FREQUENCY (SR.IR.FREQ));
-            end if;
-         end PUT_INFLECTION_FLAGS;
+         --  Handles putting PEARSE_CODES, CAPS, QUAL, V_KIND, FLAGS
 
       begin
-      -- TEXT_IO.PUT_LINE("PUT_INFLECTION ");
+         -- TEXT_IO.PUT_LINE("PUT_INFLECTION ");
 
-          if   ( WORDS_MODE (DO_ONLY_MEANINGS) or (CONFIGURATION = ONLY_MEANINGS) )
-          and then DM.D_K not  in ADDONS .. YYY  -- not an addon, TRICK, or SYNCOPE (because they [mis-]use
-                                                 -- the inflection field for modification warning (XXX .. YYY)
-                                                 -- or for the definition (ADDONS))
-      then
-      return;
-      end if;
+         if (WORDS_MODE (DO_ONLY_MEANINGS) or (CONFIGURATION = ONLY_MEANINGS))
+           and then DM.D_K not in
+             ADDONS ..
+                   YYY  -- not an addon, TRICK, or SYNCOPE (because they [mis-]use
+                    -- the inflection field for modification warning (XXX .. YYY) or
+                    -- for the definition (ADDONS))
 
+         then
+            return;
+         end if;
 
-            Text_IO.Set_Col (OUTPUT, 1);
-            if WORDS_MDEV (DO_PEARSE_CODES) then  -- Same issue as above re ADDONS .. YYY re inflection misuse
-               if DM.D_K = ADDONS then
-                  Text_IO.Put (OUTPUT, "05 ");
-               elsif DM.D_K in XXX .. YYY then
-                  Text_IO.Put (OUTPUT, "06 ");
-               else
-                  Text_IO.Put (OUTPUT, "01 ");
-               end if;
+         Text_IO.Set_Col (OUTPUT, 1);
+         if WORDS_MDEV (DO_PEARSE_CODES)
+         then  -- Same issue as above re ADDONS .. YYY re inflection misuse
+            if DM.D_K = ADDONS then
+               Text_IO.Put (OUTPUT, "05 ");
+            elsif DM.D_K in XXX .. YYY then
+               Text_IO.Put (OUTPUT, "06 ");
+            else
+               Text_IO.Put (OUTPUT, "01 ");
             end if;
+         end if;
 
 --TEXT_IO.PUT(OUTPUT, CAP_STEM(TRIM(SR.STEM)));
-            Text_IO.Put (OUTPUT, (TRIM (SR.STEM)));
-            if SR.IR.ENDING.SIZE > 0 then
-               Text_IO.Put (OUTPUT, ".");
+         Text_IO.Put (OUTPUT, (TRIM (SR.STEM)));
+         if SR.IR.ENDING.SIZE > 0 then
+            Text_IO.Put (OUTPUT, ".");
 --TEXT_IO.PUT(OUTPUT, TRIM(CAP_ENDING(SR.IR.ENDING.SUF)));
-               Text_IO.Put (OUTPUT, TRIM ((SR.IR.ENDING.SUF)));
-            end if;
+            Text_IO.Put (OUTPUT, TRIM ((SR.IR.ENDING.SUF)));
+         end if;
 
-            if WORDS_MDEV (DO_PEARSE_CODES) then
-               Text_IO.Set_Col (OUTPUT, 25);
-            else
-               Text_IO.Set_Col (OUTPUT, 22);
-            end if;
+         if WORDS_MDEV (DO_PEARSE_CODES) then
+            Text_IO.Set_Col (OUTPUT, 25);
+         else
+            Text_IO.Set_Col (OUTPUT, 22);
+         end if;
 
-            if SR.IR /= NULL_INFLECTION_RECORD then
+         if SR.IR /= NULL_INFLECTION_RECORD then
 
-               PRINT_MODIFIED_QUAL :
-               declare
-                  OUT_STRING : String (1 .. QUALITY_RECORD_IO.DEFAULT_WIDTH);
+            PRINT_MODIFIED_QUAL :
+            declare
+               OUT_STRING : String (1 .. QUALITY_RECORD_IO.DEFAULT_WIDTH);
 
-                  PASSIVE_START : Integer :=
-                    PART_OF_SPEECH_TYPE_IO.Default_Width + 1 +
-                    DECN_RECORD_IO.DEFAULT_WIDTH + 1 +
-                    TENSE_TYPE_IO.Default_Width + 1;
-                  PASSIVE_FINISH : Integer :=
-                    PASSIVE_START + VOICE_TYPE_IO.Default_Width;
-                  PPL_START : Integer :=
-                    PART_OF_SPEECH_TYPE_IO.Default_Width + 1 +
-                    DECN_RECORD_IO.DEFAULT_WIDTH + 1 +
-                    CASE_TYPE_IO.Default_Width + 1 +
-                    NUMBER_TYPE_IO.Default_Width + 1 +
-                    GENDER_TYPE_IO.Default_Width + 1 +
-                    TENSE_TYPE_IO.Default_Width + 1;
-                  PPL_FINISH : Integer :=
-                    PPL_START + VOICE_TYPE_IO.Default_Width;
-                  PASSIVE_BLANK : constant String
-                    (1 .. VOICE_TYPE_IO.Default_Width) :=
-                    (others => ' ');
-               begin
+               PASSIVE_START : Integer :=
+                 PART_OF_SPEECH_TYPE_IO.Default_Width + 1 +
+                 DECN_RECORD_IO.DEFAULT_WIDTH + 1 +
+                 TENSE_TYPE_IO.Default_Width + 1;
+               PASSIVE_FINISH : Integer :=
+                 PASSIVE_START + VOICE_TYPE_IO.Default_Width;
+               PPL_START : Integer :=
+                 PART_OF_SPEECH_TYPE_IO.Default_Width + 1 +
+                 DECN_RECORD_IO.DEFAULT_WIDTH + 1 +
+                 CASE_TYPE_IO.Default_Width + 1 +
+                 NUMBER_TYPE_IO.Default_Width + 1 +
+                 GENDER_TYPE_IO.Default_Width + 1 +
+                 TENSE_TYPE_IO.Default_Width + 1;
+               PPL_FINISH : Integer := PPL_START + VOICE_TYPE_IO.Default_Width;
+               PASSIVE_BLANK : constant String
+                 (1 .. VOICE_TYPE_IO.Default_Width) :=
+                 (others => ' ');
+            begin
 
 --  TEXT_IO.PUT_LINE("PASSIVE_START = " & INTEGER'IMAGE(PASSIVE_START));
 --  TEXT_IO.PUT_LINE("PASSIVE_FINISH = " & INTEGER'IMAGE(PASSIVE_FINISH));
@@ -329,75 +326,99 @@ package body LIST_PACKAGE is
 
 -- TEXT_IO.PUT_LINE("START PRINT MODIFIED QUAL " ); -- Prints the line(s) that
 -- explain each inflected form
-                  QUALITY_RECORD_IO.PUT
-                    (OUT_STRING,
-                     SR.IR
-                       .QUAL);        --  E.g., "V      1 1 PRES ACTIVE  IMP 2 S   "
+               QUALITY_RECORD_IO.PUT
+                 (OUT_STRING,
+                  SR.IR
+                    .QUAL);        --  E.g., "V      1 1 PRES ACTIVE  IMP 2 S   "
 
-                  if (DM.D_K in GENERAL .. LOCAL) then  --  UNIQUES has no DE
+               if (DM.D_K in GENERAL .. LOCAL) then  --  UNIQUES has no DE
 
-                     if (SR.IR.QUAL.POFS = V) and then (DM.DE.PART.POFS = V)
-                       and then (DM.DE.PART.V.KIND = DEP)
-                       and then
-                       (SR.IR.QUAL.V.TENSE_VOICE_MOOD.MOOD in IND .. INF)
-                     then
+                  if (SR.IR.QUAL.POFS = V) and then (DM.DE.PART.POFS = V)
+                    and then (DM.DE.PART.V.KIND = DEP)
+                    and then (SR.IR.QUAL.V.TENSE_VOICE_MOOD.MOOD in IND .. INF)
+                  then
 --TEXT_IO.PUT_LINE("START PRINT MODIFIED QUAL   V" );
-                        OUT_STRING (PASSIVE_START + 1 .. PASSIVE_FINISH) :=
-                          PASSIVE_BLANK;
-                     elsif (SR.IR.QUAL.POFS = VPAR)
-                       and then (DM.DE.PART.POFS = VPAR)
-                       and then (DM.DE.PART.V.KIND = DEP)
-                       and then (SR.IR.QUAL.VPAR.TENSE_VOICE_MOOD.MOOD = PPL)
-                     then
+                     OUT_STRING (PASSIVE_START + 1 .. PASSIVE_FINISH) :=
+                       PASSIVE_BLANK;
+                  elsif (SR.IR.QUAL.POFS = VPAR)
+                    and then (DM.DE.PART.POFS = VPAR)
+                    and then (DM.DE.PART.V.KIND = DEP)
+                    and then (SR.IR.QUAL.VPAR.TENSE_VOICE_MOOD.MOOD = PPL)
+                  then
 --TEXT_IO.PUT_LINE("START PRINT MODIFIED QUAL   VPAR" );
-                        OUT_STRING (PPL_START + 1 .. PPL_FINISH) :=
-                          PASSIVE_BLANK;
-                     end if;
-
+                     OUT_STRING (PPL_START + 1 .. PPL_FINISH) := PASSIVE_BLANK;
                   end if;
-                  Text_IO.Put (OUTPUT, OUT_STRING);
+
+               end if;
+               Text_IO.Put (OUTPUT, OUT_STRING);
 
 --             TEXT_IO.PUT_LINE("PRINT MODIFIED QUAL 4" );
 
-               end PRINT_MODIFIED_QUAL;
+            end PRINT_MODIFIED_QUAL;
 
-               PUT_INFLECTION_FLAGS;
+            PUT_INFLECTION_FLAGS (OUTPUT, SR);
 
-               -- PUT EXAMPLE LINE;
+            -- PUT EXAMPLE LINE;
 
+            if WORDS_MODE (DO_EXAMPLES)
+              and then DM.DE.PART /= NULL_DICTIONARY_ENTRY.PART
+               -- SPR: Added because some UNIQUES won't generate a DE,
+               --       raising an exception unless when it finds a null entry
 
-        if WORDS_MODE (DO_EXAMPLES)
-          and then DM.DE.PART /= NULL_DICTIONARY_ENTRY.PART
-                 -- SPR:  Added because some UNIQUES won't generate a DE,
-                 --       raising an exception unless when it finds a null entry
-           then
+            then
 
-             Format (OUTPUT, FAINT);
-             PUT_EXAMPLE_LINE (OUTPUT, SR.IR, DM.DE);
-             Format(Output,RESET);
+               Format (OUTPUT, FAINT);
+               PUT_EXAMPLE_LINE (OUTPUT, SR.IR, DM.DE);
+               Format (OUTPUT, RESET);
 
-             end if;                                       --
-                                                           --  END PUT EXAMPLE LINE
+            end if;                                       --
+            --  END PUT EXAMPLE LINE
 
+         end if;
 
-            end if;
-
-
- Text_IO.New_Line (OUTPUT);
+         Text_IO.New_Line (OUTPUT);
       end PUT_INFLECTION;
 
-      procedure PUT_FORM
+      procedure PUT_FORM  -- prints dictionary form line; e.g.,
+      --  amo, amare, amavi, amatus V (1st) [XXXAO] veryfreq
+
         (SR : in STEM_INFLECTION_RECORD; DM : in DICTIONARY_MNPC_RECORD)
+
       is
       --  Handles PEARSE_CODES and DICTIONARY_FORM (which has FLAGS) and D_K
       --  The Pearse 02 is handled in PUT_DICTIONARY_FORM
       begin
          if (SR.IR.QUAL.POFS not in XONS) and (DM.D_K in GENERAL .. UNIQUE)
          then
+            PUT_DICTIONARY_FORM (OUTPUT, DM.D_K, DM.MNPC, DM.DE);
+         elsif DM.D_K = RRR
+         then  -- Construct dictionary line for Roman numerals
+
             PUT_DICTIONARY_FORM
-              (OUTPUT, DM.D_K, DM.MNPC,
-               DM.DE);  -- prints dictionary form line; e.g.,
-         end if;        --  amo, amare, amavi, amatus  V (1st)   [XXXAO]      veryfreq
+              (OUTPUT => OUTPUT, D_K => RRR, MNPC => NULL_MNPC,
+               DE     =>
+                 (STEMS => NULL_STEMS_TYPE,
+                  PART  =>
+                    (POFS => NUM,         -- not default
+                     NUM  => ((0, 0), X, 0)),
+                  TRAN =>
+                    (AGE  => SR.IR.AGE,     -- not default
+                     AREA => X, GEO => X,
+                     FREQ =>
+                       FREQUENCY_TYPE'Succ
+                         (SR.IR
+                            .FREQ),   -- not default; adjust by one because the the age codes
+            -- have different (and more) meanings when used in dictionary
+            -- entries
+            -- than they do in inflection entries
+
+                     SOURCE => Q),         -- not default
+                  MEAN =>
+                    NULL_MEANING_TYPE)     -- (everything else default)
+
+);
+         end if;
+
       end PUT_FORM;
 
       procedure PUT_MEANING (OUTPUT : Text_IO.File_Type; RAW_MEANING : String)
@@ -460,7 +481,8 @@ package body LIST_PACKAGE is
         (SR : STEM_INFLECTION_RECORD; DM : DICTIONARY_MNPC_RECORD)
       is
       begin
-         if DM.D_K not in ADDONS .. PPP then -- i.e., we've got null (X), or GENERAL, SPECIAL, LOCAL UNIQUE
+         if DM.D_K not in ADDONS .. PPP
+         then -- i.e., we've got null (X), or GENERAL, SPECIAL, LOCAL UNIQUE
 
             if WORDS_MDEV (DO_PEARSE_CODES) then
                Text_IO.Put (OUTPUT, "03 ");
@@ -480,15 +502,14 @@ package body LIST_PACKAGE is
                PUT_MEANING (OUTPUT, TRIM_BAR (DM.DE.MEAN));
 
             end if;
-            FORMAT(OUTPUT,RESET);
+            Format (OUTPUT, RESET);
             Text_IO.New_Line (OUTPUT);
 
-      else
+         else
             if DM.D_K = RRR then
 
                if RRR_MEANING (RRR_MEANING_COUNTER + 1) /= NULL_MEANING_TYPE
                then
-                  --PUT_DICTIONARY_FLAGS;
 
                   if WORDS_MDEV (DO_PEARSE_CODES) then
                      Text_IO.Put (OUTPUT, "03 ");
@@ -501,8 +522,8 @@ package body LIST_PACKAGE is
                      RRR_MEANING
                        (RRR_MEANING_COUNTER + 1));      --  Roman Numeral
                   --RRR_MEANING := NULL_MEANING_TYPE;
-            RRR_MEANING_COUNTER := RRR_MEANING_COUNTER + 1;
-            Format(OUTPUT,RESET);
+                  RRR_MEANING_COUNTER := RRR_MEANING_COUNTER + 1;
+                  Format (OUTPUT, RESET);
                   Text_IO.New_Line (OUTPUT);
                   -- Text_IO.Put_Line("-----------");
                end if;
@@ -522,8 +543,8 @@ package body LIST_PACKAGE is
                     (OUTPUT,
                      NNN_MEANING (NNN_MEANING_COUNTER + 1));  --  Unknown Name
                   -- NNN_MEANING := NULL_MEANING_TYPE;
-            NNN_MEANING_COUNTER := NNN_MEANING_COUNTER + 1;
-            Format (OUTPUT, RESET);
+                  NNN_MEANING_COUNTER := NNN_MEANING_COUNTER + 1;
+                  Format (OUTPUT, RESET);
                   Text_IO.New_Line (OUTPUT);
                end if;
 
@@ -539,7 +560,7 @@ package body LIST_PACKAGE is
                if XXX_MEANING (XXX_MEANING_COUNTER + 1) /= NULL_MEANING_TYPE
                then
 
-            if WORDS_MDEV (DO_PEARSE_CODES) then
+                  if WORDS_MDEV (DO_PEARSE_CODES) then
                      Text_IO.Put
                        (OUTPUT,
                         "06 ");  -- from here onward it's 06's => inverse
@@ -609,7 +630,6 @@ package body LIST_PACKAGE is
                Text_IO.New_Line (OUTPUT);
 
             end if;
-
 
          end if;
 
@@ -1046,7 +1066,7 @@ package body LIST_PACKAGE is
       --  Sets + if capitalized
       --  Strangely enough, it may enter LIST_STEMS with PA_LAST /= 0 but be
       --  weeded and end up with no parse after LIST_SWEEP - PA_LAST = 0
-   if PA_LAST = 0 then  --  WORD failed
+      if PA_LAST = 0 then  --  WORD failed
          --????      (DMA(1).D_K in ADDONS..YYY  and then TRIM(DMA(1).DE.STEMS(1)) /= "que")  then  --  or used FIXES/TRICKS
          if WORDS_MODE (IGNORE_UNKNOWN_NAMES) and CAPITALIZED then
             NNN_MEANING (NNN_MEANING_COUNTER) :=
@@ -1078,7 +1098,7 @@ package body LIST_PACKAGE is
             DMA (1)      := (NNN, 0, NULL_DICTIONARY_ENTRY);
          end if;
 
-    --  end if;
+         --  end if;
 
 ----    --  Just to find the words with long/complicated output at the LIST level
 ----    --  This is done with the final PA_LAST, after SWEEP
@@ -1088,21 +1108,20 @@ package body LIST_PACKAGE is
 --       end if;
 
 -- OUTPUT ROUTINES FOR UNKNOWNS
-     -- Basic ouptut
-           if WORDS_MDEV (DO_PEARSE_CODES) then
-               Text_IO.Put (OUTPUT, "04 ");
-            end if;
-            Text_IO.Put (OUTPUT, RAW_WORD);
-            Text_IO.Set_Col (OUTPUT, 30);
-            Text_IO.Put_Line (OUTPUT, "    ========   UNKNOWN    ");
-      if WORDS_MODE (DO_STEMS_FOR_UNKNOWN) then
-          LIST_NEIGHBORHOOD (OUTPUT, RAW_WORD);
-      end if;
+         -- Basic ouptut
+         if WORDS_MDEV (DO_PEARSE_CODES) then
+            Text_IO.Put (OUTPUT, "04 ");
+         end if;
+         Text_IO.Put (OUTPUT, RAW_WORD);
+         Text_IO.Set_Col (OUTPUT, 30);
+         Text_IO.Put_Line (OUTPUT, "    ========   UNKNOWN    ");
+         if WORDS_MODE (DO_STEMS_FOR_UNKNOWN) then
+            LIST_NEIGHBORHOOD (OUTPUT, RAW_WORD);
+         end if;
 
-      -- Additional output for WORD.UNK file
-      if WORDS_MODE (WRITE_UNKNOWNS_TO_FILE) then
-            if WORDS_MDEV (INCLUDE_UNKNOWN_CONTEXT)
-            then
+         -- Additional output for WORD.UNK file
+         if WORDS_MODE (WRITE_UNKNOWNS_TO_FILE) then
+            if WORDS_MDEV (INCLUDE_UNKNOWN_CONTEXT) then
                Text_IO.Put_Line (UNKNOWNS, INPUT_LINE);
             end if;
             if WORDS_MDEV (DO_PEARSE_CODES) then
@@ -1111,30 +1130,29 @@ package body LIST_PACKAGE is
             Text_IO.Put (UNKNOWNS, RAW_WORD);
             Text_IO.Set_Col (UNKNOWNS, 30);
             Text_IO.Put_Line (UNKNOWNS, "    ========   UNKNOWN    ");
-      end if;
+         end if;
 
-      --Update local dictionary?
-      if WORDS_MDEV
-        (UPDATE_LOCAL_DICTIONARY) and then
-        not CL_Arguments(READ_ONLY)  and then
-        not CL_Arguments(NO_FILES) and then
-        Name (Current_Input) = Name (Standard_Input) and then    -- Don't if reading from file
-        Name (Current_Output) = Name(Standard_Output)            -- Don't if not sure there's a user
+         --Update local dictionary?
+         if WORDS_MDEV (UPDATE_LOCAL_DICTIONARY)
+           and then not CL_Arguments (READ_ONLY)
+           and then not CL_Arguments (NO_FILES)
+           and then Name (Current_Input) = Name (Standard_Input)
+           and then    -- Don't if reading from file
 
-          then
+             Name (Current_Output) =
+             Name
+               (Standard_Output)            -- Don't if not sure there's a user
+
+         then
             UPDATE_LOCAL_DICTIONARY_FILE; -- Also re-loads updated local dictionary
-            WORD
-              (RAW_WORD, PA,
-               PA_LAST);
-      end if;
+            WORD (RAW_WORD, PA, PA_LAST);
+         end if;
 
       end if;
-
 
 -- TEXT_IO.PUT_LINE("PUTting INFLECTIONS");
       J    := 1;
-    OSRA := NULL_SRA;
-
+      OSRA := NULL_SRA;
 
       OUTPUT_LOOP :
       while DMA (J) /= NULL_DICTIONARY_MNPC_RECORD loop
@@ -1151,7 +1169,7 @@ package body LIST_PACKAGE is
          if SRAA (J) /= OSRA
             --  Skips one identical SRA
             --  no matter what comes next
-      then
+            then
 
             if J = PA_LAST and then DMA (J).D_K in ADDONS .. YYY
               and then DMA (J + 1).D_K = X
@@ -1173,7 +1191,7 @@ package body LIST_PACKAGE is
 
             else
 
-           PUT_INFLECTION_ARRAY_J :
+               PUT_INFLECTION_ARRAY_J :
                for K in SRAA (J)'Range loop
 
                   exit when SRAA (J) (K) = NULL_STEM_INFLECTION_RECORD;
@@ -1255,7 +1273,10 @@ package body LIST_PACKAGE is
                then
                   Last_Form_Same := True;
                end if;
-
+            elsif DMA (J).D_K = RRR and then DMA (J - 1).D_K = XXX then
+               Last_Form_Same :=
+                 False;  -- Roman numerals formed by Bad_Roman_Numeral is TRICKS
+               -- has XXX then RRR entries; we print form for RRR
             elsif DMA (J).DE.STEMS = DMA (J - 1).DE.STEMS
               and then DMA (J).DE.PART.POFS = DMA (J - 1).DE.PART.POFS
               and then
@@ -1272,7 +1293,7 @@ package body LIST_PACKAGE is
 
             end if;
 
-            if Next_Form_Same                         -- The final consequence of qu- pronoun data structure
+            if Next_Form_Same                       -- The final consequence of qu- pronoun data structure
               and then not Put_Meaning_Anyway       -- Same issue probably occurs in other contexts
               and then DMA (J).DE.MEAN (1) /= '|'
               and then not Next_Meaning_Same
@@ -1289,16 +1310,18 @@ package body LIST_PACKAGE is
          PUTTING_FORM :
          begin
 
-            if ( (DMA (J).DE.PART.POFS = PRON or DMA (J).DE.PART.POFS = PACK)
-              and then not Next_Form_Same )
-                  -- and Then not Next_Meaning_Same and then Saved_Meaning_J =
-                  then
-                PUT_FORM (SRAA (J) (1), DMA (J));
-       --          New_Line(Output);
+            if
+              ((DMA (J).DE.PART.POFS = PRON or DMA (J).DE.PART.POFS = PACK)
+               and then not Next_Form_Same)
+               -- and Then not Next_Meaning_Same and then Saved_Meaning_J =
 
+            then
+               PUT_FORM (SRAA (J) (1), DMA (J));
+               --          New_Line(Output);
 
-            elsif ( DMA (J).D_K = GENERAL
-              and then Last_Form_Same         )         -- therefore J > 1, so no explicit check
+            elsif
+              (DMA (J).D_K = GENERAL
+               and then Last_Form_Same)         -- therefore J > 1, so no explicit check
             then
                if SRAA (J - 1) /= SRAA (J)
                then           -- Special tests here address rare issue that occurs
@@ -1307,22 +1330,22 @@ package body LIST_PACKAGE is
                      DMA
                        (J));       -- when there are multiple UNIQUE hits (e.g., quae, eadem, bobus)
                   Put_Meaning_Anyway :=
-            True;             -- Make sure dictionary line always prints after inflections.
-       --   New_Line(Output);
+                    True;             -- Make sure dictionary line always prints after inflections.
+                  --   New_Line(Output);
                end if;
 
             elsif DMA (J).D_K = UNIQUE then
                if not Next_Meaning_Same and then not Next_Form_Same then
-          PUT_FORM (SRAA (J) (1), DMA (J));
-       --   New_Line(Output);
+                  PUT_FORM (SRAA (J) (1), DMA (J));
+                  --   New_Line(Output);
                end if;
 
             elsif Last_Form_Same then
                null;
 
             else
-        PUT_FORM (SRAA (J) (1), DMA (J));
-      --  New_Line(Output);
+               PUT_FORM (SRAA (J) (1), DMA (J));
+               --  New_Line(Output);
             end if;
 
          end PUTTING_FORM;
@@ -1347,15 +1370,14 @@ package body LIST_PACKAGE is
             if Put_Meaning_Anyway then
 
                PUT_MEANING_LINE (SRAA (J) (1), DMA (J));
-          Put_Meaning_Anyway := False;
-        --   Text_IO.New_Line (OUTPUT);
+               Put_Meaning_Anyway := False;
+               --   Text_IO.New_Line (OUTPUT);
 
-            elsif (DMA (J).DE.PART.POFS = PRON or DMA (J).DE.PART.POFS = PRON)
-            then
+            elsif DMA (J).DE.PART.POFS = PRON then
 
                if not Next_Form_Same then
-            PUT_MEANING_LINE (SRAA (J) (1), DMA (J));
-          --   Text_IO.New_Line (OUTPUT);
+                  PUT_MEANING_LINE (SRAA (J) (1), DMA (J));
+                  --   Text_IO.New_Line (OUTPUT);
                end if;
             elsif not Next_Meaning_Same or DMA (J).D_K not in GENERAL .. UNIQUE
                -- Make sure no Roman numerals or syncopes, tricks, etc are
@@ -1376,8 +1398,8 @@ package body LIST_PACKAGE is
                PUT_MEANING_LINE
                  (SRAA (Saved_Meaning_J) (1), DMA (Saved_Meaning_J));
 
-          Saved_Meaning_J := 0;
-        --  Text_IO.New_Line (OUTPUT);
+               Saved_Meaning_J := 0;
+               --  Text_IO.New_Line (OUTPUT);
             end if;
 
          end PUTTING_MEANING;
@@ -1385,7 +1407,7 @@ package body LIST_PACKAGE is
          -- Skip_Next := false;
 
          DO_PAUSE :
-      begin
+         begin
             if I = PA_LAST then
                Text_IO.New_Line (OUTPUT);
             elsif
@@ -1395,7 +1417,7 @@ package body LIST_PACKAGE is
                PAUSE (OUTPUT);
                SCROLL_LINE_NUMBER := Integer (Text_IO.Line (OUTPUT));
                --            Text_IO.New_Line(OUTPUT);
-        end if;
+            end if;
          end DO_PAUSE;
       --   TEXT_IO.PUT_LINE("End of OUTPUT_LOOP with J = " & INTEGER'IMAGE(J));
 
@@ -1404,7 +1426,7 @@ package body LIST_PACKAGE is
       end loop OUTPUT_LOOP;
       --   TEXT_IO.PUT_LINE("Finished OUTPUT_LOOP");
 
-     Text_IO.New_Line(OUTPUT);
+      Text_IO.New_Line (OUTPUT);
 
    exception
       when others =>
@@ -1448,8 +1470,10 @@ package body LIST_PACKAGE is
       FIRST_TRY, SECOND_TRY   : Boolean       := True;
 
       function FIRST_TWO (W : String) return String is
-         --  Make sure V/U and I/J distinctions in the dictionary file don't bias our search results
-         --  (e.g., 'v' could be represented by 'u',but our dictionary file has entries for veni, vidi, vici, not ueni, uidi, uici)
+         --  Make sure V/U and I/J distinctions in the dictionary file don't
+         --  bias our search results (e.g., 'v' could be represented by 'u',but
+         --  our dictionary file has entries for veni, vidi, vici, not ueni,
+         --  uidi, uici)
 
          S  : constant String  := Lower_Case (W);
          SS : String (W'Range) := W;
@@ -1471,7 +1495,7 @@ package body LIST_PACKAGE is
 
       begin
 
-            SS (S'First)     := UI (W (S'First));
+         SS (S'First) := UI (W (S'First));
 
          if S'Length > 1 then
             SS (S'First + 1) := UI (W (S'First + 1));

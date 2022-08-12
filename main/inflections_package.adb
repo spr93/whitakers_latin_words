@@ -1059,7 +1059,7 @@ package body NUMERAL_RECORD_IO is
   procedure PUT(S : out STRING; NUM : in NUMERAL_RECORD) is
     L : INTEGER := S'FIRST - 1;
     M : INTEGER := 0;
-  begin
+    begin
     M := L + DECN_RECORD_IO.DEFAULT_WIDTH;
     PUT(S(L+1..M), NUM.DECL);
     L := M + 1;
@@ -1077,6 +1077,11 @@ package body NUMERAL_RECORD_IO is
     L := M + 1;
     S(L) :=  ' ';
     M := L + NUMERAL_SORT_TYPE_IO.DEFAULT_WIDTH;
+
+    if Num = Null_Roman_Numeral_Qual_Record.NUM then
+        S(S'First..M) := (others => ' ');
+    end if;
+
     PUT(S(L+1..M), NUM.SORT);
     S(M+1..S'LAST) := (others => ' ');
   end PUT;
@@ -2226,7 +2231,7 @@ procedure ESTABLISH_INFLECTIONS_SECTION  is
     CH, XCH : CHARACTER := ' ';
     INFLECTIONS_SECTIONS_FILE : LEL_SECTION_IO.FILE_TYPE;
   begin
-      
+
     OPEN(INFLECTIONS_SECTIONS_FILE, IN_FILE, INFLECTIONS_SECTIONS_NAME);
     NUMBER_OF_INFLECTIONS := 0;
 

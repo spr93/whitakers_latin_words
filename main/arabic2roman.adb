@@ -1,95 +1,119 @@
 pragma Ada_2012;
--- USES ADA 2012 MEMBERSHIP TESTS AND CONDITIONAL CASE EXPRESSIONS IN OUTPUT LOOPS
+-- USES ADA 2012 MEMBERSHIP TESTS AND CONDITIONAL EXPRESSIONS
 
-with WORD_PARAMETERS;       use WORD_PARAMETERS;
-with DEVELOPER_PARAMETERS;  use DEVELOPER_PARAMETERS;
-with STRINGS_PACKAGE;       use STRINGS_PACKAGE;
-with CONFIG;                use CONFIG;
+with WORD_PARAMETERS;      use WORD_PARAMETERS;
+with DEVELOPER_PARAMETERS; use DEVELOPER_PARAMETERS;
+with STRINGS_PACKAGE;      use STRINGS_PACKAGE;
+with CONFIG;               use CONFIG;
 
+with INFLECTIONS_PACKAGE;  use INFLECTIONS_PACKAGE;
+with DICTIONARY_PACKAGE;   use DICTIONARY_PACKAGE;
+with LIST_PACKAGE;
 
 package body Arabic2Roman is
 
-  procedure Arabic2Roman
+   procedure Arabic2Roman
      (OUTPUT : in Text_IO.File_Type; INPUT_WORD : in String)
    is
 
       type Roman_Num_Record_Type is record
-         Age_X              : Unbounded_String;
-         Age_F              : Unbounded_String;
-         Bar_Reminder       : Boolean                := False;
+         Additive     : Unbounded_String;
+         Subtractive  : Unbounded_String;
+         Bar_Reminder : Boolean := False;
       end record;
 
-      Null_Roman_Num_Record : constant Roman_Num_Record_Type
-                                                     := (Bar_Reminder => False,
-                                                         others       => Null_Unbounded_String);
+      Null_Roman_Num_Record : constant Roman_Num_Record_Type :=
+        (Bar_Reminder => False, others => Null_Unbounded_String);
 
-      Roman_Num_Record      : Roman_Num_Record_Type;
+      Roman_Num_Record : Roman_Num_Record_Type;
 
-      Put_Additive          : Boolean                := False;
-      Arabic_String         : String (1 .. 11)       := (others => ' ');
-      Arabic_Build_Counter  : Integer                := 1;
-      Bar_Length            : Integer                := 0;
-      Input_Counter         : Integer                := INPUT_WORD'First;
+      Put_Additive         : Boolean          := False;
+      Arabic_String        : String (1 .. 11) := (others => ' ');
+      Arabic_Build_Counter : Integer          := 1;
+      Bar_Length           : Integer          := 0;
+      Input_Counter        : Integer          := INPUT_WORD'First;
 
-      Is_Negative           : Boolean;
+      Is_Negative : Boolean := False;
+      Pearse_Adjustment : Text_IO.Count := 0;
 
-   begin
+    -- The following declarations let us re-use the DIRECT_IO routines instantiated in INFLECTIONS
+    --   as well as most of the inflection and dictionary entry-related routines in LIST_PACKAGE.
+      Inflect_Padding : String(1..QUALITY_RECORD_IO.DEFAULT_WIDTH) := (others => ' ');
+
+      DE : DICTIONARY_ENTRY :=
+        (STEMS => NULL_STEMS_TYPE,
+         PART  => (POFS => NUM, NUM => ((0, 0), X, 0)),
+         TRAN  => NULL_TRANSLATION_RECORD, MEAN => NULL_MEANING_TYPE);
+
+      IR : INFLECTION_RECORD :=
+        (QUAL => Null_Roman_Numeral_Qual_Record,
+         KEY  => 0, ENDING => NULL_ENDING_RECORD, AGE => X, FREQ => X);
+    -- end re-use declarations
+
+      begin
 
       for I in INPUT_WORD'range
       loop   --outermost loop ensures we catch everything where there are two numbers in row
 
          if Input_Counter > INPUT_WORD'Last then
             return;
-         end if;
-
-         Arabic_Build_Counter := 1;
-         Is_Negative          := False;
-         Arabic_String        :=
-           (others => ' ');
-         Put_Additive         := False;
-         Bar_Length           := 0;
-         Roman_Num_Record     := Null_Roman_Num_Record;
-
-         if INPUT_WORD (Input_Counter) = '-' then
-            Is_Negative := True;
-            Input_Counter := Input_Counter + 1;
+         elsif Input_Counter > INPUT_WORD'First
+         then -- reset all variables not used for loop control
+            DE.TRAN              := NULL_TRANSLATION_RECORD;
+            IR.AGE               := X;
+            IR.FREQ              := X;
+            Arabic_Build_Counter := 1;
+            Is_Negative          := False;
+            Arabic_String        := (others => ' ');
+            Put_Additive         := False;
+            Bar_Length           := 0;
+            Roman_Num_Record     := Null_Roman_Num_Record;
          end if;
 
          for J in Input_Counter .. INPUT_WORD'Last loop
             if Arabic_Build_Counter > 11
             then   -- too big; fast forward to the next number
                for Z in Input_Counter .. INPUT_WORD'Last loop
-                  exit when INPUT_WORD(INPUT_Counter) = '|';
+                  exit when INPUT_WORD (Input_Counter) = '|';
                   Input_Counter := Input_Counter + 1;
                end loop;
                Input_Counter := Input_Counter + 1;
-              exit;  -- back to parse
+               exit;  -- back to parse
             end if;
 
             case INPUT_WORD (Input_Counter)
-            is  -- PARSE procedure send us a string with these sentinels: | (blank/space/delimiter), z (letter), #, or - (potential negative)
+            is  -- PARSE procedure sent a string with these sentinels: | (blank/space/delimiter), z (letter), #, or - (potential negative)
                when '0' .. '9' =>
                   Arabic_String (Arabic_Build_Counter) :=
                     INPUT_WORD (Input_Counter);
                   Arabic_Build_Counter := Arabic_Build_Counter + 1;
                   Input_Counter        := Input_Counter + 1;
                when '_' =>
-                  Input_Counter := Input_Counter + 1;       -- this was a valid 000's delimiter (, or _) so ignore it
+                  Input_Counter :=
+                    Input_Counter +
+                    1;       -- this was a valid 000's delimiter (, or _) so ignore it
                when 'z' =>
-                  Input_Counter := Input_Counter + 1;       -- there was a word or letter here, so ignore it
-               when '|' => Input_Counter := Input_Counter + 1;
+                  Input_Counter :=
+                    Input_Counter +
+                    1;       -- there was a word or letter here, so ignore it
+               when '|' =>
+                  Input_Counter := Input_Counter + 1;
                   exit; -- a word or new number follows.
                when '.' =>
                   if (INPUT_WORD (Input_Counter + 1) in '0' .. '9') then
-                     return;
+                     return; -- ignore decimals
                   else
                      Input_Counter := Input_Counter + 1;
                   end if;
-               when '-' =>  -- "TRICK":  Accept negative numbers, convert to positive, and note that it's a neologism.
-                  if Is_Negative and then WORDS_MODE (DO_TRICKS)
-                  then  -- otherwise ignore negative entries
-                     exit;
+               when '-' =>
+
+                  if not Is_Negative then
+                     Input_Counter := Input_Counter + 1;
+                     Is_Negative   := True;
+                  else
+                     exit; -- treat a scond negative sign as a terminator
                   end if;
+
                when others =>
                   return;  -- we shouldn't see any other character.  if we do, something went wrong, so give up on converting to Roman numerals.
             end case;
@@ -104,99 +128,136 @@ package body Arabic2Roman is
 
             --quickly test and reject zeros
             if Arabic_Num = 0 then
-                  -- New_Line (OUTPUT);
-                  if WORDS_MDEV (DO_PEARSE_CODES) then
-                     Put (OUTPUT, "03 ");
-                  end if;
-                     Format(OUTPUT, BOLD);
-                  Put (OUTPUT, "nihil; nullum");
-                     Format(OUTPUT, Reset);
-                  New_Line (OUTPUT);
+               -- New_Line (OUTPUT);
+               if WORDS_MDEV (DO_PEARSE_CODES) then
+                  Put (OUTPUT, "03 ");
+               end if;
+               Format (OUTPUT, BOLD);
+               Put (OUTPUT, "nihil; nullum");
+               Format (OUTPUT, RESET);
+               New_Line (OUTPUT);
                return;
             end if;
 
             -- build the numerals
             case Arabic_Num is
                when 1 .. 99_999 =>
-                  Roman_Num_Record.Age_F := Generate_Subtractive (Arabic_Num);
+                  Roman_Num_Record.Subtractive :=
+                    Generate_Subtractive (Arabic_Num);
                when 100_000 .. 999_999_999 =>
-                  Roman_Num_Record.Age_F := Generate_Subtractive ((Arabic_Num / 100_000) mod 100_000);
-                  Bar_Length := Length(Roman_Num_Record.Age_F)+2;
-                  Roman_Num_Record.Age_F :=
-                    "|" &
-                    Roman_Num_Record.Age_F &
-                    "|" & Generate_Subtractive (Arabic_Num mod 10_000);
-                    Roman_Num_Record.Bar_Reminder := True;
+                  Roman_Num_Record.Subtractive :=
+                    Generate_Subtractive ((Arabic_Num / 100_000) mod 100_000);
+                  Bar_Length := Length (Roman_Num_Record.Subtractive) + 2;
+                  Roman_Num_Record.Subtractive :=
+                    "|" & Roman_Num_Record.Subtractive & "|" &
+                    Generate_Subtractive (Arabic_Num mod 10_000);
+                  Roman_Num_Record.Bar_Reminder := True;
                when others =>
                   return;
             end case;
 
-            -- Is the number low enough to do an additive form?  Is there a unique additive form?
+            -- Is the number low enough to do an additive form? Is there a
+            -- unique additive form?
             if Arabic_Num <= 100_000 then
-               Roman_Num_Record.Age_X := Generate_Additive (Arabic_Num);
-
-                if Roman_Num_Record.Age_X /= Roman_Num_Record.Age_F then
-               Put_Additive := True;
+               Roman_Num_Record.Additive := Generate_Additive (Arabic_Num);
+               if Roman_Num_Record.Additive /= Roman_Num_Record.Subtractive
+               then
+                  Put_Additive := True;
                end if;
             end if;
 
-            if WORDS_MDEV (OMIT_MEDIEVAL) = True
-                and then
-                (Is_Negative
-                or (Arabic_Num not in 1 .. 500 | 600 | 700 | 800 | 900 | 10_000) )
-            then
+            -- DETERMINE AGE
+            -- At this point we can determine the age information, which will
+            -- define the output from here out
+
+            case Is_Negative is
+               when True =>
+                  IR.AGE         := G;
+                  IR.FREQ        := D;
+                  DE.TRAN.AGE    := G;
+                  DE.TRAN.FREQ   := F;
+                  DE.TRAN.SOURCE := Q;
+                  Put_Additive :=  False; -- since negativum is at least medieval, don't do additive
+               when False =>
+                  if Arabic_Num in 1 .. 500 | 600 | 700 | 800 | 900 | 10_000
+                  then
+                     case Put_Additive is
+                        when True =>
+                           DE.TRAN.AGE    := B;
+                           DE.TRAN.FREQ   := E;
+                           IR.AGE         := B;
+                           DE.TRAN.SOURCE := Q;
+                        when False =>
+                           DE.TRAN.FREQ   := A;
+                     end case; -- additive
+                  else
+                     IR.AGE      := F;
+                     DE.TRAN.AGE := F;
+                  end if;
+            end case;
+
+-- END DETERMINE AGE
+
+            if WORDS_MDEV (OMIT_MEDIEVAL) = True and then DE.TRAN.AGE >= F then
 
                Put (OUTPUT, Arabic_String);
-                   Set_Col (OUTPUT, 15);
-                   Put_Line (OUTPUT, "========   UNKNOWN  ");
-               New_Line(OUTPUT);
+               Set_Col (OUTPUT, 35);
+               Put_Line (OUTPUT, "========   UNKNOWN  ");
+               New_Line (OUTPUT);
 
                if WORDS_MDEV (DO_PEARSE_CODES) then
                   Put (OUTPUT, "06 ");
                end if;
 
-               Format(Output,Inverse);
-               Put (OUTPUT, "Uncommon medieval numeral forms exist, but OMIT_MEDIEVAL ON");
-               FORMAT (OUTPUT, RESET); New_Line(OUTPUT);
+               Format (OUTPUT, INVERSE);
+               Put
+                 (OUTPUT,
+                  "Uncommon medieval numeral forms exist, but OMIT_MEDIEVAL ON");
+               Format (OUTPUT, RESET);
+               New_Line (OUTPUT);
                return;
             end if; -- end medieval/uncommon exceptions
 
             -- BARS AND REMINDER FOR BIG NUMBERS
             if Roman_Num_Record.Bar_Reminder = True then
 
-              if  WORDS_MDEV (DO_PEARSE_CODES) then
+               if WORDS_MDEV (DO_PEARSE_CODES) then
                   if WORDS_MODE (DO_ONLY_MEANINGS) = False
                     and then (not (CONFIGURATION = ONLY_MEANINGS))
                   then
                      Put (OUTPUT, "06 ");
                   else
                      Put
-                         (OUTPUT,  "03 ");  -- Print as the meaning if only showing meanings;
+                       (OUTPUT,
+                        "03 ");  -- Print as the meaning if only showing meanings;
                   end if;                   -- disabling Arabic2Roman is the equivalent here
                end if;
 
-               Format (OUTPUT, Inverse);
-                Put
+               Format (OUTPUT, INVERSE);
+               Put
                  (OUTPUT,
                   "The -s and |s should be solid lines, forming a three-sided 'box'.");
-               Format (OUTPUT, Reset);
-               New_Line(OUTPUT);
+               Format (OUTPUT, RESET);
+               New_Line (OUTPUT);
 
                if Bar_Length > 0 then
-                 if WORDS_MDEV (DO_PEARSE_CODES) then
-                     Put(Output,"01 ");
-                 end if;
+                  if WORDS_MDEV (DO_PEARSE_CODES) then
+                     Put (OUTPUT, "01 ");
+                  end if;
 
-                 for I in 1..Bar_Length loop
-                    Put(OUTPUT,'_');
-                 end loop;
+                  for I in 1 .. Bar_Length loop
+                     Put (OUTPUT, '_');
+                  end loop;
 
-                  New_Line(OUTPUT);
+                  New_Line (OUTPUT);
                end if;
 
             end if;
 
+-- begin inflection (here, meaning) line stuff
             if WORDS_MDEV (DO_PEARSE_CODES) then
+               Pearse_Adjustment :=
+                 3; -- used to shift by three columns Pearse code length+space)
                if WORDS_MODE (DO_ONLY_MEANINGS) = False
                  and then (not (CONFIGURATION = ONLY_MEANINGS))
                then
@@ -208,155 +269,69 @@ package body Arabic2Roman is
                end if;
             end if;
 
-            if (Put_Additive  and then Is_Negative = False and then
-                Arabic_Num in 1 .. 500 | 600 | 700 | 800 | 900 | 10_000)
-            then
-               Put (OUTPUT, To_String (Roman_Num_Record.Age_X));
+            if IR.AGE >= F then
+               Put (OUTPUT, To_String (Roman_Num_Record.Subtractive));
             else
-               Put (OUTPUT, To_String (Roman_Num_Record.Age_F));
+               Put (OUTPUT, To_String (Roman_Num_Record.Additive));
             end if;
 
-            if WORDS_MODE (DO_ONLY_MEANINGS) = False
-               and then (not (CONFIGURATION = ONLY_MEANINGS))
-            then
+            Text_IO.Set_Col (OUTPUT, 22 + Pearse_Adjustment);
 
-               Set_Col (OUTPUT, 41);
-               Put (OUTPUT, "CARD");
+        QUALITY_RECORD_IO.PUT (Inflect_Padding,IR.Qual);
 
-               if WORDS_MODE (SHOW_AGE) then
-                  Set_Col (OUTPUT, 59);
-                  -- since negatives are neologism, ignore the additive form
-                  if Is_Negative then
-                     Put (OUTPUT, "NeoLatin");
+        Put(Output,Inflect_Padding);
 
-                  elsif Arabic_Num in 1 .. 500 | 600 | 700 | 800 | 900 | 10_000 then
-
-                     case Put_Additive is
-                        when True =>  Put
-                                      (OUTPUT,
-                                             "Archaic");  -- additive is different from subtractive; small or simple roman numerals
-                        when False => Put
-                                      (OUTPUT,
-                                             "Always");   -- additive and subtractive the same; small or simple roman numerals
-                      end case;
-
-                  else                                    -- long or complicated roman numerals => medieval
-                     Put (OUTPUT, "Medieval");
-
-                  end if;
-               end if;
-
-               if WORDS_MODE (SHOW_FREQUENCY) = True
-               then
-                  Set_Col (OUTPUT, 69);
-                  if Is_Negative and (Put_Additive = False) then
-                     Put (OUTPUT, "very rare");
-                  elsif Is_Negative = False then
-                     Put (OUTPUT, "mostfreq");
-                  end if;
-               end if;
-
-            end if; -- end of meanings_only stuff
+            LIST_PACKAGE.PUT_INFLECTION_FLAGS
+              (Output => OUTPUT, SR => (STEM => NULL_STEM_TYPE, IR => IR));
 
             Format (OUTPUT, RESET);
             New_Line (OUTPUT);
 
-            if Is_Negative then
-               Format(OUTPUT, FAINT);
-               Put (OUTPUT, "~ negativum");
-               Format(OUTPUT, Reset); New_Line(OUTPUT);
-             end if;
+            -- PUT_EXAMPLE SUBSTITUTE
+            if Is_Negative and WORDS_MODE (DO_EXAMPLES) then
+               Format (OUTPUT, FAINT);
+               Put (OUTPUT, "     ~ negativum");
+               Format (OUTPUT, RESET);
+               New_Line (OUTPUT);
+            end if;
 
-            -- if enclosing dictionary-form line
-            if
-              (WORDS_MDEV (SHOW_DICTIONARY_CODES) or
-                   WORDS_MODE (SHOW_FREQUENCY))
-               and then
-                WORDS_MODE (DO_ONLY_MEANINGS) = False
-                and then
-               CONFIGURATION /= ONLY_MEANINGS
-            then
-
-               if WORDS_MDEV (DO_PEARSE_CODES) then
-                  Put (OUTPUT, "02 ");
-               end if;
-
-               Format(OUTPUT, UNDERLINE);
-
-             if Is_Negative then -- subtractive, negative
-                  if WORDS_MDEV (SHOW_DICTIONARY_CODES) = True then
-                     Put (OUTPUT, "[HXXFQ]");
-                  end if;
-                  if WORDS_MODE (SHOW_FREQUENCY) = True then
-                     Put (OUTPUT, "  very rare");
-                  end if;
-                  -- no additive negatives
-
-               elsif (Put_Additive and then
-                       Arabic_Num in 1 .. 500 | 600 | 700 | 800 | 900 | 10_000 )
-               then
-                  if WORDS_MDEV (SHOW_DICTIONARY_CODES) = True then
-                     Put (OUTPUT, "[AXXAQ]");
-                  end if;
-                  if WORDS_MODE (SHOW_FREQUENCY) = True then
-                     Put (OUTPUT, "  very frequent");
-                  end if;
-
-             elsif (Put_Additive = False and then
-                 Arabic_Num in 1 .. 500 | 600 | 700 | 800 | 900 | 10_000 )
-               then
-
-                  if WORDS_MDEV (SHOW_DICTIONARY_CODES) = True then
-                     Put (OUTPUT, "[XXXAQ]");
-                  end if;
-                  if WORDS_MODE (SHOW_FREQUENCY) = True then
-                     Put (OUTPUT, "  very frequent");
-                  end if;
-
-             elsif Put_Additive then
-                  if WORDS_MDEV (SHOW_DICTIONARY_CODES) = True then
-                     Put (OUTPUT, "[FXXDQ]");
-                  end if;
-                  if WORDS_MODE (SHOW_FREQUENCY) = True then
-                     Put (OUTPUT, "  lesser");
-                  end if;
-             else -- long or complicated number => medieval
-                  if WORDS_MDEV (SHOW_DICTIONARY_CODES) = True then
-                     Put (OUTPUT, "[FXXDQ]");
-                  end if;
-                  if WORDS_MODE (SHOW_FREQUENCY) = True then
-                     Put (OUTPUT, "  lesser");
-                  end if;
-            end  if;
-            Format (Output, Reset); New_Line(OUTPUT);
-            end if; -- end of dictionary-form line
+            LIST_PACKAGE.PUT_DICTIONARY_FORM
+              (OUTPUT => OUTPUT, D_K => RRR, MNPC => NULL_MNPC, DE => DE);
 
             -- meaning line:
             if WORDS_MDEV (DO_PEARSE_CODES) then
-               Put(Output,"03 ");
+               Put (OUTPUT, "03 ");
             end if;
 
-            Format(OUTPUT,BOLD);
+            Format (OUTPUT, BOLD);
+            if Is_Negative then
+               Put ('-');
+            end if;
+
             for C in Arabic_String'Range loop
                exit when Arabic_String (C) = ' ';
                Put (OUTPUT, Arabic_String (C));
             end loop;
 
-            Put (OUTPUT, " as a ROMAN NUMERAL;");
-            Format(OUTPUT, RESET);
+            Put
+              (OUTPUT,
+               " as a ROMAN NUMERAL" &
+               (if Is_Negative then (" [~ negativum]") else "") & ";");
+
+            Format (Output, RESET);
 
             New_Line (OUTPUT); -- end output of first result
+            -- SECOND-RESULT
 
             if Put_Additive
-              and then Arabic_Num in 1 .. 500 | 600 | 700 | 800 | 900 | 10_000
-              and then Is_Negative = False
-              then -- only situation where we could have another result:
-                   -- small number with both additive and subtractive
-                   -- call this classical for lack of a better way to distinguish from additive
-
-               if WORDS_MODE(DO_ANSI_FORMATTING) then  -- skip another before putting second result
-                  New_Line(OUTPUT);
-                  end if;
+               -- the only time we will ever output again is if we put additive
+               -- above
+               then
+               DE.TRAN.SOURCE := X;
+               DE.TRAN.AGE    := X;
+               DE.TRAN.FREQ   := A;
+               IR.FREQ        := X;
+               IR.AGE         := X;
 
                if WORDS_MDEV (DO_PEARSE_CODES) then
                   if WORDS_MODE (DO_ONLY_MEANINGS) = False
@@ -366,73 +341,43 @@ package body Arabic2Roman is
                   else
                      Put
                        (OUTPUT,
-                        "03 ");  -- Print as the meaning if only showing meanings;  disabling Arabic2Roman is the equivalent here
+                        "03 ");  -- Print as the meaning if only showing meanings; disabling Arabic2Roman is the equivalent here
                   end if;
-
                end if;
 
-               Put (OUTPUT, To_String (Roman_Num_Record.Age_F));
+               Put (OUTPUT, To_String (Roman_Num_Record.Subtractive));
+               Text_IO.Set_Col (OUTPUT, 22 + Pearse_Adjustment);
 
-               if WORDS_MODE (DO_ONLY_MEANINGS) = False
-                 and then (not (CONFIGURATION = ONLY_MEANINGS))
-               then
-                  Set_Col (OUTPUT, 41);
-                  Put (OUTPUT, "CARD");
+               Put(Output,Inflect_Padding);
+               LIST_PACKAGE.PUT_INFLECTION_FLAGS
+                 (Output => OUTPUT, SR => (STEM => NULL_STEM_TYPE, IR => IR));
 
-                  if WORDS_MODE (SHOW_AGE) then
-                     Set_Col (OUTPUT, 59);
+               Format (OUTPUT, RESET);
+               New_Line (OUTPUT);
 
-                     Put (OUTPUT, "Classical");
-                  end if;
+               LIST_PACKAGE.PUT_DICTIONARY_FORM
+                 (OUTPUT => OUTPUT, D_K => RRR, MNPC => NULL_MNPC, DE => DE);
 
-                  if WORDS_MODE (SHOW_FREQUENCY) = True then
-                     Set_Col (OUTPUT, 69);
-
-                     Put (OUTPUT, "mostfreq");
-                  end if;
-                  New_Line (OUTPUT);
+               -- meaning line:
+               if WORDS_MDEV (DO_PEARSE_CODES) then
+                  Put (OUTPUT, "03 ");
                end if;
 
-               Format(OUTPUT, UNDERLINE);
-               -- if enclosing dictionary line items
-               if
-                 (WORDS_MDEV (SHOW_DICTIONARY_CODES) or
-                      WORDS_MODE (SHOW_FREQUENCY))
-                 and
-                   (not WORDS_MODE (DO_ONLY_MEANINGS) and then
-                      CONFIGURATION /= ONLY_MEANINGS)
-               then
-
-                  if WORDS_MDEV (DO_PEARSE_CODES) then
-                     Put (OUTPUT, "02 ");
-                  end if;
-
-                  if WORDS_MDEV (SHOW_DICTIONARY_CODES) = True then
-                     Put (OUTPUT, "[CXXAQ]");
-                  end if;
-
-                  if WORDS_MODE (SHOW_FREQUENCY) = True then
-                     Put (OUTPUT, "  very frequent");
-                  end if;
-
-                  Format(Output,Reset); New_Line (OUTPUT);
-
-                if WORDS_MDEV (DO_PEARSE_CODES) then
-                Put(Output,"03 ");
-                  end if;
-
-               Format(OUTPUT, BOLD);
-                for C in Arabic_String'Range loop
+               for C in Arabic_String'Range loop
                   exit when Arabic_String (C) = ' ';
                   Put (OUTPUT, Arabic_String (C));
                end loop;
-               Put_Line (OUTPUT, " as a ROMAN NUMERAL;");
-                 Format(OUTPUT, Reset); New_Line (OUTPUT);
-            end if;  -- if enclosing dictionary line items
 
-          else New_Line(OUTPUT); -- we put the subtractive, then ended; so skip line
-          end if; -- Put_Additive
-         -- end of second output
+               Put (OUTPUT, " as a ROMAN NUMERAL;");
+               Format (OUTPUT, RESET);
+               New_Line (OUTPUT);
+               --end if;  -- if enclosing dictionary line items
+
+            else
+               New_Line
+                 (OUTPUT); -- we put the subtractive, then ended; so skip line
+            end if; -- Put_Additive
+            -- end of second output
 
          end if; -- enclosing statements requiring integer
 
@@ -446,9 +391,9 @@ package body Arabic2Roman is
    is
 
       built_string   : Unbounded_String;
-      Counter        : Integer          := 1;
+      Counter        : Integer         := 1;
       Frame          : Unbounded_String;
-      Arabic_String2 : constant String           := Integer'Image (Arabic_Num);
+      Arabic_String2 : constant String := Integer'Image (Arabic_Num);
    begin
 
       for I in reverse 2 .. (Arabic_String2'Length)
@@ -460,11 +405,14 @@ package body Arabic2Roman is
             when '1' =>
                built_string := Roman_Nums_CLASSICAL (Counter) & built_string;
             when '2' =>
-               built_string := (2 *  Roman_Nums_CLASSICAL (Counter)) & Built_String;
+               built_string :=
+                 (2 * Roman_Nums_CLASSICAL (Counter)) & built_string;
             when '3' =>
-               built_string := (3 *  Roman_Nums_CLASSICAL (Counter)) & Built_String;
+               built_string :=
+                 (3 * Roman_Nums_CLASSICAL (Counter)) & built_string;
             when '4' =>
-               built_string := (4 *  Roman_Nums_CLASSICAL (Counter)) & Built_String;
+               built_string :=
+                 (4 * Roman_Nums_CLASSICAL (Counter)) & built_string;
             when '5' =>
                built_string :=
                  Roman_Nums_CLASSICAL (Counter + 1) & built_string;
@@ -474,19 +422,24 @@ package body Arabic2Roman is
                  Roman_Nums_CLASSICAL (Counter) & built_string;
             when '7' =>
                built_string :=
-                 Roman_Nums_CLASSICAL (Counter + 1) & (2 *  Roman_Nums_CLASSICAL (Counter)) & Built_String;
+                 Roman_Nums_CLASSICAL (Counter + 1) &
+                 (2 * Roman_Nums_CLASSICAL (Counter)) & built_string;
             when '8' =>
                built_string :=
-                 Roman_Nums_CLASSICAL (Counter + 1) & (3 *  Roman_Nums_CLASSICAL (Counter)) & Built_String;
+                 Roman_Nums_CLASSICAL (Counter + 1) &
+                 (3 * Roman_Nums_CLASSICAL (Counter)) & built_string;
             when '9' =>
                built_string :=
-                 Roman_Nums_CLASSICAL (Counter + 1) & (4 *  Roman_Nums_CLASSICAL (Counter)) & Built_String;
+                 Roman_Nums_CLASSICAL (Counter + 1) &
+                 (4 * Roman_Nums_CLASSICAL (Counter)) & built_string;
             when others =>
                null;
          end case;
          Counter :=
-           Counter + 2;           -- Move two positions down the Roman numeral array each time
-         exit when Counter > 11;  -- Can't hit this unless code modified to allow > 999_999_999
+           Counter +
+           2;           -- Move two positions down the Roman numeral array each time
+         exit when Counter >
+           11;  -- Can't hit this unless code modified to allow > 999_999_999
       end loop;
 
       if Arabic_String2'Length >= 8 then
@@ -502,7 +455,8 @@ package body Arabic2Roman is
 
       Built_String : Unbounded_String;
 
-      -- Rules get complex starting at about 4_000, so no fancy stuff here; keep it understandable
+      -- Rules get complex starting at about 4_000, so no fancy stuff here;
+      -- keep it understandable
    begin
 
       case (Arabic_Num / 10_000) mod 10 is
@@ -633,10 +587,10 @@ package body Arabic2Roman is
 
    end Generate_Subtractive;
 
-  function Integer_Test (Arabic_String : in String) return Boolean is
+   function Integer_Test (Arabic_String : in String) return Boolean is
 
-      -- Checks that PARSE and Arabic2Roman have left us with valid input
-      -- and handles erroneous input silently
+      -- Checks that PARSE and Arabic2Roman have left us with valid input and
+      -- handles erroneous input silently
       type Valid_Integer is new Integer range -999_999_999 .. 999_999_999;
       Tester : Valid_Integer;
    begin
