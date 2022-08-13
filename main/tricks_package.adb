@@ -382,7 +382,8 @@ package body TRICKS_PACKAGE is
 
       if S (S'Last) = 'j' or S (S'Last) = 'J' then
          return F; -- terminal j is medieval form
-      elsif ROMAN_NUMBER (S) in 1 .. 500 | 600 | 700 | 800 | 900 | 10_000 then
+    elsif ( ROMAN_NUMBER (S) in 1 .. 500 or ROMAN_NUMBER (S) = 600 or ROMAN_NUMBER (S) = 700 or
+            ROMAN_NUMBER (S) = 800 or ROMAN_NUMBER (S) = 900 or ROMAN_NUMBER (S) = 10_000   ) then
          return
            X; -- valid subtractive form within the range of numbers used at all times; no further tests can disambiguate (see comment above)
       elsif BAD_ROMAN_NUMBER (S) in 1 .. 300

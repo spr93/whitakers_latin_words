@@ -1528,7 +1528,7 @@ package body Parse_Package is
      exception
        when Ada.Wide_Text_IO.Use_Error  =>  raise Text_IO.Use_Error;
        when Ada.Wide_Text_IO.Name_Error =>  raise Text_IO.Name_Error;
-       when others => Handle_Unicode_Exception;
+       when others => Unicode_Features.Handle_Unicode_Exception;
    end Parse_Unicode_File;
 
 end Parse_Package;

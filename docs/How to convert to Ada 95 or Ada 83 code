@@ -1,23 +1,30 @@
 _Instructions for Old Compilers_
 
-Words can be easily modified to compiler in just about any validatable compiler provided that the built-in type Integer and Text_IO.Count use at least 32-bit numbers, the Ada.System package can address at least ~16MB RAM.
+BACKGROUND
 
-For Ada 95, the modifications concern only post-Whitaker features.  For Ada 83, Whitaker's parameter handling code in words.adb must also be removed or replaced with implementation-specific code.
+Gen. Whitaker wanted Words to compile and run anywhere.  He limited his code to standard, non-implementation-dependent Ada.  He mostly stuck to Ada 83, adding only one Ada 95-dependent feature (command-line parameters that relied on Ada 95 libraries).  He even distributed 286 DOS binaries as late as 2006.
 
-For the main code, the changes are:
+Not much has changed.  Today, a 286 version would be complicated only because the number of dictionary entries now exceeds the size of a 16-bit integer.
 
-Ada 95:  
--	Delete no_exit_handler.ad? and code references to it (words.adb and parse_package), including the parameters handling in words.adb
--   Remove everything with Unicode in the name (multiple files), the code that references it (words.adb and parse_package), including the parameters handling in words.adb
--   Remove with's to Ada.Directories and Ada.Environment_Variables, as well as the code that relies on it (in words.adb, sorter.adb, word_package) [Most implementations have their own similar packages, and changing the code should be trivial]
--   If you're on Windows, use the non-Windows version of windows_vt100.adb
+We're proud to continue Whitaker's tradition of portability.
 
-Ada 83:  
--   All of the above
--   Remove Arabic2Roman, the parse_package code that references it and the DO_ARABIC_NUMERALS references in word_parameters
--   Remove Ada.Command_Line and the associated code from word.adb (which is the majority of lines in words.adb)  [Most implementations have their own similar packages, and changing the code should be trivial]
--   The compiler may balk at what it considers reading "out" mode parameters (though what's actually happening is not reading content but setting an iterator variable according to the out parameter's lower array bound).  Just change those parameters from "out" to "in out" mode.
+SUMMARY
 
-There are also a handful of conditionals that will need to be changed to older, more confusing syntax (e.g., ((Y = Z) elsif ( Y = X)))
+Words can be easily modified to compile in just about any validatable compiler provided that the built-in Integer, Direct_IO.Count, and Text_IO.Count types all use at least 32-bit integers.
 
-As for the dictionary tools, you can either remove Ada.Directories and all the associated parameter handling, or just revert to Whitaker's original tools.  The latter is much easier, but be sure you use Whitaker's "wakedict" instead of "makedict."
+INSTRUCTIONS
+
+For Ada 2005 and 2012, remove the two references to Ada.Wide_Characters.Handling.To_Basic from the Unicode_Features package.
+
+For Ada 95, you should also:
+-	Delete no_exit_handler.ad? and code references to it in words.adb and parse_package.
+-   Remove everything with Unicode in the name (unicode_package; references in parse_package and words.adb).
+-   Remove with's to Ada.Directories and Ada.Environment_Variables, as well as the code that relies on it (words.adb, sorter.adb, word_package).   Alternatively,most implementations have their own similar packages, and changing the code should be trivial.  (This applies to both the dictionary tools and the main program.)
+-   Even if you're on Windows, you probably need to use the non-Windows version of the vt100/ANSI formatting package.
+
+For Ada 83, you should also:
+-   Remove Arabic2Roman, the parse_package code that references it, and the DO_ARABIC_NUMERALS references in word_parameters.
+-   Remove Ada.Command_Line and the associated code from word.adb.  Alternatively,most implementations have their own similar packages, and changing the code should be trivial.  (This applies to both the main code and the dictionary tools.)
+-   Revert to Whitaker's original Strings_Package, which you can get from the second commit in this repository.
+-   A handful of conditionals will need to be changed to older, more confusing syntax.  Your compiler will identify them.
+-   Your compiler may complain that some routines "read" "out" mode parameters.  Just change those parameters from "out" to "in out" mode.  (The supposedly offending code reads the lower bound of an "out" array--i.e., it relies on the "out" variable's static declaration, not its mutable contents).

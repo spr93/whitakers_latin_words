@@ -1,6 +1,3 @@
-pragma Ada_2012;
--- USES ADA 2012 CONDITIONAL CASE EXPRESSIONS IN OUTPUT LOOPS
-
 with Text_IO;               use Text_IO;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
@@ -9,7 +6,6 @@ with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 -- and Christomalis, S., "Trends and Traditions in the History of Written Numerals" in The Shape of Script: How and Why Writing Systems Change (2012)
 -- and Hunt, L. N.H., et al., "The Historical Roots of Elementary Mathematics" (1988)
 -- and _especially_ the clear discussions in Menninger, K., "Number Words and Number Symbols: A Cultural History of Numbers" (Eng. tr. 1992).
-
 
 package Arabic2Roman is
 

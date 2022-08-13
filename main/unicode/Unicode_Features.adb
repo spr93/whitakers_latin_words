@@ -9,22 +9,26 @@ with CONFIG;           use CONFIG;
 
 package body Unicode_Features is
 
-   ---BEGIN ADA2022-DEPENDENT CODE---
-
-   -- THIS FUNCTION RELIES ON ADA 202X FEATURES (Unicode decompositions and
-   -- To_Basic for Wide_Characters). FSF GNAT implemented them in or around
-   -- July 2020. Non-GNAT compilers have not implemented these features
-   -- to my knowledge.
-
-   function Unicode_To_Basic_Text (W_Line : in Wide_String) return String is
    -- Converts Unicode accented forms to basic ASCII Useful for input that
    -- includes macrons. E.g., this causes 'ē' to be processed as 'e'
 
-   begin
-      return
-        Ada.Characters.Conversions.To_String
-          (Ada.Wide_Characters.Handling.To_Basic (W_Line));
 
+   -- THIS FUNCTION RELIES ON ADA 2022 FEATURES (Unicode decompositions and
+   -- To_Basic for Wide_Characters). (AI12-0260-1; 2022 ARM (draft) A.3.5 61.1/5)
+   -- FSF GNAT implemented them in or around July 2020. To my knowledge, other compilers
+   -- have not yet implemented these features.
+   function Unicode_To_Basic_Text (W_Line : in Wide_String) return String is
+
+
+   begin
+    return
+
+      Ada.Characters.Conversions.To_String
+   ---BEGIN ADA 2022-DEPENDENT CODE---
+          (Ada.Wide_Characters.Handling.To_Basic (W_Line));
+           -- If your FSF GNAT version is compliant, this To_Basic will be a rename of
+           -- Ada.Wide_Characters.Unicode.To_Basic (as of late 2022)
+   ----END ADA 2022-DEPENDENT CODE---
    exception
       when others =>
          Handle_Unicode_Exception;
@@ -32,7 +36,7 @@ package body Unicode_Features is
 
    end Unicode_To_Basic_Text;
 
-   ----END ADA2022-DEPENDENT CODE---
+
 
    procedure Get_Unicode (LINE : in out String; L : in out Integer) is
 

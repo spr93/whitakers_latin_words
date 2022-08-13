@@ -1,13 +1,10 @@
-pragma Ada_2012;
--- USES ADA 2012 MEMBERSHIP TESTS AND CONDITIONAL EXPRESSIONS
-
 with WORD_PARAMETERS;      use WORD_PARAMETERS;
 with DEVELOPER_PARAMETERS; use DEVELOPER_PARAMETERS;
 with STRINGS_PACKAGE;      use STRINGS_PACKAGE;
 with CONFIG;               use CONFIG;
 
-with INFLECTIONS_PACKAGE;  use INFLECTIONS_PACKAGE;
-with DICTIONARY_PACKAGE;   use DICTIONARY_PACKAGE;
+with INFLECTIONS_PACKAGE; use INFLECTIONS_PACKAGE;
+with DICTIONARY_PACKAGE;  use DICTIONARY_PACKAGE;
 with LIST_PACKAGE;
 
 package body Arabic2Roman is
@@ -33,12 +30,15 @@ package body Arabic2Roman is
       Bar_Length           : Integer          := 0;
       Input_Counter        : Integer          := INPUT_WORD'First;
 
-      Is_Negative : Boolean := False;
+      Is_Negative       : Boolean       := False;
       Pearse_Adjustment : Text_IO.Count := 0;
 
-    -- The following declarations let us re-use the DIRECT_IO routines instantiated in INFLECTIONS
-    --   as well as most of the inflection and dictionary entry-related routines in LIST_PACKAGE.
-      Inflect_Padding : String(1..QUALITY_RECORD_IO.DEFAULT_WIDTH) := (others => ' ');
+      -- The following declarations let us re-use the DIRECT_IO routines
+      -- instantiated in INFLECTIONS as well as most of the inflection and
+      -- dictionary entry-related routines in LIST_PACKAGE.
+
+      Inflect_Padding : String (1 .. QUALITY_RECORD_IO.DEFAULT_WIDTH) :=
+        (others => ' ');
 
       DE : DICTIONARY_ENTRY :=
         (STEMS => NULL_STEMS_TYPE,
@@ -46,11 +46,11 @@ package body Arabic2Roman is
          TRAN  => NULL_TRANSLATION_RECORD, MEAN => NULL_MEANING_TYPE);
 
       IR : INFLECTION_RECORD :=
-        (QUAL => Null_Roman_Numeral_Qual_Record,
-         KEY  => 0, ENDING => NULL_ENDING_RECORD, AGE => X, FREQ => X);
-    -- end re-use declarations
+        (QUAL   => Null_Roman_Numeral_Qual_Record, KEY => 0,
+         ENDING => NULL_ENDING_RECORD, AGE => X, FREQ => X);
+      -- end re-use declarations
 
-      begin
+   begin
 
       for I in INPUT_WORD'range
       loop   --outermost loop ensures we catch everything where there are two numbers in row
@@ -177,9 +177,17 @@ package body Arabic2Roman is
                   DE.TRAN.AGE    := G;
                   DE.TRAN.FREQ   := F;
                   DE.TRAN.SOURCE := Q;
-                  Put_Additive :=  False; -- since negativum is at least medieval, don't do additive
+                  Put_Additive   :=
+                    False; -- since negativum is at least medieval, don't do additive
                when False =>
-                  if Arabic_Num in 1 .. 500 | 600 | 700 | 800 | 900 | 10_000
+
+                  -- Ada 2012 syntax version:
+               --   if Arabic_Num in 1 .. 500 | 600 | 700 | 800 | 900 | 10_000
+                  -- Ada 2005 syntax:
+                  if
+                    (Arabic_Num in 1 .. 500 or Arabic_Num = 600 or
+                     Arabic_Num = 700 or Arabic_Num = 800 or
+                     Arabic_Num = 900 or Arabic_Num = 10_000)
                   then
                      case Put_Additive is
                         when True =>
@@ -188,7 +196,7 @@ package body Arabic2Roman is
                            IR.AGE         := B;
                            DE.TRAN.SOURCE := Q;
                         when False =>
-                           DE.TRAN.FREQ   := A;
+                           DE.TRAN.FREQ := A;
                      end case; -- additive
                   else
                      IR.AGE      := F;
@@ -277,9 +285,9 @@ package body Arabic2Roman is
 
             Text_IO.Set_Col (OUTPUT, 22 + Pearse_Adjustment);
 
-        QUALITY_RECORD_IO.PUT (Inflect_Padding,IR.Qual);
+            QUALITY_RECORD_IO.PUT (Inflect_Padding, IR.QUAL);
 
-        Put(Output,Inflect_Padding);
+            Put (OUTPUT, Inflect_Padding);
 
             LIST_PACKAGE.PUT_INFLECTION_FLAGS
               (Output => OUTPUT, SR => (STEM => NULL_STEM_TYPE, IR => IR));
@@ -318,7 +326,7 @@ package body Arabic2Roman is
                " as a ROMAN NUMERAL" &
                (if Is_Negative then (" [~ negativum]") else "") & ";");
 
-            Format (Output, RESET);
+            Format (OUTPUT, RESET);
 
             New_Line (OUTPUT); -- end output of first result
             -- SECOND-RESULT
@@ -348,7 +356,7 @@ package body Arabic2Roman is
                Put (OUTPUT, To_String (Roman_Num_Record.Subtractive));
                Text_IO.Set_Col (OUTPUT, 22 + Pearse_Adjustment);
 
-               Put(Output,Inflect_Padding);
+               Put (OUTPUT, Inflect_Padding);
                LIST_PACKAGE.PUT_INFLECTION_FLAGS
                  (Output => OUTPUT, SR => (STEM => NULL_STEM_TYPE, IR => IR));
 
