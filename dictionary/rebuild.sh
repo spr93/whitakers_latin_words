@@ -1,6 +1,6 @@
 #!/bin/sh
 ./sorter D
- # manually delete WORK. because CREATE_FILE on WORK may cause USE_ERRROR on some older implementations.
+@rem we manually delete WORK. because CREATE_FILE on WORK may cause USE_ERRROR on some older implementations.
 rm WORK.
 ./makedict G
 ./sorter S
@@ -11,4 +11,3 @@ rm WORK.
 ./sorter E
 rm WORK.
 ./makeefil
-
