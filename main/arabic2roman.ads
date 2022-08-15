@@ -1,5 +1,6 @@
 with Text_IO;               use Text_IO;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
+with Strings_Package;       use Strings_Package;
 
 -- Forms and age codes guided by sources incl.
 -- Wolfram Mathworld at http://mathworld.wolfram.com/RomanNumerals.html
@@ -28,9 +29,10 @@ private
 
    Arabic_Num : Natural range 0..999_999_999;
 
-   function Generate_Additive (Arabic_Num : in Integer) return Unbounded_String;
-   function Generate_Subtractive (Arabic_Num : in Integer) return Unbounded_String;
-   function Integer_Test (Arabic_String: in String) return Boolean;
+   function  Generate_Additive (Arabic_Num : in Integer) return Unbounded_String;
+   function  Generate_Subtractive (Arabic_Num : in Integer) return Unbounded_String;
+   procedure Pearse_Code_Adjust_For_Meanings (Output : in Text_IO.File_Type; Alternative : in Pearse_Code_Type);
+   function  Integer_Test (Arabic_String: in String) return Boolean;
 
    pragma Inline_Always(Integer_Test);
 

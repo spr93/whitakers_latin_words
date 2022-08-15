@@ -1,6 +1,5 @@
 with WORD_PARAMETERS;      use WORD_PARAMETERS;
 with DEVELOPER_PARAMETERS; use DEVELOPER_PARAMETERS;
-with STRINGS_PACKAGE;      use STRINGS_PACKAGE;
 with CONFIG;               use CONFIG;
 
 with INFLECTIONS_PACKAGE; use INFLECTIONS_PACKAGE;
@@ -58,7 +57,7 @@ package body Arabic2Roman is
          if Input_Counter > INPUT_WORD'Last then
             return;
          elsif Input_Counter > INPUT_WORD'First
-         then -- reset all variables not used for loop control
+         then                    -- reset all variables not used for loop control
             DE.TRAN              := NULL_TRANSLATION_RECORD;
             IR.AGE               := X;
             IR.FREQ              := X;
@@ -128,10 +127,7 @@ package body Arabic2Roman is
 
             --quickly test and reject zeros
             if Arabic_Num = 0 then
-               -- New_Line (OUTPUT);
-               if WORDS_MDEV (DO_PEARSE_CODES) then
-                  Put (OUTPUT, "03 ");
-               end if;
+               Put_Pearse_Code(Output,3);
                Format (OUTPUT, BOLD);
                Put (OUTPUT, "nihil; nullum");
                Format (OUTPUT, RESET);
@@ -169,7 +165,6 @@ package body Arabic2Roman is
             -- DETERMINE AGE
             -- At this point we can determine the age information, which will
             -- define the output from here out
-
             case Is_Negative is
                when True =>
                   IR.AGE         := G;
@@ -182,7 +177,7 @@ package body Arabic2Roman is
                when False =>
 
                   -- Ada 2012 syntax version:
-               --   if Arabic_Num in 1 .. 500 | 600 | 700 | 800 | 900 | 10_000
+                  --   if Arabic_Num in 1 .. 500 | 600 | 700 | 800 | 900 | 10_000
                   -- Ada 2005 syntax:
                   if
                     (Arabic_Num in 1 .. 500 or Arabic_Num = 600 or
@@ -204,7 +199,7 @@ package body Arabic2Roman is
                   end if;
             end case;
 
--- END DETERMINE AGE
+         -- END DETERMINE AGE
 
             if WORDS_MDEV (OMIT_MEDIEVAL) = True and then DE.TRAN.AGE >= F then
 
@@ -212,11 +207,7 @@ package body Arabic2Roman is
                Set_Col (OUTPUT, 35);
                Put_Line (OUTPUT, "========   UNKNOWN  ");
                New_Line (OUTPUT);
-
-               if WORDS_MDEV (DO_PEARSE_CODES) then
-                  Put (OUTPUT, "06 ");
-               end if;
-
+               Put_Pearse_Code(OUTPUT,6);
                Format (OUTPUT, INVERSE);
                Put
                  (OUTPUT,
@@ -229,29 +220,17 @@ package body Arabic2Roman is
             -- BARS AND REMINDER FOR BIG NUMBERS
             if Roman_Num_Record.Bar_Reminder = True then
 
-               if WORDS_MDEV (DO_PEARSE_CODES) then
-                  if WORDS_MODE (DO_ONLY_MEANINGS) = False
-                    and then (not (CONFIGURATION = ONLY_MEANINGS))
-                  then
-                     Put (OUTPUT, "06 ");
-                  else
-                     Put
-                       (OUTPUT,
-                        "03 ");  -- Print as the meaning if only showing meanings;
-                  end if;                   -- disabling Arabic2Roman is the equivalent here
-               end if;
+               Pearse_Code_Adjust_For_Meanings (Output, Alternative => 6);
 
                Format (OUTPUT, INVERSE);
                Put
                  (OUTPUT,
-                  "The -s and |s should be solid lines, forming a three-sided 'box'.");
+                  "The _s and |s below should be solid lines, forming a three-sided 'box'");
                Format (OUTPUT, RESET);
                New_Line (OUTPUT);
 
                if Bar_Length > 0 then
-                  if WORDS_MDEV (DO_PEARSE_CODES) then
-                     Put (OUTPUT, "01 ");
-                  end if;
+               Put_Pearse_Code(OUTPUT,1);
 
                   for I in 1 .. Bar_Length loop
                      Put (OUTPUT, '_');
@@ -264,17 +243,8 @@ package body Arabic2Roman is
 
 -- begin inflection (here, meaning) line stuff
             if WORDS_MDEV (DO_PEARSE_CODES) then
-               Pearse_Adjustment :=
-                 3; -- used to shift by three columns Pearse code length+space)
-               if WORDS_MODE (DO_ONLY_MEANINGS) = False
-                 and then (not (CONFIGURATION = ONLY_MEANINGS))
-               then
-                  Put (OUTPUT, "01 ");
-               else
-                  Put
-                    (OUTPUT,
-                     "03 ");  -- Print as the meaning if only showing meanings; disabling Arabic2Roman is the equivalent here
-               end if;
+               Pearse_Adjustment := 3; -- used to shift by three columns Pearse code length+space)
+               Pearse_Code_Adjust_For_Meanings(Output, Alternative => 1);
             end if;
 
             if IR.AGE >= F then
@@ -295,7 +265,6 @@ package body Arabic2Roman is
             Format (OUTPUT, RESET);
             New_Line (OUTPUT);
 
-            -- PUT_EXAMPLE SUBSTITUTE
             if Is_Negative and WORDS_MODE (DO_EXAMPLES) then
                Format (OUTPUT, FAINT);
                Put (OUTPUT, "     ~ negativum");
@@ -307,9 +276,7 @@ package body Arabic2Roman is
               (OUTPUT => OUTPUT, D_K => RRR, MNPC => NULL_MNPC, DE => DE);
 
             -- meaning line:
-            if WORDS_MDEV (DO_PEARSE_CODES) then
-               Put (OUTPUT, "03 ");
-            end if;
+            Put_Pearse_Code(OUTPUT,3);
 
             Format (OUTPUT, BOLD);
             if Is_Negative then
@@ -321,15 +288,16 @@ package body Arabic2Roman is
                Put (OUTPUT, Arabic_String (C));
             end loop;
 
-            Put
-              (OUTPUT,
-               " as a ROMAN NUMERAL" &
-               (if Is_Negative then (" [~ negativum]") else "") & ";");
+           Put (OUTPUT, " as a ROMAN NUMERAL;");
 
-            Format (OUTPUT, RESET);
+           if Is_Negative then
+             Put(" [~ negativum];");
+           end if;
 
-            New_Line (OUTPUT); -- end output of first result
-            -- SECOND-RESULT
+        -- end output of first result
+
+
+ -- SECOND RESULT
 
             if Put_Additive
                -- the only time we will ever output again is if we put additive
@@ -341,17 +309,7 @@ package body Arabic2Roman is
                IR.FREQ        := X;
                IR.AGE         := X;
 
-               if WORDS_MDEV (DO_PEARSE_CODES) then
-                  if WORDS_MODE (DO_ONLY_MEANINGS) = False
-                    and then (not (CONFIGURATION = ONLY_MEANINGS))
-                  then
-                     Put (OUTPUT, "01 ");
-                  else
-                     Put
-                       (OUTPUT,
-                        "03 ");  -- Print as the meaning if only showing meanings; disabling Arabic2Roman is the equivalent here
-                  end if;
-               end if;
+               Pearse_Code_Adjust_For_Meanings(Output, Alternative => 1);
 
                Put (OUTPUT, To_String (Roman_Num_Record.Subtractive));
                Text_IO.Set_Col (OUTPUT, 22 + Pearse_Adjustment);
@@ -367,23 +325,19 @@ package body Arabic2Roman is
                  (OUTPUT => OUTPUT, D_K => RRR, MNPC => NULL_MNPC, DE => DE);
 
                -- meaning line:
-               if WORDS_MDEV (DO_PEARSE_CODES) then
-                  Put (OUTPUT, "03 ");
-               end if;
+               Put_Pearse_Code(OUTPUT,3);
 
                for C in Arabic_String'Range loop
                   exit when Arabic_String (C) = ' ';
                   Put (OUTPUT, Arabic_String (C));
                end loop;
 
-               Put (OUTPUT, " as a ROMAN NUMERAL;");
-               Format (OUTPUT, RESET);
+               Put_Line (OUTPUT, " as a ROMAN NUMERAL;");
                New_Line (OUTPUT);
-               --end if;  -- if enclosing dictionary line items
 
-            else
-               New_Line
-                 (OUTPUT); -- we put the subtractive, then ended; so skip line
+             else
+             New_Line
+               (OUTPUT); -- we put the subtractive, then ended; so skip line
             end if; -- Put_Additive
             -- end of second output
 
@@ -407,9 +361,6 @@ package body Arabic2Roman is
       for I in reverse 2 .. (Arabic_String2'Length)
       loop  --  build from lowest Arabic digit, moving left (position 1 is blank to indicate positive)
          case Arabic_String2 (I) is
-
-            when '0' =>
-               null;
             when '1' =>
                built_string := Roman_Nums_CLASSICAL (Counter) & built_string;
             when '2' =>
@@ -447,7 +398,7 @@ package body Arabic2Roman is
            Counter +
            2;           -- Move two positions down the Roman numeral array each time
          exit when Counter >
-           11;  -- Can't hit this unless code modified to allow > 999_999_999
+           11;          -- Can't hit this unless code modified to allow > 999_999_999
       end loop;
 
       if Arabic_String2'Length >= 8 then
@@ -468,126 +419,116 @@ package body Arabic2Roman is
    begin
 
       case (Arabic_Num / 10_000) mod 10 is
-         when 0 =>
-            null;
          when 1 =>
-            Built_String := Built_String & To_Unbounded_String ("((I))");
+            Append(Built_String, "((I))");
          when 2 =>
-            Built_String := Built_String & To_Unbounded_String ("((II))");
+            Append(Built_String, "((II))");
          when 3 =>
-            Built_String := Built_String & To_Unbounded_String ("((III))");
+            Append(Built_String, "((III))");
          when 4 =>
-            Built_String := Built_String & To_Unbounded_String ("((IV))");
+            Append(Built_String, "((IV))");
          when 5 =>
-            Built_String := Built_String & To_Unbounded_String ("((V))");
+            Append(Built_String, "((V))");
          when 6 =>
-            Built_String := Built_String & To_Unbounded_String ("((VI))");
+            Append(Built_String, "((VI))");
          when 7 =>
-            Built_String := Built_String & To_Unbounded_String ("((VII))");
+            Append(Built_String, "((VII))");
          when 8 =>
-            Built_String := Built_String & To_Unbounded_String ("((VIII))");
+            Append(Built_String, "((VIII))");
          when 9 =>
-            Built_String := Built_String & To_Unbounded_String ("((IX))");
+            Append(Built_String, "((IX))");
          when others =>
             null;
       end case;
 
       case (Arabic_Num / 1_000) mod 10 is
-         when 0 =>
-            null;
          when 1 =>
-            Built_String := Built_String & To_Unbounded_String ("M");
+            Append(Built_String, "M");
          when 2 =>
-            Built_String := Built_String & To_Unbounded_String ("MM");
+            Append(Built_String, "MM");
          when 3 =>
-            Built_String := Built_String & To_Unbounded_String ("MMM");
+            Append(Built_String, "MMM");
          when 4 =>
-            Built_String := Built_String & To_Unbounded_String ("M(V)");
+            Append(Built_String, "M(V)");
          when 5 =>
-            Built_String := Built_String & To_Unbounded_String ("(V)");
+            Append(Built_String, "(V)");
          when 6 =>
-            Built_String := Built_String & To_Unbounded_String ("(VI)");
+            Append(Built_String, "(VI)");
          when 7 =>
-            Built_String := Built_String & To_Unbounded_String ("(VII)");
+            Append(Built_String, "(VII)");
          when 8 =>
-            Built_String := Built_String & To_Unbounded_String ("(VIII)");
+            Append(Built_String, "(VIII)");
          when 9 =>
-            Built_String := Built_String & To_Unbounded_String ("(IX)");
+            Append(Built_String, "(IX)");
          when others =>
             null;
       end case;
 
       case (Arabic_Num / 100) mod 10 is
-         when 0 =>
-            null;
          when 1 =>
-            Built_String := Built_String & To_Unbounded_String ("C");
+            Append(Built_String, "C");
          when 2 =>
-            Built_String := Built_String & To_Unbounded_String ("CC");
+            Append(Built_String, "CC");
          when 3 =>
-            Built_String := Built_String & To_Unbounded_String ("CCC");
+            Append(Built_String, "CCC");
          when 4 =>
-            Built_String := Built_String & To_Unbounded_String ("CD");
+            Append(Built_String, "CD");
          when 5 =>
-            Built_String := Built_String & To_Unbounded_String ("D");
+            Append(Built_String, "D");
          when 6 =>
-            Built_String := Built_String & To_Unbounded_String ("DC");
+            Append(Built_String, "DC");
          when 7 =>
-            Built_String := Built_String & To_Unbounded_String ("DCC");
+            Append(Built_String, "DCC");
          when 8 =>
-            Built_String := Built_String & To_Unbounded_String ("DCCC");
+            Append(Built_String, "DCCC");
          when 9 =>
-            Built_String := Built_String & To_Unbounded_String ("CM");
+            Append(Built_String, "CM");
          when others =>
             null;
       end case;
 
       case (Arabic_Num / 10) mod 10 is
-         when 0 =>
-            null;
          when 1 =>
-            Built_String := Built_String & To_Unbounded_String ("X");
+            Append(Built_String, "X");
          when 2 =>
-            Built_String := Built_String & To_Unbounded_String ("XX");
+            Append(Built_String, "XX");
          when 3 =>
-            Built_String := Built_String & To_Unbounded_String ("XXX");
+            Append(Built_String, "XXX");
          when 4 =>
-            Built_String := Built_String & To_Unbounded_String ("XL");
+            Append(Built_String, "XL");
          when 5 =>
-            Built_String := Built_String & To_Unbounded_String ("L");
+            Append(Built_String, "L");
          when 6 =>
-            Built_String := Built_String & To_Unbounded_String ("LX");
+            Append(Built_String, "LX");
          when 7 =>
-            Built_String := Built_String & To_Unbounded_String ("LXX");
+            Append(Built_String, "LXX");
          when 8 =>
-            Built_String := Built_String & To_Unbounded_String ("LXXX");
+            Append(Built_String, "LXXX");
          when 9 =>
-            Built_String := Built_String & To_Unbounded_String ("XC");
+            Append(Built_String, "XC");
          when others =>
             null;
       end case;
 
       case Arabic_Num mod 10 is
-         when 0 =>
-            null;
          when 1 =>
-            Built_String := Built_String & To_Unbounded_String ("I");
+            Append(Built_String, "I");
          when 2 =>
-            Built_String := Built_String & To_Unbounded_String ("II");
+            Append(Built_String, "II");
          when 3 =>
-            Built_String := Built_String & To_Unbounded_String ("III");
+            Append(Built_String, "III");
          when 4 =>
-            Built_String := Built_String & To_Unbounded_String ("IV");
+            Append(Built_String, "IV");
          when 5 =>
-            Built_String := Built_String & To_Unbounded_String ("V");
+            Append(Built_String, "V");
          when 6 =>
-            Built_String := Built_String & To_Unbounded_String ("VI");
+            Append(Built_String, "VI");
          when 7 =>
-            Built_String := Built_String & To_Unbounded_String ("VII");
+            Append(Built_String, "VII");
          when 8 =>
-            Built_String := Built_String & To_Unbounded_String ("VIII");
+            Append(Built_String, "VIII");
          when 9 =>
-            Built_String := Built_String & To_Unbounded_String ("IX");
+            Append(Built_String, "IX");
          when others =>
             null;
       end case;
@@ -595,10 +536,20 @@ package body Arabic2Roman is
 
    end Generate_Subtractive;
 
-   function Integer_Test (Arabic_String : in String) return Boolean is
+   procedure Pearse_Code_Adjust_For_Meanings (Output : in Text_IO.File_Type; Alternative : in Pearse_Code_Type) is
+   begin
+     if WORDS_MDEV (DO_PEARSE_CODES) then
+       if WORDS_MODE (DO_ONLY_MEANINGS) = False
+         and then (not (CONFIGURATION = ONLY_MEANINGS))
+       then
+         Put(OUTPUT,Pearse_Code_Array(Alternative));
+       else
+         Put(OUTPUT,Pearse_Code_Array(3)); -- Print as the meaning if only showing meanings;
+       end if;                             -- disabling Arabic2Roman is the equivalent here
+     end if;
+   end Pearse_Code_Adjust_For_Meanings;
 
-      -- Checks that PARSE and Arabic2Roman have left us with valid input and
-      -- handles erroneous input silently
+   function Integer_Test (Arabic_String : in String) return Boolean is
       type Valid_Integer is new Integer range -999_999_999 .. 999_999_999;
       Tester : Valid_Integer;
    begin

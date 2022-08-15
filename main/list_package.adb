@@ -78,7 +78,7 @@ package body LIST_PACKAGE is
       if WORDS_MODE (DO_DICTIONARY_FORMS) then
 
          if WORDS_MDEV (DO_PEARSE_CODES) then
-            Text_IO.Put (OUTPUT, "02 ");
+            Put(OUTPUT,Pearse_Code_Array(2));
             DHIT := True;
          end if;
 
@@ -191,8 +191,7 @@ package body LIST_PACKAGE is
       --          DE   : DICTIONARY_ENTRY;
       --        end record;
       --  containing the same data plus the DICTFILE data DICTIONARY_ENTRY but
-      --  breaking it into two arrays allows different manipulation These are
-      --  only within this routine, used to clean up the output
+      --  breaking it into two arrays allows different manipulation.
 
       STEM_INFLECTION_ARRAY_SIZE       : constant := 12;
       STEM_INFLECTION_ARRAY_ARRAY_SIZE : constant := 40;
@@ -271,11 +270,11 @@ package body LIST_PACKAGE is
          if WORDS_MDEV (DO_PEARSE_CODES)
          then  -- Same issue as above re ADDONS .. YYY re inflection misuse
             if DM.D_K = ADDONS then
-               Text_IO.Put (OUTPUT, "05 ");
+               Put(OUTPUT,Pearse_Code_Array(5));
             elsif DM.D_K in XXX .. YYY then
-               Text_IO.Put (OUTPUT, "06 ");
+               Put(OUTPUT,Pearse_Code_Array(6));
             else
-               Text_IO.Put (OUTPUT, "01 ");
+               Put(OUTPUT,Pearse_Code_Array(1));
             end if;
          end if;
 
@@ -385,8 +384,7 @@ package body LIST_PACKAGE is
         (SR : in STEM_INFLECTION_RECORD; DM : in DICTIONARY_MNPC_RECORD)
 
       is
-      --  Handles PEARSE_CODES and DICTIONARY_FORM (which has FLAGS) and D_K
-      --  The Pearse 02 is handled in PUT_DICTIONARY_FORM
+      --  Pearse 02 is handled in PUT_DICTIONARY_FORM
       begin
          if (SR.IR.QUAL.POFS not in XONS) and (DM.D_K in GENERAL .. UNIQUE)
          then
@@ -399,24 +397,20 @@ package body LIST_PACKAGE is
                DE     =>
                  (STEMS => NULL_STEMS_TYPE,
                   PART  =>
-                    (POFS => NUM,         -- not default
+                    (POFS => NUM,           -- not default
                      NUM  => ((0, 0), X, 0)),
                   TRAN =>
                     (AGE  => SR.IR.AGE,     -- not default
                      AREA => X, GEO => X,
                      FREQ =>
                        FREQUENCY_TYPE'Succ
-                         (SR.IR
-                            .FREQ),   -- not default; adjust by one because the the age codes
-            -- have different (and more) meanings when used in dictionary
-            -- entries
-            -- than they do in inflection entries
+                         (SR.IR.FREQ),  -- not default; adjust by one because the the age codes
+                                        -- have different (and more) meanings when used in dictionary
+                                        -- entries than they do in inflection entries
+                          SOURCE => Q),                  -- not default
+                          MEAN => NULL_MEANING_TYPE)     -- (everything else default)
 
-                     SOURCE => Q),         -- not default
-                  MEAN =>
-                    NULL_MEANING_TYPE)     -- (everything else default)
-
-);
+              );
          end if;
 
       end PUT_FORM;
@@ -484,9 +478,7 @@ package body LIST_PACKAGE is
          if DM.D_K not in ADDONS .. PPP
          then -- i.e., we've got null (X), or GENERAL, SPECIAL, LOCAL UNIQUE
 
-            if WORDS_MDEV (DO_PEARSE_CODES) then
-               Text_IO.Put (OUTPUT, "03 ");
-            end if;
+            Put_Pearse_Code(OUTPUT,3);
 
             Format (OUTPUT, BOLD);
             if DM.DE.PART.POFS = NUM and then DM.DE.PART.NUM.VALUE > 0 then
@@ -511,9 +503,7 @@ package body LIST_PACKAGE is
                if RRR_MEANING (RRR_MEANING_COUNTER + 1) /= NULL_MEANING_TYPE
                then
 
-                  if WORDS_MDEV (DO_PEARSE_CODES) then
-                     Text_IO.Put (OUTPUT, "03 ");
-                  end if;
+                  Put_Pearse_Code(OUTPUT,3);
 
                   Format (OUTPUT, BOLD);
 
@@ -533,9 +523,7 @@ package body LIST_PACKAGE is
                if NNN_MEANING (NNN_MEANING_COUNTER + 1) /= NULL_MEANING_TYPE
                then
                   --PUT_DICTIONARY_FLAGS;
-                  if WORDS_MDEV (DO_PEARSE_CODES) then
-                     Text_IO.Put (OUTPUT, "03 ");
-                  end if;
+                  Put_Pearse_Code(OUTPUT,3);
 
                   Format (OUTPUT, BOLD);
 
@@ -559,17 +547,11 @@ package body LIST_PACKAGE is
 
                if XXX_MEANING (XXX_MEANING_COUNTER + 1) /= NULL_MEANING_TYPE
                then
-
-                  if WORDS_MDEV (DO_PEARSE_CODES) then
-                     Text_IO.Put
-                       (OUTPUT,
-                        "06 ");  -- from here onward it's 06's => inverse
-                  end if;                          -- so we must issue vt100 RESET before the new line
-                  Format
-                    (OUTPUT,
-                     INVERSE);          -- otherwise the Windows and OS/2 terminals print blank spaces
-                  -- to then end of the line (until LF on terminals that use
-                  -- CRLF)
+                  Put_Pearse_Code(OUTPUT,6);  -- from here onward it's 06's => inverse
+                                              -- so we must issue vt100 RESET before the new line
+                  Format                      -- otherwise some terminals print empty inverse spaces
+                    (OUTPUT,                  -- (specifically, terminals that use CR/CRLF do so until they hit LF;
+                     INVERSE);                -- affects at least Windows, OS/2, Classic macOS, DOS).
                   PUT_MEANING
                     (OUTPUT,
                      XXX_MEANING (XXX_MEANING_COUNTER + 1));  --  TRICKS
@@ -589,9 +571,7 @@ package body LIST_PACKAGE is
 
                if YYY_MEANING (YYY_MEANING_COUNTER + 1) /= NULL_MEANING_TYPE
                then
-                  if WORDS_MDEV (DO_PEARSE_CODES) then
-                     Text_IO.Put (OUTPUT, "06 ");
-                  end if;
+                  Put_Pearse_Code(OUTPUT,6);
                   Format (OUTPUT, INVERSE);
                   PUT_MEANING
                     (OUTPUT,
@@ -605,10 +585,7 @@ package body LIST_PACKAGE is
             elsif DM.D_K = PPP then
                if PPP_MEANING (PPP_MEANING_COUNTER + 1) /= NULL_MEANING_TYPE
                then
-                  if WORDS_MDEV (DO_PEARSE_CODES) then
-                     Text_IO.Put (OUTPUT, "06 ");
-                  end if;
-
+                  Put_Pearse_Code(OUTPUT,6);
                   Format (OUTPUT, INVERSE);
                   PUT_MEANING
                     (OUTPUT,
@@ -620,15 +597,11 @@ package body LIST_PACKAGE is
                end if;
 
             elsif DM.D_K = ADDONS then
-               if WORDS_MDEV (DO_PEARSE_CODES) then
-                  Text_IO.Put (OUTPUT, "06 ");
-               end if;
-
+               Put_Pearse_Code(OUTPUT,6);
                Format (OUTPUT, INVERSE);
                PUT_MEANING (OUTPUT, MEANS (Integer (DM.MNPC)));
                Format (OUTPUT, RESET);
                Text_IO.New_Line (OUTPUT);
-
             end if;
 
          end if;
@@ -700,7 +673,7 @@ package body LIST_PACKAGE is
                while J >= PA'First loop  --  Sweep up associated fixes
                   if PA (J).IR.QUAL.POFS not in XONS then
                      J1 :=
-                       J;                      --  J1 is first (reverse) that is not XONS
+                       J;                --  J1 is first (reverse) that is not XONS
                      exit;
                   end if;
                   J := J - 1;
@@ -1077,7 +1050,7 @@ package body LIST_PACKAGE is
               (HEAD (RAW_WORD, MAX_STEM_SIZE),
                ((N, ((0, 0), X, X, X)), 0, NULL_ENDING_RECORD, X, X), NNN,
                NULL_MNPC);
-            PA_LAST      := 1;    --  So LIST_NEIGHBORHOOD will not be called
+            PA_LAST      := 1;          --  So LIST_NEIGHBORHOOD will not be called
             SRAA         := NULL_SRAA;
             DMA          := NULL_DMA;
             SRAA (1) (1) := (PA (1).STEM, PA (1).IR);
@@ -1109,9 +1082,7 @@ package body LIST_PACKAGE is
 
 -- OUTPUT ROUTINES FOR UNKNOWNS
          -- Basic ouptut
-         if WORDS_MDEV (DO_PEARSE_CODES) then
-            Text_IO.Put (OUTPUT, "04 ");
-         end if;
+         Put_Pearse_Code(OUTPUT,4);
          Text_IO.Put (OUTPUT, RAW_WORD);
          Text_IO.Set_Col (OUTPUT, 30);
          Text_IO.Put_Line (OUTPUT, "    ========   UNKNOWN    ");
@@ -1124,9 +1095,7 @@ package body LIST_PACKAGE is
             if WORDS_MDEV (INCLUDE_UNKNOWN_CONTEXT) then
                Text_IO.Put_Line (UNKNOWNS, INPUT_LINE);
             end if;
-            if WORDS_MDEV (DO_PEARSE_CODES) then
-               Text_IO.Put (UNKNOWNS, "04 ");
-            end if;
+            Put_Pearse_Code(UNKNOWNS,4);
             Text_IO.Put (UNKNOWNS, RAW_WORD);
             Text_IO.Set_Col (UNKNOWNS, 30);
             Text_IO.Put_Line (UNKNOWNS, "    ========   UNKNOWN    ");
