@@ -12,13 +12,12 @@ package body Unicode_Features is
    -- Converts Unicode accented forms to basic ASCII Useful for input that
    -- includes macrons. E.g., this causes 'ē' to be processed as 'e'
 
-
    -- THIS FUNCTION RELIES ON ADA 2022 FEATURES (Unicode decompositions and
-   -- To_Basic for Wide_Characters). (AI12-0260-1; 2022 ARM (draft) A.3.5 61.1/5)
+   -- To_Basic for Wide_Characters). (AI12-0260-1; Ada 2022 LRM (draft) A.3.5 61.1/5)
    -- FSF GNAT implemented them in or around July 2020. To my knowledge, other compilers
    -- have not yet implemented these features.
-   function Unicode_To_Basic_Text (W_Line : in Wide_String) return String is
 
+  function Unicode_To_Basic_Text (W_Line : in Wide_String) return String is
 
    begin
     return
@@ -34,14 +33,14 @@ package body Unicode_Features is
          Handle_Unicode_Exception;
          return "";
 
-   end Unicode_To_Basic_Text;
+  end Unicode_To_Basic_Text;
 
 
 
    procedure Get_Unicode (LINE : in out String; L : in out Integer) is
 
-      pragma Wide_Character_Encoding (UTF8);
-      pragma Inline (Get_Unicode);
+   pragma Wide_Character_Encoding (UTF8);
+   pragma Inline (Get_Unicode);
 
       W_Line : constant Wide_String := Ada.Wide_Text_IO.Get_Line;
 
