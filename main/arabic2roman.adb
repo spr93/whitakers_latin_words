@@ -294,6 +294,7 @@ package body Arabic2Roman is
              Put(" [~ negativum];");
            end if;
 
+          New_Line(Output);
         -- end output of first result
 
 
@@ -336,8 +337,7 @@ package body Arabic2Roman is
                New_Line (OUTPUT);
 
              else
-             New_Line
-               (OUTPUT); -- we put the subtractive, then ended; so skip line
+             New_Line (OUTPUT); -- we put the subtractive, then ended; so skip line
             end if; -- Put_Additive
             -- end of second output
 
