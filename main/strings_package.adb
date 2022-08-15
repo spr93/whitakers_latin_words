@@ -50,6 +50,14 @@ with DEVELOPER_PARAMETERS; use DEVELOPER_PARAMETERS;
          LAST := LX;
       end GET_NON_COMMENT_LINE;
    
+
+  procedure Put_Pearse_Code (OUTPUT : in Text_IO.File_Type; Code : in Pearse_Code_Type) is
+  begin
+    if WORDS_MDEV(DO_PEARSE_CODES) then 
+       Put(OUTPUT,Pearse_Code_Array(Code));
+      end if;
+    end Put_Pearse_Code;
+   
     
   procedure Format (OUTPUT : in Text_IO.File_Type; Format : In Format_Command) is
    begin
@@ -73,4 +81,5 @@ with DEVELOPER_PARAMETERS; use DEVELOPER_PARAMETERS;
 
    end Format;  
    
+ 
    end STRINGS_PACKAGE;  

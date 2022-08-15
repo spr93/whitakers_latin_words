@@ -39,7 +39,8 @@ procedure WORDS is -- the main/startup procedure.  Handles I/O configuration and
 
   procedure Initialize_Dictionary is -- mostly related to file system operations (opening, loading, and creating files).
   begin                              -- Some command-line options moot, or even prohibit, some of those operations
-      INITIALIZE_WORD_PARAMETERS;    -- so we defer them until we're ready to call PARSE.
+                                     -- so we defer them until we're ready to call PARSE.
+      INITIALIZE_WORD_PARAMETERS;    -- always initialize in this order
       INITIALIZE_DEVELOPER_PARAMETERS;
       INITIALIZE_WORD_PACKAGE;
   end Initialize_Dictionary;
@@ -123,7 +124,7 @@ begin
       exception
 
          when Args_Exception =>
-            Words_Help.SHOW_HELP ("ARG", Current_Output);
+            Words_Help.SHOW_HELP (Current_Output, "ARG");
             return;
       end New_Style_Arguments;
 
@@ -215,8 +216,8 @@ begin
          end if;
 
       exception
-         when Name_Error =>  -- First argument not a valid file name
-         METHOD := COMMAND_LINE_INPUT;
+         when Name_Error =>              -- First argument not a valid file name
+         METHOD := COMMAND_LINE_INPUT;   -- => presume it's a (Latin) word to translate
       end SETUP_INPUT;
 
       if Ada.Command_Line.Argument_Count = 2
@@ -235,11 +236,10 @@ begin
     elsif WORDS_MODE(HAVE_OUTPUT_FILE) and then not TEXT_IO.IS_OPEN(OUTPUT)
       then
       TEXT_IO.CREATE(OUTPUT, TEXT_IO.OUT_FILE, LATIN_FILE_NAMES.OUTPUT_FULL_NAME);
--- else must be writing to Standard_Output, so outuput setup needed.
+       -- else must be writing to Standard_Output (or whatever is right for the target platform), so no output setup needed.
       end if;
 
    end if;
-
 
 -- Finally, we can parse.
    if METHOD = COMMAND_LINE_INPUT then
@@ -248,7 +248,7 @@ begin
             INPUT_LINE : constant String :=
               TRIM (Ada.Command_Line.Argument (I));
          begin
-            Parse (INPUT_LINE);
+              Parse (INPUT_LINE);
          end;
       end loop;
 
@@ -259,14 +259,12 @@ begin
          Parse;
       end if;
 
-      if Text_IO.Is_Open(Output) -- Must check Is_Open first or risk Status_Error
+    if Text_IO.Is_Open(Output) -- Must check Is_Open first or risk Status_Error
       and then Name (OUTPUT) /= Name (Standard_Output) then
-         if WORDS_MDEV (DO_PEARSE_CODES) then
-           Put ("07 ");
-         end if;
-         Put_Line
-           (Standard_Output,"Wrote output to file " & Name(Output)); --TRIM (Ada.Command_Line.Argument (2)));
-      end if;
+      Put_Pearse_Code(OUTPUT,7);
+      Put_Line
+        (Standard_Output,"Wrote output to file " & Name(Output)); --TRIM (Ada.Command_Line.Argument (2)));
+    end if;
 
    end if;
 

@@ -11,7 +11,7 @@ package STRINGS_PACKAGE is
    function MIN (A, B : in Integer) return Integer;
 
 -- BEGIN ADA 95 RENAMES
-   -- In this package, Whitaker implemented, in Ada 83, text-handling procedures that later became part 
+   -- In this package, Whitaker implemented, in Ada 83, text-handling procedures that later became part
    -- of the Ada 95 standard.  Now they're renames that (1) reduce the number of packages that
    -- need to be WITH'd in other units and (2) let us avoid unnecessary refactors.
 
@@ -41,10 +41,10 @@ package STRINGS_PACKAGE is
 
    INPUT_LINE_LENGTH : Integer := 2_500;
 
-   type Pearse_Code_Type is new Integer range 1..7;
-   Pearse_Code_Array : constant array(Pearse_Code_Type) of String (1..2) := ("01","02","03","04","05","06","07");
+   type Pearse_Code_Type is new Integer range 0..7;
+   Pearse_Code_Array : constant array(Pearse_Code_Type) of String (1..3) := ("00 ","01 ","02 ","03 ","04 ","05 ","06 ","07 ");
    procedure Put_Pearse_Code (OUTPUT : in Text_IO.File_Type; Code : in Pearse_Code_Type);
-   
+
    ---------------------------
    -- ANSI Formatting Codes --
    ---------------------------
@@ -58,7 +58,7 @@ package STRINGS_PACKAGE is
      (ASCII.ESC & "[7m");  -- Use sparingly for important notes, warnings, and errors
    Format_Faint : constant String :=
      (ASCII.ESC & "[2m");  -- For examples; they get distracting in long output
-   Format_Reset : constant String := (ASCII.ESC & "[0m");  
+   Format_Reset : constant String := (ASCII.ESC & "[0m");
 
    type Format_Command is (UNDERLINE, BOLD, INVERSE, FAINT, RESET);
    procedure Format (OUTPUT : in File_Type; Format : in Format_Command);

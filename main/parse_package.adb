@@ -16,7 +16,6 @@ with SEARCH_ENGLISH;
 with Arabic2Roman;
 with Words_Help;              use Words_Help;
 with Ada.Characters.Handling;
-with Ada.Wide_Characters;
 with Ada.Wide_Text_IO;
 with Unicode_Features;        use Unicode_Features;
 
@@ -103,13 +102,13 @@ package body Parse_Package is
             -- avoid changing the rest of the procedure
             if WORDS_MODE (DO_ARABIC_NUMERALS) and Arabic_Present then
 
-               if WORDS_MODE (WRITE_OUTPUT_TO_FILE) then
+             if WORDS_MODE (WRITE_OUTPUT_TO_FILE) then
                   Arabic2Roman.Arabic2Roman
                     (OUTPUT, Arabic_String ((Arabic_J) .. J));
-               else
+             else
                   Arabic2Roman.Arabic2Roman
                     (Current_Output, Arabic_String ((Arabic_J) .. J));
-            end if;
+             end if;
 
             Arabic_J := (J);
 
@@ -1107,7 +1106,7 @@ package body Parse_Package is
          --   Have STORAGE_ERROR check in WORD too  ?????????????
          when Storage_Error =>    --  I want to again, at least twice
             if WORDS_MDEV (DO_PEARSE_CODES) then
-               Text_IO.Put ("00 ");
+               Put(Current_Output,Pearse_Code_Array(0));
             end if;
             Text_IO.Put_Line
               (    --  ERROR_FILE,
@@ -1126,8 +1125,9 @@ package body Parse_Package is
             "Exception in PARSE_LINE processing " & INPUT_LINE);
             if WORDS_MODE (WRITE_UNKNOWNS_TO_FILE) then
                if WORDS_MDEV (DO_PEARSE_CODES) then
-                  Text_IO.Put (UNKNOWNS, "00 ");
-               end if;
+               Put(UNKNOWNS,Pearse_Code_Array(0));
+            end if;
+
                Text_IO.Put (UNKNOWNS, INPUT_LINE (J .. K));
                Text_IO.Set_Col (UNKNOWNS, 30);
                Text_IO.Put_Line (UNKNOWNS, "    ========   ERROR      ");
@@ -1397,7 +1397,7 @@ package body Parse_Package is
                     and then not CONFIG.SUPPRESS_PREFACE
                   then
                      SHOW_HELP
-                       (Upper_Case (TRIM (LINE (2 .. L))), Current_Output);
+                       (Current_Output, Upper_Case (TRIM (LINE (2 .. L))));
 
                   elsif LINE (1) = CHANGE_LANGUAGE_CHARACTER
                     and then not
@@ -1481,6 +1481,9 @@ package body Parse_Package is
          if CL_Arguments (NO_EXIT) then
             PARSE;
       else
+        if WORDS_MDEV(DO_PEARSE_CODES) then
+           Put_Pearse_Code(Current_Output,0);
+        end if;
         Preface.Format(Inverse);
         PREFACE.PUT ("Unexpected exception raised in PARSE");
         Preface.Format(Reset);
