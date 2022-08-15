@@ -6,7 +6,6 @@
    with Dictionary_Package;   use Dictionary_Package;
    with Word_Support_Package; use Word_Support_Package;
 
-
    procedure MAKESTEM is
       use Integer_Io;
       use STEM_KEY_TYPE_IO;
@@ -127,7 +126,8 @@
          Bbll(' ', ' ', General) := 0;
          Line := Blanks;
          Get_Line(STEM_List(D_K), Line, Last);
-      PUT_LINE(LINE(1..LAST));
+         Put_Line("First line is:");
+         PUT_LINE(LINE(1..LAST));
 
          Fc := Line(1);
          Sc := Line(2);
@@ -141,6 +141,11 @@
       --PUT_LINE("#" & LINE(LL+1..LAST));
          Get(Line(Ll+1..Last), Ds.mnpc , Ll);
       --PUT(DS.AAMNPC); NEW_LINE;
+
+    SORT_ERROR_HANDLER:
+    declare
+      begin
+
          Write(STEM_File(D_K), Ds);
          Bbll(Fc, Sc, General) := I;          --  1
 
@@ -152,7 +157,17 @@
          Put(Indx_File(D_K), ' ');
          New_Line(Indx_File(D_K));
 
-         --Put_Indices("  ", General);
+      --Put_Indices("  ", General);
+    exception
+      when others =>
+        Put_Line("ERROR:  The input (STEMLIST) file is not organized as expected. Make sure to " &
+                 "use rebuild[.sh/cmd] or follow the instructions in the documentation carefully. " &
+                 "If you have done so, it's possible that your compiler produced a sorter executable " &
+                 "that does not sort lines in the expected way.  If you are sorting STEMLIST.GEN and, "  &
+                 "after running sorted, the first line in that file does not begin with '[blanks]   5 1 TO_BE', " &
+                 "you need to find that line and move it to the first line of STEMLIST.GEN. ");
+
+    end SORT_ERROR_HANDLER;
 
       end if;
    ------------------------------------------------------------------

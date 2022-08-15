@@ -11,7 +11,6 @@ procedure SORTER is
    --  This program sorts a file of lines (strings) on 5 substrings Mx..Nx Sort
    --  by stringwise (different cases), numeric, or POS enumeration
 
-
    package BOOLEAN_IO is new Text_IO.Enumeration_IO (Boolean);
    use BOOLEAN_IO;
    package INTEGER_IO is new Text_IO.Integer_IO (Integer);
@@ -447,9 +446,6 @@ procedure SORTER is
 
       procedure ECHO_ENTRY is
       begin
-         Text_IO.Put_Line
-           ("M, N, S, W:  " & M'Image & ", " & N'Image & ", " & S'Image &
-            ", " & W'Image);
          Put ("                    Sorting on LINE(");
          Put (M, 3);
          Put ("..");
