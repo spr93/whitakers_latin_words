@@ -1299,6 +1299,14 @@ package body TRICKS_PACKAGE is
 
          when 'o' =>
 
+            FLIP_FLOP ("obf", "off");
+            if PA_LAST > 1 then
+               return;
+            end if;
+            FLIP_FLOP ("obc", "occ");
+            if PA_LAST > 1 then
+               return;
+            end if;
             FLIP_FLOP ("obt", "opt");
             if PA_LAST > 1 then
                return;
