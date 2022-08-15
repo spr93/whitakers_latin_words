@@ -22,7 +22,7 @@ package CONFIG is
   SUPPRESS_PREFACE : Boolean := False;
   -- SPR:  Set to TRUE to build Words an executable that silently accepts line input and
   -- returns only Latin->English results.  Useful as a listening service that other
-  -- programs pipe to when used with -rnx parameters.
+  -- programs pipe to, especially when used with -rnx parameters.
 
    type CL_Arguments_Type is
      (READ_ONLY, NO_FILES, NO_EXIT,
@@ -32,6 +32,6 @@ package CONFIG is
 
    Null_CL_Arguments : constant CL_Arguments_Array_Type := (others => False);
 
-   CL_Arguments      : CL_Arguments_Array_Type := Null_CL_Arguments;
+   CL_Arguments      : CL_Arguments_Array_Type          := Null_CL_Arguments;
 
 end CONFIG;
