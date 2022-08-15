@@ -3,13 +3,13 @@ with Text_IO;
 
 package Words_Help is
 
-   procedure SHOW_HELP (Line : in String; Output : Text_IO.File_Type);
+  procedure SHOW_HELP (Output : in Text_IO.File_Type; Line : in String);
 
 private
 
    type Main_Help_Type is array (Positive range <>) of String (1 .. 79);
 
-   procedure Put (HELP : in Main_Help_Type; Output : in Text_IO.File_Type);
+   procedure Put (Output : in Text_IO.File_Type; HELP : in Main_Help_Type);
 
    Bold_Next      : constant String (1 .. 79) := (others => 'B');
    Skip_Next      : constant String (1 .. 79) := (others => 'S');
@@ -296,6 +296,7 @@ private
       "Pearse codes are numerical codes 01 through 06 that indicate the type of|      ",
       "information on a line. They're useful when processing the program's output.|   ",
       Skip_Next, Underline_Next,
+      "00   serious storage error or unrecoverable program error|                     ",
       "01   forms|                                                                    ",
       "02   dictionary forms (incl. Area, geography, age, source codes)|              ",
       "03   definition|                                                               ",

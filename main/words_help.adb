@@ -4,14 +4,13 @@ with WORD_PACKAGE;
 with DEVELOPER_PARAMETERS; use DEVELOPER_PARAMETERS;
 with STRINGS_PACKAGE;      use STRINGS_PACKAGE;
 
-
 package body Words_Help is
 
    ---------
    -- PUT --
    ---------
 
-   procedure PUT (HELP : in Main_Help_Type; Output : in Text_IO.File_Type) is
+   procedure PUT (Output : in Text_IO.File_Type; HELP : in Main_Help_Type) is
 
       Need_To_Reset : Boolean := False;
 
@@ -97,7 +96,7 @@ package body Words_Help is
    -- SHOW_HELP --
    ---------------
 
-   procedure SHOW_HELP (Line : in String; Output : in Text_IO.File_Type) is
+   procedure SHOW_HELP (Output : in Text_IO.File_Type; Line : in String) is
 
       Help_Param : String (1 .. 3) := (others => ' ');
 
@@ -108,27 +107,27 @@ package body Words_Help is
       end if;
 
       if Help_Param = "COD" then
-         PUT (CODES_HELP, Output);
+         PUT (Output, CODES_HELP);
       elsif Help_Param = "SOU" then
-         PUT (SOURCE_HELP, Output);
+         PUT (Output, SOURCE_HELP);
       elsif Help_Param = "GRA" then
-         PUT (GRAMMAR_HELP, Output);
+         PUT (Output, GRAMMAR_HELP);
       elsif Help_Param = "AGE" or Help_Param = "ERA" then
-         PUT (AGE_HELP, Output);
+         PUT (Output, AGE_HELP);
       elsif Help_Param = "ARE" then
-         PUT (AREA_HELP, Output);
+         PUT (Output, AREA_HELP);
       elsif Help_Param = "GEO" then
-         PUT (GEO_HELP, Output);
+         PUT (Output, GEO_HELP);
       elsif Help_Param = "FRE" then
-         PUT (FREQ_HELP, Output);
+         PUT (Output, FREQ_HELP);
       elsif Help_Param = "MEA" or Help_Param = "ABB" then
-         PUT (MEANING_HELP, Output);
+         PUT (Output, MEANING_HELP);
       elsif Help_Param = "PEA" then
-         PUT (PEARSE_HELP, Output);
+         PUT (Output, PEARSE_HELP);
       elsif Help_Param = "PAR" or Help_Param = "ARG" then
-         PUT (Param_Help, Output);
+         PUT (Output, PARAM_HELP);
       else
-         PUT (GENERAL_HELP, Output);
+         PUT (Output, GENERAL_HELP);
       end if;
 
    exception
