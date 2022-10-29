@@ -8,11 +8,10 @@ with DEVELOPER_PARAMETERS;    use DEVELOPER_PARAMETERS;
 with LINE_STUFF;              use LINE_STUFF;
 with ENGLISH_SUPPORT_PACKAGE; use ENGLISH_SUPPORT_PACKAGE;
 with Ada.Directories;
-with Ada.Environment_Variables;
 
 -- FOR WINDOWS TARGETS
 -- Enable Windows vt100 text format support
-with windows_vt100;
+with Windows_vt100;
 -- END WINDOWS TARGET-SPECIFIC SECTION
 
 package body WORD_PACKAGE is
@@ -482,7 +481,7 @@ package body WORD_PACKAGE is
 
       if INDEX_FIRST > 0 and then INDEX_FIRST <= INDEX_LAST then
 
-         J1 := INDEX_FIRST;   
+         J1 := INDEX_FIRST;
          J2 := INDEX_LAST;
 
          STEM_ARRAY_LOOP :
@@ -2283,13 +2282,6 @@ package body WORD_PACKAGE is
    procedure INITIALIZE_WORD_PACKAGE is
    begin                                  --  Initializing WORD_PACKAGE
 
-        
-      -- Ready to start opening the dictionary files.  Make sure we can find them by hunting for 
-      -- the minimum necessary file (INFLECTS.SEC)
-      if not Ada.Directories.Exists (INFLECTIONS_FULL_NAME) then
-      FIND_DICTIONARY_FILES;
-      end if;
-    
       ESTABLISH_INFLECTIONS_SECTION;
 
       LEL_SECTION_IO.Open
@@ -2302,18 +2294,8 @@ package body WORD_PACKAGE is
 
       LOAD_LOCAL :
       begin
-         --  First check if there is a LOC dictionary
-         CHECK_FOR_LOCAL_DICTIONARY :
-         declare
-            DUMMY : Text_IO.File_Type;
-         begin
-            Text_IO.Open
-              (DUMMY, Text_IO.In_File,
-               ADD_FILE_NAME_EXTENSION (DICTIONARY_FILE_NAME, "LOCAL"));
-            --  Failure to OPEN will raise an exception, to be handled below
-            Text_IO.Close (DUMMY);
-         end CHECK_FOR_LOCAL_DICTIONARY;
-         --  If the above does not exception out, we can load LOC
+
+         if Ada.Directories.Exists(Correct_File(ADD_FILE_NAME_EXTENSION (DICTIONARY_FILE_NAME, "LOCAL"))) then
          PREFACE.PUT ("LOCAL ");
          DICT_LOC := NULL_DICTIONARY;
          LOAD_DICTIONARY
@@ -2321,6 +2303,8 @@ package body WORD_PACKAGE is
          --  Need to carry LOC through consistently on LOAD_D and LOAD_D_FILE
          LOAD_STEM_FILE (LOCAL);
          DICTIONARY_AVAILABLE (LOCAL) := True;
+         end if;
+
       exception
          when others =>
             DICTIONARY_AVAILABLE (LOCAL) := False;
@@ -2339,9 +2323,7 @@ package body WORD_PACKAGE is
          PREFACE.PUT_LINE
            ("There are no main dictionaries - program will not do much");
          PREFACE.PUT_LINE
-           ("Check that there are dictionary files in this subdirectory");
-         PREFACE.PUT_LINE
-           ("Except DICT.LOC that means DICTFILE, INDXFILE, STEMFILE");
+           ("Check that there are dictionary files in " & Ada.Directories.Current_Directory);
       end if;
 
 --TEXT_IO.PUT_LINE("Ready to load English");
@@ -2360,9 +2342,9 @@ package body WORD_PACKAGE is
             ENGLISH_DICTIONARY_AVAILABLE (GENERAL) := False;
       end TRY_TO_LOAD_ENGLISH_WORDS;
 
-    if WORDS_MODE (DO_ANSI_FORMATTING) and windows_vt100.Is_Windows 
+    if WORDS_MODE (DO_ANSI_FORMATTING) and Windows_Vt100.Is_Windows
        then
-         if not windows_vt100.Enable_Windows_Console_vt100_codes then
+         if not Windows_Vt100.Enable_Windows_Console_vt100_Codes then
             PREFACE.PUT_LINE
               ("INFO:  Terminal unable to enter vt100 mode.  ANSI formatting off.");
             WORDS_MODE (DO_ANSI_FORMATTING) := False;
@@ -2370,96 +2352,5 @@ package body WORD_PACKAGE is
       end if;
 
    end INITIALIZE_WORD_PACKAGE;
-
-   procedure FIND_DICTIONARY_FILES is
-
-      use Ada.Directories;
-
-      Data_Message_1 : constant String :=
-        "Found probable dictionary data using environment variable ";
-      Data_Message_2 : constant String := 
-                       "Attempting to load dictionary data from: ";
-
-   begin
-
-      if Ada.Environment_Variables.Exists ("LATINWORDS") then
-         Set_Directory (Ada.Environment_Variables.Value ("LATINWORDS"));
-         PREFACE.PUT_LINE (Data_Message_1 & "LATINWORDS");
-      elsif Ada.Environment_Variables.Exists ("LATIN_WORDS") then
-         Set_Directory (Ada.Environment_Variables.Value ("LATIN_WORDS"));
-         PREFACE.PUT_LINE (Data_Message_1 & "LATIN_WORDS");
-      else
-
-         SEARCH_PATH :
-         declare
-
-            Path_String : constant String :=
-              Ada.Environment_Variables.Value ("PATH");
-            Start_Char : Natural := Path_String'First;
-
-         begin
-
-            for End_Char in Path_String'Range loop
-
-               case Path_String (End_Char) is
-
-                  when ':' | ';' | ',' =>
-                     if Exists
-                         (Compose
-                            (Containing_Directory =>
-                               Path_String (Start_Char .. (End_Char - 1)),
-                             Name => INFLECTIONS_FULL_NAME))
-                     then
-
-                        Set_Directory
-                          (Path_String (Start_Char .. (End_Char - 1)));
-                        PREFACE.PUT_LINE (Data_Message_1 & "PATH");
-
-                        exit;
-                     elsif End_Char + 1 < Path_String'Last then
-                        Start_Char := End_Char + 1;
-                     else
-                        exit;
-                     end if;
-
-                  when ' ' =>
-                     if End_Char + 1 < Path_String'Last then
-                        Start_Char := End_Char + 1;
-                     else
-                        exit;
-                     end if;
-
-                  when others =>
-                     null;
-
-               end case;
-
-               if End_Char = Path_String'Last then
-                  if Exists
-                      (Compose
-                         (Containing_Directory =>
-                            Path_String (Start_Char .. End_Char),
-                          Name => "INFLECTS.SEC"))
-                  then
-                     Set_Directory (Path_String (Start_Char .. (End_Char)));
-                     PREFACE.PUT_LINE (Data_Message_1 & "PATH");
-                     exit;
-                  else
-                     exit;
-                  end if;
-               end if;
-
-            end loop;
-
-         end SEARCH_PATH; -- block
-      end if;
-      PREFACE.PUT_LINE (Data_Message_2 & Current_Directory); -- Data_Message_2 appropriate even if we can't find INFLECTS
-      PREFACE.NEW_LINE;
-
-   exception
-      when others =>
-         null;  -- Check path silently, don't get hung up on permissions errors or nonexistent directories
-
-   end FIND_DICTIONARY_FILES;
 
 end WORD_PACKAGE;

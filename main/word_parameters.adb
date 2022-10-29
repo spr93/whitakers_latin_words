@@ -1,8 +1,8 @@
-with STRINGS_PACKAGE; use STRINGS_PACKAGE;
+with STRINGS_PACKAGE;  use STRINGS_PACKAGE;
 with LATIN_FILE_NAMES; use LATIN_FILE_NAMES;
 with CONFIG;           use CONFIG;
 with PREFACE;
-with Windows_Vt100;    -- main/nonwindows placeholder package if non-Windows target
+with Windows_vt100;    -- main/nonwindows placeholder package if non-Windows target
 with Unicode_Features; -- main/nonunicode placeholder package if not compiler supported
 
 pragma Elaborate(PREFACE);
@@ -73,7 +73,7 @@ WRITE_UNKNOWNS_TO_FILE_HELP : constant HELP_TYPE :=  (
    "This option is for specialized use, so its default is N(o).           ",
    "This does not work in English mode, but may in the future.            " );
 
--- SPR:  Changed the following two optionsn from default yes to default no because
+-- SPR:  Changed the following two options from default yes to default no because
 --       they restrict results based on assumptions about capitalization conventions
 --       in the source text as well as supposed user expectations.
 --       I don't believe input FORMATTING should ordinarily affect the results'
@@ -229,7 +229,7 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
     if IS_OPEN(MODE_FILE)  then
       CLOSE(MODE_FILE);
     end if;
-    CREATE(MODE_FILE, OUT_FILE, MODE_FULL_NAME);
+    CREATE(MODE_FILE, OUT_FILE, Correct_File(MODE_FULL_NAME));
     for I in WORDS_MODE'RANGE  loop
       PUT(MODE_FILE, I);
       SET_COL(MODE_FILE, 35);
@@ -249,7 +249,7 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
     MO : MODE_TYPE;
     REP : REPLY_TYPE;
   begin
-    OPEN(MODE_FILE, IN_FILE, MODE_FULL_NAME);
+    OPEN(MODE_FILE, IN_FILE, Correct_File(MODE_FULL_NAME));
     while not END_OF_FILE(MODE_FILE)  loop
       GET(MODE_FILE, MO);
       GET(MODE_FILE, REP);
@@ -381,7 +381,7 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
     end if;
     if not IS_OPEN(OUTPUT) and then WORDS_MODE(HAVE_OUTPUT_FILE)  then
       begin
-        CREATE(OUTPUT, OUT_FILE, OUTPUT_FULL_NAME);
+        CREATE(OUTPUT, OUT_FILE, Correct_File(OUTPUT_FULL_NAME));
       exception
         when others =>
         PUT_LINE("Cannot create WORD.OUT - Check if it is in use elsewhere");
@@ -398,7 +398,7 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
     --  If not open and you now want to start writing to UNKNOWNS, the CREATE
     if not IS_OPEN(UNKNOWNS) and then WORDS_MODE(WRITE_UNKNOWNS_TO_FILE)  then
       begin
-        CREATE(UNKNOWNS, OUT_FILE, UNKNOWNS_FULL_NAME);
+        CREATE(UNKNOWNS, OUT_FILE, Correct_File(UNKNOWNS_FULL_NAME));
       exception
         when others =>
           PUT_LINE("Cannot CREATE WORD.UNK");
@@ -441,7 +441,7 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
       if WORDS_MODE(DO_ANSI_FORMATTING)
          and then Windows_Vt100.Is_Windows
       then
-         case Windows_Vt100.Enable_Windows_Console_Vt100_Codes is
+         case Windows_Vt100.Enable_Windows_Console_vt100_Codes is
             when True => null;
             when False => Put_Line("INFO:  Terminal unable to enter vt100 mode.  ANSI formatting off.");
             WORDS_MODE(DO_ANSI_FORMATTING) := False;
@@ -498,8 +498,8 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
      then
      DO_OUTPUT_FILE:
      begin
-     TEXT_IO.CREATE(OUTPUT, TEXT_IO.OUT_FILE, OUTPUT_FULL_NAME);
-      PREFACE.PUT_LINE("WORD.OUT created");
+     TEXT_IO.CREATE(OUTPUT, TEXT_IO.OUT_FILE, Correct_File(OUTPUT_FULL_NAME));
+     PREFACE.PUT_LINE("WORD.OUT created");
 
      exception
       when Text_IO.Status_Error | Text_IO.Use_Error =>
@@ -513,7 +513,7 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
       PREFACE.PUT("Error setting up WORD.OUT.  Disabling HAVE_OUTPUT_FILE.");
       Preface.Format(Reset);
       Preface.New_Line;
-    end DO_OUTPUT_File;
+      end DO_OUTPUT_File;
   end if;
 
     if  WORDS_MODE(WRITE_UNKNOWNS_TO_FILE)
@@ -521,7 +521,7 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
       then
       DO_UNKNOWNS_FILE:
       begin
-      TEXT_IO.CREATE(UNKNOWNS, TEXT_IO.Append_File, UNKNOWNS_FULL_NAME);
+      TEXT_IO.CREATE(UNKNOWNS, TEXT_IO.Append_File, Correct_File(UNKNOWNS_FULL_NAME));
       PREFACE.PUT_LINE("WORD.UNK created at initialization");
       exception
       when Text_IO.Status_Error | Text_IO.Use_Error =>

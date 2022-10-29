@@ -18,10 +18,12 @@ with Words_Help;              use Words_Help;
 with Ada.Characters.Handling;
 with Ada.Wide_Text_IO;
 with Unicode_Features;        use Unicode_Features;
-
+with Latin_File_Names;
+with Ada.Directories;
 with Ada.Exceptions;
 
 pragma Elaborate (WORD_PARAMETERS);
+pragma Elaborate (DEVELOPER_PARAMETERS);
 
 package body Parse_Package is
 
@@ -204,7 +206,7 @@ package body Parse_Package is
                   ENTERING_TRPA_LAST : Integer         := 0;
                   HAVE_DONE_ENCLITIC : Boolean         := False;
 
-                  procedure PASS (INPUT_WORD : String);
+                  procedure PASS (INPUT_WORD : in String);
 
                   procedure ENCLITIC is
 
@@ -1381,7 +1383,7 @@ package body Parse_Package is
                         Parse_Unicode_File (TRIM (LINE (2 .. L)));
                      else
                         Text_IO.Open
-                          (INPUT, Text_IO.In_File, TRIM (LINE (2 .. L)));
+                          (INPUT, Text_IO.In_File, LATIN_FILE_NAMES.Correct_File(TRIM (LINE (2 .. L))));
                         Text_IO.Set_Input (INPUT);
                      end if;
 
@@ -1503,35 +1505,35 @@ package body Parse_Package is
    ---Unicode handling is useful for dealing with input that includes macrons.
    ---It may also clean up unexpected input.
 
-   procedure Parse_Unicode_File (File_Name_String : in String) is
+  procedure Parse_Unicode_File (File_Name_String : in String) is
 
       pragma Wide_Character_Encoding (UTF8);
 
       use Ada.Wide_Text_IO;
+      use LATIN_FILE_NAMES;
+      use Ada.Directories;
 
       Saved_Method : METHOD_TYPE := METHOD;
 
    begin
 
-    if not Is_Open(W_INPUT) then
-      Open (W_INPUT, In_File, File_Name_String);
+      if not Is_Open(W_INPUT) then  -- Keep METHOD accurate because Correct_File uses it
+      Open (W_INPUT, In_File, (Correct_File(File_Name_String)));
       end if;
 
-      WORDS_MODE (DO_UNICODE_INPUT) := False;
-      METHOD                        := COMMAND_LINE_INPUT;
-
-      while not End_Of_File (W_INPUT) loop
-         PARSE (Unicode_To_Basic_Text (Get_Line (W_INPUT)));
+      WORDS_MODE (DO_UNICODE_INPUT) := False;                 -- Translate Unicode Wide_Text to plain before giving it to PARSE.
+      METHOD                        := COMMAND_LINE_INPUT;    -- Tell PARSE it's getting plain text in non-interactive mode.
+      while not End_Of_File (W_INPUT) loop                    -- (Mis-)using global variables like this is ugly, but it lets us avoid changing
+         PARSE (Unicode_To_Basic_Text (Get_Line (W_INPUT)));  -- PARSE--and given PARSE's importance and complexity, that's a good thing.
       end loop;
-
       Close (W_INPUT);
       WORDS_MODE (DO_UNICODE_INPUT) := True;
       METHOD                        := Saved_Method;
 
      exception
-       when Ada.Wide_Text_IO.Use_Error  =>  raise Text_IO.Use_Error;
-       when Ada.Wide_Text_IO.Name_Error =>  raise Text_IO.Name_Error;
-       when others => Unicode_Features.Handle_Unicode_Exception;
+       when Ada.Wide_Text_IO.Use_Error  =>  METHOD := Saved_Method; raise Text_IO.Use_Error;
+       when Ada.Wide_Text_IO.Name_Error =>  METHOD := Saved_Method; raise Text_IO.Name_Error;
+       when others => METHOD := Saved_Method; Unicode_Features.Handle_Unicode_Exception;
    end Parse_Unicode_File;
 
 end Parse_Package;

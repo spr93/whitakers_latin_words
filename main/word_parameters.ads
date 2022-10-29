@@ -1,5 +1,6 @@
 with TEXT_IO;
-with ADA.Wide_Text_IO;
+with Ada.Wide_Text_IO;
+with Ada.Directories;
 
 
 package WORD_PARAMETERS is
@@ -9,7 +10,7 @@ package WORD_PARAMETERS is
 
   CHANGE_PARAMETERS_CHARACTER        : CHARACTER := '#';
   CHANGE_LANGUAGE_CHARACTER          : CHARACTER := '_'; --No more ~ as default because it causes shells to mangle arguments
-  HELP_CHARACTER                     : CHARACTER := '?'; --even MSFT PowerShell now conforms to the ~ => /home/user standard
+  HELP_CHARACTER                     : CHARACTER := '?'; --even MSFT PowerShell now conforms to the ~ => $HOME standard
 
 
   --  These files are used by the program if requested, but not necessary

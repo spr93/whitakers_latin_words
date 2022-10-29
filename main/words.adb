@@ -11,22 +11,20 @@
 
 ---------------------------------------------------
 -- CORE:  Packages necessary for the core Words system; Whitaker's original
-
 with TEXT_IO;              use TEXT_IO;
-   -- Configuration
+   -- Configuration packages
 with CONFIG;               use CONFIG;               -- Important global variables, changes to which
-with LATIN_FILE_NAMES;                               --   must be carefully controlled
+with LATIN_FILE_NAMES;     use LATIN_FILE_NAMES;     --   must be carefully controlled
 with WORD_PARAMETERS;      use WORD_PARAMETERS;      -- Common options; easily changeable by user
 with DEVELOPER_PARAMETERS; use DEVELOPER_PARAMETERS; -- Uncommon options that Whitaker used primarily
                                                      --   for development - rarely set by user, mostly
                                                      --   simple control-flow changes; can be disabled in CONFIG
-   -- Logic and interface
+   -- Logic-and-interface packages
 with WORD_PACKAGE;         use WORD_PACKAGE;         -- Initializes type system and data structures, loads dictionary data
 with STRINGS_PACKAGE;      use STRINGS_PACKAGE;      -- Mostly formatting routines; mostly for user interface
 with PARSE_PACKAGE;        use PARSE_PACKAGE;        -- Contains PARSE, the main control program
 
 -- MORE:  Packages supporting additional user convenience options; mostly post-Whitaker
-
 with Ada.Command_Line;                               -- Command-line options (see below)
 with Ada.Environment_Variables;                      -- Makes it easier to separate data files from executable
 with Ada.Directories;                                --   (same)
@@ -37,7 +35,7 @@ with Ada.Exceptions;                                 -- Provide information for 
 
 procedure WORDS is -- the main/startup procedure.  Handles I/O configuration and command-line options.
 
-  procedure Initialize_Dictionary is -- mostly related to file system operations (opening, loading, and creating files).
+  procedure Initialize_Dictionary is -- Mostly related to file system operations (opening, loading, and creating files).
   begin                              -- Some command-line options moot, or even prohibit, some of those operations
                                      -- so we defer them until we're ready to call PARSE.
       INITIALIZE_WORD_PARAMETERS;    -- always initialize in this order
@@ -46,6 +44,8 @@ procedure WORDS is -- the main/startup procedure.  Handles I/O configuration and
   end Initialize_Dictionary;
 
 begin
+
+   Find_Data_And_Settings;
 
    --  SIMPLE INTERACTIVE MODE -- when Words is run without parameters
    if Ada.Command_Line.Argument_Count = 0 then
@@ -195,6 +195,7 @@ begin
     -- for Unicode processing (Wide_Text) or not.
     -- Go ahead and initialize now.  At this point, METHOD is NOT_YET_SET, which will
     -- suppress unnecessary file operations during initialization.
+    METHOD := COMMAND_LINE_FILES;
     Initialize_Dictionary;
 
     SETUP_INPUT :
@@ -203,16 +204,12 @@ begin
          if WORDS_MODE (DO_UNICODE_INPUT) then
             Ada.Wide_Text_IO.Open
               (W_INPUT, Ada.Wide_Text_IO.In_File,
-               (Ada.Command_Line.Argument (1)));
+               Correct_File(TRIM(Ada.Command_Line.Argument (1))));
          --   Ada.Wide_Text_IO.Close (W_INPUT);
-         METHOD := COMMAND_LINE_FILES;
-
          else
 
-            Open (INPUT, In_File, TRIM (Ada.Command_Line.Argument (1)));
+            Open (INPUT, In_File, Correct_File(TRIM (Ada.Command_Line.Argument (1))));
             Set_Input (INPUT);
-            METHOD := COMMAND_LINE_FILES;
-
          end if;
 
       exception
@@ -226,16 +223,16 @@ begin
          SETUP_OUTPUT :
          begin
             WORDS_MODE (DO_ANSI_FORMATTING) := False;
-            Open (OUTPUT, Append_File, TRIM (Ada.Command_Line.Argument (2)));
+            Open (OUTPUT, Append_File, Correct_File(TRIM (Ada.Command_Line.Argument (2))));
             Set_Output (OUTPUT);
          exception
             when Name_Error =>
-               Create (OUTPUT, Out_File, TRIM (Ada.Command_Line.Argument (2)));
+               Create (OUTPUT, Out_File, Correct_File(TRIM (Ada.Command_Line.Argument (2))));
                Set_Output (OUTPUT);
       end SETUP_OUTPUT;
     elsif WORDS_MODE(HAVE_OUTPUT_FILE) and then not TEXT_IO.IS_OPEN(OUTPUT)
       then
-      TEXT_IO.CREATE(OUTPUT, TEXT_IO.OUT_FILE, LATIN_FILE_NAMES.OUTPUT_FULL_NAME);
+      TEXT_IO.CREATE(OUTPUT, TEXT_IO.OUT_FILE, Correct_File(LATIN_FILE_NAMES.OUTPUT_FULL_NAME));
        -- else must be writing to Standard_Output (or whatever is right for the target platform), so no output setup needed.
       end if;
 
