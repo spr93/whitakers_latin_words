@@ -2,6 +2,7 @@ with STRINGS_PACKAGE;     use STRINGS_PACKAGE;
 with INFLECTIONS_PACKAGE; use INFLECTIONS_PACKAGE;
 with DICTIONARY_PACKAGE;  use DICTIONARY_PACKAGE;
 
+
 function Dictionary_Form (DE : in DICTIONARY_ENTRY) return String is
 
    Null_OX : constant String (1 .. 24)          := (others => ' ');
@@ -762,9 +763,6 @@ begin
       end if;
 
    end if;
-
-   --DEBUG
-   --TEXT_IO.PUT_LINE(">>>>" & TRIM(FORM));
 
    return TRIM (Form);
 

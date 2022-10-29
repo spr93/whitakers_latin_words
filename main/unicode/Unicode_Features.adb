@@ -17,7 +17,7 @@ package body Unicode_Features is
    -- FSF GNAT implemented them in or around July 2020. To my knowledge, other compilers
    -- have not yet implemented these features.
 
-  function Unicode_To_Basic_Text (W_Line : in Wide_String) return String is
+   function Unicode_To_Basic_Text (W_Line : in Wide_String) return String is
 
    begin
     return
@@ -33,9 +33,7 @@ package body Unicode_Features is
          Handle_Unicode_Exception;
          return "";
 
-  end Unicode_To_Basic_Text;
-
-
+   end Unicode_To_Basic_Text;
 
    procedure Get_Unicode (LINE : in out String; L : in out Integer) is
 

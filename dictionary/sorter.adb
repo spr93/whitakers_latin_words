@@ -88,19 +88,6 @@ procedure SORTER is
    NO_APPENDIX_SECTION : constant APPENDIX_SECTION_TYPE :=
      (NONE, (0, 0, 0, 0, 0));
 
-   -- DEBUG
-   --  procedure PUT(OUTPUT : TEXT_IO.FILE_TYPE; S : SECTION_TYPE); procedure
-   --  PUT(S : SECTION_TYPE); procedure GET(FROM : in STRING;
-   --                   S : out SECTION_TYPE; LAST : out POSITIVE);
-   --  function "<"(A, B : SECTION_TYPE) return BOOLEAN;
-   --
-   --  procedure PUT(OUTPUT : TEXT_IO.FILE_TYPE; S : APPENDIX_SECTION_TYPE);
-   --  procedure PUT(S : APPENDIX_SECTION_TYPE); procedure GET(FROM : in
-   --  STRING;
-   --                   S : out APPENDIX_SECTION_TYPE; LAST : out POSITIVE);
-   --  function "<"(A, B : APPENDIX_SECTION_TYPE) return BOOLEAN;
-   -- DEBUG
-
    procedure PUT (OUTPUT : Text_IO.File_Type; S : SECTION_TYPE) is
       LEVEL : Integer := 0;
 

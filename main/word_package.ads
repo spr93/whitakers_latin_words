@@ -83,10 +83,8 @@ package WORD_PACKAGE is
 
    procedure CHANGE_LANGUAGE (C : Character);
 
-   procedure FIND_DICTIONARY_FILES;
-
    procedure INITIALIZE_WORD_PACKAGE;
 
-  FATAL_ERROR : exception;
+   FATAL_ERROR : exception;
 
 end WORD_PACKAGE;

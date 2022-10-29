@@ -367,12 +367,12 @@ package body LINE_STUFF is
         PREFACE.NEW_LINE;
   end LOAD_DICTIONARY;
 
-  procedure LOAD_STEM_FILE(D_K : DICTIONARY_KIND)  is
+  procedure LOAD_STEM_FILE(D_K : in DICTIONARY_KIND)  is
   --  This is used to load a dictionary access file, like DIC.LOC
   --  It uses the single first letter index rather than the two letter
   --  This dictionary must be searched with a somewhat different procedure
   --  Not used when one loads from a regular STEMFILE (which uses two letters)
-    --use LATIN_DEBUG;
+
     use STEM_IO;
     use DICT_IO;
     I : STEM_IO.COUNT := 1;
@@ -926,7 +926,7 @@ package body LINE_STUFF is
     PREFACE.PUT_LINE("ERROR loading UNIQUES file");
     PREFACE.PUT_LINE(STEM_LINE(1..LAST));
     PREFACE.PUT_LINE(LINE(1..L));
-      CLOSE(UNIQUES_FILE);
+    CLOSE(UNIQUES_FILE);
     PREFACE.SET_COL(33);
     PREFACE.PUT("--  "); PREFACE.PUT(NUMBER_OF_UNIQUES_ENTRIES, 6);
     PREFACE.PUT(" entries");

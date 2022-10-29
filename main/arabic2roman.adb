@@ -1,9 +1,8 @@
 with WORD_PARAMETERS;      use WORD_PARAMETERS;
 with DEVELOPER_PARAMETERS; use DEVELOPER_PARAMETERS;
 with CONFIG;               use CONFIG;
-
-with INFLECTIONS_PACKAGE; use INFLECTIONS_PACKAGE;
-with DICTIONARY_PACKAGE;  use DICTIONARY_PACKAGE;
+with INFLECTIONS_PACKAGE;  use INFLECTIONS_PACKAGE;
+with DICTIONARY_PACKAGE;   use DICTIONARY_PACKAGE;
 with LIST_PACKAGE;
 
 package body Arabic2Roman is
@@ -536,7 +535,8 @@ package body Arabic2Roman is
 
    end Generate_Subtractive;
 
-   procedure Pearse_Code_Adjust_For_Meanings (Output : in Text_IO.File_Type; Alternative : in Pearse_Code_Type) is
+  procedure Pearse_Code_Adjust_For_Meanings (Output      : in Text_IO.File_Type;
+                                             Alternative : in Pearse_Code_Type) is
    begin
      if WORDS_MDEV (DO_PEARSE_CODES) then
        if WORDS_MODE (DO_ONLY_MEANINGS) = False

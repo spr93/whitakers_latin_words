@@ -3,7 +3,7 @@ with Text_IO;
 
 package Words_Help is
 
-  procedure SHOW_HELP (Output : in Text_IO.File_Type; Line : in String);
+procedure SHOW_HELP (Output : in Text_IO.File_Type; Line : in String);
 
 private
 
@@ -425,18 +425,20 @@ private
       "   => returns Latin translation options|                                       ",
       "   POS uses abbreviations in ? GRAMMAR; applies only to first English word|    ",
       Skip_Next, Bold_Next,
-      "[2] MODIFIED INTERACTIVE-MODE:  Set limits on interactive mode.|               ",
+      "[2] COMMAND-LINE LIMITATIONS: For interactive mode|                            ",
       "Options:|                                                                      ",
       "-r    NO CHANGES:    User cannot CHANGE settings or local dictionary|          ",
-      "-n    NO FILES:      User cannot SAVE changes to settings, update the local|   ",
-      "           dictionary file, switch to file input, or alter any WRITE_...setting",
+      "-n    NO FILES:      User cannot SAVE changes to settings, alter any WRITE_...|",
+      "                     settings, access or create a local dictionary file in|    ",
+      "                     their working/startup directory or update any site-wide|  ",
+      "                     local dictionary file|                                    ",
       "-x    NO EXIT:       User cannot exit with two returns (control-C/SIGINT works)",
       "           NOT A SECURE MODE; just prevents inadvertent termination when, e.g.,",
-      "           pasting blocks of text that include blank lines.|                   ",
+      "           pasting blocks of text that include blank lines|                    ",
       "-l    LATIN ONLY:    User cannot enter English->Latin mode|                    ",
       "-e    ENGLISH ONLY:  User cannot enter Latin->English mode|                    ",
       "-m    MEANINGS ONLY: Limit Latin->English output to dictionary line and meaning",
       "E.g., words -rnlm limits the user the functionality of a paper dictionary|     ",
-      "Command-line options override any conflicting settings, incl. saved settings.| ");
+      "Command-line limitations override conflicting saved settings.|                 ");
 
 end Words_Help;

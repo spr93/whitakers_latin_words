@@ -1,5 +1,5 @@
 with TEXT_IO;
-
+with LATIN_FILE_NAMES; use LATIN_FILE_NAMES;
 
 package DEVELOPER_PARAMETERS is
 
@@ -12,7 +12,6 @@ package DEVELOPER_PARAMETERS is
 --  MDEV_FILE is used by the program to remember values
 
   MDEV_FILE : TEXT_IO.FILE_TYPE;
-  MDEV_FULL_NAME : constant STRING := "WORD.MDV";
 
   type MDEV_TYPE is (
                       SHOW_DICTIONARY,
@@ -47,14 +46,11 @@ package DEVELOPER_PARAMETERS is
 
                       MINIMIZE_OUTPUT         );
 
-
   package MDEV_TYPE_IO is new TEXT_IO.ENUMERATION_IO(MDEV_TYPE);
 
   type    MDEV_ARRAY   is array (MDEV_TYPE) of BOOLEAN;
 
-
   WORDS_MDEV : MDEV_ARRAY;        --  Initialized in body
-
 
   START_FILE_CHARACTER               : CHARACTER := '@';
   CHANGE_DEVELOPER_MODES_CHARACTER   : CHARACTER := '!';
@@ -64,6 +60,5 @@ package DEVELOPER_PARAMETERS is
   procedure UPDATE_LOCAL_DICTIONARY_FILE;
 
   procedure INITIALIZE_DEVELOPER_PARAMETERS;
-
 
 end DEVELOPER_PARAMETERS;

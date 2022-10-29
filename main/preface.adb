@@ -24,14 +24,14 @@ package body PREFACE is
     end if;
   end PUT_LINE;
 
-  procedure NEW_LINE (SPACING : Text_IO.Positive_Count := 1) is
+  procedure NEW_LINE (SPACING : in Text_IO.Positive_Count := 1) is
   begin
     if not CONFIG.SUPPRESS_PREFACE then
       Text_IO.New_Line (Text_IO.Current_Output, SPACING);
     end if;
   end NEW_LINE;
 
-  procedure PUT (N : in Integer; WIDTH : Text_IO.Field := Integer'Width) is
+  procedure PUT (N : in Integer; WIDTH : in Text_IO.Field := Integer'Width) is
     package INTEGER_IO is new Text_IO.Integer_IO (Integer);
   begin
     if not CONFIG.SUPPRESS_PREFACE then

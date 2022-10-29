@@ -1,6 +1,5 @@
 with TEXT_IO;            use TEXT_IO;
 with STRINGS_PACKAGE;    use STRINGS_PACKAGE;
-with LATIN_FILE_NAMES;   use LATIN_FILE_NAMES;
 with WORD_PARAMETERS;    use WORD_PARAMETERS;
 with DICTIONARY_PACKAGE; use DICTIONARY_PACKAGE;
 with PREFACE;
@@ -355,23 +354,23 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
     --  If there is not already a DICT_LOC, it creates one
 
     begin
-      OPEN(DICT_LOC_FILE, IN_FILE, DICT_LOC_NAME);
-      CREATE(DUMMY, OUT_FILE);
-      while not END_OF_FILE(DICT_LOC_FILE)  loop
-        GET_LINE(DICT_LOC_FILE, LINE, L);
-        PUT_LINE(DUMMY, LINE(1..L));
-      end loop;
-      RESET(DUMMY, IN_FILE);
-      DELETE(DICT_LOC_FILE);     --  Might RESET, but environment might not support
-      CREATE(DICT_LOC_FILE, OUT_FILE, DICT_LOC_NAME);
-      while not END_OF_FILE(DUMMY)  loop
-        GET_LINE(DUMMY, LINE, L);
-        PUT_LINE(DICT_LOC_FILE, LINE(1..L));
-      end loop;
-      DELETE(DUMMY);
+      OPEN(DICT_LOC_FILE, APPEND_FILE, Correct_File(DICT_LOC_NAME));
+--        CREATE(DUMMY, OUT_FILE);
+--        while not END_OF_FILE(DICT_LOC_FILE)  loop
+--          GET_LINE(DICT_LOC_FILE, LINE, L);
+--          PUT_LINE(DUMMY, LINE(1..L));
+--        end loop;
+--        RESET(DUMMY, IN_FILE);
+--        DELETE(DICT_LOC_FILE);     --  Might RESET, but environment might not support
+--        CREATE(DICT_LOC_FILE, OUT_FILE, Correct_File(DICT_LOC_NAME));
+--        while not END_OF_FILE(DUMMY)  loop
+--          GET_LINE(DUMMY, LINE, L);
+--          PUT_LINE(DICT_LOC_FILE, LINE(1..L));
+--        end loop;
+--        DELETE(DUMMY);
     exception
       when NAME_ERROR  =>
-        CREATE(DICT_LOC_FILE, OUT_FILE, DICT_LOC_NAME);
+        CREATE(DICT_LOC_FILE, OUT_FILE, Correct_File(DICT_LOC_NAME));
     end READY_DICT_LOC_FILE;
 
 
@@ -417,7 +416,7 @@ SAVE_PARAMETERS_HELP : constant HELP_TYPE :=  (
 
 DICT_LOC := NULL_DICTIONARY;
 LOAD_DICTIONARY(DICT_LOC,
-                        ADD_FILE_NAME_EXTENSION(DICTIONARY_FILE_NAME, "LOCAL"));
+                        Correct_File(ADD_FILE_NAME_EXTENSION(DICTIONARY_FILE_NAME, "LOCAL")));
 --  Need to carry LOC through consistently on LOAD_D and LOAD_D_FILE
         LOAD_STEM_FILE(LOCAL);
         DICTIONARY_AVAILABLE(LOCAL) := TRUE;
@@ -435,7 +434,7 @@ LOAD_DICTIONARY(DICT_LOC,
     if IS_OPEN(MDEV_FILE)  then
       CLOSE(MDEV_FILE);
     end if;
-    CREATE(MDEV_FILE, OUT_FILE, MDEV_FULL_NAME);
+    CREATE(MDEV_FILE, OUT_FILE, Correct_File(MDEV_FULL_NAME));
     for I in WORDS_MDEV'RANGE  loop
       PUT(MDEV_FILE, I);
       SET_COL(MDEV_FILE, 35);
@@ -459,7 +458,7 @@ LOAD_DICTIONARY(DICT_LOC,
     LINE : STRING(1..100) := (others => ' ');
     LAST : INTEGER := 0;
   begin
-    OPEN(MDEV_FILE, IN_FILE, MDEV_FULL_NAME);
+    OPEN(MDEV_FILE, IN_FILE, Correct_File(MDEV_FULL_NAME));
     for I in WORDS_MDEV'RANGE  loop
       GET(MDEV_FILE, MO);
       GET(MDEV_FILE, REP);
@@ -491,6 +490,7 @@ LOAD_DICTIONARY(DICT_LOC,
           (LINE(35) in ':'..'@')  or
           (LINE(35) in '['..'`')  or
           (LINE(35) in '{'..'~'))  and
+
           (LINE(35) /= START_FILE_CHARACTER)  and
           (LINE(35) /= CHANGE_DEVELOPER_MODES_CHARACTER)  then
         CHANGE_PARAMETERS_CHARACTER := LINE(35);
