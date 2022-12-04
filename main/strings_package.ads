@@ -39,7 +39,7 @@ package STRINGS_PACKAGE is
    procedure GET_NON_COMMENT_LINE
      (F : in Text_IO.File_Type; S : out String; LAST : out Integer);
 
-   INPUT_LINE_LENGTH : Integer := 2_500;
+   INPUT_LINE_LENGTH : Integer := 1_023;
 
    type Pearse_Code_Type is new Integer range 0..7;
    Pearse_Code_Array : constant array(Pearse_Code_Type) of String (1..3) := ("00 ","01 ","02 ","03 ","04 ","05 ","06 ","07 ");
