@@ -133,8 +133,7 @@ package body LATIN_FILE_NAMES is
 
   exception
       when others =>
-         null;  -- Check path silently, don't get hung up on permissions errors or nonexistent directories
-
+         null;  -- Check path silently
    end Find_Data_And_Settings;
 
 end LATIN_FILE_NAMES;

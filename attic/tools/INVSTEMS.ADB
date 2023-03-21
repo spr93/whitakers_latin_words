@@ -10,7 +10,7 @@
       INPUT, OUTPUT : FILE_TYPE;
    
       function INVERT(S : STRING) return STRING is
-         T : STRING(S'FIRST..S'LAST);
+         T : STRING(1..S'Length);
       begin
          if S(1) = ' '  then 
             return BLANK_STEM;  

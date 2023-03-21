@@ -26,8 +26,6 @@ with PARSE_PACKAGE;        use PARSE_PACKAGE;        -- Contains PARSE, the main
 
 -- MORE:  Packages supporting additional user convenience options; mostly post-Whitaker
 with Ada.Command_Line;                               -- Command-line options (see below)
-with Ada.Environment_Variables;                      -- Makes it easier to separate data files from executable
-with Ada.Directories;                                --   (same)
 with Ada.Wide_Text_IO;                               -- For Unicode handling (macron stripping)
 with Words_Help;                                     -- Online help system
 with Ada.Exceptions;                                 -- Provide information for unhandled errors

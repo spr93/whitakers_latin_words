@@ -89,7 +89,6 @@
                      PUT(DE); NEW_LINE;
             end FORM_DE;
          
-         
             PUT(OUTPUT, "#" & DICTIONARY_FORM(DE)); 
             
 --            if DE.PART.POFS = N  then
