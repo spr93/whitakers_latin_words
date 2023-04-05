@@ -11,3 +11,6 @@ rm WORK.
 ./sorter E
 rm WORK.
 ./makeefil
+echo "Dictionary build complete."
+echo "If successful, The following files constitute a complete set of dictionary data:"
+echo "INFLECTS.SEC ADDONS.LAT UNIQUES.LAT DICTFILE.GEN STEMFILE.GEN INDXFILE.GEN EWDSFILE.GEN"
