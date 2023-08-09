@@ -32,9 +32,9 @@ private
       Skip_Next, Bold_Next,
       "Example:|                                                                      ",
       Bold_Next,
-      "amo, amare, amavi, amatus   V          (1st)       [XXXAO]      veryfreq|      ",
+      "amo, amare, amavi, amatus   V           (1st)       [XXXAO]       veryfreq|    ",
       Bold_Next,
-      "[standard dictionary forms] [pt.spch.] [decl/conj] [dict. code] [word freq.]|  ",
+      "[standard dictionary forms] [pt. spch.] [decl/conj] [dict. codes] [word freq.]|",
       "     TYPE ? CODES to learn more about the [dict. codes] columns|               ",
       "     TYPE ? FREQ to learn more about the [freq.] column|                       ",
       Skip_Next, Underline_Next,
@@ -439,6 +439,6 @@ private
       "-e    ENGLISH ONLY:  User cannot enter Latin->English mode|                    ",
       "-m    MEANINGS ONLY: Limit Latin->English output to dictionary line and meaning",
       "E.g., words -rnlm limits the user the functionality of a paper dictionary|     ",
-      "Command-line limitations override conflicting saved settings.|                 ");
+      "Command-line limitations override any conflicting saved settings.|             ");
 
 end Words_Help;
