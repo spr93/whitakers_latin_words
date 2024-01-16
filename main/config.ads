@@ -1,13 +1,16 @@
 package CONFIG is
 
-   OUTPUT_SCREEN_SIZE : Integer := 20;
+  Output_Adjustment  : constant Integer := 3;
+  -- this version skips 2 lines, then prints "=>"
+  OUTPUT_SCREEN_SIZE : constant Integer := 24-Output_Adjustment;
+  -- assume standard 80x24 for portability and backward compat
+
 
   type CONFIGURATION_TYPE is (DEVELOPER_VERSION, USER_VERSION, ONLY_MEANINGS);
   -- SPR:  The ONLY_MEANINGS and DO_ONLY_MEANINGS options are inaccurately named.
   -- They're more like "dictionary mode" because they display the dictionary forms' line + meanings.
-  -- But Words has used this terminology for 30 years without significant user confusion, so no
-  -- sense in changing.
-  -- Combine ONLY_MEANINGS with DO_DICTIONARY_FORMS = FALSE to get real MEANINGS_ONLY output.
+  -- But Words has used this terminology for 30 years, so not changing.
+  -- Set ONLY_MEANINGS = TRUE and DO_DICTIONARY_FORMS = FALSE to output only meanings lines.
 
    CONFIGURATION : CONFIGURATION_TYPE := DEVELOPER_VERSION;
 
