@@ -46,7 +46,6 @@ is
       HITS : Integer := 0;
    begin
 
-      --  Bubble sort
       HIT_LOOP :
       loop
          HITS := 0;
@@ -74,7 +73,7 @@ is
                   OUTPUT_ARRAY (I)     := OUTPUT_ARRAY (I + 1);
                   OUTPUT_ARRAY (I + 1) := DW;
                   HITS                 := HITS + 1;
-                  --PUT_LINE("HITS    " & INTEGER'IMAGE(HITS));
+                  --DEBUG:  PUT_LINE("HITS    " & INTEGER'IMAGE(HITS));
                end if;
             end loop INNER_LOOP;
 
@@ -92,13 +91,13 @@ is
       if NUMBER_OF_HITS = 0 then
          Text_IO.Put_Line (OUTPUT, "No match");
       else
---  PUT_LINE("Unsorted EWDS"); for I in 1..NUMBER_TO_SHOW loop
---   PUT(INTEGER'IMAGE(I)); PUT("*"); EWDS_RECORD_IO.PUT(OUTPUT_ARRAY(I)); NEW_LINE;
---  end loop;
+--  DEBUG:  PUT_LINE("Unsorted EWDS"); for I in 1..NUMBER_TO_SHOW loop
+--  DEBUG:  PUT(INTEGER'IMAGE(I)); PUT("*"); EWDS_RECORD_IO.PUT(OUTPUT_ARRAY(I)); NEW_LINE;
+--  DEBUG:  end loop;
 
          SORT_OUTPUT_ARRAY;
 
---TEXT_IO.PUT_LINE("DUMP_OUTPUT SORTED");
+--  DEBUG:  TEXT_IO.PUT_LINE("DUMP_OUTPUT SORTED");
 
          TRIMMED := False;
          if WORDS_MODE (TRIM_OUTPUT) then

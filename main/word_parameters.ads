@@ -9,9 +9,10 @@ package WORD_PARAMETERS is
 --  The default values are set in the body, so that they may be changed easily
 
   CHANGE_PARAMETERS_CHARACTER        : CHARACTER := '#';
-  CHANGE_LANGUAGE_CHARACTER          : CHARACTER := '_'; --No more ~ as default because it causes shells to mangle arguments
+  CHANGE_LANGUAGE_CHARACTER          : CHARACTER := '_'; --No more ~ as default because it causes shells to modify arguments
   HELP_CHARACTER                     : CHARACTER := '?'; --even MSFT PowerShell now conforms to the ~ => $HOME standard
-
+  BROWSE_CHARACTER_FORWARD           : constant CHARACTER := '>';
+  BROWSE_CHARACTER_BACKWARD          : constant CHARACTER := '<';
 
   --  These files are used by the program if requested, but not necessary
   --  They are all text files and human readable
@@ -50,6 +51,8 @@ package WORD_PARAMETERS is
                       DO_ONLY_MEANINGS,
                       DO_STEMS_FOR_UNKNOWN,
 
+                      ENABLE_BROWSING,
+
                       DO_ARABIC_NUMERALS,
                       DO_ANSI_FORMATTING,
                       DIM_EXAMPLES_TEXT,
@@ -78,6 +81,8 @@ package WORD_PARAMETERS is
                       DO_EXAMPLES                 => TRUE,
                       DO_ONLY_MEANINGS            => FALSE,
                       DO_STEMS_FOR_UNKNOWN        => TRUE,
+
+                      ENABLE_BROWSING             => TRUE,
 
                       DO_ARABIC_NUMERALS          => TRUE,
                       DO_ANSI_FORMATTING          => TRUE,

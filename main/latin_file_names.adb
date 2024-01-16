@@ -4,10 +4,7 @@ with Ada.Environment_Variables;
 package body LATIN_FILE_NAMES is
 
   function ADD_FILE_NAME_EXTENSION(NAME, EXTENSION : STRING) return STRING is
-  --  This is the version that creates a DOS file name
-  --  One that has a name, a '.', and an extension no longer than 3 characters
-  --  Arbitarily, we also truncate the NAME to 8 characters
-  --  To port to another system, one needs to do this function appropriately
+    -- Legacy DOS file name rules
     NAME_LENGTH      : INTEGER := NAME'LENGTH;
     EXTENSION_LENGTH : INTEGER := EXTENSION'LENGTH;
   begin
@@ -27,8 +24,8 @@ package body LATIN_FILE_NAMES is
    -- user-input file names.
 
     use Ada.Directories;
-    --use Ada.Strings.Unbounded;
     use Config;
+
    begin
 
     if Current_Directory = Startup_Working_Directory then
@@ -133,7 +130,8 @@ package body LATIN_FILE_NAMES is
 
   exception
       when others =>
-         null;  -- Check path silently
+         null;  -- Check path silently, don't get hung up on permissions errors or nonexistent directories
+
    end Find_Data_And_Settings;
 
 end LATIN_FILE_NAMES;

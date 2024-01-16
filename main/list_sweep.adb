@@ -40,7 +40,7 @@ procedure LIST_SWEEP (PA : in out PARSE_ARRAY; PA_LAST : in out Integer) is
                                        -- In any event, DICTPAGE reports dictionary forms if that's important for some reason.
                                        -- The remaining checks apply only to verbs; the /= V condition is an artifact of removed non-verb checks.
 
-      end if; 
+      end if;
 
       DICT_IO.Read (DICT_FILE (PR.D_K), DE, PR.MNPC);
 
@@ -138,7 +138,7 @@ procedure LIST_SWEEP (PA : in out PARSE_ARRAY; PA_LAST : in out Integer) is
                   null;
                end if;
             end if;
-        
+
       return ALLOWED;
 
 
@@ -192,7 +192,7 @@ procedure LIST_SWEEP (PA : in out PARSE_ARRAY; PA_LAST : in out Integer) is
          return;
       end if;
 
-      --  Bubble sort since this list should usually be very small (1-5)
+      --  Bubble sort since this list should usually be very small (1-5) and not terribly disordered
       HIT_LOOP :
       loop
          HITS := 0;
@@ -594,15 +594,15 @@ begin                               --  LIST_SWEEP
    --      It's not pretty, but it handles almost almost all the corner cases I've identified. ...except qu- PRONs, which are
    --      handled in a combination of routines here and in list_package.
    --
-   --      The qu- pronouns cause the most trouble.   It takes a 5-dimensional array to fully characterize
+   --      The qu- pronouns cause the most trouble.  It takes a 5-dimensional array to fully characterize
    --      their inflections (see INFLECTS.LAT for the explanation) AND THEN they have the special PACKON feature
    --      (-que, -libet, etc.).  Making things even more complicated are two structural issues.  First, Col. Whitaker maximized
    --      flexibility by separating the parse and dictionary arrays (see explanation of those structures in his list_package
-   --      comments). Second, he used variant records to reduce duplication and use storage efficiently.  But this approach means that
-   --      parsing qu- pronouns uniquely require information from the dictionary array (namely, the actual meanings, not just the MNPC,
-   --      to prevent duplicates). It also requires treating dictionary objects from ADDONs (PACKONs) as if they were inflection
-   --      objects.  The variant records make this especially tricky because but the ADDON record variants don't store the information
-   --      we need in a way that maps 1:1 to PRONs.  See "Problem  Encountered with the Variant in Ada," Cryptologic Quarterly (1988)
+   --      comments). Second, he used variant records to reduce duplication and use storage efficiently.  But finding duplicate
+   --      qu- pronouns raises the unique problem of needing both MNPC and dictionary information.  Further, they require treating
+   --      dictionary objects from ADDONs (PACKONs) as if they were inflection objects.
+   --      The variant records make this especially tricky because but the ADDON record variants don't store the information
+   --      we need in a way that maps 1:1 to PRONs.  See "Problem Encountered with the Variant in Ada," Cryptologic Quarterly (1988)
    --      (NSA Transparency Case 63853, DOCID 3929124); Whitaker's note above re generating exceptions due to POFS variants.
    --
    --      The upshot is that we must either change objects and data structures just for qu- stems or run some complicated conditional
@@ -651,15 +651,6 @@ begin                               --  LIST_SWEEP
 
       while J >= 1 loop        --  Sweep backwards over PA
 
-         --           if (not ALLOWED_STEM(PA(J))   or                 --  Remove not ALLOWED_STEM & null
---               (PA(J) = NULL_PARSE_RECORD))  then         --  and close ranks
-         --DEBUG: TEXT_IO.PUT_LINE("Removing dis ALLOWED STEM J = " &
-         --DEBUG: INTEGER'IMAGE(J));
-         --               PA(J..PA_LAST-1) := PA(J+1..PA_LAST);     --  null if J = PA_LAST
-         --              PA_LAST := PA_LAST - 1;
-         --              P_LAST := P_LAST - 1;
-         --              TRIMMED := TRUE;
-
          if ((PA (J).D_K in ADDONS .. YYY) or (PA (J).IR.QUAL.POFS in XONS))
            and then (PW_ON)
          then               --  first FIX/TRICK after regular
@@ -677,7 +668,6 @@ begin                               --  LIST_SWEEP
                exit when JJ + 1 > PA'Last; -- prevent infinite loop
             end loop;
 
-            ----Order internal to this set of inflections
 --DEBUG:   TEXT_IO.PUT_LINE("SWEEP INTERNAL J = " & INTEGER'IMAGE(J) & " P_FIRST = " &
 --DEBUG:   INTEGER'IMAGE(P_FIRST) & " P_LAST = " & INTEGER'IMAGE(P_LAST) & " DIFF_J = " &
 --DEBUG:   INTEGER'IMAGE(DIFF_J) & " PA_LAST = " & INTEGER'IMAGE(PA_LAST));
@@ -717,7 +707,7 @@ begin                               --  LIST_SWEEP
 --DEBUG: INTEGER'IMAGE(P_LAST));
 --DEBUG: for I in 1..PA_LAST  loop
 --DEBUG: PARSE_RECORD_IO.PUT(PA(I)); TEXT_IO.NEW_LINE;
-            --DEBUG: end loop;
+--DEBUG: end loop;
 
             PW_ON  := True;
             FIX_ON := False;
@@ -752,8 +742,7 @@ begin                               --  LIST_SWEEP
          SUPRESS_KEY_CHECK :
          declare
             function "<=" (A, B : in PARSE_RECORD) return Boolean is
-            begin                             --  !!!!!!!!!!!!!!!!!!!!!!!!!!
-
+            begin
                if A.IR.QUAL = B.IR.QUAL and then A.MNPC = B.MNPC then
                   return True;
                else
@@ -762,7 +751,6 @@ begin                               --  LIST_SWEEP
             end "<=";
 
          begin
-
             if ((PR.D_K /= XXX) and (PR.D_K /= YYY) and (PR.D_K /= PPP)) then
                if (PR <= OPR) then
                   PA (J .. PA_LAST - 1) :=
@@ -775,7 +763,7 @@ begin                               --  LIST_SWEEP
                elsif
                  (J + 1 <=
                   PA_LAST) -- Must include range check or exceptions will be raised
-                  -- in some situations (e.g., 'fame')
+                           -- in some situations (e.g., 'fame')
 
                then
                   if (PA (J) = PA (J + 1)) then
@@ -823,7 +811,7 @@ begin                               --  LIST_SWEEP
                OPA (Next) := PA (I);
                Next       := Next + 1;
             end if;
-         end loop; -- I
+         end loop;                                          -- I loop
 
          for J in Qu_PA'FIRST .. (Qu_PA'Last - 1)
          loop     -- remove duplicate PRON 1 X and PACKs

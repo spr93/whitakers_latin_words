@@ -1,7 +1,7 @@
 --
 -- LICENSE DETAILS AND RIGHTS GRANT AT BOTTOM OF FILE.
 -- SUMMARY:
--- Copyright (c) 1993-2022 William Armstrong Whitaker and contributors.
+-- Copyright (c) 1993-2023 William Armstrong Whitaker and contributors.
 -- BSD 2-clause
 --
 -- In memoriam, Col. Wm. Whitaker, Chair of DoD Working Group responsible for
@@ -34,16 +34,17 @@ with Ada.Exceptions;                                 -- Provide information for 
 procedure WORDS is -- the main/startup procedure.  Handles I/O configuration and command-line options.
 
   procedure Initialize_Dictionary is -- Mostly related to file system operations (opening, loading, and creating files).
-  begin                              -- Some command-line options moot, or even prohibit, some of those operations
-                                     -- so we defer them until we're ready to call PARSE.
-      INITIALIZE_WORD_PARAMETERS;    -- always initialize in this order
+  begin                              -- Some options (METHODs and command-line options) modify, moot, or prohibit some
+                                     -- of those operations so we defer them until after all options are set.
+      Find_Data_And_Settings;
+      INITIALIZE_WORD_PARAMETERS;
       INITIALIZE_DEVELOPER_PARAMETERS;
       INITIALIZE_WORD_PACKAGE;
   end Initialize_Dictionary;
 
 begin
 
-   Find_Data_And_Settings;
+-- PART I:  INTERACTIVE MODES.  Self-contained modes that NEVER fall through to Part II.
 
    --  SIMPLE INTERACTIVE MODE -- when Words is run without parameters
    if Ada.Command_Line.Argument_Count = 0 then
@@ -128,17 +129,21 @@ begin
 
    end if; -- enclosing interactive mode
 
- -- The rest of this procedure handles the command-line possibilities Whitaker created
+----------------------------------------------------------------------------------------------------
 
-   -- NOT entering interactive mode, so minimize screen output.
+ --  PART II:  NON-INTERACTIVE MODES--i.e., the command-line possibilities Whitaker created
+ --            Steps:  A (set global options); B (load data files); C (parse dictionary queries)
+
+  -- STEP A:   Set global options
+
+   --  NOT entering interactive mode, so minimize screen output.
    SUPPRESS_PREFACE := True;
 
    --  Now choose a non-interactive mode: when 1 argument => either a simple Latin
    --  word or an input file. when 2 arguments => two words in-line OR language
    --  switch and word or input file when more arguments => command-line of Latin
-   --  words.
 
- --  First possibility:  English->Latin command-line mode
+  --  First possibility:  English->Latin command-line mode
    --  Words has never supported processing a file of English words after a command-line switch to English.
    --  Few users should want to do that because Word's isn't suitable for translating a lot of English
    --  to Latin in a non-interactive mode (getting a Latin word with the right connotation
@@ -178,12 +183,10 @@ begin
          Parse (TRIM (Input_String));
          return;
       end English_Command_Line_Input;
-  end if;
 
  -- Possibility two:  >2 arguments without a switch to English->Latin => must be command-line Latin
-   if Ada.Command_Line.Argument_Count > 2 then
+   elsif Ada.Command_Line.Argument_Count > 2 then
       METHOD := COMMAND_LINE_INPUT;
-      Initialize_Dictionary;
 
  -- Remaining possibilities:  Command-line Latin or Latin command-line files.  Ambiguous until we check
  --                           whether the first argument is a valid input file name
@@ -193,8 +196,7 @@ begin
     -- for Unicode processing (Wide_Text) or not.
     -- Go ahead and initialize now.  At this point, METHOD is NOT_YET_SET, which will
     -- suppress unnecessary file operations during initialization.
-    METHOD := COMMAND_LINE_FILES;
-    Initialize_Dictionary;
+       METHOD := COMMAND_LINE_FILES;
 
     SETUP_INPUT :
       declare
@@ -236,7 +238,10 @@ begin
 
    end if;
 
--- Finally, we can parse.
+  -- STEP B:  Load data files
+  Initialize_Dictionary;
+
+  -- STEP C:   Parse dictionary queries
    if METHOD = COMMAND_LINE_INPUT then
       for I in 1 .. Ada.Command_Line.Argument_Count loop
          declare
@@ -254,14 +259,16 @@ begin
          Parse;
       end if;
 
-    if Text_IO.Is_Open(Output) -- Must check Is_Open first or risk Status_Error
-      and then Name (OUTPUT) /= Name (Standard_Output) then
-      Put_Pearse_Code(OUTPUT,7);
-      Put_Line
-        (Standard_Output,"Wrote output to file " & Name(Output)); --TRIM (Ada.Command_Line.Argument (2)));
-    end if;
+     if Text_IO.Is_Open(Output) -- Must check Is_Open first or risk Status_Error
+       and then Name (OUTPUT) /= Name (Standard_Output) then
+       Put_Pearse_Code(OUTPUT,7);
+       Put_Line
+         (Standard_Output,"Wrote output to file " & Name(Output));
+     end if;
 
    end if;
+
+----------------------------------------------------------------------------------------------------
 
 exception
   when Give_Up | FATAL_ERROR => return; -- handled errors

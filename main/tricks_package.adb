@@ -11,8 +11,8 @@ package body TRICKS_PACKAGE is
    function IS_A_VOWEL (C : Character) return Boolean is
    begin
       if Lower_Case (C) = 'a' or Lower_Case (C) = 'e' or
-        Lower_Case (C) = 'i' or Lower_Case (C) = 'o' or Lower_Case (C) = 'u' or
-        Lower_Case (C) = 'y'
+         Lower_Case (C) = 'i' or Lower_Case (C) = 'o' or Lower_Case (C) = 'u' or
+         Lower_Case (C) = 'y'
       then
          return True;
       else
@@ -20,13 +20,15 @@ package body TRICKS_PACKAGE is
       end if;
    end IS_A_VOWEL;
 
+  -- SPR:  NOTE that this and the following two functions can be called, directly or indirectly,
+  --       in situations where it's not efficient to convert the whole string to upper case first
    function A_ROMAN_DIGIT (CHAR : Character) return Boolean is
    begin
       case CHAR is
          when 'M' |
-           'm' =>   -- SPR:  NOTE that this and the following trwo functions can be called, directly or indirectly,
+           'm' =>
             return
-              True;      --       in situations where it's not efficient to convert the whole string to upper case first
+              True;
          when 'D' | 'd' =>
             return True;
          when 'C' | 'c' =>
@@ -2005,7 +2007,7 @@ package body TRICKS_PACKAGE is
    exception
       when others =>    --  I want to ignore anything that happens in SLURY
          PA_LAST          := PA_SAVE;
-         PA (PA_LAST + 1) := NULL_PARSE_RECORD;     --  Just to clear the trys
+         PA (PA_LAST + 1) := NULL_PARSE_RECORD; -- Clear the TRYs
          Format (OUTPUT, INVERSE);
          Text_IO.Put_Line
            (    --  ERROR_FILE,
