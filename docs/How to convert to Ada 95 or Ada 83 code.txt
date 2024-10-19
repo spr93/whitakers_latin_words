@@ -20,4 +20,4 @@ For Ada 95, you should also:
 -   Remove all references to Ada.Directories and Ada.Environment_Variables.
 -- In sorter.adb, remove the Put_Line call in ECHO_ENTRY.
 
-For Ada 83, you must make all the foregoing changes; remove all code that references Ada.Command_Line; and revert to older, more verbose syntax in a few places that your compiler will identify.
+For Ada 83, you must make all the foregoing changes and then remove all code that references Ada.Command_Line.  You will also need to revert to older, more verbose syntax in a few places that your compiler will identify.
