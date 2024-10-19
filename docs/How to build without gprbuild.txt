@@ -1,0 +1,19 @@
+Choose your platform by copying the contents of either main/nonwindows or main/windows to main/
+
+Choose whether your compiler and OS support Unicode by copying the contents of either main/unicode or main/nonunicode to main/
+
+Copy the contents of dictionary/ to main/
+
+Now all required files are in main
+
+Manually compile and bind the following programs (e.g., "gnatmake <program_name>"")
+
+  makedict
+  makeefil
+  makeewds
+  makeinfl
+  makestem
+  sorter
+  words
+
+Execute rebuild.sh or rebuild.cmd
