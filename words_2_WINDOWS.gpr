@@ -6,10 +6,6 @@ project Words_2_WINDOWS is
    for Object_Dir use "obj";
    for Exec_Dir use "obj";
 
-   package Compiler is
-      for Default_Switches ("ada") use ("-gnato", "-fstack-check");
-   end Compiler;
-
    package Builder is
       for Switches ("ada") use ("-j4","-O2");
    end Builder;
