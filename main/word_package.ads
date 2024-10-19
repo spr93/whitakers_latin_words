@@ -52,7 +52,7 @@ package WORD_PACKAGE is
    RRR_MEANING_COUNTER, PPP_MEANING_COUNTER : Integer := 1;
 
    SCROLL_LINE_NUMBER  : Integer := 0;
-   OUTPUT_SCROLL_COUNT : Integer := 0;
+   -- OUTPUT_SCROLL_COUNT : Integer := 0;
 
    procedure PAUSE (OUTPUT : Text_IO.File_Type);
 
