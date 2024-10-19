@@ -15,8 +15,8 @@ package body DEVELOPER_PARAMETERS is
 
   type REPLY_TYPE is (N, Y);
   package REPLY_TYPE_IO is new TEXT_IO.ENUMERATION_IO(REPLY_TYPE);
-  REPLY : array (BOOLEAN) of REPLY_TYPE := (N, Y);
-  MDEV_OF_REPLY : array (REPLY_TYPE) of BOOLEAN := (FALSE, TRUE);
+  REPLY         : constant array (BOOLEAN)    of REPLY_TYPE := (N, Y);
+  MDEV_OF_REPLY : constant array (REPLY_TYPE) of BOOLEAN := (FALSE, TRUE);
 
   BLANK_INPUT : exception;
 
