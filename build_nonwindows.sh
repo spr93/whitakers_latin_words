@@ -1,8 +1,7 @@
 #!/bin/sh
 echo "Assumes GNAT and gprbuild are installed and that you have write permission for ./obj/ and ./dictionary/"
 gprbuild words_2.gpr -p
-gprbuild dictionary.gpr makedict makeefil makeewds makeinfl -p
-makestem sorter
+gprbuild dictionary.gpr makedict makeefil makeewds makeinfl makestem sorter -p
 cd dictionary
 ../obj/sorter D
 # we manually delete WORK. because CREATE_FILE on WORK may cause USE_ERRROR on some older implementations.
