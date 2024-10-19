@@ -11,7 +11,7 @@ project Words_2 is
    end Compiler;
 
    package Builder is
-      for Switches ("ada") use ("-j4");
+      for Switches ("ada") use ("-j4","-O2");
    end Builder;
 
 end Words_2;
