@@ -725,7 +725,7 @@ begin
 
             when 'S' =>
                D_K := SPECIAL;
-               Put_Line ("Working on GENERAL dictionary");
+               Put_Line ("Working on SPECIAL dictionary");
 
             when others =>
                New_Line;
