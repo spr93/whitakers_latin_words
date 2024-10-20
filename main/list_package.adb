@@ -1119,7 +1119,7 @@ package body LIST_PACKAGE is
 
       end if;
 
--- TEXT_IO.PUT_LINE("PUTting INFLECTIONS");
+-- TEXT_IO.PUT_LINE("DEBUG:  PUTting INFLECTIONS");
       J    := 1;
       OSRA := NULL_SRA;
 
@@ -1387,6 +1387,7 @@ package body LIST_PACKAGE is
                SCROLL_LINE_NUMBER := Integer (Text_IO.Line (OUTPUT));
                --            Text_IO.New_Line(OUTPUT);
             end if;
+
          end DO_PAUSE;
       --   TEXT_IO.PUT_LINE("End of OUTPUT_LOOP with J = " & INTEGER'IMAGE(J));
 
@@ -1394,7 +1395,6 @@ package body LIST_PACKAGE is
 
       end loop OUTPUT_LOOP;
       --   TEXT_IO.PUT_LINE("Finished OUTPUT_LOOP");
-
       Text_IO.New_Line (OUTPUT);
 
    exception
@@ -1440,7 +1440,7 @@ package body LIST_PACKAGE is
 
       function FIRST_TWO (W : String) return String is
          --  Make sure V/U and I/J distinctions in the dictionary file don't
-         --  bias our search results (e.g., 'v' could be represented by 'u',but
+         --  bias our search results (e.g., 'v' could be represented by 'u', but
          --  our dictionary file has entries for veni, vidi, vici, not ueni,
          --  uidi, uici)
 
@@ -1557,7 +1557,7 @@ package body LIST_PACKAGE is
          UNKNOWN_COUNT := DS.MNPC;
 
       end if;
-      -- TEXT_IO.PUT_LINE("Leaving LIST_NEIGHBORHOOD UNKNOWN_SEARCH");
+   --  TEXT_IO.PUT_LINE("DEBUG: Leaving LIST_NEIGHBORHOOD UNKNOWN_SEARCH");
    end UNKNOWN_SEARCH;
 
    procedure LIST_NEIGHBORHOOD
@@ -1566,7 +1566,7 @@ package body LIST_PACKAGE is
 
       D_K      : constant DICTIONARY_KIND := GENERAL;
       UNK_MNPC : DICT_IO.Count;
-
+      use Dict_Io;
    begin
 --  TEXT_IO.PUT_LINE("Entering LIST_NEIGHBORHOOD");
 
