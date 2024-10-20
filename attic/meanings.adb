@@ -1,3 +1,7 @@
+-- SPR:  Whitaker's meanings.adb was a version of WORDS that was hard coded to return only the dictionary forms and meanings lines, and no further grammatical information or parsing; i.e., its functionality was limited to that of a paper dictionary
+-- SPR:  The same functionality can be obtained with the new command-line option -m or by setting the option MEANINGS_ONLY and preventing user modification of that setting via command-line option -r
+-- SPR:  See also comments in config.ads
+
    with Ada.Command_Line;
    with Ada.Text_IO; use Ada.Text_IO;
    with STRINGS_PACKAGE; use STRINGS_PACKAGE;
@@ -13,7 +17,7 @@
       --  The language shift in argumants must take place here
       --  since later parsing of line ignores non-letter characters
       CONFIGURATION := MEANINGS;
- 
+
 
       --The main mode of usage for WORDS is a simple call, followed by screen interaction.
       if Ada.Command_Line.ARGUMENT_COUNT = 0  then      --  Simple WORDS
@@ -24,9 +28,9 @@
          INITIALIZE_DEVELOPER_PARAMETERS;
          INITIALIZE_WORD_PACKAGE;
          PARSE;
-         
+
       --But there are other, command line options.
-      --WORDS may be called with arguments on the same line, 
+      --WORDS may be called with arguments on the same line,
       --in a number of different modes.
       --
       else
@@ -34,7 +38,7 @@
          INITIALIZE_WORD_PARAMETERS;
          INITIALIZE_DEVELOPER_PARAMETERS;
          INITIALIZE_WORD_PACKAGE;
-   
+
       --Single parameter, either a simple Latin word or an input file.
       --WORDS amo
       --WORDS infile
@@ -52,7 +56,7 @@
                when NAME_ERROR  =>                   --  Raised NAME_ERROR therefore
                   METHOD := COMMAND_LINE_INPUT;      --  Found word in command line
          end ONE_ARGUMENT;
-      
+
       --With two arguments the options are: inputfile and outputfile,
       --two Latin words, or a language shift to English (Latin being the startup default)
       --and an English  word (with no part of speech).
@@ -66,23 +70,23 @@
             OUTPUT_NAME : constant STRING := TRIM(Ada.Command_Line.Argument(2));
          begin
            if INPUT_NAME(1) = CHANGE_LANGUAGE_CHARACTER  then
-             if (INPUT_NAME'LENGTH > 1)  then 
+             if (INPUT_NAME'LENGTH > 1)  then
                  CHANGE_LANGUAGE(INPUT_NAME(2));
                  ARGUMENTS_START := 2;
-                 METHOD := COMMAND_LINE_INPUT;      --  Parse the one word 
-              end if; 
+                 METHOD := COMMAND_LINE_INPUT;      --  Parse the one word
+              end if;
             else
                OPEN(INPUT, IN_FILE, INPUT_NAME);
                CREATE(OUTPUT, OUT_FILE, OUTPUT_NAME);
                METHOD := COMMAND_LINE_FILES;
-         
+
                SET_INPUT(INPUT);
                SET_OUTPUT(OUTPUT);
-         
+
                SUPPRESS_PREFACE := TRUE;
                OUTPUT_SCREEN_SIZE := INTEGER'LAST;
                PARSE;           --  No additional arguments, so just go to PARSE now
-         
+
                SET_INPUT(Ada.TEXT_IO.STANDARD_INPUT);    --  Clean up
                SET_OUTPUT(Ada.TEXT_IO.STANDARD_OUTPUT);
                CLOSE(OUTPUT);
@@ -90,9 +94,9 @@
             exception                  --  Triggers on either INPUT or OUTPUT  !!!
                when NAME_ERROR  =>
                   METHOD := COMMAND_LINE_INPUT;            --  Found words in command line
-         
+
          end TWO_ARGUMENTS;
-     
+
       --With three arguments there could be three Latin words or a language shift
       --and and English word and part of speech.
       --WORDS amo amas amat
@@ -105,31 +109,31 @@
             ARG3 : constant STRING := TRIM(Ada.Command_Line.Argument(3));
          begin
            if ARG1(1) = CHANGE_LANGUAGE_CHARACTER  then
-             if (ARG1'LENGTH > 1)  then 
+             if (ARG1'LENGTH > 1)  then
                  CHANGE_LANGUAGE(ARG1(2));
                  ARGUMENTS_START := 2;
-                 METHOD := COMMAND_LINE_INPUT;      --  Parse the one word 
-              end if; 
+                 METHOD := COMMAND_LINE_INPUT;      --  Parse the one word
+              end if;
             else
                METHOD := COMMAND_LINE_INPUT;
             end if;
-             
+
          end THREE_ARGUMENTS;
-      
+
       --More than three arguments must all be Latin words.
       --WORDS amo amas amat amamus amatis amant
       else    --  More than three arguments
-      
+
          METHOD := COMMAND_LINE_INPUT;
       end if;
-   
-   
+
+
       if METHOD = COMMAND_LINE_INPUT  then            --  Process words in command line
          MORE_ARGUMENTS:
          begin
   --Ada.TEXT_IO.PUT_LINE("MORE_ARG  ARG_START = " & INTEGER'IMAGE(ARGUMENTS_START));
            SUPPRESS_PREFACE := TRUE;
-            for I in ARGUMENTS_START..Ada.Command_Line.Argument_Count  loop  --  Assemble input words 
+            for I in ARGUMENTS_START..Ada.Command_Line.Argument_Count  loop  --  Assemble input words
                INPUT_LINE := HEAD(TRIM(INPUT_LINE) & " " & Ada.Command_Line.Argument(I), 250);
             end loop;
   --Ada.TEXT_IO.PUT_LINE("To PARSE >" & TRIM(INPUT_LINE));
@@ -137,9 +141,9 @@
          end MORE_ARGUMENTS;
       end if;
       end if;
-   
+
    end MEANINGS;
-   
-   
-   
+
+
+
 
