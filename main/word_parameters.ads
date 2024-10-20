@@ -51,8 +51,6 @@ package WORD_PARAMETERS is
                       DO_ONLY_MEANINGS,
                       DO_STEMS_FOR_UNKNOWN,
 
-                      ENABLE_BROWSING,
-
                       DO_ARABIC_NUMERALS,
                       DO_ANSI_FORMATTING,
                       DIM_EXAMPLES_TEXT,
@@ -81,8 +79,6 @@ package WORD_PARAMETERS is
                       DO_EXAMPLES                 => TRUE,
                       DO_ONLY_MEANINGS            => FALSE,
                       DO_STEMS_FOR_UNKNOWN        => TRUE,
-
-                      ENABLE_BROWSING             => TRUE,
 
                       DO_ARABIC_NUMERALS          => TRUE,
                       DO_ANSI_FORMATTING          => TRUE,
