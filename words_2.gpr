@@ -1,17 +1,13 @@
 project Words_2 is
 
    for Languages use ("Ada");
-   for Source_Dirs use ("main", "main/nonwindows", "main/unicode");
-   for Main use ("words.adb");
+   for Source_Dirs use ("main", "main/nonwindows", "main/unicode", "dictionary");
+   for Main use ("words", "makedict", "makeefil", "makeewds", "makeinfl", "makestem", "sorter");
    for Object_Dir use "obj";
    for Exec_Dir use "obj";
 
-   package Compiler is
-      for Default_Switches ("ada") use ("-gnato", "-fstack-check");
-   end Compiler;
-
    package Builder is
-      for Switches ("ada") use ("-j4","-O2");
+      for Switches ("ada") use ("-j4","-O3");
    end Builder;
 
 end Words_2;

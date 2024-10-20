@@ -1,13 +1,13 @@
 project Words_2_WINDOWS is
 
    for Languages use ("Ada");
-   for Source_Dirs use ("main", "main\windows","dictionary","main\nonunicode");
-   for Main use ("words.adb");
+   for Source_Dirs use ("main", "main/windows", "main/unicode", "dictionary");
+   for Main use ("words", "makedict", "makeefil", "makeewds", "makeinfl", "makestem", "sorter");
    for Object_Dir use "obj";
    for Exec_Dir use "obj";
 
    package Builder is
-      for Switches ("ada") use ("-j4","-O2");
+      for Switches ("ada") use ("-j4","-O3");
    end Builder;
 
 end Words_2_WINDOWS;
