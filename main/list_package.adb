@@ -1592,13 +1592,12 @@ package body LIST_PACKAGE is
 
          PAUSE (OUTPUT);
 
-         for MN in
-           DICT_IO.Count (Integer (UNK_MNPC) - 5) ..
-             DICT_IO.Count (Integer (UNK_MNPC) + 3)
-         loop
-            exit when Integer (MN) > Integer (LAST_MNPC)
-              and then Integer (LAST_MNPC) /= Integer (NULL_MNPC);
+         if UNK_MNPC - 5 < 1 then UNK_MNPC := 5; end if;
+         if Unk_MNPC + 3 > LAST_MNPC then UNK_MNPC := UNK_MNPC - 3; end if;
 
+         for MN in
+          UNK_MNPC-5..UNK_MNPC+3
+         loop
             LIST_ENTRY (OUTPUT, D_K, MN);
          end loop;
 
