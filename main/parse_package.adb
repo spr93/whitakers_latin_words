@@ -1171,7 +1171,7 @@ package body Parse_Package is
       else
 
          PREFACE.PUT_LINE
-           ("Copyright (c) 1993-2022 William Armstrong Whitaker and contributors.");
+           ("Copyright (c) 1993-2024 William Armstrong Whitaker and contributors.");
 
          PREFACE.PUT_LINE
            ("In memoriam, Col. Wm. Whitaker, Chair of DoD Working Group responsible for");
