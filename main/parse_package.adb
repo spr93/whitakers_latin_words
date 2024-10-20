@@ -19,7 +19,6 @@ with Ada.Characters.Handling;
 with Ada.Wide_Text_IO;
 with Unicode_Features;        use Unicode_Features;
 with Latin_File_Names;
-with Ada.Directories;
 with Ada.Exceptions;
 
 pragma Elaborate (WORD_PARAMETERS);
@@ -28,8 +27,6 @@ pragma Elaborate (DEVELOPER_PARAMETERS);
 package body Parse_Package is
 
    procedure PARSE (COMMAND_LINE : String := "") is
-
-      STORAGE_ERROR_COUNT : Integer := 0;
 
       J, K, L : Integer := 0;
 
@@ -1105,19 +1102,6 @@ package body Parse_Package is
          end loop OVER_LINE;        --  Loop on line
 
       exception
-         --   Have STORAGE_ERROR check in WORD too  ?????????????
-         when Storage_Error =>    --  I want to again, at least twice
-            if WORDS_MDEV (DO_PEARSE_CODES) then
-               Put(Current_Output,Pearse_Code_Array(0));
-            end if;
-            Text_IO.Put_Line
-              (    --  ERROR_FILE,
-            "STORAGE_ERROR Exception in PARSE");
-            STORAGE_ERROR_COUNT := STORAGE_ERROR_COUNT + 1;
-            if STORAGE_ERROR_COUNT >= 4 then
-               raise Storage_Error;
-            end if;
-            PA_LAST := 0;
          when GIVE_UP =>
             PA_LAST := 0;
             raise;
@@ -1325,7 +1309,6 @@ package body Parse_Package is
                if (Name (Current_Input) = Name (Standard_Input)) then
                   SCROLL_LINE_NUMBER :=
                     Integer (Text_IO.Line (Text_IO.Standard_Output));
-
                   PREFACE.NEW_LINE;
                   PREFACE.PUT ("=>");
                end if;
@@ -1467,7 +1450,7 @@ package body Parse_Package is
                   end if;
 
                when Status_Error =>                 --  The end of the input file resets to CON:
-                  Put_Line ("Raised STATUS_ERROR (is file or input locked or busy?");
+                  Put_Line ("Raised STATUS_ERROR (is file or input locked or busy?)");
             end GET_INPUT_LINE;                     --  end Block to manipulate file of lines
 
          end loop GET_INPUT_LINES;                  --  Loop on lines
@@ -1511,7 +1494,6 @@ package body Parse_Package is
 
       use Ada.Wide_Text_IO;
       use LATIN_FILE_NAMES;
-      use Ada.Directories;
 
       Saved_Method : METHOD_TYPE := METHOD;
 
