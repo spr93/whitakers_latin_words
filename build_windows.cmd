@@ -29,7 +29,7 @@ copy DICTFILE.GEN ..\obj\words_packaged
 copy STEMFILE.GEN ..\obj\words_packaged
 copy INDXFILE.GEN ..\obj\words_packaged
 copy EWDSFILE.GEN ..\obj\words_packaged
-copy ..\obj\words ..\obj\words_packaged
+copy ..\obj\words.exe ..\obj\words_packaged
 cd ..
 @echo ***
 @echo If successful, everything you need to run WORDS is now in obj\words_packaged
