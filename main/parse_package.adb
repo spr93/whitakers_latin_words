@@ -1174,7 +1174,7 @@ package body Parse_Package is
            ("Copyright (c) 1993-2024 William Armstrong Whitaker and contributors.");
 
          PREFACE.PUT_LINE
-           ("In memoriam, Col. Wm. Whitaker, Chair of DoD Working Group responsible for");
+           ("In memoriam Col. Wm. Whitaker, Chair of DoD Working Group responsible for");
          PREFACE.PUT_LINE
            ("establishing the Ada language and accomplished amateur Latin lexicographer,");
          PREFACE.PUT_LINE
