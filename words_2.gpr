@@ -7,7 +7,7 @@ project Words_2 is
    for Exec_Dir use "obj";
 
    package Builder is
-      for Switches ("ada") use ("-j4","-O3");
+      for Switches ("ada") use ("-j4","-O3"); -- 4-cpu multiprocessor build and optimization level 3
    end Builder;
 
 end Words_2;
