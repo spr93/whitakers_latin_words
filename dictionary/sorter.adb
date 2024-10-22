@@ -217,7 +217,7 @@ procedure SORTER is
       end if;
    end PUT;
 
-   procedure GET (FROM : in String; S : out SECTION_TYPE; LAST : out Integer)
+   procedure GET (FROM : in String; S : out SECTION_TYPE; LAST : in out Integer)
    is
       L  : Integer := 0;
       FT : Integer := FROM'FIRST;
@@ -294,8 +294,6 @@ procedure SORTER is
                      return False;
                   elsif A.FIFTH_LEVEL < B.FIFTH_LEVEL then
                      return True;
-                  else
-                     return False;
                   end if;
                end if;
             end if;
@@ -323,7 +321,7 @@ procedure SORTER is
    end PUT;
 
    procedure GET
-     (FROM : in String; S : out APPENDIX_SECTION_TYPE; LAST : out Integer)
+     (FROM : in String; S : out APPENDIX_SECTION_TYPE; LAST : in out Integer)
    is
       use APPENDIX_IO;
       L  : Integer := 0;
