@@ -31,7 +31,8 @@ cp STEMFILE.GEN ../obj/words_packaged
 cp INDXFILE.GEN ../obj/words_packaged
 cp EWDSFILE.GEN ../obj/words_packaged
 cp ../obj/words ../obj/words_packaged
+cp ../license.txt ../obj/words_packaged
 cd ..
 echo "***"
 echo "If successful, everything you need to run WORDS is now in obj/words_packaged"
-echo "namely: words [executable], INFLECTS.SEC, ADDONS.LAT, UNIQUES.LAT, DICTFILE.GEN, STEMFILE.GEN, INDXFILE.GEN, and EWDSFILE.GEN"
+echo "namely: words [executable], INFLECTS.SEC, ADDONS.LAT, UNIQUES.LAT, DICTFILE.GEN, STEMFILE.GEN, INDXFILE.GEN, EWDSFILE.GEN, and license.txt"

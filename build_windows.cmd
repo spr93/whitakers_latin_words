@@ -30,8 +30,9 @@ copy STEMFILE.GEN ..\obj\words_packaged
 copy INDXFILE.GEN ..\obj\words_packaged
 copy EWDSFILE.GEN ..\obj\words_packaged
 copy ..\obj\words.exe ..\obj\words_packaged
+copy ..\license.txt ..\obj\words_packaged
 cd ..
 @echo ***
 @echo If successful, everything you need to run WORDS is now in obj\words_packaged
-@echo namely: words.exe, INFLECTS.SEC, ADDONS.LAT, UNIQUES.LAT, DICTFILE.GEN, STEMFILE.GEN, INDXFILE.GEN, and EWDSFILE.GEN
+@echo namely: words.exe, INFLECTS.SEC, ADDONS.LAT, UNIQUES.LAT, DICTFILE.GEN, STEMFILE.GEN, INDXFILE.GEN, EWDSFILE.GEN, and license.txt
 
