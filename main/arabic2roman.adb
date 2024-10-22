@@ -261,7 +261,6 @@ package body Arabic2Roman is
             LIST_PACKAGE.PUT_INFLECTION_FLAGS
               (Output => OUTPUT, SR => (STEM => NULL_STEM_TYPE, IR => IR));
 
-            Format (OUTPUT, RESET);
             New_Line (OUTPUT);
 
             if Is_Negative and WORDS_MODE (DO_EXAMPLES) then
@@ -292,7 +291,7 @@ package body Arabic2Roman is
            if Is_Negative then
              Put(" [~ negativum];");
            end if;
-
+          Format (OUTPUT, RESET);
           New_Line(Output);
         -- end output of first result
 
@@ -326,13 +325,15 @@ package body Arabic2Roman is
 
                -- meaning line:
                Put_Pearse_Code(OUTPUT,3);
-
+         
+               Format (OUTPUT, BOLD);
                for C in Arabic_String'Range loop
                   exit when Arabic_String (C) = ' ';
                   Put (OUTPUT, Arabic_String (C));
                end loop;
 
                Put_Line (OUTPUT, " as a ROMAN NUMERAL;");
+			   Format (OUTPUT, RESET);
                New_Line (OUTPUT);
 
              else
