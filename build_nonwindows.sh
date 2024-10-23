@@ -31,7 +31,9 @@ cp STEMFILE.GEN ../obj/words_packaged
 cp INDXFILE.GEN ../obj/words_packaged
 cp EWDSFILE.GEN ../obj/words_packaged
 cp ../obj/words ../obj/words_packaged
-cp ../license.txt ../obj/words_packaged
+echo "Portions copyright (c) 1993-2024 William Armstrong Whitaker and subsequent contributors." > ../obj/words_packaged/license.txt
+echo "" >> ../obj/words_packaged/license.txt
+cat ../license.txt >> ../obj/words_packaged/license.txt
 cd ..
 echo "***"
 echo "If successful, everything you need to run WORDS is now in obj/words_packaged"

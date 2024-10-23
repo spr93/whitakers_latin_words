@@ -7,7 +7,7 @@ gprbuild words_2_WINDOWS.gpr -p
 @echo ***
 cd dictionary
 ..\obj\sorter D
-REM manually delete WORK because CREATE_FILE on WORK may cause USE_ERRROR on some older implementations.
+@REM manually delete WORK because CREATE_FILE on WORK may cause USE_ERRROR on some older implementations.
 del WORK
 ..\obj\makedict G
 ..\obj\sorter S
@@ -29,8 +29,10 @@ copy DICTFILE.GEN ..\obj\words_packaged
 copy STEMFILE.GEN ..\obj\words_packaged
 copy INDXFILE.GEN ..\obj\words_packaged
 copy EWDSFILE.GEN ..\obj\words_packaged
-copy ..\obj\words.exe ..\obj\words_packaged
-copy ..\license.txt ..\obj\words_packaged
+copy ..\obj\words.exe ..\obj\words_packaged\license.txt
+@echo Portions copyright (c) 1993-2024 William Armstrong Whitaker and subsequent contributors. > ../obj/words_packaged/license.txt
+@echo.  >> ../obj/words_packaged/license.txt
+@type ../license.txt >> ../obj/words_packaged/license.txt
 cd ..
 @echo ***
 @echo If successful, everything you need to run WORDS is now in obj\words_packaged
