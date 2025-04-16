@@ -1,6 +1,5 @@
 with TEXT_IO;
 with Ada.Wide_Text_IO;
-with Ada.Directories;
 
 
 package WORD_PARAMETERS is
