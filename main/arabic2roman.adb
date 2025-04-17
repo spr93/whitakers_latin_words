@@ -204,7 +204,7 @@ package body Arabic2Roman is
 
                Put (OUTPUT, Arabic_String);
                Set_Col (OUTPUT, 35);
-               Put_Line (OUTPUT, "========   UNKNOWN  ");
+               Put_Line (OUTPUT, "    ========   UNKNOWN  ");
                New_Line (OUTPUT);
                Put_Pearse_Code(OUTPUT,6);
                Format (OUTPUT, INVERSE);
@@ -325,7 +325,7 @@ package body Arabic2Roman is
 
                -- meaning line:
                Put_Pearse_Code(OUTPUT,3);
-         
+
                Format (OUTPUT, BOLD);
                for C in Arabic_String'Range loop
                   exit when Arabic_String (C) = ' ';
