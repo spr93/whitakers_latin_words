@@ -124,7 +124,7 @@ DO_FIXES_ANYWAY_HELP : constant HELP_TYPE :=  (
    "This is entirely a development and research tool, not to be used in   ",
    "conventional translation situations, so the default choice is N(o).   ",
    "This processing can be turned on with the choice of Y(es).            ",
-   "      ------    PRESENTLY NOT IMPLEMENTED    ------                   " );
+--   "      ------    PRESENTLY NOT IMPLEMENTED    ------                   " );
 
 USE_PREFIXES_HELP : constant HELP_TYPE :=  (
    "This option instructs the program to implement prefixes from ADDONS   ",
