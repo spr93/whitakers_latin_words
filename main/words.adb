@@ -1,7 +1,7 @@
 --
 -- LICENSE DETAILS AND RIGHTS GRANT AT BOTTOM OF FILE.
 -- SUMMARY:
--- Copyright (c) 1993-2023 William Armstrong Whitaker and contributors.
+-- Copyright (c) 1993-2025 William Armstrong Whitaker and contributors.
 -- BSD 2-clause
 --
 -- In memoriam, Col. Wm. Whitaker, Chair of DoD Working Group responsible for
