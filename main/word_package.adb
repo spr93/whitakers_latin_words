@@ -19,34 +19,24 @@ package body WORD_PACKAGE is
    INFLECTIONS_SECTIONS_FILE : LEL_SECTION_IO.File_Type;
 
    procedure PAUSE (OUTPUT : Text_IO.File_Type) is
-      PAUSE_LINE : String (1 .. 300);
-      PAUSE_LAST : Integer := 0;
+    Keystroke : Character := ' ';
+
    begin
-      if WORDS_MDEV (PAUSE_IN_SCREEN_OUTPUT) then
-         if METHOD = INTERACTIVE then
-            if Text_IO.Name (OUTPUT) = Text_IO.Name (Text_IO.Standard_Output)
+      if WORDS_MDEV (PAUSE_IN_SCREEN_OUTPUT) and then
+         METHOD /= COMMAND_LINE_FILES and then
+         Text_IO.Name (OUTPUT) = Text_IO.Name (Text_IO.Standard_Output)
             then
-             Format(Output,Inverse);
+                  Format(Output,Inverse);
                Text_IO.Put_Line
                  (Text_IO.Standard_Output,
-                  "                          MORE - hit RETURN/ENTER to continue");
-             Format(Output,RESET);
-               Text_IO.Get_Line
-                 (Text_IO.Standard_Input, PAUSE_LINE, PAUSE_LAST);
-            end if;
-         elsif METHOD = COMMAND_LINE_INPUT then
-            Text_IO.Put_Line
-              (Text_IO.Standard_Output,
-               "                          MORE - hit RETURN/ENTER to continue");
-        Format(Output,RESET);
-            Text_IO.Get_Line (Text_IO.Standard_Input, PAUSE_LINE, PAUSE_LAST);
-         elsif METHOD = COMMAND_LINE_FILES then
-            null;                       --  Do not PAUSE
+                  "========   MORE - press any key to continue    ========");
+               Format(Output,RESET);
+         Text_IO.Get_Immediate(Keystroke);
          end if;
-      end if;
+
    exception
       when others =>
-         Text_IO.Put_Line ("Unexpected exception in PAUSE");
+         Text_IO.Put_Line ("    ========   ERROR:  Unexpected exception in PAUSE");
    end PAUSE;
 
    function MIN (A, B : Integer) return Integer is
@@ -725,7 +715,7 @@ package body WORD_PACKAGE is
          end loop;
          --PUT_LINE("In ORDER  SL_LAST = " & INTEGER'IMAGE(SL_LAST));
 
-         --  Bubble sort since this list should usually be very small (1-5)
+         --  Bubble sort since this list should usually be very small (1-5) and not terribly disordered
          HIT_LOOP :
          loop
             HITS := 0;
@@ -2268,13 +2258,13 @@ package body WORD_PACKAGE is
          if WORDS_MODE (WRITE_UNKNOWNS_TO_FILE) then
             Text_IO.Put (UNKNOWNS, RAW_WORD);
             Text_IO.Set_Col (UNKNOWNS, 21);
-            Text_IO.Put_Line (UNKNOWNS, "========   STORAGE_ERROR  ");
+            Text_IO.Put_Line (UNKNOWNS, "    ========   STORAGE_ERROR  ");
          end if;
       when others =>
          if WORDS_MODE (WRITE_UNKNOWNS_TO_FILE) then
             Text_IO.Put (UNKNOWNS, RAW_WORD);
             Text_IO.Set_Col (UNKNOWNS, 21);
-            Text_IO.Put_Line (UNKNOWNS, "========   ERROR  ");
+            Text_IO.Put_Line (UNKNOWNS, "    ========   ERROR  ");
          end if;
          PA_LAST := PA_SAVE;
    end WORD;
