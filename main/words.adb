@@ -96,8 +96,8 @@ begin
                   when others =>
                      New_Line;
                      Put_Line
-                       ("====== UNKNOWN COMMAND-LINE OPTION: " &
-                        TRIM (Ada.Command_Line.Argument (I)) (J) & " ======");
+                       ("    ======   UNKNOWN COMMAND-LINE OPTION: " &
+                        TRIM (Ada.Command_Line.Argument (I)) (J) & "   ======");
                      raise Args_Exception;
                end case;
 
@@ -156,9 +156,7 @@ begin
     and then ( Ada.Command_Line.Argument (1) (2) = 'e' or Ada.Command_Line.Argument (1) (2) ='E')
    then
       METHOD := COMMAND_LINE_INPUT;
-      Initialize_Dictionary;
       CHANGE_LANGUAGE ('E');
-
       English_Command_Line_Input :
       declare
          Input_String   : String (1 .. 250) := (others => ' ');
