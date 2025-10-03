@@ -37,10 +37,6 @@ package body LATIN_FILE_NAMES is
         return File_Name;
     elsif  Cl_Arguments(No_Files) then
          raise Status_Error;
- --   elsif METHOD = Command_Line_Files -- Trust the shell/operating environment
---      then
-   --   Set_Directory(Startup_Working_Directory);
-     -- return File_Name;
     elsif Exists(File_Name) -- We got a valid full path name + file from the user OR we got the name of a file in the site-wide data directory
       then return File_Name;
     else  -- Use or create the user's own in the startup/working directory, which is likely to be the user's HOME directory
