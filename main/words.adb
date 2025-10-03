@@ -224,6 +224,7 @@ begin
             WORDS_MODE (DO_ANSI_FORMATTING) := False;
             Open (OUTPUT, Append_File, Correct_File(TRIM (Ada.Command_Line.Argument (2))));
             Set_Output (OUTPUT);
+            WORDS_MODE := (WRITE_OUTPUT_TO_FILE => TRUE); -- don't write vt100 formatting from
          exception
             when Name_Error =>
                Create (OUTPUT, Out_File, Correct_File(TRIM (Ada.Command_Line.Argument (2))));
