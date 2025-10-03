@@ -2,3 +2,4 @@ obj/*
 dictionary/.DS_Store
 .DS_Store
 *.rexx
+*.swp
