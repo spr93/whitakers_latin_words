@@ -134,16 +134,19 @@ begin
  --  PART II:  NON-INTERACTIVE MODES--i.e., the command-line possibilities Whitaker created
  --            Steps:  A (set global options); B (load data files); C (parse dictionary queries)
 
-  -- STEP A:   Set global options
+  -- STEP A:   Prepare the global environment
 
    --  NOT entering interactive mode, so minimize screen output.
    SUPPRESS_PREFACE := True;
+
+    --  Any useful output now requires the dictionary, so let's make sure it loads
+   Initialize_Dictionary;
 
    --  Now choose a non-interactive mode: when 1 argument => either a simple Latin
    --  word or an input file. when 2 arguments => two words in-line OR language
    --  switch and word or input file when more arguments => command-line of Latin
 
-  --  First possibility:  English->Latin command-line mode
+   --  First possibility:  English->Latin command-line mode
    --  Words has never supported processing a file of English words after a command-line switch to English.
    --  Few users should want to do that because Word's isn't suitable for translating a lot of English
    --  to Latin in a non-interactive mode (getting a Latin word with the right connotation
@@ -192,8 +195,6 @@ begin
 
     -- We've got to start doing some file I/O at this point, but not sure whether to open the file
     -- for Unicode processing (Wide_Text) or not.
-    -- Go ahead and initialize now.  At this point, METHOD is NOT_YET_SET, which will
-    -- suppress unnecessary file operations during initialization.
        METHOD := COMMAND_LINE_FILES;
 
     SETUP_INPUT :
@@ -236,10 +237,7 @@ begin
 
    end if;
 
-  -- STEP B:  Load data files
-  Initialize_Dictionary;
-
-  -- STEP C:   Parse dictionary queries
+  -- STEP B:   Parse dictionary queries
    if METHOD = COMMAND_LINE_INPUT then
       for I in 1 .. Ada.Command_Line.Argument_Count loop
          declare

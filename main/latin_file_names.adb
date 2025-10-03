@@ -18,7 +18,7 @@ package body LATIN_FILE_NAMES is
   end ADD_FILE_NAME_EXTENSION;
 
   function Correct_File (File_Name : in String) return String is
-   -- USED ONLY FOR USER-MODIFIABLE FILES.  Initialize_Word_Packae sets the current working directory to the site-wide data/dictionary files directory
+   -- USED ONLY FOR USER-MODIFIABLE FILES.  Initialize_Word_Package sets the current working directory to the site-wide data/dictionary files directory
    -- so that those files can be quickly opened and closed as necessary throughout execution, without checking and re-checking directories.
    -- Therefore, this function should be called called only when opening the LOCAL dictionary, settings files (WORDS.MDV, WORDS.MOD), and when processing
    -- user-input file names.
@@ -37,10 +37,10 @@ package body LATIN_FILE_NAMES is
         return File_Name;
     elsif  Cl_Arguments(No_Files) then
          raise Status_Error;
-    elsif METHOD = Command_Line_Files -- Trust the shell/operating environment
-      then
-      Set_Directory(Startup_Working_Directory);
-      return File_Name;
+ --   elsif METHOD = Command_Line_Files -- Trust the shell/operating environment
+--      then
+   --   Set_Directory(Startup_Working_Directory);
+     -- return File_Name;
     elsif Exists(File_Name) -- We got a valid full path name + file from the user OR we got the name of a file in the site-wide data directory
       then return File_Name;
     else  -- Use or create the user's own in the startup/working directory, which is likely to be the user's HOME directory
