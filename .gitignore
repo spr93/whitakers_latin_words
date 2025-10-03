@@ -1,5 +1,11 @@
 obj/*
-dictionary/.DS_Store
+dictionary/CHECK*
+dictionary/*FILE.GEN
+dictionary/*LIST.GEN
+dictionary/*.OLD
+dictionary/*.SEC
+dictionary/WORK
+DICTIONARY/*.SRD
 .DS_Store
 *.rexx
 *.swp
