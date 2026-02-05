@@ -2,35 +2,35 @@ with WORD_PARAMETERS;      use WORD_PARAMETERS;
 with DEVELOPER_PARAMETERS; use DEVELOPER_PARAMETERS;
 
    package body STRINGS_PACKAGE is
-   
+
       function MAX(A, B : in INTEGER) return INTEGER is
       begin
-         if A >= B  then 
-            return A; end if; 
+         if A >= B  then
+            return A; end if;
          return B;
       end MAX;
-   
+
       function MIN(A, B : in INTEGER) return INTEGER is
       begin
-         if A <= B  then 
-            return A; end if; 
+         if A <= B  then
+            return A; end if;
          return B;
       end MIN;
-   
-      procedure GET_NON_COMMENT_LINE(F : in TEXT_IO.FILE_TYPE; 
+
+      procedure GET_NON_COMMENT_LINE(F : in TEXT_IO.FILE_TYPE;
                                      S : out STRING; LAST : out INTEGER) is
-      --  Reads a text file and outs a string that is as much of the 
-      --  first line encountered that is not a comment, that is not a comment   
-      
+      --  Reads a text file and outs a string that is as much of the
+      --  first line encountered that is not a comment, that is not a comment
+
          T : STRING(1..250) := (others => ' ');
          L, LX : INTEGER := 0;
-      
+
       begin
          LAST := 0;
       FILE_LOOP:
          while not TEXT_IO.END_OF_FILE(F)  loop  --  Loop until data - Finish on EOF
             TEXT_IO.GET_LINE(F, T, L);
-            if (HEAD(TRIM(T), 250)(1..2) = "  "  or 
+            if (HEAD(TRIM(T), 250)(1..2) = "  "  or
                 HEAD(TRIM(T), 250)(1..2) = "--")  then
                null;
             else
@@ -49,22 +49,22 @@ with DEVELOPER_PARAMETERS; use DEVELOPER_PARAMETERS;
          S(S'First..LX) := T(T'First..LX);
          LAST := LX;
       end GET_NON_COMMENT_LINE;
-   
+
 
   procedure Put_Pearse_Code (OUTPUT : in Text_IO.File_Type; Code : in Pearse_Code_Type) is
   begin
-    if WORDS_MDEV(DO_PEARSE_CODES) then 
+    if WORDS_MDEV(DO_PEARSE_CODES) then
        Put(OUTPUT,Pearse_Code_Array(Code));
       end if;
     end Put_Pearse_Code;
-   
-    
+
+
   procedure Format (OUTPUT : in Text_IO.File_Type; Format : In Format_Command) is
    begin
 
       if WORDS_MODE(DO_ANSI_FORMATTING) and then
-         not WORDS_MODE (WRITE_OUTPUT_TO_FILE) then
-      
+         not WORDS_MODE(WRITE_OUTPUT_TO_FILE) then
+
         Put (OUTPUT, Format_Reset);
 
          case Format is
@@ -79,7 +79,7 @@ with DEVELOPER_PARAMETERS; use DEVELOPER_PARAMETERS;
 
       end if;
 
-   end Format;  
-   
- 
-   end STRINGS_PACKAGE;  
+   end Format;
+
+
+   end STRINGS_PACKAGE;
