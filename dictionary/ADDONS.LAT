@@ -554,10 +554,10 @@ N 2 ADJ 1 1 POS 0
 -ic; of, pertaining/belonging to; connected with; derived/coming from (place);
 SUFFIX sc
 V 2 V 3 1 X  1
-begin to -, grow - (Inceptive or Inchoative);
+begin to -, grow - (inceptive or inchoative);
 SUFFIX sc
 V 2 V 3 1 X  2
-begin to -, grow - (Inceptive or Inchoative);
+begin to -, grow - (inceptive or inchoative);
 SUFFIX c i
 N 2 ADJ 1 1 POS 0
 -ic; of, pertaining/belonging to; connected with; derived/coming from (place);
@@ -683,13 +683,13 @@ V 2 ADJ 3 2 POS  0
 -able, -ble; having the passive quality, able to, able to be; -ful;
 SUFFIX icul
 N 2 N 1 1 F x 0
-little, small, -let (Diminutive) target is of gender of root => decl;
+little, small, -let (diminutive) target is of gender of root => decl;
 SUFFIX icul
 N 2 N 2 1 M x 0
-little, small, -let (Diminutive) target is of gender of root => decl;
+little, small, -let (diminutive) target is of gender of root => decl;
 SUFFIX icul
 N 2 N 2 2 N x 0
-little, small, -let (Diminutive) target is of gender of root => decl;
+little, small, -let (diminutive) target is of gender of root => decl;
 SUFFIX bil
 V 2 ADJ 3 2 POS  0
 -able, -ble; having the passive quality, able to, able to be; having ability;
@@ -707,22 +707,22 @@ V 2 N 2 2 N t 0
 denotes means or instrument or place for special purpose for action of V;
 SUFFIX ell
 N 2 N 1 1 F x 0
-little, small, -let (Diminutive) target is of gender of root => decl;
+little, small, -let (diminutive) target is of gender of root => decl;
 SUFFIX ell
 N 2 N 2 1 M x 0
-little, small, -let (Diminutive) target is of gender of root => decl;
+little, small, -let (diminutive) target is of gender of root => decl;
 SUFFIX ell
 N 2 N 2 2 N x 0
-little, small, -let (Diminutive) target is of gender of root => decl;
+little, small, -let (diminutive) target is of gender of root => decl;
 SUFFIX ill
 N 2 N 1 1 F x 0
-little, small, -let (Diminutive) target is of gender of root => decl;
+little, small, -let (diminutive) target is of gender of root => decl;
 SUFFIX ill
 N 2 N 2 1 M x 0
-little, small, -let (Diminutive) target is of gender of root => decl;
+little, small, -let (diminutive) target is of gender of root => decl;
 SUFFIX ill
 N 2 N 2 2 N x 0
-little, small, -let (Diminutive) target is of gender of root => decl;
+little, small, -let (diminutive) target is of gender of root => decl;
 SUFFIX al
 N 2 ADJ 3 2 POS 0
 -al; of a ~, pertaining to a ~, in a condition of ~, in a state of ~;
@@ -734,22 +734,22 @@ N 2 ADJ 3 2 POS 0
 -il; of a ~, pertaining to a ~, in a condition of ~, in a state of ~;
 SUFFIX ol
 N 2 N 1 1 F x 0
-little, small, -let (Diminutive) target is of gender of root => decl;
+little, small, -let (diminutive) target is of gender of root => decl;
 SUFFIX ol
 N 2 N 2 1 M x 0
-little, small, -let (Diminutive) target is of gender of root => decl;
+little, small, -let (diminutive) target is of gender of root => decl;
 SUFFIX ol
 N 2 N 2 2 N x 0
-little, small, -let (Diminutive) target is of gender of root => decl;
+little, small, -let (diminutive) target is of gender of root => decl;
 SUFFIX ul
 N 2 N 1 1 F x 0
-little, small, -let (Diminutive) target is of gender of root => decl;
+little, small, -let (diminutive) target is of gender of root => decl;
 SUFFIX ul
 N 2 N 2 1 M x 0
-little, small, -let (Diminutive) target is of gender of root => decl;
+little, small, -let (diminutive) target is of gender of root => decl;
 SUFFIX ul
 N 2 N 2 2 N x 0
-little, small, -let (Diminutive) target is of gender of root => decl;
+little, small, -let (diminutive) target is of gender of root => decl;
 SUFFIX ul
 N 2 ADJ 1 1 POS 0
 -ulus; of a, pertaining to a, in a condition of, in a state of;
