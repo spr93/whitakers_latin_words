@@ -733,8 +733,6 @@ begin
       Add_to
         ("  " & PRONOUN_KIND_TYPE'Image (DE.PART.PACK.KIND) & "   " &
          PART_OF_SPEECH_TYPE'Image (PRON) & "  ");
-   else
-      Add_to ("   " & PART_OF_SPEECH_TYPE'Image (DE.PART.POFS) & "  ");
    end if;
 
    if DE.PART.POFS = N then
